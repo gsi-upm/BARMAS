@@ -1,8 +1,79 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>es.upm.dit.gsi</groupId>
-  <artifactId>barmas</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>BARMAS</name>
-  <description>Bayesian ARgumentative Multi-Agent System</description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>es.upm.dit.gsi</groupId>
+	<artifactId>barmas</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>BARMAS</name>
+	<description>Bayesian ARgumentative Multi-Agent System</description>
+
+	<organization>
+		<name>Grupo de Sistemas Inteligentes - Universidad Politécnica de Madrid</name>
+		<url>http://www.gsi.dit.upm.es</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>GNU General Public License, version 2</name>
+			<url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt</url>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:https://github.com/alvarocarrera/BARMAS.git</connection>
+		<developerConnection>scm:git:https://github.com/alvarocarrera/BARMAS.git</developerConnection>
+		<url>http://github.com/alvarocarrera/BARMAS</url>
+	</scm>
+
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/alvarocarrera/BARMAS/issues</url>
+	</issueManagement>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<developers>
+		<developer>
+			<id>alvarocarrera</id>
+			<name>Álvaro Carrera Barroso</name>
+			<email>carrerabarroso@gmail.com</email>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+<!-- 		<repository> -->
+<!-- 			<uniqueVersion>false</uniqueVersion> -->
+<!-- 			<id>sonatype-nexus-staging</id> -->
+<!-- 			<name>Central Maven Repository</name> -->
+<!-- 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url> -->
+<!-- 			<layout>default</layout> -->
+<!-- 		</repository> -->
+<!-- 		<snapshotRepository> -->
+<!-- 			<uniqueVersion>true</uniqueVersion> -->
+<!-- 			<id>sonatype-nexus-snapshots</id> -->
+<!-- 			<name>Snapshot Maven Repository</name> -->
+<!-- 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url> -->
+<!-- 			<layout>default</layout> -->
+<!-- 		</snapshotRepository> -->
+		<site>
+			<id>site-github-web</id>
+			<url>scm:git:https://github.com/alvarocarrera/BARMAS.git</url>
+		</site>
+	</distributionManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>es.upm.dit.gsi.shanks</groupId>
+			<artifactId>shanks-core</artifactId>
+			<version>0.3.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 </project>
