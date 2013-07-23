@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.model.test.ModelTest.java
  */
-package es.upm.dit.gsi.barmas.model.test;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.test;
 
 import java.util.Set;
 
