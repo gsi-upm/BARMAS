@@ -1,7 +1,9 @@
 /**
  * es.upm.dit.gsi.barmas.model.Given.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
+
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractGiven;
 
 /**
  * Project: barmas

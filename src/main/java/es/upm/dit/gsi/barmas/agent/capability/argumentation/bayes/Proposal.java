@@ -1,11 +1,13 @@
 /**
  * es.upm.dit.gsi.barmas.model.Proposal.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractProposal;
 
 /**
  * Project: barmas
