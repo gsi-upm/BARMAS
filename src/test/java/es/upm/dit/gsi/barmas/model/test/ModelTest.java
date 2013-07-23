@@ -9,9 +9,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import es.upm.dit.gsi.barmas.model.Argument;
-import es.upm.dit.gsi.barmas.model.Given;
-import es.upm.dit.gsi.barmas.model.Proposal;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.Given;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.Proposal;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**

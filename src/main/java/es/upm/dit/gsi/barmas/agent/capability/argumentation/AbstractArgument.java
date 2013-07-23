@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.model.AbstractArgument.java
  */
-package es.upm.dit.gsi.barmas.model;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation;
 
 import java.util.Set;
 
