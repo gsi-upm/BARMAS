@@ -6,6 +6,9 @@ package es.upm.dit.gsi.barmas.model.scenario;
 import java.util.HashMap;
 import java.util.Properties;
 
+import es.upm.dit.gsi.barmas.model.SolarFlare;
+import es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario2DPortrayal;
+import es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario3DPortrayal;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.event.failiure.Failure;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
@@ -50,8 +53,7 @@ public class SolarFlareScenario extends Scenario {
 	@Override
 	public Scenario2DPortrayal createScenario2DPortrayal()
 			throws ShanksException {
-		// TODO Auto-generated method stub
-		return null;
+        return new SolarFlareScenario2DPortrayal(this, 100, 100);
 	}
 
 	/* (non-Javadoc)
@@ -60,8 +62,7 @@ public class SolarFlareScenario extends Scenario {
 	@Override
 	public Scenario3DPortrayal createScenario3DPortrayal()
 			throws ShanksException {
-		// TODO Auto-generated method stub
-		return null;
+        return new SolarFlareScenario3DPortrayal(this, 100, 100, 100);
 	}
 
 	/* (non-Javadoc)
@@ -77,6 +78,8 @@ public class SolarFlareScenario extends Scenario {
 	 */
 	@Override
 	public void addNetworkElements() throws ShanksException {
+		SolarFlare s = new SolarFlare();
+		this.addNetworkElement(s);
 	}
 
 	/* (non-Javadoc)
@@ -84,8 +87,7 @@ public class SolarFlareScenario extends Scenario {
 	 */
 	@Override
 	public void addPossibleFailures() {
-		// TODO Auto-generated method stub
-
+		// NONE One steppable is in charge of this
 	}
 
 	/* (non-Javadoc)
@@ -93,8 +95,7 @@ public class SolarFlareScenario extends Scenario {
 	 */
 	@Override
 	public void addPossibleEvents() {
-		// TODO Auto-generated method stub
-
+		// NONE One steppable is in charge of this
 	}
 
 	/* (non-Javadoc)
@@ -103,7 +104,6 @@ public class SolarFlareScenario extends Scenario {
 	@Override
 	public HashMap<Class<? extends Failure>, Double> getPenaltiesInStatus(
 			String status) throws ShanksException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
