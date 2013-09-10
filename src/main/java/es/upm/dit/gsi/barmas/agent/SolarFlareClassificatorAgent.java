@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2013 alvarocarrera Grupo de Sistemas Inteligentes - Universidad Politécnica de Madrid. (GSI-UPM)
+ * http://www.gsi.dit.upm.es/
+ * 
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v2.0
+ * which accompanies this distribution, and is available at
+ * 
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * 
+ * Contributors:
+ *     alvarocarrera - initial API and implementation
+ ******************************************************************************/
 /**
  * es.upm.dit.gsi.barmas.agent.BarmasAgent.java
  */
@@ -8,8 +23,6 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.movement.Location;
-import es.upm.dit.gsi.shanks.agent.capability.perception.PercipientShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 
 /**
@@ -27,7 +40,7 @@ import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerSh
  * @version 0.1
  * 
  */
-public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements BayesianReasonerShanksAgent, ArgumentationManagerAgent, ArgumentativeAgent, PercipientShanksAgent {
+public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements BayesianReasonerShanksAgent, ArgumentationManagerAgent, ArgumentativeAgent {
 
 	/**
 	 * 
@@ -58,7 +71,6 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 	@Override
 	public void executeReasoningCycle(ShanksSimulation simulation) {
 		// TODO Auto-generated method stub
-
 	}
 
 	public ProbabilisticNetwork getBayesianNetwork() {
@@ -75,15 +87,4 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public double getPerceptionRange() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public Location getCurrentLocation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
