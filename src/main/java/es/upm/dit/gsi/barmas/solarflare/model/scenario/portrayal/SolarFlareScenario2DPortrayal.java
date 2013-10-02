@@ -18,9 +18,14 @@
  */
 package es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal;
 
+import sim.portrayal.continuous.ContinuousPortrayal2D;
+import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.portrayal.SolarFlare2DPortrayal;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
+import es.upm.dit.gsi.shanks.model.element.device.Device;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario2DPortrayal;
+import es.upm.dit.gsi.shanks.model.scenario.portrayal.ScenarioPortrayal;
 
 /**
  * Project: barmas
@@ -67,7 +72,7 @@ public class SolarFlareScenario2DPortrayal extends Scenario2DPortrayal {
 	 */
 	@Override
 	public void placeElements() {
-		// TODO Auto-generated method stub
+        this.situateDevice((Device)this.getScenario().getNetworkElement("SolarFlare"), 10, 50);
 
 	}
 
@@ -76,7 +81,10 @@ public class SolarFlareScenario2DPortrayal extends Scenario2DPortrayal {
 	 */
 	@Override
 	public void setupPortrayals() {
-		// TODO Auto-generated method stub
+
+        ContinuousPortrayal2D devicePortrayal = (ContinuousPortrayal2D) this.getPortrayals().get(Scenario2DPortrayal.MAIN_DISPLAY_ID).get(ScenarioPortrayal.DEVICES_PORTRAYAL);
+//        NetworkPortrayal2D networkPortrayal = (NetworkPortrayal2D) this.getPortrayals().get(Scenario2DPortrayal.MAIN_DISPLAY_ID).get(ScenarioPortrayal.LINKS_PORTRAYAL);
+        devicePortrayal.setPortrayalForClass(SolarFlare.class, new SolarFlare2DPortrayal());
 
 	}
 

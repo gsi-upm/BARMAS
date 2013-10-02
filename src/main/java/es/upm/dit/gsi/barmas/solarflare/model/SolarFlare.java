@@ -58,7 +58,7 @@ public class SolarFlare extends Device {
 	 *
 	 */
 	public SolarFlare() {
-		super("SolarFlare", "REady", false);
+		super("SolarFlare", READY, false);
 	}
 
 	/* (non-Javadoc)

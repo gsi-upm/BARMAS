@@ -18,17 +18,21 @@
  */
 package es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal;
 
+import sim.portrayal3d.continuous.ContinuousPortrayal3D;
+import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.portrayal.SolarFlare3DPortrayal;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
+import es.upm.dit.gsi.shanks.model.element.device.Device;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal;
+import es.upm.dit.gsi.shanks.model.scenario.portrayal.ScenarioPortrayal;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario3DPortrayal.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.model.scenario.portrayal.
+ * SolarFlareScenario3DPortrayal.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -41,7 +45,7 @@ public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
 
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param scenario
 	 * @param width
 	 * @param height
@@ -54,8 +58,11 @@ public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal#addPortrayals()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal#
+	 * addPortrayals()
 	 */
 	@Override
 	public void addPortrayals() {
@@ -63,21 +70,34 @@ public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal#placeElements()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal#
+	 * placeElements()
 	 */
 	@Override
 	public void placeElements() {
-		// TODO Auto-generated method stub
-
+		this.situateDevice(
+				(Device) this.getScenario().getNetworkElement("SolarFlare"),
+				100.0, 100.0, 100.0);
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.ScenarioPortrayal#setupPortrayals()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.ScenarioPortrayal#
+	 * setupPortrayals()
 	 */
 	@Override
 	public void setupPortrayals() {
-		// TODO Auto-generated method stub
+		ContinuousPortrayal3D devicePortrayal = (ContinuousPortrayal3D) this
+				.getPortrayals().get(Scenario3DPortrayal.MAIN_DISPLAY_ID)
+				.get(ScenarioPortrayal.DEVICES_PORTRAYAL);
+		devicePortrayal.setPortrayalForClass(SolarFlare.class,
+				new SolarFlare3DPortrayal());
+
+		this.scaleDisplay(Scenario3DPortrayal.MAIN_DISPLAY_ID, 1.5);
 
 	}
 
