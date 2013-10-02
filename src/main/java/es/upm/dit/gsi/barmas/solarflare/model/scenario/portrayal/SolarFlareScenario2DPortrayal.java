@@ -73,6 +73,7 @@ public class SolarFlareScenario2DPortrayal extends Scenario2DPortrayal {
 	@Override
 	public void placeElements() {
         this.situateDevice((Device)this.getScenario().getNetworkElement("SolarFlare"), 10, 50);
+        this.situateDevice((Device)this.getScenario().getNetworkElement("ClassifiedSolarFlare"), 50, 50);
 
 	}
 

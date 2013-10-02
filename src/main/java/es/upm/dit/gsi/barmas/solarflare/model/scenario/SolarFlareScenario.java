@@ -93,8 +93,10 @@ public class SolarFlareScenario extends Scenario {
 	 */
 	@Override
 	public void addNetworkElements() throws ShanksException {
-		SolarFlare s = new SolarFlare();
-		this.addNetworkElement(s);
+		SolarFlare flare = new SolarFlare("SolarFlare");
+		this.addNetworkElement(flare);
+		SolarFlare classified = new SolarFlare("ClassifiedSolarFlare");
+		this.addNetworkElement(classified);
 	}
 
 	/* (non-Javadoc)

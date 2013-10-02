@@ -81,6 +81,7 @@ public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
 		this.situateDevice(
 				(Device) this.getScenario().getNetworkElement("SolarFlare"),
 				100.0, 100.0, 100.0);
+        this.situateDevice((Device)this.getScenario().getNetworkElement("ClassifiedSolarFlare"), 500.0, 100.0, 100.0);
 	}
 
 	/*

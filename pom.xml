@@ -42,20 +42,20 @@
 	</developers>
 
 	<distributionManagement>
-<!-- 		<repository> -->
-<!-- 			<uniqueVersion>false</uniqueVersion> -->
-<!-- 			<id>sonatype-nexus-staging</id> -->
-<!-- 			<name>Central Maven Repository</name> -->
-<!-- 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url> -->
-<!-- 			<layout>default</layout> -->
-<!-- 		</repository> -->
-<!-- 		<snapshotRepository> -->
-<!-- 			<uniqueVersion>true</uniqueVersion> -->
-<!-- 			<id>sonatype-nexus-snapshots</id> -->
-<!-- 			<name>Snapshot Maven Repository</name> -->
-<!-- 			<url>https://oss.sonatype.org/content/repositories/snapshots/</url> -->
-<!-- 			<layout>default</layout> -->
-<!-- 		</snapshotRepository> -->
+		<!-- <repository> -->
+		<!-- <uniqueVersion>false</uniqueVersion> -->
+		<!-- <id>sonatype-nexus-staging</id> -->
+		<!-- <name>Central Maven Repository</name> -->
+		<!-- <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url> -->
+		<!-- <layout>default</layout> -->
+		<!-- </repository> -->
+		<!-- <snapshotRepository> -->
+		<!-- <uniqueVersion>true</uniqueVersion> -->
+		<!-- <id>sonatype-nexus-snapshots</id> -->
+		<!-- <name>Snapshot Maven Repository</name> -->
+		<!-- <url>https://oss.sonatype.org/content/repositories/snapshots/</url> -->
+		<!-- <layout>default</layout> -->
+		<!-- </snapshotRepository> -->
 		<site>
 			<id>site-github-web</id>
 			<url>scm:git:https://github.com/alvarocarrera/BARMAS.git</url>
@@ -73,6 +73,11 @@
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.jcsv</groupId>
+			<artifactId>jcsv</artifactId>
+			<version>1.4.0</version>
 		</dependency>
 	</dependencies>
 

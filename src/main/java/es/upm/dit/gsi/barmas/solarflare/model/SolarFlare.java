@@ -57,8 +57,8 @@ public class SolarFlare extends Device {
 	 * Constructor
 	 *
 	 */
-	public SolarFlare() {
-		super("SolarFlare", READY, false);
+	public SolarFlare(String id) {
+		super(id, READY, false);
 	}
 
 	/* (non-Javadoc)
