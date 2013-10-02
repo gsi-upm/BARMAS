@@ -14,15 +14,16 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent.java
+ * es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractAssumption.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Project: barmas
- * File: es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent.java
+ * File: es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractAssumption.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -31,25 +32,31 @@ import java.util.List;
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 23/07/2013
+ * @date 01/10/2013
  * @version 0.1
  * 
  */
-public interface ArgumentationManagerAgent {
+public abstract class AbstractAssumption {
 	
 	/**
-	 * @return
+	 * @return The name of the proposed node.
 	 */
-	public Argumentation getCurrentArgumentation();
+	public abstract String getNode();
+	
+	/**
+	 * @return The possible values of the node.
+	 */
+	public abstract Set<String> getValues();
+	
+	/**
+	 * @return All values of the node with their confidences.
+	 */
+	public abstract Map<String,Double> getValuesWithConfidence();
+	
+	/**
+	 * @param value
+	 * @return The confidence of this value/state for the proposed node.
+	 */
+	public abstract double getConfidenceForValue(String value);
 
-	/**
-	 * @return
-	 */
-	public List<Argumentation> getArgumentations();
-	
-	/**
-	 * @param arg
-	 */
-	public void processNewArgument(Argumentation arg);
-	
 }

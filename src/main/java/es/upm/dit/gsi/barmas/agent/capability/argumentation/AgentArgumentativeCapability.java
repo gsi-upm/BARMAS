@@ -53,16 +53,17 @@ public class AgentArgumentativeCapability {
 
 	/**
 	 * 
+	 * @param proponent
 	 * @param node
 	 * @param value
 	 * @param conf
 	 * @param evidences
 	 * @return an argument with the provided info.
 	 */
-	public static Argument createArgument(String node, String value,
+	public static Argument createArgument(ArgumentativeAgent proponent, String node, String value,
 			double conf, HashMap<String, String> evidences) {
 
-		Argument arg = new Argument();
+		Argument arg = new Argument(proponent);
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			Given given = new Given(entry.getKey(), entry.getValue());
 			arg.addGiven(given);
@@ -76,11 +77,12 @@ public class AgentArgumentativeCapability {
 
 	/**
 	 * 
+	 * @param proponent
 	 * @param bn
 	 * @return all arguments for a given Bayesian network
 	 * @throws ShanksException
 	 */
-	public static Set<Argument> createArguments(ProbabilisticNetwork bn)
+	public static Set<Argument> createArguments(ArgumentativeAgent proponent, ProbabilisticNetwork bn)
 			throws ShanksException {
 		Set<Argument> args = new HashSet<Argument>();
 		HashMap<String, String> evidences = (HashMap<String, String>) ShanksAgentBayesianReasoningCapability
@@ -93,7 +95,7 @@ public class AgentArgumentativeCapability {
 			if (!node.hasEvidence()) {
 				HashMap<String, Float> states = hyp.getValue();
 				for (Entry<String, Float> state : states.entrySet()) {
-					Argument arg = AgentArgumentativeCapability.createArgument(
+					Argument arg = AgentArgumentativeCapability.createArgument(proponent,
 							hyp.getKey(), state.getKey(), state.getValue(),
 							evidences);
 					args.add(arg);
@@ -111,7 +113,7 @@ public class AgentArgumentativeCapability {
 	 */
 	public static Set<Argument> createArguments(
 			BayesianReasonerShanksAgent agent) throws ShanksException {
-		return AgentArgumentativeCapability.createArguments(agent
+		return AgentArgumentativeCapability.createArguments((ArgumentativeAgent) agent, agent
 				.getBayesianNetwork());
 	}
 
@@ -164,7 +166,6 @@ public class AgentArgumentativeCapability {
 	 * 
 	 * 
 	 * @param proponent
-	 * @param manager
 	 * @param args
 	 */
 	public static void sendArguments(ArgumentativeAgent proponent,
@@ -172,6 +173,22 @@ public class AgentArgumentativeCapability {
 		Message m = new Message();
 		m.setSender(proponent.getProponentName());
 		m.setReceiver(proponent.getArgumentationManagerName());
+		m.setPropCont(args);
+		proponent.send(m);
+	}
+	
+	/**
+	 * Send one argument to the argumentation manager
+	 * 
+	 * @param proponent
+	 * @param arg
+	 */
+	public static void sendArgument(ArgumentativeAgent proponent, Argument arg) {
+		Message m = new Message();
+		m.setSender(proponent.getProponentName());
+		m.setReceiver(proponent.getArgumentationManagerName());
+		Set<Argument> args = new HashSet<Argument>();
+		args.add(arg);
 		m.setPropCont(args);
 		proponent.send(m);
 	}

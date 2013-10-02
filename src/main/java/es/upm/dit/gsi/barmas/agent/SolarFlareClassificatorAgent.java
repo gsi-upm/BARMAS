@@ -18,12 +18,20 @@
  */
 package es.upm.dit.gsi.barmas.agent;
 
+import jason.asSemantics.Message;
+
+import java.util.List;
+import java.util.Set;
+
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
+import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
  * Project: barmas
@@ -86,5 +94,56 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 	public String getBayesianNetworkFilePath() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public String getProponentName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ArgumentativeAgent getProponent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ArgumentationManagerAgent getArgumentationManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getArgumentationManagerName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Set<Argument> getCurrentArguments() throws ShanksException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void updateBeliefsWithNewArguments(Set<Argument> args)
+			throws ShanksException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void send(Message m) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Argumentation getCurrentArgumentation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Argumentation> getArgumentations() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void processNewArgument(Argumentation arg) {
+		// TODO Auto-generated method stub
+		
 	}
 }

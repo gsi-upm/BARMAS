@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 
 /**
  * Project: barmas
@@ -41,7 +42,9 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument;
 public class Argument extends AbstractArgument {
 
 	private Set<Given> givens;
+	private Set<Assumption> assumptions;
 	private Set<Proposal> proposals;
+	private ArgumentativeAgent proponent;
 
 	/**
 	 * Constructor
@@ -49,18 +52,32 @@ public class Argument extends AbstractArgument {
 	 * @param givens All givens
 	 * @param proposals All proposals
 	 */
-	public Argument(Set<Given> givens, Set<Proposal> proposals) {
+	public Argument(ArgumentativeAgent proponent, Set<Given> givens, Set<Assumption> assumptions, Set<Proposal> proposals) {
+		this.proponent = proponent;
 		this.givens = givens;
+		this.assumptions = assumptions;
 		this.proposals = proposals;
 	}
 	
 	/**
-	 * Constructor of empty argument
+	 * Constructor of empty argument with known proponent
+	 *
+	 */
+	public Argument(ArgumentativeAgent proponent) {
+		this.proponent = proponent;
+		this.givens = new HashSet<Given>();
+		this.assumptions = new HashSet<Assumption>();
+		this.proposals = new HashSet<Proposal>();
+	}
+	
+	/**
+	 * Constructor of empty argument with unknow proponent
 	 *
 	 */
 	public Argument() {
 		this.givens = new HashSet<Given>();
-		this.proposals = new HashSet<Proposal>();
+		this.assumptions = new HashSet<Assumption>();
+		this.proposals = new HashSet<Proposal>();		
 	}
 	
 	/**
@@ -68,6 +85,13 @@ public class Argument extends AbstractArgument {
 	 */
 	public void addGiven(Given given) {
 		this.givens.add(given);
+	}
+	
+	/**
+	 * @param assumption
+	 */
+	public void addAssumption(Assumption assumption) {
+		this.assumptions.add(assumption);
 	}
 	
 	/**
@@ -91,6 +115,28 @@ public class Argument extends AbstractArgument {
 	@Override
 	public Set<Proposal> getProposals() {
 		return this.proposals;
+	}
+
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#getAssumptions()
+	 */
+	@Override
+	public Set<Assumption> getAssumptions() {
+		return this.assumptions;
+	}
+	
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#getProponent()
+	 */
+	public ArgumentativeAgent getProponent() {
+		return this.proponent;
+	}
+	
+	/**
+	 * @param prop
+	 */
+	public void setProponent(ArgumentativeAgent prop) {
+		this.proponent = prop;
 	}
 
 }

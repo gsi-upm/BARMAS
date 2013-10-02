@@ -43,8 +43,18 @@ public abstract class AbstractArgument {
 	public abstract Set<? extends AbstractGiven> getGivens();
 	
 	/**
+	 * @return The assumptions of the argument
+	 */
+	public abstract Set<? extends AbstractAssumption> getAssumptions();
+	
+	/**
 	 * @return The proposals/beliefs of the argument
 	 */
 	public abstract Set<? extends AbstractProposal> getProposals();
+	
+	/**
+	 * @return The agent that proposes the argument
+	 */
+	public abstract ArgumentativeAgent getProponent();
 
 }

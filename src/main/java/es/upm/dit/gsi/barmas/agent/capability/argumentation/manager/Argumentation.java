@@ -14,42 +14,62 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent.java
+ * es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation.java
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
 
-import java.util.List;
+import java.util.Map;
+
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.agent.capability.argumentation.manager
+ * .Argumentation.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 23/07/2013
+ * @date 01/10/2013
  * @version 0.1
  * 
  */
-public interface ArgumentationManagerAgent {
-	
+public class Argumentation {
+
+	private Map<Argument, Long> timestamps;
+	private Map<Argument, Integer> steps;
+	private int id;
+
 	/**
-	 * @return
+	 * Constructor
+	 * 
 	 */
-	public Argumentation getCurrentArgumentation();
+	public Argumentation(int id) {
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param arg
+	 */
+	public void addArgument(Argument arg) {
+
+	}
 
 	/**
 	 * @return
 	 */
-	public List<Argumentation> getArgumentations();
-	
+	public Map<Argument, Integer> getArguments() {
+		return this.steps;
+	}
+
 	/**
-	 * @param arg
+	 * @return
 	 */
-	public void processNewArgument(Argumentation arg);
-	
+	public int getId() {
+		return id;
+	}
+
 }
