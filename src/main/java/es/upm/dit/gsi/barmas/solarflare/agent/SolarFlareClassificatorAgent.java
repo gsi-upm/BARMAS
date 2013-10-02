@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.BarmasAgent.java
  */
-package es.upm.dit.gsi.barmas.agent;
+package es.upm.dit.gsi.barmas.solarflare.agent;
 
 import jason.asSemantics.Message;
 
@@ -145,5 +145,10 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 	public void processNewArgument(Argumentation arg) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Argumentation getArgumentation(int id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

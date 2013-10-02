@@ -14,13 +14,13 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.model.vocabulary.EvolutionEnum.java
+ * es.upm.dit.gsi.barmas.model.vocabulary.BecomeHistEnum.java
  */
-package es.upm.dit.gsi.barmas.model.vocabulary;
+package es.upm.dit.gsi.barmas.solarflare.model.vocabulary;
 
 /**
  * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.vocabulary.EvolutionEnum.java
+ * File: es.upm.dit.gsi.barmas.model.vocabulary.BecomeHistEnum.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -33,6 +33,6 @@ package es.upm.dit.gsi.barmas.model.vocabulary;
  * @version 0.1
  * 
  */
-public enum Evolution {
-	Status1, Status2, Status3;
+public enum BecomeHist {
+	Status1, Status2;
 }

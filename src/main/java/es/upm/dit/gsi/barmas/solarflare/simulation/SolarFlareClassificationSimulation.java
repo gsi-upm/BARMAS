@@ -16,21 +16,24 @@
 /**
  * es.upm.dit.gsi.barmas.simulation.BarmasBasicSimulation.java
  */
-package es.upm.dit.gsi.barmas.simulation;
+package es.upm.dit.gsi.barmas.solarflare.simulation;
 
 import java.util.Properties;
 
+import sim.engine.Schedule;
+import sim.engine.Steppable;
+import es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareClassificatorAgent;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.simulation.BarmasBasicSimulation.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.simulation.BarmasBasicSimulation.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -39,7 +42,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class BarmasBasicSimulation extends ShanksSimulation {
+public class SolarFlareClassificationSimulation extends ShanksSimulation {
 
 	/**
 	 * 
@@ -48,7 +51,7 @@ public class BarmasBasicSimulation extends ShanksSimulation {
 
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param seed
 	 * @param scenarioClass
 	 * @param scenarioID
@@ -56,11 +59,49 @@ public class BarmasBasicSimulation extends ShanksSimulation {
 	 * @param properties
 	 * @throws ShanksException
 	 */
-	public BarmasBasicSimulation(long seed,
+	public SolarFlareClassificationSimulation(long seed,
 			Class<? extends Scenario> scenarioClass, String scenarioID,
 			String initialState, Properties properties) throws ShanksException {
 		super(seed, scenarioClass, scenarioID, initialState, properties);
-		// TODO Auto-generated constructor stub
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see es.upm.dit.gsi.shanks.ShanksSimulation#addSteppables()
+	 */
+	@Override
+	public void addSteppables() {
+
+//		Steppable generator = new SolarFlareGenerator();
+//		schedule.scheduleRepeating(Schedule.EPOCH, 3, generator, 50);
+//		Steppable evaluator = new SolarFlareEvaluator();
+//		schedule.scheduleRepeating(Schedule.EPOCH, 3, evaluator, 50);
+//		
+//		Steppable chart = new FailuresChartPainter();
+//		schedule.scheduleRepeating(Schedule.EPOCH, 3, chart, 50);
+//		Steppable failures = new FailuresGUI();
+//		schedule.scheduleRepeating(Schedule.EPOCH, 4, failures, 1);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see es.upm.dit.gsi.shanks.ShanksSimulation#registerShanksAgents()
+	 */
+	@Override
+	public void registerShanksAgents() throws ShanksException {
+
+		ArgumentationManagerAgent manager = new ArgumentationManagerAgent("ArgManager");
+		this.registerShanksAgent(manager);
+		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent("ArgAgent1");
+		//TODO configure agent
+		this.registerShanksAgent(agent1);
+		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent("ArgAgent2");
+		//TODO configure agent
+		this.registerShanksAgent(agent2);
+
 	}
 
 }

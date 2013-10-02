@@ -14,13 +14,13 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.model.element.device.SolarFlareEnum.java
+ * es.upm.dit.gsi.barmas.model.element.device.ActivityEnum.java
  */
-package es.upm.dit.gsi.barmas.model.vocabulary;
+package es.upm.dit.gsi.barmas.solarflare.model.vocabulary;
 
 /**
  * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.element.device.SolarFlareEnum.java
+ * File: es.upm.dit.gsi.barmas.model.element.device.ActivityEnum.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -33,6 +33,6 @@ package es.upm.dit.gsi.barmas.model.vocabulary;
  * @version 0.1
  * 
  */
-public enum SolarFlareType {
-	H, D, C, B, E, F;
+public enum Activity {
+	Status1, Status2;
 }

@@ -16,20 +16,20 @@
 /**
  * es.upm.dit.gsi.barmas.model.element.device.SolarFlare.java
  */
-package es.upm.dit.gsi.barmas.model;
+package es.upm.dit.gsi.barmas.solarflare.model;
 
-import es.upm.dit.gsi.barmas.model.vocabulary.Activity;
-import es.upm.dit.gsi.barmas.model.vocabulary.Area;
-import es.upm.dit.gsi.barmas.model.vocabulary.BecomeHist;
-import es.upm.dit.gsi.barmas.model.vocabulary.CNode;
-import es.upm.dit.gsi.barmas.model.vocabulary.Evolution;
-import es.upm.dit.gsi.barmas.model.vocabulary.HistComplex;
-import es.upm.dit.gsi.barmas.model.vocabulary.LargestSpotSize;
-import es.upm.dit.gsi.barmas.model.vocabulary.MNode;
-import es.upm.dit.gsi.barmas.model.vocabulary.PrevStatus24Hour;
-import es.upm.dit.gsi.barmas.model.vocabulary.SolarFlareType;
-import es.upm.dit.gsi.barmas.model.vocabulary.SpotDistribution;
-import es.upm.dit.gsi.barmas.model.vocabulary.XNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Evolution;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SpotDistribution;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.XNode;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.element.device.Device;
 

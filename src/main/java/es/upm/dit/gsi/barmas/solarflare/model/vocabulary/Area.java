@@ -14,13 +14,13 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.model.vocabulary.MNode.java
+ * es.upm.dit.gsi.barmas.model.vocabulary.AreaEnum.java
  */
-package es.upm.dit.gsi.barmas.model.vocabulary;
+package es.upm.dit.gsi.barmas.solarflare.model.vocabulary;
 
 /**
  * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.vocabulary.MNode.java
+ * File: es.upm.dit.gsi.barmas.model.vocabulary.AreaEnum.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -33,6 +33,6 @@ package es.upm.dit.gsi.barmas.model.vocabulary;
  * @version 0.1
  * 
  */
-public enum MNode {
-	Status0, Status1, Status2, Status3, Status4, Status5;
+public enum Area {
+	Status1, Status2;
 }

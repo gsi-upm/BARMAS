@@ -52,4 +52,10 @@ public interface ArgumentationManagerAgent {
 	 */
 	public void processNewArgument(Argumentation arg);
 	
+	/**
+	 * @param id
+	 * @return
+	 */
+	public Argumentation getArgumentation(int id);
+	
 }

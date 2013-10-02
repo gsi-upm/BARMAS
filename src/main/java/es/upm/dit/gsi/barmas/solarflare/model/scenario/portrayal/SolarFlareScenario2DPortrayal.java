@@ -14,17 +14,17 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario3DPortrayal.java
+ * es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario2DPortrayal.java
  */
-package es.upm.dit.gsi.barmas.model.scenario.portrayal;
+package es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal;
 
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
-import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal;
+import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario2DPortrayal;
 
 /**
  * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario3DPortrayal.java
+ * File: es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario2DPortrayal.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -37,7 +37,7 @@ import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal;
  * @version 0.1
  * 
  */
-public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
+public class SolarFlareScenario2DPortrayal extends Scenario2DPortrayal {
 
 	/**
 	 * Constructor
@@ -45,17 +45,16 @@ public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
 	 * @param scenario
 	 * @param width
 	 * @param height
-	 * @param length
 	 * @throws ShanksException
 	 */
-	public SolarFlareScenario3DPortrayal(Scenario scenario, long width,
-			long height, long length) throws ShanksException {
-		super(scenario, width, height, length);
+	public SolarFlareScenario2DPortrayal(Scenario scenario, int width,
+			int height) throws ShanksException {
+		super(scenario, width, height);
 		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal#addPortrayals()
+	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario2DPortrayal#addPortrayals()
 	 */
 	@Override
 	public void addPortrayals() {
@@ -64,7 +63,7 @@ public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
 	}
 
 	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal#placeElements()
+	 * @see es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario2DPortrayal#placeElements()
 	 */
 	@Override
 	public void placeElements() {

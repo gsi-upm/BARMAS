@@ -16,14 +16,14 @@
 /**
  * es.upm.dit.gsi.barmas.scenario.SolarFlareScenario.java
  */
-package es.upm.dit.gsi.barmas.model.scenario;
+package es.upm.dit.gsi.barmas.solarflare.model.scenario;
 
 import java.util.HashMap;
 import java.util.Properties;
 
-import es.upm.dit.gsi.barmas.model.SolarFlare;
-import es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario2DPortrayal;
-import es.upm.dit.gsi.barmas.model.scenario.portrayal.SolarFlareScenario3DPortrayal;
+import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal.SolarFlareScenario2DPortrayal;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal.SolarFlareScenario3DPortrayal;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.event.failiure.Failure;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
