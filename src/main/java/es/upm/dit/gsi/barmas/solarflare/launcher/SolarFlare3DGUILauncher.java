@@ -1,19 +1,22 @@
 /**
- * es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlare2DGUILauncher.java
+ * es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlare3DGUILauncher.java
  */
-package es.upm.dit.gsi.barmas.solarflare.simulation;
+package es.upm.dit.gsi.barmas.solarflare.launcher;
 
 import java.util.Properties;
 
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
+import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
+import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation3DGUI;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlare2DGUILauncher.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlare3DGUILauncher.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -22,14 +25,14 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class SolarFlare2DGUILauncher {
+public class SolarFlare3DGUILauncher {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		Properties scenarioProperties = new Properties();
-		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.SIMULATION_2D);
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.SIMULATION_3D);
 
 		SolarFlareClassificationSimulation sim;
 		try {
@@ -37,7 +40,7 @@ public class SolarFlare2DGUILauncher {
 					System.currentTimeMillis(), SolarFlareScenario.class,
 					"SolarFlareClassificatorScenario",
 					SolarFlareScenario.NORMALSTATE, scenarioProperties);
-			SolarFlareClassificationSimulation2DGUI gui = new SolarFlareClassificationSimulation2DGUI(
+			SolarFlareClassificationSimulation3DGUI gui = new SolarFlareClassificationSimulation3DGUI(
 					sim);
 			gui.start();
 			do {

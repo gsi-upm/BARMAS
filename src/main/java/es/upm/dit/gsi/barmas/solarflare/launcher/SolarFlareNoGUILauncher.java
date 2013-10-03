@@ -1,11 +1,12 @@
 /**
  * es.upm.dit.gsi.barmas.simulation.SolarFlareNoGUILauncher.java
  */
-package es.upm.dit.gsi.barmas.solarflare.simulation;
+package es.upm.dit.gsi.barmas.solarflare.launcher;
 
 import java.util.Properties;
 
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
+import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 

@@ -74,6 +74,7 @@ public class SolarFlareScenario2DPortrayal extends Scenario2DPortrayal {
 	public void placeElements() {
         this.situateDevice((Device)this.getScenario().getNetworkElement("SolarFlare"), 10, 50);
         this.situateDevice((Device)this.getScenario().getNetworkElement("ClassifiedSolarFlare"), 50, 50);
+        this.situateDevice((Device)this.getScenario().getNetworkElement("BayesCentralSolarFlare"), 50, 10);
 
 	}
 

@@ -51,7 +51,6 @@ import es.upm.dit.gsi.shanks.model.element.device.Device;
 public class SolarFlare extends Device {
 
 	public static final String READY = "READY";
-	public static final String NOT_READY = "NOT_READY";
 	
 	/**
 	 * Constructor
@@ -66,19 +65,19 @@ public class SolarFlare extends Device {
 	 */
 	@Override
 	public void fillIntialProperties() {
-		this.addProperty(Activity.class.getSimpleName(), Activity.Status1);
-		this.addProperty(Area.class.getSimpleName(), Area.Status1);
-		this.addProperty(BecomeHist.class.getSimpleName(), BecomeHist.Status1);
-		this.addProperty(CNode.class.getSimpleName(), CNode.Status0);
-		this.addProperty(Evolution.class.getSimpleName(), Evolution.Status1);
-		this.addProperty(HistComplex.class.getSimpleName(), HistComplex.Status1);
-		this.addProperty(LargestSpotSize.class.getSimpleName(), LargestSpotSize.A);
-		this.addProperty(MNode.class.getSimpleName(), MNode.Status0);
-		this.addProperty(PrevStatus24Hour.class.getSimpleName(), PrevStatus24Hour.Status1);
-		this.addProperty(SpotDistribution.class.getSimpleName(), SpotDistribution.C);
-		this.addProperty(XNode.class.getSimpleName(), XNode.Status0);
+		this.addProperty(Activity.class.getSimpleName(), Activity.Status1.toString());
+		this.addProperty(Area.class.getSimpleName(), Area.Status1.toString());
+		this.addProperty(BecomeHist.class.getSimpleName(), BecomeHist.Status1.toString());
+		this.addProperty(CNode.class.getSimpleName(), CNode.Status0.toString());
+		this.addProperty(Evolution.class.getSimpleName(), Evolution.Status1.toString());
+		this.addProperty(HistComplex.class.getSimpleName(), HistComplex.Status1.toString());
+		this.addProperty(LargestSpotSize.class.getSimpleName(), LargestSpotSize.A.toString());
+		this.addProperty(MNode.class.getSimpleName(), MNode.Status0.toString());
+		this.addProperty(PrevStatus24Hour.class.getSimpleName(), PrevStatus24Hour.Status1.toString());
+		this.addProperty(SpotDistribution.class.getSimpleName(), SpotDistribution.C.toString());
+		this.addProperty(XNode.class.getSimpleName(), XNode.Status0.toString());
 		
-		this.addProperty(SolarFlareType.class.getSimpleName(), SolarFlareType.B);
+		this.addProperty(SolarFlareType.class.getSimpleName(), SolarFlareType.B.toString());
 	}
 
 	/* (non-Javadoc)
@@ -103,7 +102,6 @@ public class SolarFlare extends Device {
 	@Override
 	public void setPossibleStates() {
 		this.addPossibleStatus(READY);
-		this.addPossibleStatus(NOT_READY);
 	}
 
 }

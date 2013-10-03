@@ -23,7 +23,10 @@ import java.util.Properties;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
 import es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareClassificatorAgent;
+import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator;
+import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareGenerator;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
@@ -72,17 +75,10 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	 */
 	@Override
 	public void addSteppables() {
-
-//		Steppable generator = new SolarFlareGenerator();
-//		schedule.scheduleRepeating(Schedule.EPOCH, 3, generator, 50);
-//		Steppable evaluator = new SolarFlareEvaluator();
-//		schedule.scheduleRepeating(Schedule.EPOCH, 3, evaluator, 50);
-//		
-//		Steppable chart = new FailuresChartPainter();
-//		schedule.scheduleRepeating(Schedule.EPOCH, 3, chart, 50);
-//		Steppable failures = new FailuresGUI();
-//		schedule.scheduleRepeating(Schedule.EPOCH, 4, failures, 1);
-
+		Steppable generator = new SolarFlareGenerator("src/main/resources/dataset/solarflare-global.csv");
+		schedule.scheduleRepeating(Schedule.EPOCH, 1, generator, 5);
+		Steppable evaluator = new SolarFlareEvaluator("src/main/resources/output/classification-results.csv", "src/main/resources/dataset/solarflare-global.csv");
+		schedule.scheduleRepeating(Schedule.EPOCH, 3, evaluator, 5);
 	}
 
 	/*
@@ -93,6 +89,9 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	@Override
 	public void registerShanksAgents() throws ShanksException {
 
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent("BayesCentral", "src/main/resources/knowledge/flare-all-data.net");
+		this.registerShanksAgent(bayes);
+		
 		ArgumentationManagerAgent manager = new ArgumentationManagerAgent("ArgManager");
 		this.registerShanksAgent(manager);
 		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent("ArgAgent1");

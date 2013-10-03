@@ -7,16 +7,27 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.List;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import com.googlecode.jcsv.reader.CSVReader;
-import com.googlecode.jcsv.reader.internal.CSVReaderBuilder;
+import com.csvreader.CsvReader;
 
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Evolution;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SpotDistribution;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.XNode;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
+import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
  * Project: barmas File:
@@ -39,17 +50,26 @@ public class SolarFlareGenerator implements Steppable {
 	 */
 	private static final long serialVersionUID = -481268413730149934L;
 
-	private CSVReader<String[]> data;
-	
+//	private String path;
+	private CsvReader reader;
+
 	/**
 	 * Constructor
-	 * @throws IOException 
 	 * 
 	 */
-	public SolarFlareGenerator(String path) throws IOException {
-		Reader reader = new FileReader(path);
-		this.data = CSVReaderBuilder
-				.newDefaultReader(reader);
+	public SolarFlareGenerator(String path) {
+//		this.path = path;
+
+		Reader fr;
+		try {
+			fr = new FileReader(path);
+			reader = new CsvReader(fr);
+			reader.readHeaders();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -59,13 +79,46 @@ public class SolarFlareGenerator implements Steppable {
 	 */
 	public void step(SimState simstate) {
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simstate;
-		SolarFlare flare = (SolarFlare) sim.getScenario().getNetworkElement("SolarFlare");
+		SolarFlare flare = (SolarFlare) sim.getScenario().getNetworkElement(
+				"SolarFlare");
 
-		if (flare.getStatus().get(SolarFlare.READY)) {
-			String[] flareCase = this.data.readNext(); 
-			
-			flare.setCurrentStatus(desiredStatus, SolarFlare.NOT_READY);
+		try {
+			if (flare.getStatus().get(SolarFlare.READY)) {
+
+				reader.readRecord();
+				String[] flareCase = reader.getValues();
+
+				flare.changeProperty(LargestSpotSize.class.getSimpleName(),
+						flareCase[0]);
+				flare.changeProperty(SpotDistribution.class.getSimpleName(),
+						flareCase[1]);
+				flare.changeProperty(Activity.class.getSimpleName(),
+						flareCase[2]);
+				flare.changeProperty(Evolution.class.getSimpleName(),
+						flareCase[3]);
+				flare.changeProperty(PrevStatus24Hour.class.getSimpleName(),
+						flareCase[4]);
+				flare.changeProperty(HistComplex.class.getSimpleName(),
+						flareCase[5]);
+				flare.changeProperty(BecomeHist.class.getSimpleName(),
+						flareCase[6]);
+				flare.changeProperty(Area.class.getSimpleName(), flareCase[7]);
+				flare.changeProperty(CNode.class.getSimpleName(), flareCase[8]);
+				flare.changeProperty(MNode.class.getSimpleName(), flareCase[9]);
+				flare.changeProperty(XNode.class.getSimpleName(), flareCase[10]);
+
+				flare.changeProperty(SolarFlareType.class.getSimpleName(),
+						flareCase[11]);
+
+				flare.setCurrentStatus(SolarFlare.READY, false);
+
+				sim.getScenarioManager().logger.info("Case generated.");
+			}
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-	}
 
+	}
 }

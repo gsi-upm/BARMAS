@@ -1,4 +1,4 @@
-LargestSpotSize,SpotDistribution,Activity,Evolution,PrevStatus24Hour,HistComplex,BecomeHist,Area,CNode,MNode,XNode,FlareClass
+LargestSpotSize,SpotDistribution,Activity,Evolution,PrevStatus24Hour,HistComplex,BecomeHist,Area,CNode,MNode,XNode,SolarFlareType
 A,X,Status1,Status3,Status1,Status1,Status1,Status1,Status0,Status0,Status0,H
 R,O,Status1,Status3,Status1,Status1,Status2,Status1,Status0,Status0,Status0,D
 S,O,Status1,Status3,Status1,Status1,Status2,Status1,Status0,Status0,Status0,C

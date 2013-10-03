@@ -97,6 +97,8 @@ public class SolarFlareScenario extends Scenario {
 		this.addNetworkElement(flare);
 		SolarFlare classified = new SolarFlare("ClassifiedSolarFlare");
 		this.addNetworkElement(classified);
+		SolarFlare bayesCentral = new SolarFlare("BayesCentralSolarFlare");
+		this.addNetworkElement(bayesCentral);
 	}
 
 	/* (non-Javadoc)
