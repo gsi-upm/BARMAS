@@ -18,9 +18,13 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.shanks.ShanksSimulation;
 
 /**
  * Project: barmas File:
@@ -40,29 +44,65 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 public class Argumentation {
 
 	private Map<Argument, Long> timestamps;
-	private Map<Argument, Integer> steps;
+	private Map<Argument, Long> steps;
 	private int id;
+	private List<Argument> conclusions;
+	private boolean finished;
 
 	/**
 	 * Constructor
 	 * 
 	 */
 	public Argumentation(int id) {
-		// TODO Auto-generated constructor stub
+		this.id = id;
+		this.setFinished(false);
+		this.timestamps = new HashMap<Argument, Long>();
+		this.steps = new HashMap<Argument, Long>();
+		this.conclusions = new ArrayList<Argument>();
 	}
 
 	/**
 	 * @param arg
+	 * @param simulation
 	 */
-	public void addArgument(Argument arg) {
-
+	public void addArgument(Argument arg, ShanksSimulation simulation) {
+		long timestamp = System.currentTimeMillis();
+		long step = simulation.schedule.getSteps();
+		this.timestamps.put(arg, timestamp);
+		this.steps.put(arg, step);
 	}
 
 	/**
 	 * @return
 	 */
-	public Map<Argument, Integer> getArguments() {
+	public Map<Argument, Long> getArgumentsWithSteps() {
 		return this.steps;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Map<Argument, Long> getArgumentsWithTimestamps() {
+		return this.timestamps;
+	}
+	
+	/**
+	 * @return
+	 */
+	public List<Argument> getSortedArguments() {
+		// TODO implement this method
+		return null;
+	}
+	
+	public List<Argument> getConclusions () {
+		return this.conclusions;
+	}
+	
+	/**
+	 * @param arg
+	 */
+	public void addConclusion(Argument arg) {
+		this.conclusions.add(arg);
 	}
 
 	/**
@@ -70,6 +110,20 @@ public class Argumentation {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * @return the finished
+	 */
+	public boolean isFinished() {
+		return finished;
+	}
+
+	/**
+	 * @param finished the finished to set
+	 */
+	public void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 
 }

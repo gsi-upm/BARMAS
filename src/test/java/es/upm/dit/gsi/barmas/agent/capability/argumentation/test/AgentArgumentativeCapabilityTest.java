@@ -18,8 +18,6 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.test;
 
-import jason.asSemantics.Message;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -138,8 +136,15 @@ public class AgentArgumentativeCapabilityTest {
 				AgentArgumentativeCapability.updateBeliefs(args, agent);
 			}
 
-			public void send(Message m) {
-				// Nothing to do
+			public void setArgumentationManager(
+					ArgumentationManagerAgent manager) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void sendArgument(Argument arg) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);

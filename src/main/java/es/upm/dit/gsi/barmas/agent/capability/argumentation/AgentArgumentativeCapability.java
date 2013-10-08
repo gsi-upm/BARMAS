@@ -31,6 +31,7 @@ import unbbayes.prs.bn.ProbabilisticNode;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
+import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -174,7 +175,7 @@ public class AgentArgumentativeCapability {
 		m.setSender(proponent.getProponentName());
 		m.setReceiver(proponent.getArgumentationManagerName());
 		m.setPropCont(args);
-		proponent.send(m);
+		((SimpleShanksAgent) proponent).sendMsg(m);
 	}
 	
 	/**
@@ -190,7 +191,7 @@ public class AgentArgumentativeCapability {
 		Set<Argument> args = new HashSet<Argument>();
 		args.add(arg);
 		m.setPropCont(args);
-		proponent.send(m);
+		((SimpleShanksAgent) proponent).sendMsg(m);
 	}
 
 }

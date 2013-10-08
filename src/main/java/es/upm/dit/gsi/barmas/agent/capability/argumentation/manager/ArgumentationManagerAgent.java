@@ -20,6 +20,10 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
 
 import java.util.List;
 
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.shanks.ShanksSimulation;
+
 /**
  * Project: barmas
  * File: es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent.java
@@ -49,13 +53,29 @@ public interface ArgumentationManagerAgent {
 	
 	/**
 	 * @param arg
+	 * @param simuluation
 	 */
-	public void processNewArgument(Argumentation arg);
+	public void processNewArgument(Argument arg, ShanksSimulation simuluation);
 	
 	/**
 	 * @param id
 	 * @return
 	 */
 	public Argumentation getArgumentation(int id);
+	
+	/**
+	 * @param agent
+	 */
+	public void addSubscriber(ArgumentativeAgent agent);
+	
+	/**
+	 * @param agent
+	 */
+	public void removeSubscriber(ArgumentativeAgent agent);
+	
+	/**
+	 * @return
+	 */
+	public List<ArgumentativeAgent> getSubscribers();
 	
 }

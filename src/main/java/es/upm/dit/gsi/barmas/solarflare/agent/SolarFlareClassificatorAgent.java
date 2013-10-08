@@ -20,17 +20,16 @@ package es.upm.dit.gsi.barmas.solarflare.agent;
 
 import jason.asSemantics.Message;
 
-import java.util.List;
 import java.util.Set;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
@@ -48,21 +47,34 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * @version 0.1
  * 
  */
-public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements BayesianReasonerShanksAgent, ArgumentationManagerAgent, ArgumentativeAgent {
+public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements BayesianReasonerShanksAgent, ArgumentativeAgent {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8582918551821278046L;
 
+	
+	private ArgumentationManagerAgent manager;
+	private String bnFilePath;
+	private ProbabilisticNetwork bn;
+	
 	/**
 	 * Constructor
 	 *
 	 * @param id
+	 * @param manager
+	 * @param bnPath
 	 */
-	public SolarFlareClassificatorAgent(String id) {
+	public SolarFlareClassificatorAgent(String id, ArgumentationManagerAgent manager, String bnPath) {
 		super(id);
-		// TODO Auto-generated constructor stub
+		this.bnFilePath = bnPath;
+		this.setArgumentationManager(manager);
+		try {
+			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -81,39 +93,30 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 		// TODO Auto-generated method stub
 	}
 
-	public ProbabilisticNetwork getBayesianNetwork() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setBayesianNetwork(ProbabilisticNetwork bn) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public String getBayesianNetworkFilePath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public String getProponentName() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getID();
 	}
 
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#getProponent()
+	 */
 	public ArgumentativeAgent getProponent() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#getArgumentationManager()
+	 */
 	public ArgumentationManagerAgent getArgumentationManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.manager;
 	}
 
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#getArgumentationManagerName()
+	 */
 	public String getArgumentationManagerName() {
-		// TODO Auto-generated method stub
-		return null;
+		SimpleShanksAgent ag = (SimpleShanksAgent) this.manager;
+		return ag.getID();
 	}
 
 	public Set<Argument> getCurrentArguments() throws ShanksException {
@@ -127,28 +130,29 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 		
 	}
 
-	public void send(Message m) {
-		// TODO Auto-generated method stub
-		
+	public ProbabilisticNetwork getBayesianNetwork() {
+		return this.bn;
 	}
 
-	public Argumentation getCurrentArgumentation() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setBayesianNetwork(ProbabilisticNetwork bn) {
+		this.bn = bn;
 	}
 
-	public List<Argumentation> getArgumentations() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getBayesianNetworkFilePath() {
+		return this.bnFilePath;
 	}
 
-	public void processNewArgument(Argumentation arg) {
-		// TODO Auto-generated method stub
-		
+	public void setArgumentationManager(ArgumentationManagerAgent manager) {
+		this.manager = manager;
 	}
 
-	public Argumentation getArgumentation(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#sendArgument(es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument)
+	 */
+	public void sendArgument(Argument arg) {
+		Message m = new Message();
+		m.setPropCont(arg);
+		m.setReceiver(this.getArgumentationManagerName());
+		super.sendMsg(m);
 	}
 }

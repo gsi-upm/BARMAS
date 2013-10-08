@@ -18,8 +18,6 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation;
 
-import jason.asSemantics.Message;
-
 import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
@@ -56,6 +54,11 @@ public interface ArgumentativeAgent {
 	 * @return return the argumentation manager agent
 	 */
 	public ArgumentationManagerAgent getArgumentationManager();
+	
+	/**
+	 * @param manager
+	 */
+	public void setArgumentationManager(ArgumentationManagerAgent manager);
 
 	/**
 	 * @return the name of the argumentation manager agent
@@ -73,10 +76,10 @@ public interface ArgumentativeAgent {
 	public void updateBeliefsWithNewArguments(Set<Argument> args) throws ShanksException;
 
 	/**
-	 * Send the message
+	 * Send the argument
 	 * 
-	 * @param m
+	 * @param arg
 	 */
-	public void send(Message m);
+	public void sendArgument(Argument arg);
 
 }

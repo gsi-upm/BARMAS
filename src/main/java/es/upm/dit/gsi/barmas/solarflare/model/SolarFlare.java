@@ -155,5 +155,6 @@ public class SolarFlare extends Device {
 
 		
 	}
+	
 
 }

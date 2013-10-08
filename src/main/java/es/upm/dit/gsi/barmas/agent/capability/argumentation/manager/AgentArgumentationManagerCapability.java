@@ -18,6 +18,14 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
 
+import jason.asSemantics.Message;
+
+import java.util.List;
+
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
+
 /**
  * Project: barmas
  * File: es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.AgentArgumentationManagerCapability.java
@@ -35,4 +43,33 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
  */
 public class AgentArgumentationManagerCapability {
 
+	/**
+	 * @param agent
+	 * @param arg
+	 */
+	public static void broadcastArgument(ArgumentationManagerAgent manager, Argument arg) {
+		
+		List<ArgumentativeAgent> subs = manager.getSubscribers();
+		ArgumentativeAgent proponent = arg.getProponent();
+		for (ArgumentativeAgent subscriber : subs) {
+			if (!subscriber.equals(proponent)) {
+				SimpleShanksAgent sender = (SimpleShanksAgent) manager;
+				SimpleShanksAgent receiver = (SimpleShanksAgent) subscriber;
+				Message message = new Message();
+				message.setReceiver(receiver.getID());
+				message.setPropCont(arg);
+				sender.sendMsg(message);
+			}
+		}
+		
+	}
+
+	/**
+	 * 
+	 */
+	public static void finishCurrentArgumentation(ArgumentationManagerAgent manager) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

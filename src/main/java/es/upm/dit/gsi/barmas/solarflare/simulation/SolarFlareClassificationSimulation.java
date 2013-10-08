@@ -22,9 +22,7 @@ import java.util.Properties;
 
 import sim.engine.Schedule;
 import sim.engine.Steppable;
-import es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareGenerator;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
