@@ -34,12 +34,11 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.element.device.Device;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.element.device.SolarFlare.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.model.element.device.SolarFlare.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -51,36 +50,43 @@ import es.upm.dit.gsi.shanks.model.element.device.Device;
 public class SolarFlare extends Device {
 
 	public static final String READY = "READY";
-	
+
+	private int caseID;
+
 	/**
 	 * Constructor
-	 *
+	 * 
 	 */
 	public SolarFlare(String id) {
 		super(id, READY, false);
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.model.element.NetworkElement#fillIntialProperties()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.shanks.model.element.NetworkElement#fillIntialProperties()
 	 */
 	@Override
 	public void fillIntialProperties() {
-		this.addProperty(Activity.class.getSimpleName(), Activity.Status1.toString());
-		this.addProperty(Area.class.getSimpleName(), Area.Status1.toString());
-		this.addProperty(BecomeHist.class.getSimpleName(), BecomeHist.Status1.toString());
-		this.addProperty(CNode.class.getSimpleName(), CNode.Status0.toString());
-		this.addProperty(Evolution.class.getSimpleName(), Evolution.Status1.toString());
-		this.addProperty(HistComplex.class.getSimpleName(), HistComplex.Status1.toString());
-		this.addProperty(LargestSpotSize.class.getSimpleName(), LargestSpotSize.A.toString());
-		this.addProperty(MNode.class.getSimpleName(), MNode.Status0.toString());
-		this.addProperty(PrevStatus24Hour.class.getSimpleName(), PrevStatus24Hour.Status1.toString());
-		this.addProperty(SpotDistribution.class.getSimpleName(), SpotDistribution.C.toString());
-		this.addProperty(XNode.class.getSimpleName(), XNode.Status0.toString());
-		
-		this.addProperty(SolarFlareType.class.getSimpleName(), SolarFlareType.B.toString());
+		this.addProperty(Activity.class.getSimpleName(), "");
+		this.addProperty(Area.class.getSimpleName(), "");
+		this.addProperty(BecomeHist.class.getSimpleName(), "");
+		this.addProperty(CNode.class.getSimpleName(), "");
+		this.addProperty(Evolution.class.getSimpleName(), "");
+		this.addProperty(HistComplex.class.getSimpleName(), "");
+		this.addProperty(LargestSpotSize.class.getSimpleName(), "");
+		this.addProperty(MNode.class.getSimpleName(), "");
+		this.addProperty(PrevStatus24Hour.class.getSimpleName(), "");
+		this.addProperty(SpotDistribution.class.getSimpleName(), "");
+		this.addProperty(XNode.class.getSimpleName(), "");
+
+		this.addProperty(SolarFlareType.class.getSimpleName(), "");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.shanks.model.element.NetworkElement#checkProperties()
 	 */
 	@Override
@@ -88,7 +94,9 @@ public class SolarFlare extends Device {
 		// Nothing to do. A steppable is in charge of this.
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.shanks.model.element.NetworkElement#checkStatus()
 	 */
 	@Override
@@ -96,12 +104,56 @@ public class SolarFlare extends Device {
 		// Nothing to do. A steppable is in charge of this.
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.model.element.NetworkElement#setPossibleStates()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.shanks.model.element.NetworkElement#setPossibleStates()
 	 */
 	@Override
 	public void setPossibleStates() {
 		this.addPossibleStatus(READY);
+	}
+
+	/**
+	 * @return the caseID
+	 */
+	public int getCaseID() {
+		return caseID;
+	}
+
+	/**
+	 * @param caseID
+	 *            the caseID to set
+	 */
+	public void setCaseID(int caseID) {
+		this.caseID = caseID;
+	}
+
+	/**
+	 * Delete all data of the solar flare.
+	 */
+	public void clean() {
+		try {
+			this.changeProperty(Activity.class.getSimpleName(), "");
+			this.changeProperty(Area.class.getSimpleName(), "");
+			this.changeProperty(BecomeHist.class.getSimpleName(), "");
+			this.changeProperty(CNode.class.getSimpleName(), "");
+			this.changeProperty(Evolution.class.getSimpleName(), "");
+			this.changeProperty(HistComplex.class.getSimpleName(), "");
+			this.changeProperty(LargestSpotSize.class.getSimpleName(), "");
+			this.changeProperty(MNode.class.getSimpleName(), "");
+			this.changeProperty(PrevStatus24Hour.class.getSimpleName(), "");
+			this.changeProperty(SpotDistribution.class.getSimpleName(), "");
+			this.changeProperty(XNode.class.getSimpleName(), "");
+			this.changeProperty(SolarFlareType.class.getSimpleName(), "");
+			this.setCaseID(-1);
+		} catch (ShanksException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
 	}
 
 }

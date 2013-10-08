@@ -46,6 +46,10 @@ import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal;
  * 
  */
 public class SolarFlareScenario extends Scenario {
+	
+	public static final String ORIGINALFLARE ="OriginalSolarFlare";
+	public static final String ARGUMENTATIONCONCLUSION = "ArgumentationConclusion";
+	public static final String CENTRALCONCLUSION = "CentralConclusion";
 
 	/**
 	 * Constructor
@@ -93,11 +97,17 @@ public class SolarFlareScenario extends Scenario {
 	 */
 	@Override
 	public void addNetworkElements() throws ShanksException {
-		SolarFlare flare = new SolarFlare("SolarFlare");
+		
+		SolarFlare flare = new SolarFlare(ORIGINALFLARE);
+		flare.setCurrentStatus(SolarFlare.READY, false);
 		this.addNetworkElement(flare);
-		SolarFlare classified = new SolarFlare("ClassifiedSolarFlare");
+		
+		SolarFlare classified = new SolarFlare(ARGUMENTATIONCONCLUSION);
+		classified.setCurrentStatus(SolarFlare.READY, false);
 		this.addNetworkElement(classified);
-		SolarFlare bayesCentral = new SolarFlare("BayesCentralSolarFlare");
+		
+		SolarFlare bayesCentral = new SolarFlare(CENTRALCONCLUSION);
+		bayesCentral.setCurrentStatus(SolarFlare.READY, false);
 		this.addNetworkElement(bayesCentral);
 	}
 

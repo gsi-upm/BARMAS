@@ -21,6 +21,7 @@ package es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal;
 import sim.portrayal3d.continuous.ContinuousPortrayal3D;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.portrayal.SolarFlare3DPortrayal;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.element.device.Device;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
@@ -79,10 +80,10 @@ public class SolarFlareScenario3DPortrayal extends Scenario3DPortrayal {
 	@Override
 	public void placeElements() {
 		this.situateDevice(
-				(Device) this.getScenario().getNetworkElement("SolarFlare"),
+				(Device) this.getScenario().getNetworkElement(SolarFlareScenario.ORIGINALFLARE),
 				100.0, 100.0, 100.0);
-        this.situateDevice((Device)this.getScenario().getNetworkElement("ClassifiedSolarFlare"), 500.0, 100.0, 100.0);
-        this.situateDevice((Device)this.getScenario().getNetworkElement("BayesCentralSolarFlare"), 100.0, 500.0, 100.0);
+        this.situateDevice((Device)this.getScenario().getNetworkElement(SolarFlareScenario.ARGUMENTATIONCONCLUSION), 500.0, 100.0, 100.0);
+        this.situateDevice((Device)this.getScenario().getNetworkElement(SolarFlareScenario.CENTRALCONCLUSION), 100.0, 500.0, 100.0);
 	}
 
 	/*

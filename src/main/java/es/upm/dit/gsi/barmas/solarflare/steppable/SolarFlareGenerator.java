@@ -52,6 +52,7 @@ public class SolarFlareGenerator implements Steppable {
 
 //	private String path;
 	private CsvReader reader;
+	private int counter;
 
 	/**
 	 * Constructor
@@ -59,7 +60,7 @@ public class SolarFlareGenerator implements Steppable {
 	 */
 	public SolarFlareGenerator(String path) {
 //		this.path = path;
-
+		this.counter = 0;
 		Reader fr;
 		try {
 			fr = new FileReader(path);
@@ -80,10 +81,10 @@ public class SolarFlareGenerator implements Steppable {
 	public void step(SimState simstate) {
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simstate;
 		SolarFlare flare = (SolarFlare) sim.getScenario().getNetworkElement(
-				"SolarFlare");
+				"OriginalSolarFlare");
 
 		try {
-			if (flare.getStatus().get(SolarFlare.READY)) {
+			if (!flare.getStatus().get(SolarFlare.READY)) {
 
 				reader.readRecord();
 				String[] flareCase = reader.getValues();
@@ -110,9 +111,10 @@ public class SolarFlareGenerator implements Steppable {
 				flare.changeProperty(SolarFlareType.class.getSimpleName(),
 						flareCase[11]);
 
-				flare.setCurrentStatus(SolarFlare.READY, false);
+				flare.setCaseID(counter++);
+				flare.setCurrentStatus(SolarFlare.READY, true);
 
-				sim.getScenarioManager().logger.info("Case generated.");
+				sim.getScenarioManager().logger.info("New Solar Flare generated. Case ID: " + (counter-1));
 			}
 		} catch (ShanksException e) {
 			e.printStackTrace();

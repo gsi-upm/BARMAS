@@ -43,11 +43,11 @@ public class SolarFlare3DGUILauncher {
 			SolarFlareClassificationSimulation3DGUI gui = new SolarFlareClassificationSimulation3DGUI(
 					sim);
 			gui.start();
-			do {
-				if (!gui.getSimulation().schedule.step(sim))
-					break;
-			} while (gui.getSimulation().schedule.getSteps() < 2001);
-			gui.finish();
+//			do {
+//				if (!gui.getSimulation().schedule.step(sim))
+//					break;
+//			} while (gui.getSimulation().schedule.getSteps() < 2001);
+//			gui.finish();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

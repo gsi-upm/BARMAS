@@ -83,35 +83,38 @@ public class SolarFlareEvaluator implements Steppable {
 	 */
 	public void step(SimState simstate) {
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simstate;
-		SolarFlare clflare = (SolarFlare) sim.getScenario().getNetworkElement(
-				"ClassifiedSolarFlare");
+		SolarFlare argConclusion = (SolarFlare) sim.getScenario().getNetworkElement(
+				"ArgumentationConclusion");
+		SolarFlare centralConclusion = (SolarFlare) sim.getScenario().getNetworkElement(
+				"ArgumentationConclusion");
 		SolarFlare origflare = (SolarFlare) sim.getScenario()
-				.getNetworkElement("SolarFlare");
+				.getNetworkElement("OriginalSolarFlare");
 
-		String classification = (String) clflare
+		String argClass = (String) argConclusion
 				.getProperty(SolarFlareType.class.getSimpleName());
-		String orig = (String) origflare.getProperty(SolarFlareType.class
+		String centralClass = (String) centralConclusion.getProperty(SolarFlareType.class.getSimpleName());
+		String origClass = (String) origflare.getProperty(SolarFlareType.class
 				.getSimpleName());
 
-		if (classification.equals(orig)) {
-			// Result: success
-			try {
-				FileWriter fw = new FileWriter(resultsPath, true); // append
-																	// content
-				CsvWriter writer = new CsvWriter(fw, ',');
-				// writer.writeRecord();
-				// TODO write csv
-				// writer.writeNext(row);
-				writer.close();
-				// TODO UPDATE CHARTS
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			// Result: fail
-		}
+//		if (classification.equals(orig)) {
+//			// Result: success
+//			try {
+//				FileWriter fw = new FileWriter(resultsPath, true); // append
+//																	// content
+//				CsvWriter writer = new CsvWriter(fw, ',');
+//				// writer.writeRecord();
+//				// TODO write csv
+//				// writer.writeNext(row);
+//				writer.close();
+//				// TODO UPDATE CHARTS
+//			} catch (FileNotFoundException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			// Result: fail
+//		}
 	}
 
 }

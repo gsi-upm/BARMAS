@@ -92,14 +92,14 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent("BayesCentral", "src/main/resources/knowledge/flare-all-data.net");
 		this.registerShanksAgent(bayes);
 		
-		ArgumentationManagerAgent manager = new ArgumentationManagerAgent("ArgManager");
-		this.registerShanksAgent(manager);
-		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent("ArgAgent1");
-		//TODO configure agent
-		this.registerShanksAgent(agent1);
-		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent("ArgAgent2");
-		//TODO configure agent
-		this.registerShanksAgent(agent2);
+//		ArgumentationManagerAgent manager = new ArgumentationManagerAgent("ArgManager");
+//		this.registerShanksAgent(manager);
+//		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent("ArgAgent1");
+//		//TODO configure agent
+//		this.registerShanksAgent(agent1);
+//		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent("ArgAgent2");
+//		//TODO configure agent
+//		this.registerShanksAgent(agent2);
 
 	}
 

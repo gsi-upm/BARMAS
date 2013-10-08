@@ -118,68 +118,95 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simulation;
 
 		SolarFlare origflare = (SolarFlare) sim.getScenario()
-				.getNetworkElement("SolarFlare");
+				.getNetworkElement("OriginalSolarFlare");
 
-		// TODO Check if it is time to check the solar flare 
-		
-		HashMap<String, String> evidences = new HashMap<String, String>();
+		SolarFlare bayesflare = (SolarFlare) sim.getScenario()
+				.getNetworkElement("CentralConclusion");
 
-		String key = LargestSpotSize.class.getSimpleName();
-		String evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+		// Check if it is time to check the solar flare
+		if (origflare.getStatus().get(SolarFlare.READY)
+				&& !bayesflare.getStatus().get(SolarFlare.READY)) {
 
-		key = SpotDistribution.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			bayesflare.clean();
+			bayesflare.setCaseID(origflare.getCaseID());
+			
+			HashMap<String, String> evidences = new HashMap<String, String>();
 
-		key = Activity.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			String key = LargestSpotSize.class.getSimpleName();
+			String evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = Evolution.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = SpotDistribution.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = PrevStatus24Hour.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = Activity.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = HistComplex.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = Evolution.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = BecomeHist.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = PrevStatus24Hour.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = Area.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = HistComplex.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = CNode.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = BecomeHist.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = MNode.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = Area.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		key = XNode.class.getSimpleName();
-		evidence = (String) origflare.getProperty(key);
-		evidences.put(key, evidence);
+			key = CNode.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-		try {
-			ShanksAgentBayesianReasoningCapability.addEvidences(bn, evidences);
+			key = MNode.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
 
-			// Get hypothesis
-			HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability.getNodeStatesHypotheses(this, SolarFlareType.class.getSimpleName());
-			for (Entry<String, Float> i : hyps.entrySet()) {
-				System.out.println("State: " + i.getKey() + " -> Value: " + i.getValue());	
+			key = XNode.class.getSimpleName();
+			evidence = (String) origflare.getProperty(key);
+			evidences.put(key, evidence);
+
+			try {
+				ShanksAgentBayesianReasoningCapability.addEvidences(bn,
+						evidences);
+
+				// Get hypothesis
+				HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability
+						.getNodeStatesHypotheses(this,
+								SolarFlareType.class.getSimpleName());
+
+				// Update the bayes central solar flare "device"
+
+				for (Entry<String, String> ev : evidences.entrySet()) {
+					bayesflare.changeProperty(ev.getKey(), ev.getValue());
+				}
+
+				String conclusion = "Unknown";
+				float max = (float) 0.0;
+				for (Entry<String, Float> hyp : hyps.entrySet()) {
+					if (hyp.getValue() > max) {
+						conclusion = hyp.getKey();
+					}
+				}
+
+				bayesflare.changeProperty(SolarFlareType.class.getSimpleName(),
+						conclusion);
+
+				bayesflare.setCurrentStatus(SolarFlare.READY, true);
+
+			} catch (ShanksException e) {
+				e.printStackTrace();
 			}
-		} catch (ShanksException e) {
-			e.printStackTrace();
 		}
-
-		// TODO Update the bayes central solar flare "device"
 	}
 }

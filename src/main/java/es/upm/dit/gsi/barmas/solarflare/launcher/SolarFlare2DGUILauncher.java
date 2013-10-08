@@ -42,11 +42,11 @@ public class SolarFlare2DGUILauncher {
 			SolarFlareClassificationSimulation2DGUI gui = new SolarFlareClassificationSimulation2DGUI(
 					sim);
 			gui.start();
-			do {
-				if (!gui.getSimulation().schedule.step(sim))
-					break;
-			} while (gui.getSimulation().schedule.getSteps() < 2001);
-			gui.finish();
+//			do {
+//				if (!gui.getSimulation().schedule.step(sim))
+//					break;
+//			} while (gui.getSimulation().schedule.getSteps() < 2001);
+//			gui.finish();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
