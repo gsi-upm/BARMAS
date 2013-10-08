@@ -21,7 +21,7 @@ import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
  * @version 0.1
  * 
  */
-public class ArgumentationManagerAgent extends SimpleShanksAgent {
+public class ArgumentationCentralManagerAgent extends SimpleShanksAgent {
 
 	/**
 	 * 
@@ -33,7 +33,7 @@ public class ArgumentationManagerAgent extends SimpleShanksAgent {
 	 *
 	 * @param id
 	 */
-	public ArgumentationManagerAgent(String id) {
+	public ArgumentationCentralManagerAgent(String id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
