@@ -204,6 +204,7 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 
 				bayesflare.setCurrentStatus(SolarFlare.READY, true);
 
+				sim.getScenarioManager().logger.info("Solar Flare classified by Central Bayesian Agent");
 			} catch (ShanksException e) {
 				e.printStackTrace();
 			}

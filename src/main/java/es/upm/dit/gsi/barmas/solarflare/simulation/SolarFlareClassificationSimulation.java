@@ -119,10 +119,12 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 				"src/main/resources/knowledge/flare-all-data.net", sensors1);
 		this.registerShanksAgent(agent1);
 
-		// SolarFlareClassificatorAgent agent2 = new
-		// SolarFlareClassificatorAgent("ArgAgent2");
-		// //TODO configure agent
-		// this.registerShanksAgent(agent2);
+
+		List<String> sensors2 = new ArrayList<String>();
+		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent(
+				"ArgAgent2", manager,
+				"src/main/resources/knowledge/flare-all-data.net", sensors2);
+		 this.registerShanksAgent(agent2);
 
 	}
 

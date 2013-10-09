@@ -6,7 +6,6 @@ package es.upm.dit.gsi.barmas.solarflare.agent;
 import jason.asSemantics.Message;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
@@ -40,7 +39,7 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	private static final long serialVersionUID = -4553845190556382890L;
 
 	private List<ArgumentativeAgent> suscribers;
-	private List<Argumentation> argumenations;
+	private List<Argumentation> argumentations;
 
 	private boolean idle;
 
@@ -54,7 +53,7 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	public ArgumentationCentralManagerAgent(String id) {
 		super(id);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
-		this.argumenations = new ArrayList<Argumentation>();
+		this.argumentations = new ArrayList<Argumentation>();
 		this.idle = true;
 		this.pendingArguments = new ArrayList<Argument>();
 	}
@@ -71,21 +70,21 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 			if (this.idle) {
 				this.idle = false;
 				Argumentation argumentation = new Argumentation(
-						this.argumenations.size());
-				this.argumenations.add(argumentation);
+						this.argumentations.size());
+				this.argumentations.add(argumentation);
 			}
 
 			this.pendingArguments = new ArrayList<Argument>();
 			for (Message msg : inbox) {
-				HashSet<Argument> args = (HashSet<Argument>) msg.getPropCont();
-				for (Argument arg : args) {
-					this.pendingArguments.add(arg);	
-				}
+				Argument arg = (Argument) msg.getPropCont();
+				this.pendingArguments.add(arg);
 			}
 		} else {
 			// If no message is received, the argumentation finish
 			this.idle = true;
 		}
+		
+		inbox.clear();
 	}
 
 	/*
@@ -101,8 +100,9 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 			for (Argument arg : pendingArguments) {
 				this.processNewArgument(arg, simulation);
 			}
-		} else if (this.idle
-				&& this.getCurrentArgumentation()!=null && this.getCurrentArgumentation().isFinished() == false) {
+			this.pendingArguments.clear();
+		} else if (this.idle && this.getCurrentArgumentation() != null
+				&& this.getCurrentArgumentation().isFinished() == false) {
 			AgentArgumentationManagerCapability
 					.finishCurrentArgumentation(this);
 		} else {
@@ -119,9 +119,9 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	 * ArgumentationManagerAgent#getCurrentArgumentation()
 	 */
 	public Argumentation getCurrentArgumentation() {
-		int last = this.argumenations.size();
+		int last = this.argumentations.size();
 		if (last > 0) {
-			Argumentation arg = this.argumenations.get(last - 1);
+			Argumentation arg = this.argumentations.get(last - 1);
 			if (!arg.isFinished()) {
 				return arg;
 			} else {
@@ -139,7 +139,7 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	 * ArgumentationManagerAgent#getArgumentations()
 	 */
 	public List<Argumentation> getArgumentations() {
-		return this.argumenations;
+		return this.argumentations;
 	}
 
 	/*
@@ -163,7 +163,7 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	 * ArgumentationManagerAgent#getArgumentation(int)
 	 */
 	public Argumentation getArgumentation(int id) {
-		for (Argumentation arg : this.argumenations) {
+		for (Argumentation arg : this.argumentations) {
 			if (arg.getId() == id) {
 				return arg;
 			}

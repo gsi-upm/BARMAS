@@ -171,11 +171,13 @@ public class AgentArgumentativeCapability {
 	 */
 	public static void sendArguments(ArgumentativeAgent proponent,
 			Set<Argument> args) {
-		Message m = new Message();
-		m.setSender(proponent.getProponentName());
-		m.setReceiver(proponent.getArgumentationManagerName());
-		m.setPropCont(args);
-		((SimpleShanksAgent) proponent).sendMsg(m);
+		for (Argument arg : args) {
+			Message m = new Message();
+			m.setSender(proponent.getProponentName());
+			m.setReceiver(proponent.getArgumentationManagerName());
+			m.setPropCont(arg);
+			((SimpleShanksAgent) proponent).sendMsg(m);	
+		}
 	}
 	
 	/**
@@ -188,9 +190,7 @@ public class AgentArgumentativeCapability {
 		Message m = new Message();
 		m.setSender(proponent.getProponentName());
 		m.setReceiver(proponent.getArgumentationManagerName());
-		Set<Argument> args = new HashSet<Argument>();
-		args.add(arg);
-		m.setPropCont(args);
+		m.setPropCont(arg);
 		((SimpleShanksAgent) proponent).sendMsg(m);
 	}
 

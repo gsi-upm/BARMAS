@@ -11,12 +11,11 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.simulation.SolarFlareNoGUILauncher.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.simulation.SolarFlareNoGUILauncher.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -26,7 +25,6 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * 
  */
 public class SolarFlareNoGUILauncher {
-
 
 	public static void main(String[] args) {
 
@@ -40,8 +38,8 @@ public class SolarFlareNoGUILauncher {
 
 		SolarFlareClassificationSimulation sim;
 		try {
-			sim = new SolarFlareClassificationSimulation(System.currentTimeMillis(),
-					SolarFlareScenario.class,
+			sim = new SolarFlareClassificationSimulation(
+					System.currentTimeMillis(), SolarFlareScenario.class,
 					"SolarFlareClassificatorScenario",
 					SolarFlareScenario.NORMALSTATE, scenarioProperties);
 			// MyShanksSimulation2DGUI gui = new MyShanksSimulation2DGUI(sim);
@@ -51,9 +49,6 @@ public class SolarFlareNoGUILauncher {
 			do
 				if (!sim.schedule.step(sim)) {
 					break;
-				} else {
-					sim.getScenarioManager().logger.info("Step:"
-							+ sim.schedule.getSteps());
 				}
 			while (sim.schedule.getSteps() < 2001);
 			sim.finish();
