@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.DatasetGenerator.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation;
+package es.upm.dit.gsi.barmas.solarflare.dataset.utils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
