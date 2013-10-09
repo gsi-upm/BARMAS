@@ -18,11 +18,20 @@
  */
 package es.upm.dit.gsi.barmas.solarflare.simulation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import sim.engine.Schedule;
 import sim.engine.Steppable;
+import es.upm.dit.gsi.barmas.solarflare.agent.ArgumentationCentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareClassificatorAgent;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Evolution;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareGenerator;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
@@ -73,9 +82,12 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	 */
 	@Override
 	public void addSteppables() {
-		Steppable generator = new SolarFlareGenerator("src/main/resources/dataset/solarflare-global.csv");
+		Steppable generator = new SolarFlareGenerator(
+				"src/main/resources/dataset/solarflare-global.csv");
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, generator, 5);
-		Steppable evaluator = new SolarFlareEvaluator("src/main/resources/output/classification-results.csv", "src/main/resources/dataset/solarflare-global.csv");
+		Steppable evaluator = new SolarFlareEvaluator(
+				"src/main/resources/output/classification-results.csv",
+				"src/main/resources/dataset/solarflare-global.csv");
 		schedule.scheduleRepeating(Schedule.EPOCH, 3, evaluator, 5);
 	}
 
@@ -87,17 +99,30 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	@Override
 	public void registerShanksAgents() throws ShanksException {
 
-		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent("BayesCentral", "src/main/resources/knowledge/flare-all-data.net");
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral",
+				"src/main/resources/knowledge/flare-all-data.net");
 		this.registerShanksAgent(bayes);
-		
-//		ArgumentationManagerAgent manager = new ArgumentationManagerAgent("ArgManager");
-//		this.registerShanksAgent(manager);
-//		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent("ArgAgent1");
-//		//TODO configure agent
-//		this.registerShanksAgent(agent1);
-//		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent("ArgAgent2");
-//		//TODO configure agent
-//		this.registerShanksAgent(agent2);
+
+		ArgumentationCentralManagerAgent manager = new ArgumentationCentralManagerAgent(
+				"Manager");
+		this.registerShanksAgent(manager);
+
+		List<String> sensors1 = new ArrayList<String>();
+		sensors1.add(Activity.class.getSimpleName());
+		sensors1.add(Area.class.getSimpleName());
+		sensors1.add(BecomeHist.class.getSimpleName());
+		sensors1.add(CNode.class.getSimpleName());
+		sensors1.add(Evolution.class.getSimpleName());
+		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent(
+				"ArgAgent1", manager,
+				"src/main/resources/knowledge/flare-all-data.net", sensors1);
+		this.registerShanksAgent(agent1);
+
+		// SolarFlareClassificatorAgent agent2 = new
+		// SolarFlareClassificatorAgent("ArgAgent2");
+		// //TODO configure agent
+		// this.registerShanksAgent(agent2);
 
 	}
 

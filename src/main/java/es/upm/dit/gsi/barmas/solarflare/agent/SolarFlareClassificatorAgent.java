@@ -20,12 +20,20 @@ package es.upm.dit.gsi.barmas.solarflare.agent;
 
 import jason.asSemantics.Message;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
+import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
@@ -33,12 +41,10 @@ import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesia
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.agent.BarmasAgent.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.agent.BarmasAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -47,72 +53,133 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * @version 0.1
  * 
  */
-public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements BayesianReasonerShanksAgent, ArgumentativeAgent {
+public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
+		BayesianReasonerShanksAgent, ArgumentativeAgent {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8582918551821278046L;
 
-	
 	private ArgumentationManagerAgent manager;
 	private String bnFilePath;
 	private ProbabilisticNetwork bn;
-	
+	private List<String> sensors;
+
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param id
 	 * @param manager
 	 * @param bnPath
 	 */
-	public SolarFlareClassificatorAgent(String id, ArgumentationManagerAgent manager, String bnPath) {
+	public SolarFlareClassificatorAgent(String id,
+			ArgumentationManagerAgent manager, String bnPath,
+			List<String> sensors) {
 		super(id);
 		this.bnFilePath = bnPath;
+		this.sensors = sensors;
 		this.setArgumentationManager(manager);
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
 		}
+		
+		//Register in manager
+		this.getArgumentationManager().addSubscriber(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.shanks.agent.ShanksAgent#checkMail()
 	 */
 	public void checkMail() {
-		// TODO Auto-generated method stub
-
+		// Check inbox
+		List<Message> inbox = this.getInbox();
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.agent.SimpleShanksAgent#executeReasoningCycle(es.upm.dit.gsi.shanks.ShanksSimulation)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.shanks.agent.SimpleShanksAgent#executeReasoningCycle(es
+	 * .upm.dit.gsi.shanks.ShanksSimulation)
 	 */
 	@Override
 	public void executeReasoningCycle(ShanksSimulation simulation) {
-		// TODO Auto-generated method stub
+		// Process incoming messages
+
+		// Check sensors
+		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simulation;
+		SolarFlare orig = (SolarFlare) sim.getScenario().getNetworkElement(
+				SolarFlareScenario.ORIGINALFLARE);
+
+		HashMap<String, String> evidences = new HashMap<String, String>();
+
+		for (String sensor : this.sensors) {
+			String value = (String) orig.getProperty(sensor);
+			evidences.put(sensor, value);
+		}
+
+		try {
+			ShanksAgentBayesianReasoningCapability
+					.addEvidences(this, evidences);
+			// Get hypothesis
+			HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability
+					.getNodeStatesHypotheses(this,
+							SolarFlareType.class.getSimpleName());
+			String hyp = "";
+			float maxValue = 0;
+			for (Entry<String, Float> entry : hyps.entrySet()) {
+				if (entry.getValue() > maxValue) {
+					maxValue = entry.getValue();
+					hyp = entry.getKey();
+				}
+			}
+			
+			// Create and send initial argument
+			Argument arg = AgentArgumentativeCapability.createArgument(this, SolarFlareType.class.getSimpleName(), hyp, maxValue, evidences);
+			AgentArgumentativeCapability.sendArgument(this, arg);
+			
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String getProponentName() {
 		return this.getID();
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#getProponent()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
+	 * #getProponent()
 	 */
 	public ArgumentativeAgent getProponent() {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#getArgumentationManager()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
+	 * #getArgumentationManager()
 	 */
 	public ArgumentationManagerAgent getArgumentationManager() {
 		return this.manager;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#getArgumentationManagerName()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
+	 * #getArgumentationManagerName()
 	 */
 	public String getArgumentationManagerName() {
 		SimpleShanksAgent ag = (SimpleShanksAgent) this.manager;
@@ -127,7 +194,7 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 	public void updateBeliefsWithNewArguments(Set<Argument> args)
 			throws ShanksException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public ProbabilisticNetwork getBayesianNetwork() {
@@ -146,8 +213,13 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements B
 		this.manager = manager;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent#sendArgument(es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
+	 * #sendArgument
+	 * (es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument)
 	 */
 	public void sendArgument(Argument arg) {
 		Message m = new Message();

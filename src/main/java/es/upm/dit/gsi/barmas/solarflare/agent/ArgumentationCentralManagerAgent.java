@@ -1,11 +1,12 @@
 /**
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  */
-package es.upm.dit.gsi.barmas.agent;
+package es.upm.dit.gsi.barmas.solarflare.agent;
 
 import jason.asSemantics.Message;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
@@ -55,6 +56,7 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumenations = new ArrayList<Argumentation>();
 		this.idle = true;
+		this.pendingArguments = new ArrayList<Argument>();
 	}
 
 	/*
@@ -75,8 +77,10 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 
 			this.pendingArguments = new ArrayList<Argument>();
 			for (Message msg : inbox) {
-				Argument arg = (Argument) msg.getPropCont();
-				this.pendingArguments.add(arg);
+				HashSet<Argument> args = (HashSet<Argument>) msg.getPropCont();
+				for (Argument arg : args) {
+					this.pendingArguments.add(arg);	
+				}
 			}
 		} else {
 			// If no message is received, the argumentation finish
@@ -98,8 +102,9 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 				this.processNewArgument(arg, simulation);
 			}
 		} else if (this.idle
-				&& this.getCurrentArgumentation().isFinished() == false) {
-			AgentArgumentationManagerCapability.finishCurrentArgumentation(this);
+				&& this.getCurrentArgumentation()!=null && this.getCurrentArgumentation().isFinished() == false) {
+			AgentArgumentationManagerCapability
+					.finishCurrentArgumentation(this);
 		} else {
 			simulation.getScenarioManager().logger
 					.info("Argumentation Manager: Nothing to do.");
@@ -115,9 +120,13 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	 */
 	public Argumentation getCurrentArgumentation() {
 		int last = this.argumenations.size();
-		Argumentation arg =  this.argumenations.get(last - 1);
-		if (!arg.isFinished()) {
-			return arg;
+		if (last > 0) {
+			Argumentation arg = this.argumenations.get(last - 1);
+			if (!arg.isFinished()) {
+				return arg;
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}
