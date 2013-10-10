@@ -6,7 +6,11 @@ package es.upm.dit.gsi.barmas.solarflare.agent;
 import jason.asSemantics.Message;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
@@ -30,8 +34,8 @@ import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
  * @version 0.1
  * 
  */
-public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
-		implements ArgumentationManagerAgent {
+public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
+		ArgumentationManagerAgent {
 
 	/**
 	 * 
@@ -42,6 +46,7 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	private List<Argumentation> argumentations;
 
 	private boolean idle;
+	private int idleSteps;
 
 	private List<Argument> pendingArguments;
 
@@ -50,12 +55,13 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	 * 
 	 * @param id
 	 */
-	public ArgumentationCentralManagerAgent(String id) {
+	public SolarFlareCentralManagerAgent(String id) {
 		super(id);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.idle = true;
 		this.pendingArguments = new ArrayList<Argument>();
+		this.idleSteps=0;
 	}
 
 	/*
@@ -68,7 +74,6 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 		List<Message> inbox = this.getInbox();
 		if (inbox.size() > 0) {
 			if (this.idle) {
-				this.idle = false;
 				Argumentation argumentation = new Argumentation(
 						this.argumentations.size());
 				this.argumentations.add(argumentation);
@@ -81,9 +86,8 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 			}
 		} else {
 			// If no message is received, the argumentation finish
-			this.idle = true;
 		}
-		
+
 		inbox.clear();
 	}
 
@@ -97,19 +101,52 @@ public class ArgumentationCentralManagerAgent extends SimpleShanksAgent
 	@Override
 	public void executeReasoningCycle(ShanksSimulation simulation) {
 		if (this.pendingArguments.size() > 0) {
+			this.idle=false;
 			for (Argument arg : pendingArguments) {
 				this.processNewArgument(arg, simulation);
 			}
 			this.pendingArguments.clear();
 		} else if (this.idle && this.getCurrentArgumentation() != null
 				&& this.getCurrentArgumentation().isFinished() == false) {
-			AgentArgumentationManagerCapability
-					.finishCurrentArgumentation(this);
-		} else {
+			this.idle=false;
+			this.finishCurrentArgumentation();
 			simulation.getScenarioManager().logger
-					.info("Argumentation Manager: Nothing to do.");
+					.info("Argumentation Manager: Finishing argumentation.");
+		} else {
+			this.idleSteps++;
+			this.idle=true;
+			simulation.getScenarioManager().logger
+					.info("Argumentation Manager: Nothing to do. IDLE STEPS: "+ this.idleSteps);
 		}
 
+	}
+
+	/**
+	 * 
+	 */
+	private void finishCurrentArgumentation() {
+		Argumentation argumentation = this.getCurrentArgumentation();
+		Map<Argument, List<Argument>> graph = argumentation.getGraph();
+		Set<Argument> args = graph.keySet();
+		Map<Argument, Boolean> undefeated = new HashMap<Argument, Boolean>();
+		for (Argument a : args) {
+			undefeated.put(a, true);
+		}
+		for (Entry<Argument, List<Argument>> e : graph.entrySet()) {
+			List<Argument> attacks = e.getValue();
+			for (Argument a : attacks) {
+				undefeated.put(a, false);
+			}
+		}
+
+		List<Argument> conclusions = argumentation.getConclusions();
+		for (Entry<Argument, Boolean> e : undefeated.entrySet()) {
+			if (e.getValue()) {
+				conclusions.add(e.getKey());
+			}
+		}
+		
+		argumentation.setFinished(true);
 	}
 
 	/*

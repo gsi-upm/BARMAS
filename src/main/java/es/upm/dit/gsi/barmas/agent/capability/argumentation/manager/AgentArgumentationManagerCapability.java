@@ -63,13 +63,5 @@ public class AgentArgumentationManagerCapability {
 		}
 		
 	}
-
-	/**
-	 * 
-	 */
-	public static void finishCurrentArgumentation(ArgumentationManagerAgent manager) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

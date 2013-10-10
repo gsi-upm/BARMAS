@@ -32,7 +32,6 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
@@ -72,8 +71,6 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 
 	private boolean ongoing;
 
-	private Argumentation currentArg;
-	private List<Argumentation> argumentations;
 	private HashMap<String, String> evidences;
 
 	private ArrayList<Argument> pendingArguments;
@@ -95,7 +92,6 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 		this.ongoing = false;
 		this.pendingArguments = new ArrayList<Argument>();
 		this.evidences = new HashMap<String, String>();
-		this.argumentations = new ArrayList<Argumentation>();
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
@@ -144,8 +140,9 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 		if (this.pendingArguments.size() > 0) {
 			for (Argument arg : this.pendingArguments) {
 				simulation.getScenarioManager().logger
-				.info("Received arguments by agent: " + this.getID()
-						+ " from " + arg.getProponent().getProponentName());
+						.info("Received arguments by agent: " + this.getID()
+								+ " from "
+								+ arg.getProponent().getProponentName());
 				this.processNewArgument(arg, sim);
 			}
 			this.pendingArguments.clear();
@@ -165,20 +162,26 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 			SolarFlareClassificationSimulation sim) {
 		if (!ongoing) {
 			this.ongoing = true;
-			Argumentation argumentation = new Argumentation(
-					this.argumentations.size());
-			this.argumentations.add(argumentation);
-			this.currentArg = argumentation;
 		}
 		Set<Given> givens = arg.getGivens();
 		for (Given given : givens) {
 			this.evidences.put(given.getNode(), given.getValue());
 			this.getSensorsUpdateData(sim);
-			try {
-				ShanksAgentBayesianReasoningCapability.addEvidences(this,
-						evidences);
-			} catch (ShanksException e) {
-				e.printStackTrace();
+			for (Entry<String, String> entry : evidences.entrySet()) {
+				try {
+
+					ShanksAgentBayesianReasoningCapability.addEvidence(this,
+							entry.getKey(), entry.getValue());
+				} catch (ShanksException e) {
+					sim.getScenarioManager().logger
+							.warning("Agent: " + this.getID()
+									+ " -> Unknown state for node: "
+									+ entry.getKey() + " -> State: "
+									+ entry.getValue());
+					sim.getScenarioManager().logger
+							.warning("Given received from agent: "
+									+ arg.getProponent().getProponentName());
+				}
 			}
 		}
 
@@ -215,18 +218,17 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 
 		if (!hyp.equals(phyp)) {
 			// Create and send initial argument
-			Argument countarArg = AgentArgumentativeCapability.createArgument(this,
-					SolarFlareType.class.getSimpleName(), hyp, maxValue,
+			Argument countarArg = AgentArgumentativeCapability.createArgument(
+					this, SolarFlareType.class.getSimpleName(), hyp, maxValue,
 					evidences);
 			AgentArgumentativeCapability.sendArgument(this, countarArg);
 
 			sim.getScenarioManager().logger
 					.info("Counter argument sent by agent: " + this.getID());
 		} else {
-			sim.getScenarioManager().logger
-			.info("Agent: " + this.getID() + " agrees with " + arg.getProponent().getProponentName());
-			sim.getScenarioManager().logger
-			.info("Argumentation finished.");
+			sim.getScenarioManager().logger.info("Agent: " + this.getID()
+					+ " agrees with " + arg.getProponent().getProponentName());
+			sim.getScenarioManager().logger.info("Argumentation finished.");
 		}
 	}
 
@@ -235,8 +237,19 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 		this.getSensorsUpdateData(sim);
 
 		try {
-			ShanksAgentBayesianReasoningCapability
-					.addEvidences(this, evidences);
+			for (Entry<String, String> entry : evidences.entrySet()) {
+				try {
+					ShanksAgentBayesianReasoningCapability.addEvidence(this,
+							entry.getKey(), entry.getValue());
+				} catch (Exception e) {
+					sim.getScenarioManager().logger
+							.warning("Agent: " + this.getID()
+									+ " -> Unknown state for node: "
+									+ entry.getKey() + " -> State: "
+									+ entry.getValue());
+				}
+
+			}
 			// Get hypothesis
 			HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability
 					.getNodeStatesHypotheses(this,

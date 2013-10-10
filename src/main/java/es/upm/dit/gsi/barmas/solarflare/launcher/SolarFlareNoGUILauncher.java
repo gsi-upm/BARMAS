@@ -50,7 +50,7 @@ public class SolarFlareNoGUILauncher {
 				if (!sim.schedule.step(sim)) {
 					break;
 				}
-			while (sim.schedule.getSteps() < 2001);
+			while (sim.schedule.getSteps() < 201);
 			sim.finish();
 		} catch (ShanksException e) {
 			// TODO Auto-generated catch block

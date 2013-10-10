@@ -22,8 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 
 /**
@@ -47,6 +50,7 @@ public class Argumentation {
 	private Map<Argument, Long> steps;
 	private int id;
 	private List<Argument> conclusions;
+	private HashMap<Argument, List<Argument>> graph;
 	private boolean finished;
 
 	/**
@@ -59,6 +63,7 @@ public class Argumentation {
 		this.timestamps = new HashMap<Argument, Long>();
 		this.steps = new HashMap<Argument, Long>();
 		this.conclusions = new ArrayList<Argument>();
+		this.graph = new HashMap<Argument, List<Argument>>();
 	}
 
 	/**
@@ -70,6 +75,62 @@ public class Argumentation {
 		long step = simulation.schedule.getSteps();
 		this.timestamps.put(arg, timestamp);
 		this.steps.put(arg, step);
+		this.graph.put(arg, new ArrayList<Argument>());
+
+		// Check if this argument defeats others
+		boolean attacks = false;
+		Set<Proposal> props = arg.getProposals();
+
+		Set<Argument> allArgs = this.steps.keySet();
+
+		for (Argument a : allArgs) {
+			Set<Proposal> aprops = a.getProposals();
+			for (Proposal ap : aprops) {
+				String anode = ap.getNode();
+				for (Proposal p : props) {
+					String node = p.getNode();
+					// If the proposed node are equals...
+					if (node.equals(anode)) {
+						Map<String, Double> avalues = ap
+								.getValuesWithConfidence();
+						double amax = 0;
+						String astate = "";
+						for (Entry<String, Double> e : avalues.entrySet()) {
+							if (e.getValue() > amax) {
+								amax = e.getValue();
+								astate = e.getKey();
+							}
+						}
+						Map<String, Double> values = p
+								.getValuesWithConfidence();
+						double max = 0;
+						String state = "";
+						for (Entry<String, Double> e : values.entrySet()) {
+							if (e.getValue() > max) {
+								max = e.getValue();
+								state = e.getKey();
+							}
+						}
+
+						// if they don't aggree with the state
+						if (!state.equals(astate)) {
+							attacks = true;
+							break;
+						}
+					}
+
+				}
+				if (attacks) {
+					break;
+				}
+			}
+
+			// If the new argument attacks an old one
+			if (attacks) {
+				// Add to the graph
+				this.graph.get(arg).add(a);
+			}
+		}
 	}
 
 	/**
@@ -78,14 +139,14 @@ public class Argumentation {
 	public Map<Argument, Long> getArgumentsWithSteps() {
 		return this.steps;
 	}
-	
+
 	/**
 	 * @return
 	 */
 	public Map<Argument, Long> getArgumentsWithTimestamps() {
 		return this.timestamps;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -93,11 +154,35 @@ public class Argumentation {
 		// TODO implement this method
 		return null;
 	}
-	
-	public List<Argument> getConclusions () {
+
+	/**
+	 * @return
+	 */
+	public List<Argument> getConclusions() {
 		return this.conclusions;
 	}
-	
+
+	/**
+	 * @return
+	 */
+	public HashMap<Argument, List<Argument>> getGraph() {
+		return graph;
+	}
+
+	/**
+	 * @param graph
+	 */
+	public void setGraph(HashMap<Argument, List<Argument>> graph) {
+		this.graph = graph;
+	}
+
+	/**
+	 * @param conclusions
+	 */
+	public void setConclusions(List<Argument> conclusions) {
+		this.conclusions = conclusions;
+	}
+
 	/**
 	 * @param arg
 	 */
@@ -120,7 +205,8 @@ public class Argumentation {
 	}
 
 	/**
-	 * @param finished the finished to set
+	 * @param finished
+	 *            the finished to set
 	 */
 	public void setFinished(boolean finished) {
 		this.finished = finished;
