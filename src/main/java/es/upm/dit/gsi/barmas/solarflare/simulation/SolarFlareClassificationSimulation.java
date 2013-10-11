@@ -24,14 +24,18 @@ import java.util.Properties;
 
 import sim.engine.Schedule;
 import sim.engine.Steppable;
-import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareCentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareCentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Evolution;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.XNode;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareGenerator;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
@@ -85,10 +89,10 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 		Steppable generator = new SolarFlareGenerator(
 				"src/main/resources/exp1/dataset/testdataset.csv");
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, generator, 5);
-//		Steppable evaluator = new SolarFlareEvaluator(
-//				"src/main/resources/output/classification-results.csv",
-//				"src/main/resources/exp1/dataset/testdataset.csv");
-//		schedule.scheduleRepeating(Schedule.EPOCH, 3, evaluator, 5);
+		Steppable evaluator = new SolarFlareEvaluator(
+				"src/main/resources/output/classification-results.csv",
+				"src/main/resources/exp1/dataset/testdataset.csv");
+		schedule.scheduleRepeating(Schedule.EPOCH, 3, evaluator, 1);
 	}
 
 	/*
@@ -110,21 +114,26 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 
 		List<String> sensors1 = new ArrayList<String>();
 		sensors1.add(Activity.class.getSimpleName());
+		sensors1.add(LargestSpotSize.class.getSimpleName());
 		sensors1.add(Area.class.getSimpleName());
 		sensors1.add(BecomeHist.class.getSimpleName());
 		sensors1.add(CNode.class.getSimpleName());
-//		sensors1.add(Evolution.class.getSimpleName());
+		// sensors1.add(Evolution.class.getSimpleName());
 		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent(
 				"ArgAgent1", manager,
 				"src/main/resources/exp1/bayes/agentdataset-1.net", sensors1);
 		this.registerShanksAgent(agent1);
 
-
 		List<String> sensors2 = new ArrayList<String>();
+		sensors2.add(PrevStatus24Hour.class.getSimpleName());
+		sensors2.add(HistComplex.class.getSimpleName());
+		sensors2.add(CNode.class.getSimpleName());
+		sensors2.add(MNode.class.getSimpleName());
+		sensors2.add(XNode.class.getSimpleName());
 		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent(
 				"ArgAgent2", manager,
 				"src/main/resources/exp1/bayes/agentdataset-2.net", sensors2);
-		 this.registerShanksAgent(agent2);
+		this.registerShanksAgent(agent2);
 
 	}
 

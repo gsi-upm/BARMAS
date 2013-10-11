@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
@@ -118,10 +119,10 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simulation;
 
 		SolarFlare origflare = (SolarFlare) sim.getScenario()
-				.getNetworkElement("OriginalSolarFlare");
+				.getNetworkElement(SolarFlareScenario.ORIGINALFLARE);
 
 		SolarFlare bayesflare = (SolarFlare) sim.getScenario()
-				.getNetworkElement("CentralConclusion");
+				.getNetworkElement(SolarFlareScenario.CENTRALCONCLUSION);
 
 		// Check if it is time to check the solar flare
 		if (origflare.getStatus().get(SolarFlare.READY)
@@ -204,7 +205,7 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 
 				bayesflare.setCurrentStatus(SolarFlare.READY, true);
 
-				sim.getScenarioManager().logger.info("Solar Flare classified by Central Bayesian Agent");
+				sim.getLogger().info("Solar Flare classified by Central Bayesian Agent");
 			} catch (ShanksException e) {
 				e.printStackTrace();
 			}

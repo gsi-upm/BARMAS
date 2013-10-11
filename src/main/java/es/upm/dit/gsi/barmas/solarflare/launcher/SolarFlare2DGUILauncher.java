@@ -4,7 +4,10 @@
 package es.upm.dit.gsi.barmas.solarflare.launcher;
 
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation2DGUI;
@@ -30,6 +33,14 @@ public class SolarFlare2DGUILauncher {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
+
+		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Level level = Level.FINE;
+		long date = System.currentTimeMillis();
+		String name = "NoGUI-Basic2Agents-"+Long.toString(date);
+		LogConfigurator.log2File(logger, name, level);
+		
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.SIMULATION_2D);
 

@@ -4,7 +4,10 @@
 package es.upm.dit.gsi.barmas.solarflare.launcher;
 
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -28,12 +31,19 @@ public class SolarFlareNoGUILauncher {
 
 	public static void main(String[] args) {
 
+		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Level level = Level.ALL;
+//		long date = System.currentTimeMillis();
+//		String name = "NoGUI-Basic2Agents-"+Long.toString(date);
+		String name = "NoGUI-Basic2Agents";
+		LogConfigurator.log2File(logger, name, level);
+		
+		long totalSteps = 101;
+		
+		
+		 logger.info("--> Starting simulation...");
+		 
 		Properties scenarioProperties = new Properties();
-		// scenarioProperties.put(MyScenario.CLOUDY_PROB, "5");
-		// scenarioProperties.put(Scenario.SIMULATION_GUI,
-		// Scenario.SIMULATION_2D);
-		// scenarioProperties.put(Scenario.SIMULATION_GUI,
-		// Scenario.SIMULATION_3D);
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
 
 		SolarFlareClassificationSimulation sim;
@@ -42,18 +52,15 @@ public class SolarFlareNoGUILauncher {
 					System.currentTimeMillis(), SolarFlareScenario.class,
 					"SolarFlareClassificatorScenario",
 					SolarFlareScenario.NORMALSTATE, scenarioProperties);
-			// MyShanksSimulation2DGUI gui = new MyShanksSimulation2DGUI(sim);
-			// MyShanksSimulation3DGUI gui = new MyShanksSimulation3DGUI(sim);
-			// gui.start();
+
 			sim.start();
 			do
 				if (!sim.schedule.step(sim)) {
 					break;
 				}
-			while (sim.schedule.getSteps() < 201);
+			while (sim.schedule.getSteps() < totalSteps);
 			sim.finish();
 		} catch (ShanksException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

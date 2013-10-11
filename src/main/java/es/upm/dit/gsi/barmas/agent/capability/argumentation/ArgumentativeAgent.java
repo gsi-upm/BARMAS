@@ -81,5 +81,10 @@ public interface ArgumentativeAgent {
 	 * @param arg
 	 */
 	public void sendArgument(Argument arg);
+	
+	/**
+	 * 
+	 */
+	public void finishArgumenation();
 
 }

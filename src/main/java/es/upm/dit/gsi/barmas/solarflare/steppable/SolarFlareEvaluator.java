@@ -19,6 +19,7 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 
@@ -84,11 +85,11 @@ public class SolarFlareEvaluator implements Steppable {
 	public void step(SimState simstate) {
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simstate;
 		SolarFlare argConclusion = (SolarFlare) sim.getScenario().getNetworkElement(
-				"ArgumentationConclusion");
+				SolarFlareScenario.ARGUMENTATIONCONCLUSION);
 		SolarFlare centralConclusion = (SolarFlare) sim.getScenario().getNetworkElement(
-				"ArgumentationConclusion");
+				SolarFlareScenario.CENTRALCONCLUSION);
 		SolarFlare origflare = (SolarFlare) sim.getScenario()
-				.getNetworkElement("OriginalSolarFlare");
+				.getNetworkElement(SolarFlareScenario.ORIGINALFLARE);
 
 		String argClass = (String) argConclusion
 				.getProperty(SolarFlareType.class.getSimpleName());
@@ -96,25 +97,35 @@ public class SolarFlareEvaluator implements Steppable {
 		String origClass = (String) origflare.getProperty(SolarFlareType.class
 				.getSimpleName());
 
-//		if (classification.equals(orig)) {
-//			// Result: success
-//			try {
-//				FileWriter fw = new FileWriter(resultsPath, true); // append
-//																	// content
-//				CsvWriter writer = new CsvWriter(fw, ',');
-//				// writer.writeRecord();
-//				// TODO write csv
-//				// writer.writeNext(row);
-//				writer.close();
-//				// TODO UPDATE CHARTS
-//			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
+		if (argConclusion.getStatus().get(SolarFlare.READY) && centralConclusion.getStatus().get(SolarFlare.READY)) {
+			sim.getLogger().info("-----> EVALUATION starting...");
+//		if (argClass.equals(origClass)) {
+			// Result: success
+			try {
+				FileWriter fw = new FileWriter(resultsPath, true); // append
+																	// content
+				CsvWriter writer = new CsvWriter(fw, ',');
+				// writer.writeRecord();
+				// TODO write csv
+				// writer.writeNext(row);
+				writer.close();
+				// TODO UPDATE CHARTS
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 //		} else {
 //			// Result: fail
 //		}
+
+			
+		argConclusion.reset();
+		centralConclusion.reset();
+		origflare.reset();
+
+		sim.getLogger().info("-----> EVALUATION finished --- RESULT: ");
+		}
 	}
 
 }

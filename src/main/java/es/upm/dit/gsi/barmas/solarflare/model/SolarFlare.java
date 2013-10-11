@@ -149,12 +149,20 @@ public class SolarFlare extends Device {
 			this.changeProperty(SolarFlareType.class.getSimpleName(), "");
 			this.setCaseID(-1);
 		} catch (ShanksException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		
 	}
 	
+	/**
+	 * 
+	 */
+	public void reset() {
+		try {
+			this.clean();
+			this.setCurrentStatus(SolarFlare.READY, false);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

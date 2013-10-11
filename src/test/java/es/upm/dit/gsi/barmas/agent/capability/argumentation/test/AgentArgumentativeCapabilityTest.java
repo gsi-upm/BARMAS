@@ -146,6 +146,11 @@ public class AgentArgumentativeCapabilityTest {
 				// TODO Auto-generated method stub
 				
 			}
+
+			public void finishArgumenation() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 	}

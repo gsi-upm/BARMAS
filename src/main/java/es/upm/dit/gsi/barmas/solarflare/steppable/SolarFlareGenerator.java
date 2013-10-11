@@ -14,6 +14,7 @@ import sim.engine.Steppable;
 import com.csvreader.CsvReader;
 
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
@@ -50,7 +51,6 @@ public class SolarFlareGenerator implements Steppable {
 	 */
 	private static final long serialVersionUID = -481268413730149934L;
 
-//	private String path;
 	private CsvReader reader;
 	private int counter;
 
@@ -59,7 +59,6 @@ public class SolarFlareGenerator implements Steppable {
 	 * 
 	 */
 	public SolarFlareGenerator(String path) {
-//		this.path = path;
 		this.counter = 0;
 		Reader fr;
 		try {
@@ -81,7 +80,7 @@ public class SolarFlareGenerator implements Steppable {
 	public void step(SimState simstate) {
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simstate;
 		SolarFlare flare = (SolarFlare) sim.getScenario().getNetworkElement(
-				"OriginalSolarFlare");
+				SolarFlareScenario.ORIGINALFLARE);
 
 		try {
 			if (!flare.getStatus().get(SolarFlare.READY)) {
@@ -114,7 +113,7 @@ public class SolarFlareGenerator implements Steppable {
 				flare.setCaseID(counter++);
 				flare.setCurrentStatus(SolarFlare.READY, true);
 
-				sim.getScenarioManager().logger.info("New Solar Flare generated. Case ID: " + (counter-1));
+				sim.getLogger().info("New Solar Flare generated. Case ID: " + (counter-1));
 			}
 		} catch (ShanksException e) {
 			e.printStackTrace();

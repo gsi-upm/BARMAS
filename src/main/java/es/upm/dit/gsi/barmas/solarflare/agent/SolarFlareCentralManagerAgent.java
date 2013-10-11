@@ -14,11 +14,16 @@ import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.AgentArgumentationManagerCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
+import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
+import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
  * Project: barmas File:
@@ -61,7 +66,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 		this.argumentations = new ArrayList<Argumentation>();
 		this.idle = true;
 		this.pendingArguments = new ArrayList<Argument>();
-		this.idleSteps=0;
+		this.idleSteps = 0;
 	}
 
 	/*
@@ -73,7 +78,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 		// Check incoming new argumentation
 		List<Message> inbox = this.getInbox();
 		if (inbox.size() > 0) {
-			if (this.idle) {
+			if (this.getCurrentArgumentation()==null) {
 				Argumentation argumentation = new Argumentation(
 						this.argumentations.size());
 				this.argumentations.add(argumentation);
@@ -101,24 +106,77 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	@Override
 	public void executeReasoningCycle(ShanksSimulation simulation) {
 		if (this.pendingArguments.size() > 0) {
-			this.idle=false;
+			this.busy();
 			for (Argument arg : pendingArguments) {
 				this.processNewArgument(arg, simulation);
 			}
 			this.pendingArguments.clear();
 		} else if (this.idle && this.getCurrentArgumentation() != null
 				&& this.getCurrentArgumentation().isFinished() == false) {
-			this.idle=false;
+			this.busy();
+			Argumentation a = this.getCurrentArgumentation();
 			this.finishCurrentArgumentation();
-			simulation.getScenarioManager().logger
-					.info("Argumentation Manager: Finishing argumentation.");
+			simulation.getLogger()
+					.info("Argumentation Manager: Finishing argumentation...");
+			for (ArgumentativeAgent s : this.suscribers) {
+				s.finishArgumenation();
+			}
+			this.updateSolarFlare(a, simulation);
 		} else {
-			this.idleSteps++;
-			this.idle=true;
-			simulation.getScenarioManager().logger
-					.info("Argumentation Manager: Nothing to do. IDLE STEPS: "+ this.idleSteps);
+			this.idle();
+			simulation.getLogger()
+					.fine("Argumentation Manager: Nothing to do. IDLE STEPS: "
+							+ this.idleSteps);
 		}
 
+	}
+
+	/**
+	 * @param a
+	 * @param simulation
+	 */
+	private void updateSolarFlare(Argumentation a, ShanksSimulation simulation) {
+		SolarFlare argflare = (SolarFlare) simulation.getScenario()
+				.getNetworkElement(SolarFlareScenario.ARGUMENTATIONCONCLUSION);
+		try {
+			for (Argument arg : a.getConclusions()) {
+				for (Given g : arg.getGivens()) {
+					argflare.changeProperty(g.getNode(), g.getValue());
+				}
+				for (Proposal p : arg.getProposals()) {
+					String node = p.getNode();
+					String state = "";
+					double max = 0;
+					for (Entry<String, Double> e : p.getValuesWithConfidence()
+							.entrySet()) {
+						if (e.getValue() > max) {
+							max = e.getValue();
+							state = e.getKey();
+						}
+					}
+					argflare.changeProperty(node, state);
+				}
+			}
+			argflare.setCurrentStatus(SolarFlare.READY, true);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void busy() {
+		this.idle = false;
+		this.idleSteps = 0;
+	}
+
+	/**
+	 * 
+	 */
+	private void idle() {
+		this.idle = true;
+		this.idleSteps++;
 	}
 
 	/**
@@ -145,7 +203,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 				conclusions.add(e.getKey());
 			}
 		}
-		
+
 		argumentation.setFinished(true);
 	}
 
