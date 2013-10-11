@@ -54,7 +54,7 @@ public interface ArgumentativeAgent {
 	 * @return return the argumentation manager agent
 	 */
 	public ArgumentationManagerAgent getArgumentationManager();
-	
+
 	/**
 	 * @param manager
 	 */
@@ -73,7 +73,8 @@ public interface ArgumentativeAgent {
 	/**
 	 * @param args
 	 */
-	public void updateBeliefsWithNewArguments(Set<Argument> args) throws ShanksException;
+	public void updateBeliefsWithNewArguments(Set<Argument> args)
+			throws ShanksException;
 
 	/**
 	 * Send the argument
@@ -81,10 +82,20 @@ public interface ArgumentativeAgent {
 	 * @param arg
 	 */
 	public void sendArgument(Argument arg);
-	
+
 	/**
 	 * 
 	 */
 	public void finishArgumenation();
+
+	/**
+	 * @param agent
+	 */
+	public void addArgumentationGroupMember(ArgumentativeAgent agent);
+
+	/**
+	 * @param agent
+	 */
+	public void removeArgumentationGroupMember(ArgumentativeAgent agent);
 
 }

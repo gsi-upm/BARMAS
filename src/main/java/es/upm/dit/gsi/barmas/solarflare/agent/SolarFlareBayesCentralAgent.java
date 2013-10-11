@@ -130,7 +130,7 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 
 			bayesflare.clean();
 			bayesflare.setCaseID(origflare.getCaseID());
-			
+
 			HashMap<String, String> evidences = new HashMap<String, String>();
 
 			String key = LargestSpotSize.class.getSimpleName();
@@ -205,7 +205,10 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 
 				bayesflare.setCurrentStatus(SolarFlare.READY, true);
 
-				sim.getLogger().info("Solar Flare classified by Central Bayesian Agent");
+				sim.getLogger().info(
+						"Solar Flare classified by Central Bayesian Agent. SolarFlareID: " + bayesflare.getCaseID() + " Hypothesis: "
+								+ SolarFlareType.class.getSimpleName() + " - "
+								+ conclusion);
 			} catch (ShanksException e) {
 				e.printStackTrace();
 			}

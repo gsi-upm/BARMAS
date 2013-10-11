@@ -18,8 +18,6 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation;
 
-import jason.asSemantics.Message;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,7 +29,6 @@ import unbbayes.prs.bn.ProbabilisticNode;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -61,8 +58,9 @@ public class AgentArgumentativeCapability {
 	 * @param evidences
 	 * @return an argument with the provided info.
 	 */
-	public static Argument createArgument(ArgumentativeAgent proponent, String node, String value,
-			double conf, HashMap<String, String> evidences) {
+	public static Argument createArgument(ArgumentativeAgent proponent,
+			String node, String value, double conf,
+			HashMap<String, String> evidences) {
 
 		Argument arg = new Argument(proponent);
 		for (Entry<String, String> entry : evidences.entrySet()) {
@@ -83,8 +81,8 @@ public class AgentArgumentativeCapability {
 	 * @return all arguments for a given Bayesian network
 	 * @throws ShanksException
 	 */
-	public static Set<Argument> createArguments(ArgumentativeAgent proponent, ProbabilisticNetwork bn)
-			throws ShanksException {
+	public static Set<Argument> createArguments(ArgumentativeAgent proponent,
+			ProbabilisticNetwork bn) throws ShanksException {
 		Set<Argument> args = new HashSet<Argument>();
 		HashMap<String, String> evidences = (HashMap<String, String>) ShanksAgentBayesianReasoningCapability
 				.getEvidences(bn);
@@ -96,9 +94,9 @@ public class AgentArgumentativeCapability {
 			if (!node.hasEvidence()) {
 				HashMap<String, Float> states = hyp.getValue();
 				for (Entry<String, Float> state : states.entrySet()) {
-					Argument arg = AgentArgumentativeCapability.createArgument(proponent,
-							hyp.getKey(), state.getKey(), state.getValue(),
-							evidences);
+					Argument arg = AgentArgumentativeCapability.createArgument(
+							proponent, hyp.getKey(), state.getKey(),
+							state.getValue(), evidences);
 					args.add(arg);
 				}
 			}
@@ -114,8 +112,8 @@ public class AgentArgumentativeCapability {
 	 */
 	public static Set<Argument> createArguments(
 			BayesianReasonerShanksAgent agent) throws ShanksException {
-		return AgentArgumentativeCapability.createArguments((ArgumentativeAgent) agent, agent
-				.getBayesianNetwork());
+		return AgentArgumentativeCapability.createArguments(
+				(ArgumentativeAgent) agent, agent.getBayesianNetwork());
 	}
 
 	/**
@@ -172,14 +170,10 @@ public class AgentArgumentativeCapability {
 	public static void sendArguments(ArgumentativeAgent proponent,
 			Set<Argument> args) {
 		for (Argument arg : args) {
-			Message m = new Message();
-			m.setSender(proponent.getProponentName());
-			m.setReceiver(proponent.getArgumentationManagerName());
-			m.setPropCont(arg);
-			((SimpleShanksAgent) proponent).sendMsg(m);	
+			proponent.sendArgument(arg);
 		}
 	}
-	
+
 	/**
 	 * Send one argument to the argumentation manager
 	 * 
@@ -187,11 +181,7 @@ public class AgentArgumentativeCapability {
 	 * @param arg
 	 */
 	public static void sendArgument(ArgumentativeAgent proponent, Argument arg) {
-		Message m = new Message();
-		m.setSender(proponent.getProponentName());
-		m.setReceiver(proponent.getArgumentationManagerName());
-		m.setPropCont(arg);
-		((SimpleShanksAgent) proponent).sendMsg(m);
+		proponent.sendArgument(arg);
 	}
 
 }

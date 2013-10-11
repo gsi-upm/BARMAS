@@ -151,6 +151,16 @@ public class AgentArgumentativeCapabilityTest {
 				// TODO Auto-generated method stub
 				
 			}
+
+			public void addArgumentationGroupMember(ArgumentativeAgent agent) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 	}

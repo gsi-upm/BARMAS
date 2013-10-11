@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AgentArgumentativeCapability;
@@ -71,6 +72,8 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 
 	private boolean argumenting;
 
+	private List<ArgumentativeAgent> argumentationGroup;
+
 	private HashMap<String, String> evidences;
 
 	private ArrayList<Argument> pendingArguments;
@@ -92,6 +95,7 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 		this.argumenting = false;
 		this.pendingArguments = new ArrayList<Argument>();
 		this.evidences = new HashMap<String, String>();
+		this.argumentationGroup = new ArrayList<ArgumentativeAgent>();
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
@@ -133,9 +137,14 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 	public void executeReasoningCycle(ShanksSimulation simulation) {
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simulation;
 		// Check sensors
-		this.getSensorsUpdateData(sim);
-		
-		// Decide what to do: start a new argumentation or process incoming arguments
+		SolarFlare orig = (SolarFlare) sim.getScenario().getNetworkElement(
+				SolarFlareScenario.ORIGINALFLARE);
+		if (orig.getStatus().get(SolarFlare.READY)) {
+			this.getSensorsUpdateData(sim);
+		}
+
+		// Decide what to do: start a new argumentation or process incoming
+		// arguments
 		if (this.pendingArguments.size() > 0) {
 			if (!argumenting) {
 				this.argumenting = true;
@@ -150,11 +159,8 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 			}
 			this.pendingArguments.clear();
 		} else {
-			SolarFlare orig = (SolarFlare) sim.getScenario().getNetworkElement(
-					SolarFlareScenario.ORIGINALFLARE);
 
-			if (!argumenting && orig.getStatus().get(SolarFlare.READY)
-					&& this.sensors.size() > 0) {
+			if (!argumenting && orig.getStatus().get(SolarFlare.READY)) {
 				this.startClassification(sim);
 			}
 		}
@@ -162,8 +168,10 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 
 	private void processNewArgument(Argument arg,
 			SolarFlareClassificationSimulation sim) {
-		
-		// Update current evidences with new givens received in the incoming argument
+		boolean newInfo = false;
+
+		// Update current evidences with new givens received in the incoming
+		// argument
 		Set<Given> givens = arg.getGivens();
 		for (Given given : givens) {
 			if (evidences.keySet().contains(given.getNode())) {
@@ -177,35 +185,56 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 							+ arg.getProponent().getProponentName()
 							+ " Evidence: " + given.getNode() + " - "
 							+ given.getValue());
+				} else {
+					sim.logger.finer("Agent: " + this.getID()
+							+ " -> Old evidence received from "
+							+ arg.getProponent().getProponentName()
+							+ " Evidence: " + given.getNode() + " - "
+							+ given.getValue());
 				}
 			} else {
+				newInfo = true;
 				this.evidences.put(given.getNode(), given.getValue());
-				try {
-					//********
-					// TODO check if this is required
-					// Maybe it could be done only once per argumentation, at finishing steps
-					ShanksAgentBayesianReasoningCapability.clearEvidences(this
-							.getBayesianNetwork());
-					//*********
+
+			}
+		}
+		if (newInfo) {
+			try {
+				// ********
+				// TODO check if this is required
+				// Maybe it could be done only once per argumentation, at
+				// finishing steps
+				ShanksAgentBayesianReasoningCapability.clearEvidences(this
+						.getBayesianNetwork());
+				// *********
+
+				sim.getLogger().finer(
+						"Agent: " + this.getID() + " -> Number of evidences: "
+								+ this.evidences.size());
+				for (Entry<String, String> entry : evidences.entrySet()) {
+					sim.getLogger()
+							.finer("Agent: " + this.getID()
+									+ " adding evidence: " + entry.getKey()
+									+ " - " + entry.getValue());
+					try {
 					
-					for (Entry<String, String> entry : evidences.entrySet()) {
-						sim.getLogger().finer(
-								"Agent: " + this.getID() + " adding evidence: "
-										+ entry.getKey() + " - "
+					ShanksAgentBayesianReasoningCapability.addEvidence(this,
+							entry.getKey(), entry.getValue());	
+					} catch (ShanksException e) {
+						sim.getLogger().warning(
+								"Agent: " + this.getID()
+										+ " -> Unknown state for node: "
+										+ entry.getKey() + " -> State: "
 										+ entry.getValue());
-						ShanksAgentBayesianReasoningCapability.addEvidence(
-								this, entry.getKey(), entry.getValue());
+
+						sim.getLogger().warning(e.getMessage());
 					}
-				} catch (ShanksException e) {
-					// sim.getLogger().warning(
-					// "Agent: " + this.getID()
-					// + " -> Unknown state for node: "
-					// + entry.getKey() + " -> State: "
-					// + entry.getValue());
-					sim.getLogger().warning(
-							"Given received from agent: "
-									+ arg.getProponent().getProponentName());
 				}
+			} catch (ShanksException e) {
+				sim.getLogger().warning(
+						"Given received from agent: "
+								+ arg.getProponent().getProponentName() + ": -->");
+				sim.getLogger().warning(e.getMessage());
 			}
 		}
 
@@ -226,8 +255,11 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 				hyp = entry.getKey();
 			}
 		}
-		sim.logger.finer("Agent: " + this.getID() + " has hypothesis of: "
-				+ SolarFlareType.class.getSimpleName() + " - " + hyp);
+		SolarFlare orig = (SolarFlare) sim.getScenario().getNetworkElement(
+				SolarFlareScenario.ORIGINALFLARE);
+		sim.logger.finer("Agent: " + this.getID()
+				+ " has hypothesis for case SolarFlareID: " + orig.getCaseID()
+				+ " " + SolarFlareType.class.getSimpleName() + " - " + hyp);
 
 		Set<Proposal> proposals = arg.getProposals();
 		String phyp = "";
@@ -249,17 +281,17 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 			sim.getLogger().finer(
 					"Agent: " + this.getID() + " disagrees with "
 							+ arg.getProponent().getProponentName());
-			// TODO decide what to do here
-			sim.getLogger().severe("Agent: " + this.getID() + " at critical point!!");
+			if (newInfo) {
+				// Create and send initial argument
+				Argument counterArg = AgentArgumentativeCapability
+						.createArgument(this,
+								SolarFlareType.class.getSimpleName(), hyp,
+								maxValue, evidences);
+				AgentArgumentativeCapability.sendArgument(this, counterArg);
 
-			// Create and send initial argument
-			Argument counterArg = AgentArgumentativeCapability.createArgument(
-					this, SolarFlareType.class.getSimpleName(), hyp, maxValue,
-					evidences);
-			AgentArgumentativeCapability.sendArgument(this, counterArg);
-
-			sim.getLogger().finer(
-					"Counter argument sent by agent: " + this.getID());
+				sim.getLogger().finer(
+						"Counter argument sent by agent: " + this.getID());
+			}
 		} else {
 			sim.getLogger().finer(
 					"Agent: " + this.getID() + " agrees with "
@@ -270,6 +302,10 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 	private void startClassification(SolarFlareClassificationSimulation sim) {
 
 		try {
+
+			sim.getLogger().finer(
+					"Agent: " + this.getID() + " -> Number of evidences: "
+							+ this.evidences.size());
 			for (Entry<String, String> entry : evidences.entrySet()) {
 				try {
 					sim.getLogger()
@@ -299,8 +335,11 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 					hyp = entry.getKey();
 				}
 			}
-
-			sim.logger.finer("Agent: " + this.getID() + " has hypothesis of: "
+			SolarFlare orig = (SolarFlare) sim.getScenario().getNetworkElement(
+					SolarFlareScenario.ORIGINALFLARE);
+			sim.logger.finer("Agent: " + this.getID()
+					+ " has hypothesis for case SolarFlareID: "
+					+ orig.getCaseID() + " "
 					+ SolarFlareType.class.getSimpleName() + " - " + hyp);
 
 			// Create and send initial argument
@@ -322,6 +361,7 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 				SolarFlareScenario.ORIGINALFLARE);
 		for (String sensor : this.sensors) {
 			String value = (String) orig.getProperty(sensor);
+			evidences.remove(sensor);
 			evidences.put(sensor, value);
 		}
 	}
@@ -395,6 +435,11 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 		this.argumenting = false;
 		this.evidences.clear();
 		this.pendingArguments.clear();
+		try {
+			ShanksAgentBayesianReasoningCapability.clearEvidences(this);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -406,9 +451,42 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 	 * (es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument)
 	 */
 	public void sendArgument(Argument arg) {
-		Message m = new Message();
-		m.setPropCont(arg);
-		m.setReceiver(this.getArgumentationManagerName());
-		super.sendMsg(m);
+		for (ArgumentativeAgent agent : this.argumentationGroup) {
+			Message m = new Message();
+			m.setPropCont(arg);
+			m.setReceiver(((SimpleShanksAgent) agent).getID());
+			super.sendMsg(m);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
+	 * #addArgumentationGroupMember
+	 * (es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent)
+	 */
+	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
+		if (!agent.equals(this) && !this.argumentationGroup.contains(agent)) {
+			this.argumentationGroup.add(agent);
+			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
+					.fine("Agent: "
+							+ this.getID()
+							+ " has added a new agent as argumentation member -> New member: "
+							+ agent.getProponentName());
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
+	 * #removeArgumentationGroupMember
+	 * (es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent)
+	 */
+	public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
+		this.argumentationGroup.remove(agent);
 	}
 }

@@ -84,6 +84,8 @@ public class SolarFlareGenerator implements Steppable {
 
 		try {
 			if (!flare.getStatus().get(SolarFlare.READY)) {
+				// if (!flare.getStatus().get(SolarFlare.READY) &&
+				// this.counter==0) {
 
 				reader.readRecord();
 				String[] flareCase = reader.getValues();
@@ -113,7 +115,9 @@ public class SolarFlareGenerator implements Steppable {
 				flare.setCaseID(counter++);
 				flare.setCurrentStatus(SolarFlare.READY, true);
 
-				sim.getLogger().info("New Solar Flare generated. Case ID: " + (counter-1));
+				sim.getLogger().info(
+						"New Solar Flare generated. Case ID: " + flare.getCaseID()
+								+ " Solar Flare Type: " + flareCase[11]);
 			}
 		} catch (ShanksException e) {
 			e.printStackTrace();

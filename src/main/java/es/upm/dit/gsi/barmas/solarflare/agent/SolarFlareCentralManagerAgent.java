@@ -16,7 +16,6 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.AgentArgumentationManagerCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
@@ -40,7 +39,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * 
  */
 public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
-		ArgumentationManagerAgent {
+		ArgumentationManagerAgent, ArgumentativeAgent {
 
 	/**
 	 * 
@@ -78,7 +77,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 		// Check incoming new argumentation
 		List<Message> inbox = this.getInbox();
 		if (inbox.size() > 0) {
-			if (this.getCurrentArgumentation()==null) {
+			if (this.getCurrentArgumentation() == null) {
 				Argumentation argumentation = new Argumentation(
 						this.argumentations.size());
 				this.argumentations.add(argumentation);
@@ -116,16 +115,16 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 			this.busy();
 			Argumentation a = this.getCurrentArgumentation();
 			this.finishCurrentArgumentation();
-			simulation.getLogger()
-					.info("Argumentation Manager: Finishing argumentation...");
+			simulation.getLogger().info(
+					"Argumentation Manager: Finishing argumentation...");
 			for (ArgumentativeAgent s : this.suscribers) {
 				s.finishArgumenation();
 			}
 			this.updateSolarFlare(a, simulation);
 		} else {
 			this.idle();
-			simulation.getLogger()
-					.fine("Argumentation Manager: Nothing to do. IDLE STEPS: "
+			simulation.getLogger().fine(
+					"Argumentation Manager: Nothing to do. IDLE STEPS: "
 							+ this.idleSteps);
 		}
 
@@ -248,7 +247,6 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	public void processNewArgument(Argument arg, ShanksSimulation simulation) {
 		Argumentation argumentation = this.getCurrentArgumentation();
 		argumentation.addArgument(arg, simulation);
-		AgentArgumentationManagerCapability.broadcastArgument(this, arg);
 	}
 
 	/*
@@ -276,6 +274,11 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void addSubscriber(ArgumentativeAgent agent) {
 		this.suscribers.add(agent);
+		agent.addArgumentationGroupMember(this);
+		for (ArgumentativeAgent ag : this.getSubscribers()) {
+			ag.addArgumentationGroupMember(agent);
+			agent.addArgumentationGroupMember(ag);
+		}
 	}
 
 	/*
@@ -288,6 +291,9 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void removeSubscriber(ArgumentativeAgent agent) {
 		this.suscribers.remove(agent);
+		for (ArgumentativeAgent ag : this.getSubscribers()) {
+			ag.removeArgumentationGroupMember(agent);
+		}
 	}
 
 	/*
@@ -298,6 +304,61 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	public List<ArgumentativeAgent> getSubscribers() {
 		return this.suscribers;
+	}
+
+	public String getProponentName() {
+		return this.getID();
+	}
+
+	public ArgumentativeAgent getProponent() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ArgumentationManagerAgent getArgumentationManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setArgumentationManager(ArgumentationManagerAgent manager) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public String getArgumentationManagerName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Set<Argument> getCurrentArguments() throws ShanksException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void updateBeliefsWithNewArguments(Set<Argument> args)
+			throws ShanksException {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void sendArgument(Argument arg) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void finishArgumenation() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
