@@ -5,13 +5,19 @@ package es.upm.dit.gsi.barmas.solarflare.agent;
 
 import jason.asSemantics.Message;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
+
+import com.csvreader.CsvWriter;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
@@ -57,6 +63,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	private List<Argument> pendingArguments;
 
 	private String outputDir;
+	private String argumentationDir;
 
 	/**
 	 * Constructor
@@ -72,6 +79,18 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 		this.pendingArguments = new ArrayList<Argument>();
 		this.idleSteps = 0;
 		this.outputDir = outputDir;
+		this.argumentationDir = this.outputDir + File.separator
+				+ "argumentation";
+
+		// Create folders
+		File f = new File(argumentationDir);
+		if (!f.isDirectory()) {
+			boolean made = f.mkdir();
+			if (!made) {
+				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+						"Impossible to create argumentation directory");
+			}
+		}
 	}
 
 	/*
@@ -87,6 +106,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 				Argumentation argumentation = new Argumentation(
 						this.argumentations.size());
 				this.argumentations.add(argumentation);
+
 			}
 
 			this.pendingArguments = new ArrayList<Argument>();
@@ -162,7 +182,8 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 					argflare.changeProperty(node, state);
 					Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
 							"Argumentative agents concludes that " + node
-									+ " - " + state);
+									+ " - " + state + " with confidence: "
+									+ max);
 				}
 			}
 			argflare.setCurrentStatus(SolarFlare.READY, true);
@@ -230,7 +251,100 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 * @param currentArgumentation
 	 */
 	private void argumentation2File(Argumentation currentArgumentation) {
-		// TODO implement this
+		
+
+//		File f = new File(argumentationDir + File.separator
+//				+ "argumentation" + argumentation.getId());
+//		if (!f.isDirectory()) {
+//			boolean made = f.mkdir();
+//			if (!made) {
+//				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+//						"Impossible to create argumentation directory. -> Argumentation: "
+//								+ argumentation.getId());
+//			}
+//		}
+//		f = new File(argumentationDir + File.separator
+//				+ "argumentation" + argumentation.getId()
+//				+ File.separator + "arguments");
+//		if (!f.isDirectory()) {
+//			boolean made = f.mkdir();
+//			if (!made) {
+//				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+//						"Impossible to create arguments directory. -> Argumentation: "
+//								+ argumentation.getId());
+//			}
+//		}
+		
+		
+		
+		// Write argumentation general info in csv
+		try {
+			List<String> headers = new ArrayList<String>();
+
+			headers.add("ArgumentationID");
+			headers.add("ArgumentID");
+			headers.add("ProponentID");
+			headers.add("Step");
+			headers.add("Timestamp");
+			int size = headers.size();
+			String[] newHeaders = new String[size];
+			int i = 0;
+			for (String header : headers) {
+				newHeaders[i++] = header;
+			}
+
+			File f = new File(this.outputDir + File.separator
+					+ "argumentations.csv");
+			CsvWriter writer = null;
+			if (!f.exists()) {
+				writer = new CsvWriter(new FileWriter(this.outputDir
+						+ File.separator + "argumentations.csv"), ',');
+				writer.writeRecord(newHeaders);
+				writer.flush();
+			} else {
+				writer = new CsvWriter(new FileWriter(this.outputDir
+						+ File.separator + "argumentations.csv", true), ',');
+			}
+
+			for (Argument arg : currentArgumentation.getArgumentsWithSteps()
+					.keySet()) {
+				String[] data = new String[newHeaders.length];
+				data[0] = Integer.toString(currentArgumentation.getId());
+				data[1] = Integer.toString(arg.getId());
+				data[2] = arg.getProponent().getProponentName();
+				data[3] = Long.toString(currentArgumentation
+						.getArgumentsWithSteps().get(arg));
+				data[4] = Long.toString(currentArgumentation
+						.getArgumentsWithTimestamps().get(arg));
+				writer.writeRecord(data);
+				writer.flush();
+			}
+
+			writer.close();
+
+//			for (Argument argument : currentArgumentation
+//					.getArgumentsWithSteps().keySet()) {
+//				FileWriter fw = new FileWriter(this.argumentationDir
+//						+ File.separator + "argumentation"
+//						+ currentArgumentation.getId() + File.separator
+//						+ "arguments" + File.separator + "argument"
+//						+ argument.getId() + ".info");
+//				fw.write("Argumentation: " + currentArgumentation.getId()
+//						+ " - Argument: " + argument.getId() + " - Proponent: "
+//						+ argument.getProponent().getProponentName());
+//				fw.close();
+//			}
+			
+			
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// TODO write graph
+		// TODO write argumentation info
+		// TODO write all arguments 2 file
 	}
 
 	/**

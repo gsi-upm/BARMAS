@@ -41,6 +41,7 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
  */
 public class Argument extends AbstractArgument {
 
+	private int id;
 	private Set<Given> givens;
 	private Set<Assumption> assumptions;
 	private Set<Proposal> proposals;
@@ -80,6 +81,20 @@ public class Argument extends AbstractArgument {
 		this.proposals = new HashSet<Proposal>();		
 	}
 	
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	/**
 	 * @param given
 	 */

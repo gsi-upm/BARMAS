@@ -122,11 +122,13 @@ public class SolarFlareGenerator implements Steppable {
 					flare.setCurrentStatus(SolarFlare.READY, true);
 
 					sim.getLogger().info(
-							"New Solar Flare generated. Case ID: "
+							"New Solar Flare generated in step "
+									+ sim.schedule.getSteps() + ". Case ID: "
 									+ flare.getCaseID() + " Solar Flare Type: "
 									+ flareCase[11]);
 				} else {
-					sim.getLogger().info("Finishing simulation. No more test cases.");
+					sim.getLogger().info(
+							"Finishing simulation. No more test cases.");
 					sim.finish();
 				}
 			}

@@ -47,8 +47,10 @@ public class SolarFlareEvaluator implements Steppable {
 
 	private String outputPath;
 	private String originalPath;
-	private String[] headers;
+	private String[] classResultsHeaders;
+	private String[] summaryHeaders;
 	private String classResultsFile;
+	private String summaryPerClassFile;
 
 	public SolarFlareEvaluator(String output, String originalTestCases) {
 		this.outputPath = output;
@@ -65,6 +67,7 @@ public class SolarFlareEvaluator implements Steppable {
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
 			List<String> resultsHeaders = new ArrayList<String>();
+			resultsHeaders.add("caseID");
 			resultsHeaders.addAll(Arrays.asList(headers));
 			resultsHeaders.add("BayesCentralClassifiedAs");
 			resultsHeaders.add("ArgumentationClassifiedAs");
@@ -76,7 +79,38 @@ public class SolarFlareEvaluator implements Steppable {
 			}
 			CsvWriter writer = new CsvWriter(new FileWriter(classResultsFile),
 					',');
-			this.headers = newHeaders;
+			this.classResultsHeaders = newHeaders;
+			writer.writeRecord(newHeaders);
+			writer.flush();
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Output classification results file
+		// Writing csv headers
+		this.summaryPerClassFile = outputPath + File.separator + "summary.csv";
+
+		try {
+			List<String> summaryHeaders = new ArrayList<String>();
+			summaryHeaders.add("Type");
+			summaryHeaders.add("Original");
+			summaryHeaders.add("BayesCentral");
+			summaryHeaders.add("Argumentation");
+			summaryHeaders.add("BetterBayesCentral");
+			summaryHeaders.add("BetterArgumentation");
+			summaryHeaders.add("Draw");
+			int size = summaryHeaders.size();
+			String[] newHeaders = new String[size];
+			int i = 0;
+			for (String header : summaryHeaders) {
+				newHeaders[i++] = header;
+			}
+			CsvWriter writer = new CsvWriter(
+					new FileWriter(summaryPerClassFile), ',');
+			this.summaryHeaders = newHeaders;
 			writer.writeRecord(newHeaders);
 			writer.flush();
 			writer.close();
@@ -116,13 +150,52 @@ public class SolarFlareEvaluator implements Steppable {
 				FileWriter fw = new FileWriter(classResultsFile, true); // append
 				// content
 				CsvWriter writer = new CsvWriter(fw, ',');
-				String[] data = new String[this.headers.length];
-				for (int i = 0; i < this.headers.length - 3; i++) {
-					data[i] = (String) origflare.getProperty(headers[i]);
+				String[] data = new String[this.classResultsHeaders.length];
+				data[0] = Integer.toString(origflare.getCaseID());
+				for (int i = 0; i < this.classResultsHeaders.length - 3; i++) {
+					data[i + 1] = (String) origflare
+							.getProperty(classResultsHeaders[i + 1]);
 				}
-				data[headers.length - 3] = origClass;
-				data[headers.length - 2] = centralClass;
-				data[headers.length - 1] = argClass;
+				data[classResultsHeaders.length - 3] = origClass;
+				data[classResultsHeaders.length - 2] = centralClass;
+				data[classResultsHeaders.length - 1] = argClass;
+				writer.writeRecord(data);
+				writer.flush();
+				writer.close();
+
+				fw = new FileWriter(summaryPerClassFile, true);
+				writer = new CsvWriter(fw, ',');
+				data = new String[this.summaryHeaders.length];
+				data[0] = origClass;
+				data[1] = "1";
+				if (centralClass.equals(origClass)) {
+					data[2] = "1";
+				} else {
+					data[2] = "0";
+				}
+				if (argClass.equals(origClass)) {
+					data[3] = "1";
+				} else {
+					data[3] = "0";
+				}
+				if (centralClass.equals(origClass)
+						&& !argClass.equals(origClass)) {
+					data[4] = "1";
+				} else {
+					data[4] = "0";
+				}
+				if (!centralClass.equals(origClass)
+						&& argClass.equals(origClass)) {
+					data[5] = "1";
+				} else {
+					data[5] = "0";
+				}
+				if (centralClass.equals(argClass)) {
+					data[6] = "1";
+				} else {
+					data[6] = "0";
+				}
+
 				writer.writeRecord(data);
 				writer.flush();
 				writer.close();

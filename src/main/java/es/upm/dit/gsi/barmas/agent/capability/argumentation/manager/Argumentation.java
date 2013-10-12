@@ -51,6 +51,7 @@ public class Argumentation {
 	private int id;
 	private List<Argument> conclusions;
 	private HashMap<Argument, List<Argument>> graph;
+	private HashMap<Integer, Argument> ids;
 	private boolean finished;
 
 	/**
@@ -62,6 +63,7 @@ public class Argumentation {
 		this.setFinished(false);
 		this.timestamps = new HashMap<Argument, Long>();
 		this.steps = new HashMap<Argument, Long>();
+		this.ids = new HashMap<Integer, Argument>();
 		this.conclusions = new ArrayList<Argument>();
 		this.graph = new HashMap<Argument, List<Argument>>();
 	}
@@ -73,6 +75,8 @@ public class Argumentation {
 	public void addArgument(Argument arg, ShanksSimulation simulation) {
 		long timestamp = System.currentTimeMillis();
 		long step = simulation.schedule.getSteps();
+		arg.setId(ids.keySet().size());
+		this.ids.put(ids.keySet().size(), arg);
 		this.timestamps.put(arg, timestamp);
 		this.steps.put(arg, step);
 		this.graph.put(arg, new ArrayList<Argument>());
