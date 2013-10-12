@@ -217,9 +217,9 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 									+ " adding evidence: " + entry.getKey()
 									+ " - " + entry.getValue());
 					try {
-					
-					ShanksAgentBayesianReasoningCapability.addEvidence(this,
-							entry.getKey(), entry.getValue());	
+
+						ShanksAgentBayesianReasoningCapability.addEvidence(
+								this, entry.getKey(), entry.getValue());
 					} catch (ShanksException e) {
 						sim.getLogger().warning(
 								"Agent: " + this.getID()
@@ -233,7 +233,8 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 			} catch (ShanksException e) {
 				sim.getLogger().warning(
 						"Given received from agent: "
-								+ arg.getProponent().getProponentName() + ": -->");
+								+ arg.getProponent().getProponentName()
+								+ ": -->");
 				sim.getLogger().warning(e.getMessage());
 			}
 		}
@@ -259,7 +260,8 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 				SolarFlareScenario.ORIGINALFLARE);
 		sim.logger.finer("Agent: " + this.getID()
 				+ " has hypothesis for case SolarFlareID: " + orig.getCaseID()
-				+ " " + SolarFlareType.class.getSimpleName() + " - " + hyp);
+				+ " " + SolarFlareType.class.getSimpleName() + " - " + hyp
+				+ " -> Confidence: " + maxValue);
 
 		Set<Proposal> proposals = arg.getProposals();
 		String phyp = "";
@@ -282,12 +284,14 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 					"Agent: " + this.getID() + " disagrees with "
 							+ arg.getProponent().getProponentName());
 			if (newInfo) {
-				// Create and send initial argument
+				// Create and send counter argument
 				Argument counterArg = AgentArgumentativeCapability
 						.createArgument(this,
 								SolarFlareType.class.getSimpleName(), hyp,
 								maxValue, evidences);
 				AgentArgumentativeCapability.sendArgument(this, counterArg);
+				//TODO send directly to the manager, not to other agents
+				//TODO if no new evidences can be offered
 
 				sim.getLogger().finer(
 						"Counter argument sent by agent: " + this.getID());
@@ -340,7 +344,8 @@ public class SolarFlareClassificatorAgent extends SimpleShanksAgent implements
 			sim.logger.finer("Agent: " + this.getID()
 					+ " has hypothesis for case SolarFlareID: "
 					+ orig.getCaseID() + " "
-					+ SolarFlareType.class.getSimpleName() + " - " + hyp);
+					+ SolarFlareType.class.getSimpleName() + " - " + hyp
+					+ " -> Confidence: " + maxValue);
 
 			// Create and send initial argument
 			Argument arg = AgentArgumentativeCapability.createArgument(this,

@@ -196,6 +196,7 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 				float max = (float) 0.0;
 				for (Entry<String, Float> hyp : hyps.entrySet()) {
 					if (hyp.getValue() > max) {
+						max = hyp.getValue();
 						conclusion = hyp.getKey();
 					}
 				}
@@ -206,9 +207,9 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 				bayesflare.setCurrentStatus(SolarFlare.READY, true);
 
 				sim.getLogger().info(
-						"Solar Flare classified by Central Bayesian Agent. SolarFlareID: " + bayesflare.getCaseID() + " Hypothesis: "
+						"Hypothesis by Central Bayesian Agent. SolarFlareID: " + bayesflare.getCaseID() + ": "
 								+ SolarFlareType.class.getSimpleName() + " - "
-								+ conclusion);
+								+ conclusion + " -> Confidence: " + max);
 			} catch (ShanksException e) {
 				e.printStackTrace();
 			}

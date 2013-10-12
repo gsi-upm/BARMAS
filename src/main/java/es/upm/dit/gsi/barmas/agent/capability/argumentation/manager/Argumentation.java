@@ -130,6 +130,9 @@ public class Argumentation {
 				// Add to the graph
 				this.graph.get(arg).add(a);
 			}
+			
+			
+			//TODO check if some old argument defeats the new one
 		}
 	}
 

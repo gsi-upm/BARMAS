@@ -65,6 +65,9 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	 */
 	private static final long serialVersionUID = 4766549890044944967L;
 
+	public final static String EXPDATA = "expDataPath";
+	public final static String EXPOUTPUT = "expOutputPath";
+
 	/**
 	 * Constructor
 	 * 
@@ -88,12 +91,14 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	 */
 	@Override
 	public void addSteppables() {
-		Steppable generator = new SolarFlareGenerator(
-				"src/main/resources/exp1/dataset/testdataset.csv");
+		Steppable generator = new SolarFlareGenerator(this.getScenario()
+				.getProperties().getProperty(EXPDATA)
+				+ "/dataset/testdataset.csv");
 		schedule.scheduleRepeating(Schedule.EPOCH, 1, generator, 5);
-		Steppable evaluator = new SolarFlareEvaluator(
-				"src/main/resources/output/classification-results.csv",
-				"src/main/resources/exp1/dataset/testdataset.csv");
+		Steppable evaluator = new SolarFlareEvaluator(this.getScenario()
+				.getProperties().getProperty(EXPOUTPUT), this.getScenario()
+				.getProperties().getProperty(EXPDATA)
+				+ "/dataset/testdataset.csv");
 		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 1);
 	}
 
@@ -107,13 +112,15 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 
 		// CENTRAL AGENT
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
-				"BayesCentral",
-				"src/main/resources/exp1/bayes/agentdataset-central.net");
+				"BayesCentral", this.getScenario().getProperties()
+						.getProperty(EXPDATA)
+						+ "/bayes/agentdataset-central.net");
 		this.registerShanksAgent(bayes);
 
 		// Argumentation AGENTS
 		SolarFlareCentralManagerAgent manager = new SolarFlareCentralManagerAgent(
-				"Manager");
+				"Manager", this.getScenario().getProperties()
+						.getProperty(EXPOUTPUT));
 		this.registerShanksAgent(manager);
 
 		List<String> sensors1 = new ArrayList<String>();
@@ -124,8 +131,9 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 		sensors1.add(SpotDistribution.class.getSimpleName());
 		sensors1.add(Evolution.class.getSimpleName());
 		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent(
-				"ArgAgent1", manager,
-				"src/main/resources/exp1/bayes/agentdataset-1.net", sensors1);
+				"ArgAgent1", manager, this.getScenario().getProperties()
+						.getProperty(EXPDATA)
+						+ "/bayes/agentdataset-1.net", sensors1);
 		this.registerShanksAgent(agent1);
 
 		List<String> sensors2 = new ArrayList<String>();
@@ -135,8 +143,9 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 		sensors2.add(MNode.class.getSimpleName());
 		sensors2.add(XNode.class.getSimpleName());
 		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent(
-				"ArgAgent2", manager,
-				"src/main/resources/exp1/bayes/agentdataset-2.net", sensors2);
+				"ArgAgent2", manager, this.getScenario().getProperties()
+						.getProperty(EXPDATA)
+						+ "/bayes/agentdataset-2.net", sensors2);
 		this.registerShanksAgent(agent2);
 
 		// List<String> sensors3 = new ArrayList<String>();

@@ -3,6 +3,7 @@
  */
 package es.upm.dit.gsi.barmas.solarflare.steppable;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -44,15 +45,22 @@ public class SolarFlareEvaluator implements Steppable {
 	 */
 	private static final long serialVersionUID = 6678249143484534051L;
 
-	private String resultsPath;
+	private String outputPath;
 	private String originalPath;
+	private String[] headers;
+	private String classResultsFile;
 
-	public SolarFlareEvaluator(String results, String original) {
-		this.resultsPath = results;
-		this.originalPath = original;
-		Reader fr;
+	public SolarFlareEvaluator(String output, String originalTestCases) {
+		this.outputPath = output;
+		this.originalPath = originalTestCases;
+
+		// Output classification results file
+		// Writing csv headers
+		this.classResultsFile = outputPath + File.separator
+				+ "classification-results.csv";
 		try {
-			fr = new FileReader(originalPath);
+
+			Reader fr = new FileReader(originalPath);
 			CsvReader reader = new CsvReader(fr);
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
@@ -63,10 +71,12 @@ public class SolarFlareEvaluator implements Steppable {
 			int size = resultsHeaders.size();
 			String[] newHeaders = new String[size];
 			int i = 0;
-			for(String header : resultsHeaders) {
-				newHeaders[i++]=header;
+			for (String header : resultsHeaders) {
+				newHeaders[i++] = header;
 			}
-			CsvWriter writer = new CsvWriter(new FileWriter(resultsPath), ',');
+			CsvWriter writer = new CsvWriter(new FileWriter(classResultsFile),
+					',');
+			this.headers = newHeaders;
 			writer.writeRecord(newHeaders);
 			writer.flush();
 			writer.close();
@@ -75,6 +85,7 @@ public class SolarFlareEvaluator implements Steppable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/*
@@ -84,47 +95,52 @@ public class SolarFlareEvaluator implements Steppable {
 	 */
 	public void step(SimState simstate) {
 		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simstate;
-		SolarFlare argConclusion = (SolarFlare) sim.getScenario().getNetworkElement(
-				SolarFlareScenario.ARGUMENTATIONCONCLUSION);
-		SolarFlare centralConclusion = (SolarFlare) sim.getScenario().getNetworkElement(
-				SolarFlareScenario.CENTRALCONCLUSION);
+		SolarFlare argConclusion = (SolarFlare) sim.getScenario()
+				.getNetworkElement(SolarFlareScenario.ARGUMENTATIONCONCLUSION);
+		SolarFlare centralConclusion = (SolarFlare) sim.getScenario()
+				.getNetworkElement(SolarFlareScenario.CENTRALCONCLUSION);
 		SolarFlare origflare = (SolarFlare) sim.getScenario()
 				.getNetworkElement(SolarFlareScenario.ORIGINALFLARE);
 
-		String argClass = (String) argConclusion
-				.getProperty(SolarFlareType.class.getSimpleName());
-		String centralClass = (String) centralConclusion.getProperty(SolarFlareType.class.getSimpleName());
-		String origClass = (String) origflare.getProperty(SolarFlareType.class
-				.getSimpleName());
+		if (argConclusion.getStatus().get(SolarFlare.READY)
+				&& centralConclusion.getStatus().get(SolarFlare.READY)) {
 
-		if (argConclusion.getStatus().get(SolarFlare.READY) && centralConclusion.getStatus().get(SolarFlare.READY)) {
-			sim.getLogger().info("-----> EVALUATION starting...");
-//		if (argClass.equals(origClass)) {
-			// Result: success
+			String argClass = (String) argConclusion
+					.getProperty(SolarFlareType.class.getSimpleName());
+			String centralClass = (String) centralConclusion
+					.getProperty(SolarFlareType.class.getSimpleName());
+			String origClass = (String) origflare
+					.getProperty(SolarFlareType.class.getSimpleName());
+			sim.getLogger().info("-----> Writing CSV files...");
 			try {
-				FileWriter fw = new FileWriter(resultsPath, true); // append
-																	// content
+				FileWriter fw = new FileWriter(classResultsFile, true); // append
+				// content
 				CsvWriter writer = new CsvWriter(fw, ',');
-				// writer.writeRecord();
-				// TODO write csv
-				// writer.writeNext(row);
+				String[] data = new String[this.headers.length];
+				for (int i = 0; i < this.headers.length - 3; i++) {
+					data[i] = (String) origflare.getProperty(headers[i]);
+				}
+				data[headers.length - 3] = origClass;
+				data[headers.length - 2] = centralClass;
+				data[headers.length - 1] = argClass;
+				writer.writeRecord(data);
+				writer.flush();
 				writer.close();
-				// TODO UPDATE CHARTS
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//		} else {
-//			// Result: fail
-//		}
 
-			
-		argConclusion.reset();
-		centralConclusion.reset();
-		origflare.reset();
+			argConclusion.reset();
+			centralConclusion.reset();
+			origflare.reset();
 
-		sim.getLogger().info("-----> EVALUATION finished --- RESULT: ");
+			sim.getLogger().info("-----> EVALUATION finished --- RESULTS: ");
+			sim.getLogger().info("-> Original Flare: " + origClass);
+			sim.getLogger().info("-> Bayes Central: " + centralClass);
+			sim.getLogger().info("-> Argumentation: " + argClass);
+
 		}
 	}
 

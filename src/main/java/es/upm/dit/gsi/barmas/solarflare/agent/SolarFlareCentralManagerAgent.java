@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
@@ -20,6 +21,7 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentatio
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -54,18 +56,22 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 
 	private List<Argument> pendingArguments;
 
+	private String outputDir;
+
 	/**
 	 * Constructor
 	 * 
 	 * @param id
+	 * @param outputDir
 	 */
-	public SolarFlareCentralManagerAgent(String id) {
+	public SolarFlareCentralManagerAgent(String id, String outputDir) {
 		super(id);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.idle = true;
 		this.pendingArguments = new ArrayList<Argument>();
 		this.idleSteps = 0;
+		this.outputDir = outputDir;
 	}
 
 	/*
@@ -154,6 +160,9 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 						}
 					}
 					argflare.changeProperty(node, state);
+					Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
+							"Argumentative agents concludes that " + node
+									+ " - " + state);
 				}
 			}
 			argflare.setCurrentStatus(SolarFlare.READY, true);
@@ -196,6 +205,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 			}
 		}
 
+		// Add undefeated arguments
 		List<Argument> conclusions = argumentation.getConclusions();
 		for (Entry<Argument, Boolean> e : undefeated.entrySet()) {
 			if (e.getValue()) {
@@ -203,7 +213,77 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 			}
 		}
 
+		if (conclusions.size() == 0) {
+			// If no conclusions...
+			this.getHigherHypothesis(argumentation);
+		} else {
+			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
+					"Argumentation Manager--> Found undefeated arguments. Count: "
+							+ conclusions.size());
+		}
+
+		this.argumentation2File(this.getCurrentArgumentation());
 		argumentation.setFinished(true);
+	}
+
+	/**
+	 * @param currentArgumentation
+	 */
+	private void argumentation2File(Argumentation currentArgumentation) {
+		// TODO implement this
+	}
+
+	/**
+	 * Resolution conflicts method
+	 * 
+	 * @param argumentation
+	 */
+	private void getHigherHypothesis(Argumentation argumentation) {
+
+		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		int maxEvidences = 0;
+		for (Argument arg : argumentation.getArgumentsWithSteps().keySet()) {
+			int evCardinal = arg.getGivens().size();
+			if (evCardinal > maxEvidences) {
+				maxEvidences = evCardinal;
+			}
+		}
+		// Pick possible arguments
+		String hyp = "";
+		double max = 0;
+		for (Argument arg : argumentation.getArgumentsWithSteps().keySet()) {
+			if (arg.getGivens().size() == maxEvidences) {
+				for (Proposal p : arg.getProposals()) {
+					for (Entry<String, Double> e : p.getValuesWithConfidence()
+							.entrySet()) {
+						if (e.getValue() >= max) {
+							max = e.getValue();
+							hyp = e.getKey();
+						}
+					}
+				}
+			}
+		}
+
+		logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp
+				+ " - " + max);
+
+		Argument a = new Argument();
+		for (Argument arg : argumentation.getArgumentsWithSteps().keySet()) {
+			if (arg.getGivens().size() == maxEvidences) {
+				for (Given g : arg.getGivens()) {
+					a.addGiven(g);
+				}
+				break;
+			}
+		}
+		HashMap<String, Double> beliefs = new HashMap<String, Double>();
+		beliefs.put(hyp, max);
+		Proposal proposal = new Proposal(SolarFlareType.class.getSimpleName(),
+				beliefs);
+		a.addProposal(proposal);
+
+		argumentation.getConclusions().add(a);
 	}
 
 	/*

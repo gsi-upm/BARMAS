@@ -35,11 +35,19 @@ public class SolarFlare2DGUILauncher {
 	public static void main(String[] args) {
 
 
+		// Simulation properties
+		long seed = System.currentTimeMillis();
+		String simulationName = "SolarFlareClassificatorScenario"
+				+ "-2AgentsHigherResolution-" + seed;
+		
+		// Logging properties
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-		Level level = Level.FINE;
-		long date = System.currentTimeMillis();
-		String name = "NoGUI-Basic2Agents-"+Long.toString(date);
-		LogConfigurator.log2File(logger, name, level);
+		Level level = Level.ALL;
+		// long date = System.currentTimeMillis();
+		// String name = "NoGUI-Basic2Agents-"+Long.toString(date);
+		String name = "NoGUI-"+simulationName;
+		String dir = "src/main/resources/output"+simulationName;
+		LogConfigurator.log2File(logger, name, level, dir);
 		
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.SIMULATION_2D);
@@ -47,8 +55,8 @@ public class SolarFlare2DGUILauncher {
 		SolarFlareClassificationSimulation sim;
 		try {
 			sim = new SolarFlareClassificationSimulation(
-					System.currentTimeMillis(), SolarFlareScenario.class,
-					"SolarFlareClassificatorScenario",
+					seed, SolarFlareScenario.class,
+					simulationName,
 					SolarFlareScenario.NORMALSTATE, scenarioProperties);
 			SolarFlareClassificationSimulation2DGUI gui = new SolarFlareClassificationSimulation2DGUI(
 					sim);

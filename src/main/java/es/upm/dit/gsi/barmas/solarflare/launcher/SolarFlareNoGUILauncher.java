@@ -3,6 +3,7 @@
  */
 package es.upm.dit.gsi.barmas.solarflare.launcher;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,37 +32,89 @@ public class SolarFlareNoGUILauncher {
 
 	public static void main(String[] args) {
 
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-		Level level = Level.ALL;
-//		long date = System.currentTimeMillis();
-//		String name = "NoGUI-Basic2Agents-"+Long.toString(date);
-		String name = "NoGUI-Basic2Agents";
-		LogConfigurator.log2File(logger, name, level);
-		
-		long totalSteps = 101;
-		
-		
-		 logger.info("--> Starting simulation...");
-		 
-		Properties scenarioProperties = new Properties();
-		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
-
-		SolarFlareClassificationSimulation sim;
-		try {
-			sim = new SolarFlareClassificationSimulation(
-					System.currentTimeMillis(), SolarFlareScenario.class,
-					"SolarFlareClassificatorScenario",
-					SolarFlareScenario.NORMALSTATE, scenarioProperties);
-
-			sim.start();
-			do
-				if (!sim.schedule.step(sim)) {
-					break;
-				}
-			while (sim.schedule.getSteps() < totalSteps);
-			sim.finish();
-		} catch (ShanksException e) {
-			e.printStackTrace();
-		}
+		SolarFlareNoGUILauncher.launchSimulationBasic();
 	}
+	
+	public static void launchSimulationBasic() {
+		// Simulation properties
+				long seed = System.currentTimeMillis();
+				String simulationName = "SolarFlareClassificatorScenario"
+						+ "-2AgentsHigherResolution-" + seed;
+
+				// Logging properties
+				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+				Level level = Level.ALL;
+				String name = "NoGUI-" + simulationName;
+				String experimentDatasetPath = "src" + File.separator + "main" + File.separator
+						+ "resources" + File.separator + "exp1";
+				String experimentOutputPath = experimentDatasetPath + File.separator
+						+ "output" + File.separator + simulationName;
+				LogConfigurator.log2File(logger, name, level, experimentOutputPath);
+
+				logger.info("--> Starting simulation...");
+
+				Properties scenarioProperties = new Properties();
+				scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+				scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA, experimentDatasetPath);
+				scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT, experimentOutputPath);
+
+				SolarFlareClassificationSimulation sim;
+				try {
+					sim = new SolarFlareClassificationSimulation(seed,
+							SolarFlareScenario.class, simulationName,
+							SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+					sim.start();
+					do
+						if (!sim.schedule.step(sim)) {
+							break;
+						}
+					while (true);
+					// while (sim.schedule.getSteps() < totalSteps);
+					// sim.finish();
+				} catch (ShanksException e) {
+					e.printStackTrace();
+				}
+	}
+	
+//	public static void launchSimulationBasic2() {
+//		// Simulation properties
+//				long seed = System.currentTimeMillis();
+//				String simulationName = "SOther-" + seed;
+//
+//				// Logging properties
+//				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+//				Level level = Level.ALL;
+//				String name = "NoGUI-" + simulationName;
+//				String experimentDatasetPath = "src" + File.separator + "main" + File.separator
+//						+ "resources" + File.separator + "exp1";
+//				String experimentOutputPath = experimentDatasetPath + File.separator
+//						+ "output" + File.separator + simulationName;
+//				LogConfigurator.log2File(logger, name, level, experimentOutputPath);
+//
+//				logger.info("--> Starting simulation...");
+//
+//				Properties scenarioProperties = new Properties();
+//				scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+//				scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA, experimentDatasetPath);
+//				scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT, experimentOutputPath);
+//
+//				SolarFlareClassificationSimulation sim;
+//				try {
+//					sim = new SolarFlareClassificationSimulation(seed,
+//							SolarFlareScenario.class, simulationName,
+//							SolarFlareScenario.NORMALSTATE, scenarioProperties);
+//
+//					sim.start();
+//					do
+//						if (!sim.schedule.step(sim)) {
+//							break;
+//						}
+//					while (true);
+//					// while (sim.schedule.getSteps() < totalSteps);
+//					// sim.finish();
+//				} catch (ShanksException e) {
+//					e.printStackTrace();
+//				}
+//	}
 }

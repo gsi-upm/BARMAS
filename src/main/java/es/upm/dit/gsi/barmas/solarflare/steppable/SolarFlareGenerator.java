@@ -87,37 +87,48 @@ public class SolarFlareGenerator implements Steppable {
 				// if (!flare.getStatus().get(SolarFlare.READY) &&
 				// this.counter==0) {
 
-				reader.readRecord();
-				String[] flareCase = reader.getValues();
+				if (reader.readRecord()) {
+					String[] flareCase = reader.getValues();
 
-				flare.changeProperty(LargestSpotSize.class.getSimpleName(),
-						flareCase[0]);
-				flare.changeProperty(SpotDistribution.class.getSimpleName(),
-						flareCase[1]);
-				flare.changeProperty(Activity.class.getSimpleName(),
-						flareCase[2]);
-				flare.changeProperty(Evolution.class.getSimpleName(),
-						flareCase[3]);
-				flare.changeProperty(PrevStatus24Hour.class.getSimpleName(),
-						flareCase[4]);
-				flare.changeProperty(HistComplex.class.getSimpleName(),
-						flareCase[5]);
-				flare.changeProperty(BecomeHist.class.getSimpleName(),
-						flareCase[6]);
-				flare.changeProperty(Area.class.getSimpleName(), flareCase[7]);
-				flare.changeProperty(CNode.class.getSimpleName(), flareCase[8]);
-				flare.changeProperty(MNode.class.getSimpleName(), flareCase[9]);
-				flare.changeProperty(XNode.class.getSimpleName(), flareCase[10]);
+					flare.changeProperty(LargestSpotSize.class.getSimpleName(),
+							flareCase[0]);
+					flare.changeProperty(
+							SpotDistribution.class.getSimpleName(),
+							flareCase[1]);
+					flare.changeProperty(Activity.class.getSimpleName(),
+							flareCase[2]);
+					flare.changeProperty(Evolution.class.getSimpleName(),
+							flareCase[3]);
+					flare.changeProperty(
+							PrevStatus24Hour.class.getSimpleName(),
+							flareCase[4]);
+					flare.changeProperty(HistComplex.class.getSimpleName(),
+							flareCase[5]);
+					flare.changeProperty(BecomeHist.class.getSimpleName(),
+							flareCase[6]);
+					flare.changeProperty(Area.class.getSimpleName(),
+							flareCase[7]);
+					flare.changeProperty(CNode.class.getSimpleName(),
+							flareCase[8]);
+					flare.changeProperty(MNode.class.getSimpleName(),
+							flareCase[9]);
+					flare.changeProperty(XNode.class.getSimpleName(),
+							flareCase[10]);
 
-				flare.changeProperty(SolarFlareType.class.getSimpleName(),
-						flareCase[11]);
+					flare.changeProperty(SolarFlareType.class.getSimpleName(),
+							flareCase[11]);
 
-				flare.setCaseID(counter++);
-				flare.setCurrentStatus(SolarFlare.READY, true);
+					flare.setCaseID(counter++);
+					flare.setCurrentStatus(SolarFlare.READY, true);
 
-				sim.getLogger().info(
-						"New Solar Flare generated. Case ID: " + flare.getCaseID()
-								+ " Solar Flare Type: " + flareCase[11]);
+					sim.getLogger().info(
+							"New Solar Flare generated. Case ID: "
+									+ flare.getCaseID() + " Solar Flare Type: "
+									+ flareCase[11]);
+				} else {
+					sim.getLogger().info("Finishing simulation. No more test cases.");
+					sim.finish();
+				}
 			}
 		} catch (ShanksException e) {
 			e.printStackTrace();
