@@ -290,10 +290,10 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 				newHeaders[i++] = header;
 			}
 
-			f = new File(this.outputDir + File.separator + "argumentations.csv");
-			CsvWriter generalWriter = null;
 			String generalArgumentationsFile = this.outputDir + File.separator
 					+ "allArgumentations.csv";
+			f = new File(generalArgumentationsFile);
+			CsvWriter generalWriter = null;
 			if (!f.exists()) {
 				generalWriter = new CsvWriter(new FileWriter(
 						generalArgumentationsFile), ',');
