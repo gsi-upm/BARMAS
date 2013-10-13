@@ -21,6 +21,7 @@ import com.csvreader.CsvWriter;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
@@ -251,32 +252,28 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 * @param currentArgumentation
 	 */
 	private void argumentation2File(Argumentation currentArgumentation) {
-		
 
-//		File f = new File(argumentationDir + File.separator
-//				+ "argumentation" + argumentation.getId());
-//		if (!f.isDirectory()) {
-//			boolean made = f.mkdir();
-//			if (!made) {
-//				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
-//						"Impossible to create argumentation directory. -> Argumentation: "
-//								+ argumentation.getId());
-//			}
-//		}
-//		f = new File(argumentationDir + File.separator
-//				+ "argumentation" + argumentation.getId()
-//				+ File.separator + "arguments");
-//		if (!f.isDirectory()) {
-//			boolean made = f.mkdir();
-//			if (!made) {
-//				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
-//						"Impossible to create arguments directory. -> Argumentation: "
-//								+ argumentation.getId());
-//			}
-//		}
-		
-		
-		
+		File f = new File(argumentationDir + File.separator + "argumentation"
+				+ currentArgumentation.getId());
+		if (!f.isDirectory()) {
+			boolean made = f.mkdir();
+			if (!made) {
+				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+						"Impossible to create argumentation directory. -> Argumentation: "
+								+ currentArgumentation.getId());
+			}
+		}
+		// f = new File(argumentationDir + File.separator + "argumentation"
+		// + currentArgumentation.getId() + File.separator + "arguments");
+		// if (!f.isDirectory()) {
+		// boolean made = f.mkdir();
+		// if (!made) {
+		// Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+		// "Impossible to create arguments directory. -> Argumentation: "
+		// + currentArgumentation.getId());
+		// }
+		// }
+
 		// Write argumentation general info in csv
 		try {
 			List<String> headers = new ArrayList<String>();
@@ -293,21 +290,41 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 				newHeaders[i++] = header;
 			}
 
-			File f = new File(this.outputDir + File.separator
-					+ "argumentations.csv");
-			CsvWriter writer = null;
+			f = new File(this.outputDir + File.separator + "argumentations.csv");
+			CsvWriter generalWriter = null;
+			String generalArgumentationsFile = this.outputDir + File.separator
+					+ "allArgumentations.csv";
 			if (!f.exists()) {
-				writer = new CsvWriter(new FileWriter(this.outputDir
-						+ File.separator + "argumentations.csv"), ',');
-				writer.writeRecord(newHeaders);
-				writer.flush();
+				generalWriter = new CsvWriter(new FileWriter(
+						generalArgumentationsFile), ',');
+				generalWriter.writeRecord(newHeaders);
+				generalWriter.flush();
 			} else {
-				writer = new CsvWriter(new FileWriter(this.outputDir
-						+ File.separator + "argumentations.csv", true), ',');
+				generalWriter = new CsvWriter(new FileWriter(
+						generalArgumentationsFile, true), ',');
 			}
 
-			for (Argument arg : currentArgumentation.getArgumentsWithSteps()
-					.keySet()) {
+			CsvWriter concreteWriter = null;
+
+			String concreteArgumentationFile = argumentationDir
+					+ File.separator + "argumentation"
+					+ currentArgumentation.getId() + File.separator
+					+ "argumentation-" + currentArgumentation.getId() + ".csv";
+			f = new File(concreteArgumentationFile);
+			if (!f.exists()) {
+				concreteWriter = new CsvWriter(new FileWriter(
+						concreteArgumentationFile), ',');
+				concreteWriter.writeRecord(newHeaders);
+				concreteWriter.flush();
+			} else {
+				concreteWriter = new CsvWriter(new FileWriter(
+						concreteArgumentationFile, true), ',');
+			}
+
+			int argNums = currentArgumentation.getArgumentsWithID().size();
+			for (int argNum = 0; argNum < argNums; argNum++) {
+				Argument arg = currentArgumentation.getArgumentsWithID().get(
+						argNum);
 				String[] data = new String[newHeaders.length];
 				data[0] = Integer.toString(currentArgumentation.getId());
 				data[1] = Integer.toString(arg.getId());
@@ -316,35 +333,118 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 						.getArgumentsWithSteps().get(arg));
 				data[4] = Long.toString(currentArgumentation
 						.getArgumentsWithTimestamps().get(arg));
-				writer.writeRecord(data);
-				writer.flush();
+				generalWriter.writeRecord(data);
+				generalWriter.flush();
+				concreteWriter.writeRecord(data);
+				concreteWriter.flush();
 			}
 
-			writer.close();
+			generalWriter.close();
+			concreteWriter.close();
 
-//			for (Argument argument : currentArgumentation
-//					.getArgumentsWithSteps().keySet()) {
-//				FileWriter fw = new FileWriter(this.argumentationDir
-//						+ File.separator + "argumentation"
-//						+ currentArgumentation.getId() + File.separator
-//						+ "arguments" + File.separator + "argument"
-//						+ argument.getId() + ".info");
-//				fw.write("Argumentation: " + currentArgumentation.getId()
-//						+ " - Argument: " + argument.getId() + " - Proponent: "
-//						+ argument.getProponent().getProponentName());
-//				fw.close();
-//			}
+			// Write the graph
+			HashMap<Argument, List<Argument>> graph = currentArgumentation
+					.getGraph();
+			String graphFile = argumentationDir + File.separator
+					+ "argumentation" + currentArgumentation.getId()
+					+ File.separator + "graph-argumentation-"
+					+ currentArgumentation.getId() + ".csv";
+			CsvWriter graphWriter = null;
+			String[] graphHeaders = new String[currentArgumentation
+					.getArgumentsWithID().size() + 1];
+			graphHeaders[0] = "ArgID";
+			for (int aux = 1; aux < graphHeaders.length; aux++) {
+				graphHeaders[aux] = "Arg" + aux;
+			}
+			f = new File(graphFile);
+			if (!f.exists()) {
+				graphWriter = new CsvWriter(new FileWriter(graphFile), ',');
+				graphWriter.writeRecord(graphHeaders);
+				graphWriter.flush();
+			} else {
+				graphWriter = new CsvWriter(new FileWriter(graphFile, true),
+						',');
+			}
+
+			for (int aux = 1; aux < graphHeaders.length; aux++) {
+				String[] graphData = new String[graphHeaders.length];
+				graphData[0] = Integer.toString(aux - 1);
+				Argument arg = currentArgumentation.getArgumentsWithID().get(
+						aux - 1);
+				List<Argument> attacks = graph.get(arg);
+				for (int aux2 = 0; aux2 < graphHeaders.length - 1; aux2++) {
+					Argument arg2 = currentArgumentation.getArgumentsWithID()
+							.get(aux2);
+					if (attacks.contains(arg2)) {
+						graphData[aux2 + 1] = "1";
+					} else {
+						graphData[aux2 + 1] = "0";
+					}
+				}
+				graphWriter.writeRecord(graphData);
+				graphWriter.flush();
+			}
+
+			graphWriter.close();
+
+			// Arguments
 			
-			
+			for (int aux = 0; aux<currentArgumentation.getArgumentsWithID().size();aux++) {
+				Argument argument = currentArgumentation.getArgumentsWithID().get(aux);
+				FileWriter fw = new FileWriter(this.argumentationDir
+						+ File.separator + "argumentation"
+						+ currentArgumentation.getId() + File.separator
+						+ "arguments-argumentation-" + currentArgumentation.getId() + ".info", true);
+				// FileWriter fw = new FileWriter(this.argumentationDir
+				// + File.separator + "argumentation"
+				// + currentArgumentation.getId() + File.separator
+				// + "arguments" + File.separator + "argument"
+				// + argument.getId() + ".info");
+				fw.write("Argumentation: " + currentArgumentation.getId()
+						+ " - Argument: " + argument.getId() + "\nProponent: "
+						+ argument.getProponent().getProponentName() + "\n\n");
+				fw.flush();
+				fw.write("\tGivens:\n");
+				fw.flush();
+				for (Given given : argument.getGivens()) {
+					fw.write("\t\tNode: " + given.getNode() + "\n\tValue: "
+							+ given.getValue() + "\n");
+					fw.flush();
+				}
+				fw.write("\n\tAssumptions:\n");
+				fw.flush();
+				for (Assumption assump : argument.getAssumptions()) {
+					fw.write("\t\tNode: " + assump.getNode() + "\n");
+					fw.flush();
+					for (Entry<String, Double> entry : assump
+							.getValuesWithConfidence().entrySet()) {
+						fw.write("\t\t\tValue: " + entry.getKey()
+								+ " - Confidene: " + entry.getValue() + "\n");
+						fw.flush();
+					}
+				}
+				fw.write("\n\tProposal:\n");
+				fw.flush();
+				for (Proposal proposal : argument.getProposals()) {
+					fw.write("\t\tNode: " + proposal.getNode() + "\n");
+					fw.flush();
+					for (Entry<String, Double> entry : proposal
+							.getValuesWithConfidence().entrySet()) {
+						fw.write("\t\t\tValue: " + entry.getKey()
+								+ " - Confidene: " + entry.getValue() + "\n");
+						fw.flush();
+					}
+				}
+				fw.write("\n\n");
+				fw.flush();
+				fw.close();
+			}
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// TODO write graph
-		// TODO write argumentation info
-		// TODO write all arguments 2 file
 	}
 
 	/**

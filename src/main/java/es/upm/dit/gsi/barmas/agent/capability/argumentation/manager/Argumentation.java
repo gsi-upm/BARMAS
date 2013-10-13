@@ -134,9 +134,8 @@ public class Argumentation {
 				// Add to the graph
 				this.graph.get(arg).add(a);
 			}
-			
-			
-			//TODO check if some old argument defeats the new one
+
+			// TODO check if some old argument defeats the new one
 		}
 	}
 
@@ -217,6 +216,10 @@ public class Argumentation {
 	 */
 	public void setFinished(boolean finished) {
 		this.finished = finished;
+	}
+
+	public HashMap<Integer, Argument> getArgumentsWithID() {
+		return this.ids;
 	}
 
 }
