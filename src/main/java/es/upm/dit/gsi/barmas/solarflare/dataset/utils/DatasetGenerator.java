@@ -30,18 +30,15 @@ import com.csvreader.CsvWriter;
 public class DatasetGenerator {
 
 	/**
-	 * Constructor
-	 * 
-	 */
-	public DatasetGenerator() {
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
+		DatasetGenerator.twoArgAgentsAndTestDataset();
+
+	}
+
+	public static void twoArgAgentsAndTestDataset() {
 		Logger logger = Logger.getLogger(DatasetGenerator.class.getName());
 		String path = "src/main/resources/dataset/solarflare-global.csv";
 		String testingPath = "src/main/resources/exp1/dataset/testdataset.csv";
@@ -60,7 +57,8 @@ public class DatasetGenerator {
 					',');
 			CsvWriter data1Writer = new CsvWriter(new FileWriter(dataSet1), ',');
 			CsvWriter data2Writer = new CsvWriter(new FileWriter(dataSet2), ',');
-			CsvWriter dataCentralWriter = new CsvWriter(new FileWriter(dataSetCentral), ',');
+			CsvWriter dataCentralWriter = new CsvWriter(new FileWriter(
+					dataSetCentral), ',');
 
 			testWriter.writeRecord(headers);
 			testWriter.flush();
@@ -89,12 +87,12 @@ public class DatasetGenerator {
 					break;
 				case 2:
 					data2Writer.writeRecord(values);
-					dataCentralWriter.writeRecord(values);					
+					dataCentralWriter.writeRecord(values);
 					counters[i]++;
 					i = 0;
 					break;
 				default:
-					logger.warning("WARNING!!! Error writing datasets! i="+i);
+					logger.warning("WARNING!!! Error writing datasets! i=" + i);
 					break;
 				}
 			}
@@ -108,12 +106,11 @@ public class DatasetGenerator {
 			dataCentralWriter.close();
 
 			logger.info("--> THE END");
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }

@@ -62,17 +62,17 @@ public class SolarFlareNoGUILauncher {
 		String summaryFile = "src/main/resources/exp1/output/global-summary.csv";
 		// long seed = System.currentTimeMillis();
 		long seed = 0;
-		for (int i = 0; i < 10; i++) {
-			SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
-					summaryFile);
-		}
+//		for (int i = 0; i < 10; i++) {
+//			SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
+//					summaryFile);
+//		}
 
-		// SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
-		// summaryFile);
-		// SolarFlareNoGUILauncher.launchSimulationBasic3Agents(seed,
-		// summaryFile);
-		// SolarFlareNoGUILauncher.launchSimulationBasic4Agents(seed,
-		// summaryFile);
+		 SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
+		 summaryFile);
+		 SolarFlareNoGUILauncher.launchSimulationBasic3Agents(seed,
+		 summaryFile);
+		 SolarFlareNoGUILauncher.launchSimulationBasic4Agents(seed,
+		 summaryFile);
 	}
 
 	public static void makeNumbers(String simulationName, String origPath,
@@ -248,7 +248,7 @@ public class SolarFlareNoGUILauncher {
 		// Argumentation AGENTS
 		SolarFlareCentralManagerAgent manager = new SolarFlareCentralManagerAgent(
 				"Manager", experimentOutputPath);
-		agents.add(manager);
+		scenarioProperties.put("ManagerAgent", manager);
 
 		List<String> sensors1 = new ArrayList<String>();
 		sensors1.add(Activity.class.getSimpleName());
@@ -338,7 +338,7 @@ public class SolarFlareNoGUILauncher {
 		// Argumentation AGENTS
 		SolarFlareCentralManagerAgent manager = new SolarFlareCentralManagerAgent(
 				"Manager", experimentOutputPath);
-		agents.add(manager);
+		scenarioProperties.put("ManagerAgent", manager);
 
 		List<String> sensors1 = new ArrayList<String>();
 		sensors1.add(Activity.class.getSimpleName());
@@ -431,7 +431,7 @@ public class SolarFlareNoGUILauncher {
 		// Argumentation AGENTS
 		SolarFlareCentralManagerAgent manager = new SolarFlareCentralManagerAgent(
 				"Manager", experimentOutputPath);
-		agents.add(manager);
+		scenarioProperties.put("ManagerAgent", manager);
 
 		List<String> sensors1 = new ArrayList<String>();
 		sensors1.add(Activity.class.getSimpleName());

@@ -21,16 +21,15 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractProposal;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.Proposal.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.model.Proposal.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -46,34 +45,42 @@ public class Proposal extends AbstractProposal {
 
 	/**
 	 * Constructor
-	 *
-	 * @param node The name of the proposed node
-	 * @param beliefs The map with value-confidence. Consistency of this probability distribution is not checked in this class.
+	 * 
+	 * @param node
+	 *            The name of the proposed node
+	 * @param beliefs
+	 *            The map with value-confidence. Consistency of this probability
+	 *            distribution is not checked in this class.
 	 */
-	public Proposal(String node, Map<String,Double> beliefs) {
+	public Proposal(String node, Map<String, Double> beliefs) {
 		this.node = node;
 		this.beliefs = beliefs;
 	}
-	
+
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param node
 	 */
 	public Proposal(String node) {
 		this.node = node;
 		this.beliefs = new HashMap<String, Double>();
 	}
-	
+
 	/**
-	 * @param value A possible value of the node
-	 * @param confidence Its confidence. Consistency of this probability distribution is not checked in this class.
+	 * @param value
+	 *            A possible value of the node
+	 * @param confidence
+	 *            Its confidence. Consistency of this probability distribution
+	 *            is not checked in this class.
 	 */
 	public void addValueWithConfidence(String value, double confidence) {
 		this.beliefs.put(value, confidence);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getNode()
 	 */
 	@Override
@@ -81,7 +88,9 @@ public class Proposal extends AbstractProposal {
 		return this.node;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getValues()
 	 */
 	@Override
@@ -89,21 +98,50 @@ public class Proposal extends AbstractProposal {
 		return this.beliefs.keySet();
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getValuesWithConfidence()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.model.AbstractProposal#getValuesWithConfidence()
 	 */
 	@Override
 	public Map<String, Double> getValuesWithConfidence() {
 		return this.beliefs;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getConfidenceForValue(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.model.AbstractProposal#getConfidenceForValue(java
+	 * .lang.String)
 	 */
 	@Override
 	public double getConfidenceForValue(String value) {
 		double confidence = this.beliefs.get(value);
 		return confidence;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getMaxState() {
+		double max = 0;
+		String state = "";
+		for (Entry<String, Double> e : this.beliefs.entrySet()) {
+			if (e.getValue() > max) {
+				max = e.getValue();
+				state = e.getKey();
+			}
+		}
+		return state;
+	}
+
+	/**
+	 * @return
+	 */
+	public double getMaxValue() {
+		return this.beliefs.get(this.getMaxState());
 	}
 
 }

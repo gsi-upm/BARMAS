@@ -77,6 +77,14 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	 */
 	@Override
 	public void addSteppables() {
+		Steppable manager = (Steppable) this.getScenario().getProperties()
+				.get("ManagerAgent");
+		try {
+			this.registerShanksAgent((ShanksAgent) manager);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+		schedule.scheduleRepeating(Schedule.EPOCH, 3, manager, 1);
 		Steppable generator = new SolarFlareGenerator(this.getScenario()
 				.getProperties().getProperty(EXPDATA)
 				+ "/dataset/testdataset.csv");
@@ -97,7 +105,8 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	public void registerShanksAgents() throws ShanksException {
 
 		@SuppressWarnings("unchecked")
-		List<ShanksAgent> agents = (List<ShanksAgent>) this.getScenario().getProperties().get("AGENTS");
+		List<ShanksAgent> agents = (List<ShanksAgent>) this.getScenario()
+				.getProperties().get("AGENTS");
 		for (ShanksAgent agent : agents) {
 			this.registerShanksAgent(agent);
 		}

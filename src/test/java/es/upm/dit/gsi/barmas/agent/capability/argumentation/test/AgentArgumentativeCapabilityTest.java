@@ -128,7 +128,8 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			public Set<Argument> getCurrentArguments() throws ShanksException {
-				return AgentArgumentativeCapability.createArguments(agent);
+				return AgentArgumentativeCapability.createArguments(agent, 0,
+						System.currentTimeMillis());
 			}
 
 			public void updateBeliefsWithNewArguments(Set<Argument> args)
@@ -139,27 +140,27 @@ public class AgentArgumentativeCapabilityTest {
 			public void setArgumentationManager(
 					ArgumentationManagerAgent manager) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void sendArgument(Argument arg) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void finishArgumenation() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void addArgumentationGroupMember(ArgumentativeAgent agent) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
@@ -293,19 +294,19 @@ public class AgentArgumentativeCapabilityTest {
 			}
 			double total = 0;
 			logger.finer("ArtCO2 values: ");
-			for (Entry<String,Double> entry : artco2.entrySet()) {
+			for (Entry<String, Double> entry : artco2.entrySet()) {
 				total += entry.getValue();
-				logger.finer(entry.getKey()+"="+entry.getValue());
+				logger.finer(entry.getKey() + "=" + entry.getValue());
 			}
 			Assert.assertEquals(1, total, 0.01);
 			total = 0;
 			logger.finer("TPR values: ");
-			for (Entry<String,Double> entry : tpr.entrySet()) {
+			for (Entry<String, Double> entry : tpr.entrySet()) {
 				total += entry.getValue();
-				logger.finer(entry.getKey()+"="+entry.getValue());
+				logger.finer(entry.getKey() + "=" + entry.getValue());
 			}
 			Assert.assertEquals(1, total, 0.01);
-			
+
 			args = new HashSet<Argument>();
 			Argument arg = new Argument();
 			Proposal p = new Proposal("TPR");
@@ -313,17 +314,16 @@ public class AgentArgumentativeCapabilityTest {
 			p.addValueWithConfidence("Normal", 0.6);
 			p.addValueWithConfidence("High", 0.1);
 			arg.addProposal(p);
-			
+
 			p = new Proposal("ArtCO2");
 			p.addValueWithConfidence("Low", 0.7);
 			p.addValueWithConfidence("Normal", 0.2);
 			p.addValueWithConfidence("High", 0.1);
 			arg.addProposal(p);
-			
+
 			args.add(arg);
-			
+
 			AgentArgumentativeCapability.updateBeliefs(args, agent);
-			
 
 			queryNodeName = "TPR";
 			queryStatus = "Low";
@@ -351,7 +351,7 @@ public class AgentArgumentativeCapabilityTest {
 			value = ShanksAgentBayesianReasoningCapability.getHypothesis(
 					agent.getBayesianNetwork(), queryNodeName, queryStatus);
 			Assert.assertEquals(0.1F, value, 0.01F);
-			
+
 		} catch (UnknowkNodeStateException e) {
 			e.printStackTrace();
 			Assert.fail();

@@ -60,9 +60,9 @@ public class AgentArgumentativeCapability {
 	 */
 	public static Argument createArgument(ArgumentativeAgent proponent,
 			String node, String value, double conf,
-			HashMap<String, String> evidences) {
+			HashMap<String, String> evidences, long step, long timestamp) {
 
-		Argument arg = new Argument(proponent);
+		Argument arg = new Argument(proponent, step, timestamp);
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			Given given = new Given(entry.getKey(), entry.getValue());
 			arg.addGiven(given);
@@ -82,7 +82,7 @@ public class AgentArgumentativeCapability {
 	 * @throws ShanksException
 	 */
 	public static Set<Argument> createArguments(ArgumentativeAgent proponent,
-			ProbabilisticNetwork bn) throws ShanksException {
+			ProbabilisticNetwork bn, long step, long timestamp) throws ShanksException {
 		Set<Argument> args = new HashSet<Argument>();
 		HashMap<String, String> evidences = (HashMap<String, String>) ShanksAgentBayesianReasoningCapability
 				.getEvidences(bn);
@@ -96,7 +96,7 @@ public class AgentArgumentativeCapability {
 				for (Entry<String, Float> state : states.entrySet()) {
 					Argument arg = AgentArgumentativeCapability.createArgument(
 							proponent, hyp.getKey(), state.getKey(),
-							state.getValue(), evidences);
+							state.getValue(), evidences, step, timestamp);
 					args.add(arg);
 				}
 			}
@@ -111,9 +111,9 @@ public class AgentArgumentativeCapability {
 	 * @throws ShanksException
 	 */
 	public static Set<Argument> createArguments(
-			BayesianReasonerShanksAgent agent) throws ShanksException {
+			BayesianReasonerShanksAgent agent, long step, long timestamp) throws ShanksException {
 		return AgentArgumentativeCapability.createArguments(
-				(ArgumentativeAgent) agent, agent.getBayesianNetwork());
+				(ArgumentativeAgent) agent, agent.getBayesianNetwork(), step, timestamp);
 	}
 
 	/**

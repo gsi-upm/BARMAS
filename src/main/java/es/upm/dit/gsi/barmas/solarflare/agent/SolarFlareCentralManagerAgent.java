@@ -106,6 +106,9 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 			if (this.getCurrentArgumentation() == null) {
 				Argumentation argumentation = new Argumentation(
 						this.argumentations.size());
+				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).finer(
+						"Creating new argumentation - ID: "
+								+ this.argumentations.size());
 				this.argumentations.add(argumentation);
 
 			}
@@ -214,16 +217,19 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	private void finishCurrentArgumentation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		Map<Argument, List<Argument>> graph = argumentation.getGraph();
+		Map<Argument, HashMap<Argument, Integer>> graph = argumentation
+				.getGraph();
 		Set<Argument> args = graph.keySet();
 		Map<Argument, Boolean> undefeated = new HashMap<Argument, Boolean>();
 		for (Argument a : args) {
 			undefeated.put(a, true);
 		}
-		for (Entry<Argument, List<Argument>> e : graph.entrySet()) {
-			List<Argument> attacks = e.getValue();
-			for (Argument a : attacks) {
-				undefeated.put(a, false);
+		for (Entry<Argument, HashMap<Argument, Integer>> e : graph.entrySet()) {
+			HashMap<Argument, Integer> attacks = e.getValue();
+			for (Argument a : attacks.keySet()) {
+				if (attacks.get(a) != 0) {
+					undefeated.put(a, false);
+				}
 			}
 		}
 
@@ -329,10 +335,8 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 				data[0] = Integer.toString(currentArgumentation.getId());
 				data[1] = Integer.toString(arg.getId());
 				data[2] = arg.getProponent().getProponentName();
-				data[3] = Long.toString(currentArgumentation
-						.getArgumentsWithSteps().get(arg));
-				data[4] = Long.toString(currentArgumentation
-						.getArgumentsWithTimestamps().get(arg));
+				data[3] = Long.toString(arg.getStep());
+				data[4] = Long.toString(arg.getTimestamp());
 				generalWriter.writeRecord(data);
 				generalWriter.flush();
 				concreteWriter.writeRecord(data);
@@ -343,7 +347,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 			concreteWriter.close();
 
 			// Write the graph
-			HashMap<Argument, List<Argument>> graph = currentArgumentation
+			HashMap<Argument, HashMap<Argument, Integer>> graph = currentArgumentation
 					.getGraph();
 			String graphFile = argumentationDir + File.separator
 					+ "argumentation" + currentArgumentation.getId()
@@ -351,10 +355,11 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 					+ currentArgumentation.getId() + ".csv";
 			CsvWriter graphWriter = null;
 			String[] graphHeaders = new String[currentArgumentation
-					.getArgumentsWithID().size() + 1];
-			graphHeaders[0] = "ArgID";
-			for (int aux = 1; aux < graphHeaders.length; aux++) {
-				graphHeaders[aux] = "Arg" + aux;
+					.getArgumentsWithID().size() + 2];
+			graphHeaders[0] = "ProponentID";
+			graphHeaders[1] = "ArgID";
+			for (int aux = 2; aux < graphHeaders.length; aux++) {
+				graphHeaders[aux] = "Arg" + (aux - 2);
 			}
 			f = new File(graphFile);
 			if (!f.exists()) {
@@ -366,20 +371,18 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 						',');
 			}
 
-			for (int aux = 1; aux < graphHeaders.length; aux++) {
+			for (int aux = 2; aux < graphHeaders.length; aux++) {
 				String[] graphData = new String[graphHeaders.length];
-				graphData[0] = Integer.toString(aux - 1);
+				graphData[0] = currentArgumentation.getArgumentsWithID().get(
+						aux - 2).getProponent().getProponentName();
+				graphData[1] = Integer.toString(aux - 2);
 				Argument arg = currentArgumentation.getArgumentsWithID().get(
-						aux - 1);
-				List<Argument> attacks = graph.get(arg);
-				for (int aux2 = 0; aux2 < graphHeaders.length - 1; aux2++) {
+						aux - 2);
+				HashMap<Argument, Integer> attacks = graph.get(arg);
+				for (int aux2 = 0; aux2 < graphHeaders.length - 2; aux2++) {
 					Argument arg2 = currentArgumentation.getArgumentsWithID()
 							.get(aux2);
-					if (attacks.contains(arg2)) {
-						graphData[aux2 + 1] = "1";
-					} else {
-						graphData[aux2 + 1] = "0";
-					}
+					graphData[aux2 + 2] = attacks.get(arg2).toString();
 				}
 				graphWriter.writeRecord(graphData);
 				graphWriter.flush();
@@ -388,30 +391,42 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 			graphWriter.close();
 
 			// Arguments
-			
-			for (int aux = 0; aux<currentArgumentation.getArgumentsWithID().size();aux++) {
-				Argument argument = currentArgumentation.getArgumentsWithID().get(aux);
+
+			for (int aux = 0; aux < currentArgumentation.getArgumentsWithID()
+					.size(); aux++) {
+				Argument argument = currentArgumentation.getArgumentsWithID()
+						.get(aux);
 				FileWriter fw = new FileWriter(this.argumentationDir
 						+ File.separator + "argumentation"
 						+ currentArgumentation.getId() + File.separator
-						+ "arguments-argumentation-" + currentArgumentation.getId() + ".info", true);
+						+ "arguments-argumentation-"
+						+ currentArgumentation.getId() + ".info", true);
 				// FileWriter fw = new FileWriter(this.argumentationDir
 				// + File.separator + "argumentation"
 				// + currentArgumentation.getId() + File.separator
 				// + "arguments" + File.separator + "argument"
 				// + argument.getId() + ".info");
-				fw.write("Argumentation: " + currentArgumentation.getId()
-						+ " - Argument: " + argument.getId() + "\nProponent: "
-						+ argument.getProponent().getProponentName() + "\n\n");
+				fw.write("Argumentation: "
+						+ currentArgumentation.getId()
+						+ " - Argument: "
+						+ argument.getId()
+						+ "\nProponent: "
+						+ argument.getProponent().getProponentName()
+						+ "\n\nStep: "
+						+ argument.getStep()
+						+ " - Timestamp: "
+						+ argument.getTimestamp() + "\n\n");
 				fw.flush();
-				fw.write("\tGivens:\n");
+				fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size()
+						+ "\n");
 				fw.flush();
 				for (Given given : argument.getGivens()) {
-					fw.write("\t\tNode: " + given.getNode() + "\n\tValue: "
+					fw.write("\t\tNode: " + given.getNode() + "\n\t\t\tValue: "
 							+ given.getValue() + "\n");
 					fw.flush();
 				}
-				fw.write("\n\tAssumptions:\n");
+				fw.write("\n\tAssumptions:\n\tQuantity:"
+						+ argument.getAssumptions().size() + "\n");
 				fw.flush();
 				for (Assumption assump : argument.getAssumptions()) {
 					fw.write("\t\tNode: " + assump.getNode() + "\n");
@@ -423,7 +438,8 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 						fw.flush();
 					}
 				}
-				fw.write("\n\tProposal:\n");
+				fw.write("\n\tProposal:\n\tQuantity:"
+						+ argument.getProposals().size() + "\n");
 				fw.flush();
 				for (Proposal proposal : argument.getProposals()) {
 					fw.write("\t\tNode: " + proposal.getNode() + "\n");
@@ -456,7 +472,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		int maxEvidences = 0;
-		for (Argument arg : argumentation.getArgumentsWithSteps().keySet()) {
+		for (Argument arg : argumentation.getArguments()) {
 			int evCardinal = arg.getGivens().size();
 			if (evCardinal > maxEvidences) {
 				maxEvidences = evCardinal;
@@ -465,7 +481,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 		// Pick possible arguments
 		String hyp = "";
 		double max = 0;
-		for (Argument arg : argumentation.getArgumentsWithSteps().keySet()) {
+		for (Argument arg : argumentation.getArguments()) {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
 					for (Entry<String, Double> e : p.getValuesWithConfidence()
@@ -483,7 +499,7 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 				+ " - " + max);
 
 		Argument a = new Argument();
-		for (Argument arg : argumentation.getArgumentsWithSteps().keySet()) {
+		for (Argument arg : argumentation.getArguments()) {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Given g : arg.getGivens()) {
 					a.addGiven(g);
@@ -540,7 +556,36 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void processNewArgument(Argument arg, ShanksSimulation simulation) {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		argumentation.addArgument(arg, simulation);
+		argumentation.addArgument(arg);
+		this.updateArgumentationGraph(arg, argumentation);
+	}
+
+	/**
+	 * @param arg
+	 * @param argumentation
+	 */
+	private void updateArgumentationGraph(Argument arg,
+			Argumentation argumentation) {
+		for (Argument a : argumentation.getArguments()) {
+			int attack = this.getAttackType(arg, a);
+			if (attack == -1) {
+				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
+						+ argumentation.getId());
+				logger.severe("Incoherence between arguments " + arg.getId()
+						+ " and argument: " + a.getId());
+			}
+			argumentation.getGraph().get(arg).put(a, attack);
+			attack = this.getAttackType(a, arg);
+			if (attack == -1) {
+				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
+						+ argumentation.getId());
+				logger.severe("Incoherence between arguments " + arg.getId()
+						+ " and argument: " + a.getId());
+			}
+			argumentation.getGraph().get(a).put(arg, attack);
+		}
 	}
 
 	/*
@@ -655,4 +700,110 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 
 	}
 
+	/**
+	 * Return the type of the attack (from a to b) using the following rules:
+	 * 
+	 * 0 - a does not attack b
+	 * 
+	 * 1 - a is defeater of b if Claim(A) implies not all Support(B)
+	 * 
+	 * 2 - a is a direct defeater of b if there is phi in Support(B) such that
+	 * Claim(A) implies not phi
+	 * 
+	 * 3 - a is a undercut of b if there is Phi subset of Support(B) such that
+	 * Claim(A) is exactly not all Phi
+	 * 
+	 * 4 - a is a direct undercut of b if there is phi in Support(B) such that
+	 * Claim(A) is exactly not phi
+	 * 
+	 * 5 - a is a canonical undercut of b if Claim(A) is exactly not Support(B)
+	 * 
+	 * 6 - a is a rebuttal of b if Claim(A) is exactly not Claim(B)
+	 * 
+	 * 7 - a is a defeating rebuttal of b if Claim(A) implies not Claim(B)
+	 * 
+	 * @param a
+	 * @param b
+	 * @return 0-7 attack type
+	 */
+	private int getAttackType(Argument a, Argument b) {
+
+		// In the code (Claim = Givens + Proposal) and (Support = Givens +
+		// Assumptions)
+		// Check if argument a attacks b:
+
+		if (!b.equals(a)) {
+			Set<Given> agivens = a.getGivens();
+			Set<Given> bgivens = b.getGivens();
+			Set<Assumption> aassumptions = a.getAssumptions();
+			Set<Assumption> bassumptions = b.getAssumptions();
+			Set<Proposal> aproposals = a.getProposals();
+			Set<Proposal> bproposals = b.getProposals();
+
+			// Type -1 if evidences are not coherent
+			for (Given bgiven : bgivens) {
+				for (Given agiven : agivens) {
+					if (agiven.getNode().equals(bgiven.getNode())) {
+						if (!agiven.getValue().equals(bgiven.getValue())) {
+							Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).severe(
+									"Incoherent evidence in arguments");
+							return -1; // This has no sense!!
+						}
+					}
+				}
+			}
+
+			// Check type 1 - a is defeater of b if Claim(A) implies not all
+			// Support(B)
+			if (agivens.size() > bgivens.size()) {
+				return 1;
+			}
+
+			// Check type 2 - a is a direct defeater of b if there is phi in
+			// Support(B) such that Claim(A) implies not phi
+
+			// Check type 3 - a is a undercut of b if there is Phi subset of
+			// Support(B) such that Claim(A) is exactly not all Phi
+
+			// Check type 4 - a is a direct undercut of b if there is phi in
+			// Support(B) such that Claim(A) is exactly not phi
+
+			// Check type 5 - a is a canonical undercut of b if Claim(A) is
+			// exactly
+			// not Support(B)
+
+			// Check types 6 and 7
+			int aux = 0;
+			for (Proposal bp : bproposals) {
+				for (Proposal ap : aproposals) {
+					String anode = bp.getNode();
+					String node = ap.getNode();
+					// If the proposed node are equals...
+					if (node.equals(anode)) {
+						String astate = ap.getMaxState();
+						String bstate = bp.getMaxState();
+						// if they don't aggree with the state
+						if (!astate.equals(bstate)) {
+							aux++;
+						}
+					}
+				}
+			}
+			if (aux == bproposals.size()) {
+				// Check type 6 - a is a rebuttal of b if Claim(A) is exactly
+				// not
+				// Claim(B)
+				return 6;
+			} else if (aux > 0) {
+				// Check type 7 - a is a defeating rebuttal of b if Claim(A)
+				// implies not
+				// Claim(B)
+				return 7;
+			}
+
+		}
+
+		// If not... a does not attack b (Type 0)
+		return 0;
+	}
 }

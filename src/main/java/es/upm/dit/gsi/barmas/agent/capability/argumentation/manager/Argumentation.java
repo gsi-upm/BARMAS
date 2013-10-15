@@ -19,15 +19,11 @@
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.shanks.ShanksSimulation;
 
 /**
  * Project: barmas File:
@@ -46,11 +42,9 @@ import es.upm.dit.gsi.shanks.ShanksSimulation;
  */
 public class Argumentation {
 
-	private Map<Argument, Long> timestamps;
-	private Map<Argument, Long> steps;
 	private int id;
 	private List<Argument> conclusions;
-	private HashMap<Argument, List<Argument>> graph;
+	private HashMap<Argument,HashMap<Argument,Integer>> graph;
 	private HashMap<Integer, Argument> ids;
 	private boolean finished;
 
@@ -61,104 +55,37 @@ public class Argumentation {
 	public Argumentation(int id) {
 		this.id = id;
 		this.setFinished(false);
-		this.timestamps = new HashMap<Argument, Long>();
-		this.steps = new HashMap<Argument, Long>();
 		this.ids = new HashMap<Integer, Argument>();
 		this.conclusions = new ArrayList<Argument>();
-		this.graph = new HashMap<Argument, List<Argument>>();
+		this.graph = new HashMap<Argument, HashMap<Argument, Integer>>();
 	}
 
 	/**
 	 * @param arg
 	 * @param simulation
 	 */
-	public void addArgument(Argument arg, ShanksSimulation simulation) {
-		long timestamp = System.currentTimeMillis();
-		long step = simulation.schedule.getSteps();
+	public void addArgument(Argument arg) {
 		arg.setId(ids.keySet().size());
 		this.ids.put(ids.keySet().size(), arg);
-		this.timestamps.put(arg, timestamp);
-		this.steps.put(arg, step);
-		this.graph.put(arg, new ArrayList<Argument>());
-
-		// Check if this argument defeats others
-		boolean attacks = false;
-		Set<Proposal> props = arg.getProposals();
-
-		Set<Argument> allArgs = this.steps.keySet();
-
-		for (Argument a : allArgs) {
-			Set<Proposal> aprops = a.getProposals();
-			for (Proposal ap : aprops) {
-				String anode = ap.getNode();
-				for (Proposal p : props) {
-					String node = p.getNode();
-					// If the proposed node are equals...
-					if (node.equals(anode)) {
-						Map<String, Double> avalues = ap
-								.getValuesWithConfidence();
-						double amax = 0;
-						String astate = "";
-						for (Entry<String, Double> e : avalues.entrySet()) {
-							if (e.getValue() > amax) {
-								amax = e.getValue();
-								astate = e.getKey();
-							}
-						}
-						Map<String, Double> values = p
-								.getValuesWithConfidence();
-						double max = 0;
-						String state = "";
-						for (Entry<String, Double> e : values.entrySet()) {
-							if (e.getValue() > max) {
-								max = e.getValue();
-								state = e.getKey();
-							}
-						}
-
-						// if they don't aggree with the state
-						if (!state.equals(astate)) {
-							attacks = true;
-							break;
-						}
-					}
-
-				}
-				if (attacks) {
-					break;
-				}
-			}
-
-			// If the new argument attacks an old one
-			if (attacks) {
-				// Add to the graph
-				this.graph.get(arg).add(a);
-			}
-
-			// TODO check if some old argument defeats the new one
-		}
-	}
-
-	/**
-	 * @return
-	 */
-	public Map<Argument, Long> getArgumentsWithSteps() {
-		return this.steps;
-	}
-
-	/**
-	 * @return
-	 */
-	public Map<Argument, Long> getArgumentsWithTimestamps() {
-		return this.timestamps;
+		this.graph.put(arg, new HashMap<Argument, Integer>());
 	}
 
 	/**
 	 * @return
 	 */
 	public List<Argument> getSortedArguments() {
-		// TODO implement this method
-		return null;
+		List<Argument> sortedList = new ArrayList<Argument>();
+		for (int i = 0; i<this.ids.keySet().size(); i++) {
+			sortedList.add(this.ids.get(i));
+		}
+		return sortedList;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Collection<Argument> getArguments() {
+		return this.ids.values();
 	}
 
 	/**
@@ -171,14 +98,14 @@ public class Argumentation {
 	/**
 	 * @return
 	 */
-	public HashMap<Argument, List<Argument>> getGraph() {
+	public HashMap<Argument, HashMap<Argument, Integer>> getGraph() {
 		return graph;
 	}
 
 	/**
 	 * @param graph
 	 */
-	public void setGraph(HashMap<Argument, List<Argument>> graph) {
+	public void setGraph(HashMap<Argument, HashMap<Argument, Integer>> graph) {
 		this.graph = graph;
 	}
 

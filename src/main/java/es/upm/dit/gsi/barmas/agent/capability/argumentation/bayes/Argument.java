@@ -46,6 +46,8 @@ public class Argument extends AbstractArgument {
 	private Set<Assumption> assumptions;
 	private Set<Proposal> proposals;
 	private ArgumentativeAgent proponent;
+	private long step;
+	private long timestamp;
 
 	/**
 	 * Constructor
@@ -53,22 +55,26 @@ public class Argument extends AbstractArgument {
 	 * @param givens All givens
 	 * @param proposals All proposals
 	 */
-	public Argument(ArgumentativeAgent proponent, Set<Given> givens, Set<Assumption> assumptions, Set<Proposal> proposals) {
+	public Argument(ArgumentativeAgent proponent, Set<Given> givens, Set<Assumption> assumptions, Set<Proposal> proposals, long step, long timestamp) {
 		this.proponent = proponent;
 		this.givens = givens;
 		this.assumptions = assumptions;
 		this.proposals = proposals;
+		this.step = step;
+		this.timestamp = timestamp;
 	}
 	
 	/**
 	 * Constructor of empty argument with known proponent
 	 *
 	 */
-	public Argument(ArgumentativeAgent proponent) {
+	public Argument(ArgumentativeAgent proponent, long step, long timestamp) {
 		this.proponent = proponent;
 		this.givens = new HashSet<Given>();
 		this.assumptions = new HashSet<Assumption>();
 		this.proposals = new HashSet<Proposal>();
+		this.step = step;
+		this.timestamp = timestamp;
 	}
 	
 	/**
@@ -152,6 +158,20 @@ public class Argument extends AbstractArgument {
 	 */
 	public void setProponent(ArgumentativeAgent prop) {
 		this.proponent = prop;
+	}
+
+	/**
+	 * @return the step
+	 */
+	public long getStep() {
+		return step;
+	}
+
+	/**
+	 * @return the timestamp
+	 */
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 }
