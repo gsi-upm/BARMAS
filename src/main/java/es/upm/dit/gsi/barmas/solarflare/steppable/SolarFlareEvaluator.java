@@ -101,7 +101,8 @@ public class SolarFlareEvaluator implements Steppable {
 			summaryHeaders.add("Argumentation");
 			summaryHeaders.add("BetterBayesCentral");
 			summaryHeaders.add("BetterArgumentation");
-			summaryHeaders.add("Draw");
+			summaryHeaders.add("BothOK");
+			summaryHeaders.add("BothWrong");
 			int size = summaryHeaders.size();
 			String[] newHeaders = new String[size];
 			int i = 0;
@@ -190,10 +191,15 @@ public class SolarFlareEvaluator implements Steppable {
 				} else {
 					data[5] = "0";
 				}
-				if (centralClass.equals(argClass)) {
+				if (centralClass.equals(origClass) && argClass.equals(origClass)) {
 					data[6] = "1";
 				} else {
 					data[6] = "0";
+				}
+				if (!centralClass.equals(origClass) && !argClass.equals(origClass)) {
+					data[7] = "1";
+				} else {
+					data[7] = "0";
 				}
 
 				writer.writeRecord(data);
