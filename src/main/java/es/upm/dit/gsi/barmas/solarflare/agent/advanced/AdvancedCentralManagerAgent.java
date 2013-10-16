@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  */
-package es.upm.dit.gsi.barmas.solarflare.agent.assumptions;
+package es.upm.dit.gsi.barmas.solarflare.agent.advanced;
 
 import jason.asSemantics.Message;
 

@@ -19,8 +19,8 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.assumptions.AdvancedCentralManagerAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.assumptions.AdvancedClassificatorAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.advanced.AdvancedCentralManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.advanced.AdvancedClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.basic.BasicCentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.basic.BasicClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
