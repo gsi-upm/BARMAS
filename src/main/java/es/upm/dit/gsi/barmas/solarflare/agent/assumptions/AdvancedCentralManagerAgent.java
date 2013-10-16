@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 
 import com.csvreader.CsvWriter;
 
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
@@ -550,35 +549,6 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	public void registerNewArgument(Argument arg, ShanksSimulation simulation) {
 		Argumentation argumentation = this.getCurrentArgumentation();
 		argumentation.addArgument(arg);
-		this.updateArgumentationGraph(arg, argumentation);
-	}
-
-	/**
-	 * @param arg
-	 * @param argumentation
-	 */
-	private void updateArgumentationGraph(Argument arg,
-			Argumentation argumentation) {
-		for (Argument a : argumentation.getArguments()) {
-			int attack = AgentArgumentativeCapability.getAttackType(arg, a);
-			if (attack == -1) {
-				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
-						+ argumentation.getId());
-				logger.severe("Incoherence between arguments " + arg.getId()
-						+ " and argument: " + a.getId());
-			}
-			argumentation.getGraph().get(arg).put(a, attack);
-			attack = AgentArgumentativeCapability.getAttackType(a, arg);
-			if (attack == -1) {
-				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
-						+ argumentation.getId());
-				logger.severe("Incoherence between arguments " + arg.getId()
-						+ " and argument: " + a.getId());
-			}
-			argumentation.getGraph().get(a).put(arg, attack);
-		}
 	}
 
 	/*
