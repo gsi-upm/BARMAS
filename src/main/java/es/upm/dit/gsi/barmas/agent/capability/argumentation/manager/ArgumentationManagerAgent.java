@@ -55,7 +55,7 @@ public interface ArgumentationManagerAgent {
 	 * @param arg
 	 * @param simuluation
 	 */
-	public void processNewArgument(Argument arg, ShanksSimulation simuluation);
+	public void registerNewArgument(Argument arg, ShanksSimulation simuluation);
 	
 	/**
 	 * @param id
