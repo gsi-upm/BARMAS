@@ -19,8 +19,8 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.basic.SolarFlareCentralManagerAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.basic.SolarFlareClassificatorAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.basic.AdvancedCentralManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.basic.BasicClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
@@ -62,17 +62,17 @@ public class SolarFlareNoGUILauncher {
 		String summaryFile = "src/main/resources/exp1/output/global-summary.csv";
 		// long seed = System.currentTimeMillis();
 		long seed = 0;
-//		for (int i = 0; i < 10; i++) {
-//			SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
-//					summaryFile);
-//		}
+		// for (int i = 0; i < 10; i++) {
+		// SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
+		// summaryFile);
+		// }
 
-		 SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
-		 summaryFile);
-		 SolarFlareNoGUILauncher.launchSimulationBasic3Agents(seed,
-		 summaryFile);
-		 SolarFlareNoGUILauncher.launchSimulationBasic4Agents(seed,
-		 summaryFile);
+		SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed, summaryFile);
+		SolarFlareNoGUILauncher.launchSimulationBasic3Agents(seed, summaryFile);
+		SolarFlareNoGUILauncher.launchSimulationBasic4Agents(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationAdvanced2Agents(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationAdvanced3Agents(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationAdvanced4Agents(seed, summaryFile);
 	}
 
 	public static void makeNumbers(String simulationName, String origPath,
@@ -246,7 +246,7 @@ public class SolarFlareNoGUILauncher {
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		SolarFlareCentralManagerAgent manager = new SolarFlareCentralManagerAgent(
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
@@ -257,7 +257,7 @@ public class SolarFlareNoGUILauncher {
 		sensors1.add(BecomeHist.class.getSimpleName());
 		sensors1.add(SpotDistribution.class.getSimpleName());
 		sensors1.add(Evolution.class.getSimpleName());
-		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent1 = new BasicClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
 						+ "/bayes/agentdataset-1.net", sensors1);
 		agents.add(agent1);
@@ -268,7 +268,7 @@ public class SolarFlareNoGUILauncher {
 		sensors2.add(CNode.class.getSimpleName());
 		sensors2.add(MNode.class.getSimpleName());
 		sensors2.add(XNode.class.getSimpleName());
-		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent2 = new BasicClassificatorAgent(
 				"ArgAgent2", manager, experimentDatasetPath
 						+ "/bayes/agentdataset-2.net", sensors2);
 		agents.add(agent2);
@@ -336,7 +336,7 @@ public class SolarFlareNoGUILauncher {
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		SolarFlareCentralManagerAgent manager = new SolarFlareCentralManagerAgent(
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
@@ -347,7 +347,7 @@ public class SolarFlareNoGUILauncher {
 		sensors1.add(BecomeHist.class.getSimpleName());
 		sensors1.add(SpotDistribution.class.getSimpleName());
 		sensors1.add(Evolution.class.getSimpleName());
-		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent1 = new BasicClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
 						+ "/bayes/agentdataset-1.net", sensors1);
 		agents.add(agent1);
@@ -355,7 +355,7 @@ public class SolarFlareNoGUILauncher {
 		List<String> sensors2 = new ArrayList<String>();
 		sensors2.add(PrevStatus24Hour.class.getSimpleName());
 		sensors2.add(HistComplex.class.getSimpleName());
-		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent2 = new BasicClassificatorAgent(
 				"ArgAgent2", manager, experimentDatasetPath
 						+ "/bayes/agentdataset-2.net", sensors2);
 		agents.add(agent2);
@@ -364,7 +364,7 @@ public class SolarFlareNoGUILauncher {
 		sensors3.add(CNode.class.getSimpleName());
 		sensors3.add(MNode.class.getSimpleName());
 		sensors3.add(XNode.class.getSimpleName());
-		SolarFlareClassificatorAgent agent3 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent3 = new BasicClassificatorAgent(
 				"ArgAgent3", manager,
 				"src/main/resources/exp1/bayes/agentdataset-central.net",
 				sensors3);
@@ -429,7 +429,7 @@ public class SolarFlareNoGUILauncher {
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		SolarFlareCentralManagerAgent manager = new SolarFlareCentralManagerAgent(
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
@@ -437,7 +437,7 @@ public class SolarFlareNoGUILauncher {
 		sensors1.add(Activity.class.getSimpleName());
 		sensors1.add(LargestSpotSize.class.getSimpleName());
 		sensors1.add(Area.class.getSimpleName());
-		SolarFlareClassificatorAgent agent1 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent1 = new BasicClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
 						+ "/bayes/agentdataset-1.net", sensors1);
 		agents.add(agent1);
@@ -445,7 +445,7 @@ public class SolarFlareNoGUILauncher {
 		List<String> sensors2 = new ArrayList<String>();
 		sensors2.add(PrevStatus24Hour.class.getSimpleName());
 		sensors2.add(HistComplex.class.getSimpleName());
-		SolarFlareClassificatorAgent agent2 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent2 = new BasicClassificatorAgent(
 				"ArgAgent2", manager, experimentDatasetPath
 						+ "/bayes/agentdataset-2.net", sensors2);
 		agents.add(agent2);
@@ -454,7 +454,7 @@ public class SolarFlareNoGUILauncher {
 		sensors3.add(CNode.class.getSimpleName());
 		sensors3.add(MNode.class.getSimpleName());
 		sensors3.add(XNode.class.getSimpleName());
-		SolarFlareClassificatorAgent agent3 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent3 = new BasicClassificatorAgent(
 				"ArgAgent3", manager,
 				"src/main/resources/exp1/bayes/agentdataset-central.net",
 				sensors3);
@@ -464,7 +464,7 @@ public class SolarFlareNoGUILauncher {
 		sensors1.add(BecomeHist.class.getSimpleName());
 		sensors1.add(SpotDistribution.class.getSimpleName());
 		sensors1.add(Evolution.class.getSimpleName());
-		SolarFlareClassificatorAgent agent4 = new SolarFlareClassificatorAgent(
+		BasicClassificatorAgent agent4 = new BasicClassificatorAgent(
 				"ArgAgent4", manager,
 				"src/main/resources/knowledge/flare-all-data.net", sensors4);
 		agents.add(agent4);
