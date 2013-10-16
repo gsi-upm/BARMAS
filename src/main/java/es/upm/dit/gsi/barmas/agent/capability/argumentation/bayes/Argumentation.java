@@ -16,14 +16,13 @@
 /**
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation.manager;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 
 /**
  * Project: barmas File:
@@ -68,6 +67,7 @@ public class Argumentation {
 		arg.setId(ids.keySet().size());
 		this.ids.put(ids.keySet().size(), arg);
 		this.graph.put(arg, new HashMap<Argument, Integer>());
+		AgentArgumentativeCapability.updateAtacksGraph(arg, this);
 	}
 
 	/**

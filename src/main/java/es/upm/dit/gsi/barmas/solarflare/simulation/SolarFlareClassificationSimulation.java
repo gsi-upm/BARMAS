@@ -88,12 +88,12 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 		Steppable generator = new SolarFlareGenerator(this.getScenario()
 				.getProperties().getProperty(EXPDATA)
 				+ "/dataset/testdataset.csv");
-		schedule.scheduleRepeating(Schedule.EPOCH, 1, generator, 10);
+		schedule.scheduleRepeating(Schedule.EPOCH, 6, generator, 1);
 		Steppable evaluator = new SolarFlareEvaluator(this.getScenario()
 				.getProperties().getProperty(EXPOUTPUT), this.getScenario()
 				.getProperties().getProperty(EXPDATA)
 				+ "/dataset/testdataset.csv");
-		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 5);
+		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 1);
 	}
 
 	/*

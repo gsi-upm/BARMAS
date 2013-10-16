@@ -12,20 +12,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import com.csvreader.CsvWriter;
 
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
@@ -47,7 +46,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * 
  */
 public class BasicCentralManagerAgent extends SimpleShanksAgent implements
-		ArgumentationManagerAgent, ArgumentativeAgent {
+		ArgumentativeAgent {
 
 	/**
 	 * 
@@ -216,40 +215,13 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	private void finishCurrentArgumentation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		Map<Argument, HashMap<Argument, Integer>> graph = argumentation
-				.getGraph();
-		Set<Argument> args = graph.keySet();
-		Map<Argument, Boolean> undefeated = new HashMap<Argument, Boolean>();
-		for (Argument a : args) {
-			undefeated.put(a, true);
-		}
-		for (Entry<Argument, HashMap<Argument, Integer>> e : graph.entrySet()) {
-			HashMap<Argument, Integer> attacks = e.getValue();
-			for (Argument a : attacks.keySet()) {
-				if (attacks.get(a) != 0) {
-					undefeated.put(a, false);
-				}
-			}
-		}
 
-		// Add undefeated arguments
-		List<Argument> conclusions = argumentation.getConclusions();
-		for (Entry<Argument, Boolean> e : undefeated.entrySet()) {
-			if (e.getValue()) {
-				conclusions.add(e.getKey());
-			}
-		}
+		// THIS IS THE MOST IMPORTANT METHOD IN THIS AGENT
+		// IT EVALUATES THE ARGUMENTATION AND EXTRACTS THE FINAL CONCLUSION
+		AgentArgumentativeCapability
+				.addConclusionHigherHypothesis(argumentation);
 
-		if (conclusions.size() == 0) {
-			// If no conclusions...
-			this.getHigherHypothesis(argumentation);
-		} else {
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
-					"Argumentation Manager--> Found undefeated arguments. Count: "
-							+ conclusions.size());
-		}
-
-		this.argumentation2File(this.getCurrentArgumentation());
+		this.argumentation2File(argumentation);
 		argumentation.setFinished(true);
 	}
 
@@ -372,8 +344,8 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 
 			for (int aux = 2; aux < graphHeaders.length; aux++) {
 				String[] graphData = new String[graphHeaders.length];
-				graphData[0] = currentArgumentation.getArgumentsWithID().get(
-						aux - 2).getProponent().getProponentName();
+				graphData[0] = currentArgumentation.getArgumentsWithID()
+						.get(aux - 2).getProponent().getProponentName();
 				graphData[1] = Integer.toString(aux - 2);
 				Argument arg = currentArgumentation.getArgumentsWithID().get(
 						aux - 2);
@@ -405,15 +377,10 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 				// + currentArgumentation.getId() + File.separator
 				// + "arguments" + File.separator + "argument"
 				// + argument.getId() + ".info");
-				fw.write("Argumentation: "
-						+ currentArgumentation.getId()
-						+ " - Argument: "
-						+ argument.getId()
-						+ "\nProponent: "
+				fw.write("Argumentation: " + currentArgumentation.getId()
+						+ " - Argument: " + argument.getId() + "\nProponent: "
 						+ argument.getProponent().getProponentName()
-						+ "\n\nStep: "
-						+ argument.getStep()
-						+ " - Timestamp: "
+						+ "\n\nStep: " + argument.getStep() + " - Timestamp: "
 						+ argument.getTimestamp() + "\n\n");
 				fw.flush();
 				fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size()
@@ -460,56 +427,6 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Resolution conflicts method
-	 * 
-	 * @param argumentation
-	 */
-	private void getHigherHypothesis(Argumentation argumentation) {
-		
-		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation.getGraph();
-		List<Argument> possibleConclusions = new ArrayList<Argument>();
-		possibleConclusions.addAll(argumentation.getArguments());
-		for (Argument arg : argumentation.getArguments()) {
-			HashMap<Argument, Integer> attacks = graph.get(arg);
-			for (Argument attacked : attacks.keySet()) {
-				int attackType = attacks.get(attacked);
-				if (attackType==1) {
-					possibleConclusions.remove(attacked);
-				}
-			}
-		}
-
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-		int maxEvidences = 0;
-		for (Argument arg : argumentation.getArguments()) {
-			int evCardinal = arg.getGivens().size();
-			if (evCardinal > maxEvidences) {
-				maxEvidences = evCardinal;
-			}
-		}
-		// Pick possible arguments
-		String hyp = "";
-		double max = 0;
-		Argument argumentConclusion = null;
-		for (Argument arg : possibleConclusions) {
-			if (arg.getGivens().size() == maxEvidences) {
-				for (Proposal p : arg.getProposals()) {
-					if (p.getMaxValue()>max) {
-						max=p.getMaxValue();
-						hyp=p.getMaxState();
-						argumentConclusion = arg;
-					}
-				}
-			}
-		}
-
-		logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp
-				+ " - " + max);
-		
-		argumentation.getConclusions().add(argumentConclusion);
 	}
 
 	/*
@@ -563,7 +480,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 	private void updateArgumentationGraph(Argument arg,
 			Argumentation argumentation) {
 		for (Argument a : argumentation.getArguments()) {
-			int attack = this.getAttackType(arg, a);
+			int attack = AgentArgumentativeCapability.getAttackType(arg, a);
 			if (attack == -1) {
 				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
@@ -572,7 +489,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 						+ " and argument: " + a.getId());
 			}
 			argumentation.getGraph().get(arg).put(a, attack);
-			attack = this.getAttackType(a, arg);
+			attack = AgentArgumentativeCapability.getAttackType(a, arg);
 			if (attack == -1) {
 				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
@@ -608,12 +525,6 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 	 * .argumentation.ArgumentativeAgent)
 	 */
 	public void addSubscriber(ArgumentativeAgent agent) {
-		this.suscribers.add(agent);
-		agent.addArgumentationGroupMember(this);
-		for (ArgumentativeAgent ag : this.getSubscribers()) {
-			ag.addArgumentationGroupMember(agent);
-			agent.addArgumentationGroupMember(ag);
-		}
 	}
 
 	/*
@@ -645,17 +556,33 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 		return this.getID();
 	}
 
+	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
+		this.suscribers.add(agent);
+		agent.addArgumentationGroupMember(this);
+		for (ArgumentativeAgent ag : this.getSubscribers()) {
+			ag.addArgumentationGroupMember(agent);
+			agent.addArgumentationGroupMember(ag);
+		}
+	}
+
+	public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
+		this.suscribers.remove(agent);
+		for (ArgumentativeAgent ag : this.getSubscribers()) {
+			ag.removeArgumentationGroupMember(agent);
+		}
+	}
+
 	public ArgumentativeAgent getProponent() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public ArgumentationManagerAgent getArgumentationManager() {
+	public ArgumentativeAgent getArgumentationManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void setArgumentationManager(ArgumentationManagerAgent manager) {
+	public void setArgumentationManager(ArgumentativeAgent manager) {
 		// TODO Auto-generated method stub
 
 	}
@@ -684,122 +611,5 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 	public void finishArgumenation() {
 		// TODO Auto-generated method stub
 
-	}
-
-	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Return the type of the attack (from a to b) using the following rules:
-	 * 
-	 * 0 - a does not attack b
-	 * 
-	 * 1 - a is defeater of b if Claim(A) implies not all Support(B)
-	 * 
-	 * 2 - a is a direct defeater of b if there is phi in Support(B) such that
-	 * Claim(A) implies not phi
-	 * 
-	 * 3 - a is a undercut of b if there is Phi subset of Support(B) such that
-	 * Claim(A) is exactly not all Phi
-	 * 
-	 * 4 - a is a direct undercut of b if there is phi in Support(B) such that
-	 * Claim(A) is exactly not phi
-	 * 
-	 * 5 - a is a canonical undercut of b if Claim(A) is exactly not Support(B)
-	 * 
-	 * 6 - a is a rebuttal of b if Claim(A) is exactly not Claim(B)
-	 * 
-	 * 7 - a is a defeating rebuttal of b if Claim(A) implies not Claim(B)
-	 * 
-	 * @param a
-	 * @param b
-	 * @return 0-7 attack type
-	 */
-	private int getAttackType(Argument a, Argument b) {
-
-		// In the code (Claim = Givens + Proposal) and (Support = Givens +
-		// Assumptions)
-		// Check if argument a attacks b:
-
-		if (!b.equals(a)) {
-			Set<Given> agivens = a.getGivens();
-			Set<Given> bgivens = b.getGivens();
-//			Set<Assumption> aassumptions = a.getAssumptions();
-//			Set<Assumption> bassumptions = b.getAssumptions();
-			Set<Proposal> aproposals = a.getProposals();
-			Set<Proposal> bproposals = b.getProposals();
-
-			// Type -1 if evidences are not coherent
-			for (Given bgiven : bgivens) {
-				for (Given agiven : agivens) {
-					if (agiven.getNode().equals(bgiven.getNode())) {
-						if (!agiven.getValue().equals(bgiven.getValue())) {
-							Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).severe(
-									"Incoherent evidence in arguments");
-							return -1; // This has no sense!!
-						}
-					}
-				}
-			}
-
-			// Check type 1 - a is defeater of b if Claim(A) implies not all
-			// Support(B)
-			if (agivens.size() > bgivens.size()) {
-				return 1;
-			}
-
-			// Check type 2 - a is a direct defeater of b if there is phi in
-			// Support(B) such that Claim(A) implies not phi
-
-			// Check type 3 - a is a undercut of b if there is Phi subset of
-			// Support(B) such that Claim(A) is exactly not all Phi
-
-			// Check type 4 - a is a direct undercut of b if there is phi in
-			// Support(B) such that Claim(A) is exactly not phi
-
-			// Check type 5 - a is a canonical undercut of b if Claim(A) is
-			// exactly
-			// not Support(B)
-
-			// Check types 6 and 7
-			int aux = 0;
-			for (Proposal bp : bproposals) {
-				for (Proposal ap : aproposals) {
-					String anode = bp.getNode();
-					String node = ap.getNode();
-					// If the proposed node are equals...
-					if (node.equals(anode)) {
-						String astate = ap.getMaxState();
-						String bstate = bp.getMaxState();
-						// if they don't aggree with the state
-						if (!astate.equals(bstate)) {
-							aux++;
-						}
-					}
-				}
-			}
-			if (aux == bproposals.size()) {
-				// Check type 6 - a is a rebuttal of b if Claim(A) is exactly
-				// not
-				// Claim(B)
-				return 6;
-			} else if (aux > 0) {
-				// Check type 7 - a is a defeating rebuttal of b if Claim(A)
-				// implies not
-				// Claim(B)
-				return 7;
-			}
-
-		}
-
-		// If not... a does not attack b (Type 0)
-		return 0;
 	}
 }

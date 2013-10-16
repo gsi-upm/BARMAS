@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
 
 /**
  * Project: barmas

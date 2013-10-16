@@ -28,13 +28,12 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.AgentArgumentativeCapability;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
@@ -66,7 +65,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	private static final long serialVersionUID = 8582918551821278046L;
 
-	private ArgumentationManagerAgent manager;
+	private ArgumentativeAgent manager;
 	private String bnFilePath;
 	private ProbabilisticNetwork bn;
 	private List<String> sensors;
@@ -78,7 +77,9 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	private ArrayList<Argument> pendingArguments;
 
 	private Argumentation argumentation;
-
+	
+	private HashMap<Integer, Argument> mySentArguments;
+	
 	// STATES
 	private boolean IDLE;
 	private boolean ARGUMENTING;
@@ -93,7 +94,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * @param bnPath
 	 */
 	public AdvancedClassificatorAgent(String id,
-			ArgumentationManagerAgent manager, String bnPath,
+			ArgumentativeAgent manager, String bnPath,
 			List<String> sensors) {
 		super(id);
 		this.bnFilePath = bnPath;
@@ -101,6 +102,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 		this.setArgumentationManager(manager);
 		this.pendingArguments = new ArrayList<Argument>();
 		this.evidences = new HashMap<String, String>();
+		this.mySentArguments = new HashMap<Integer, Argument>();
 		this.argumentationGroup = new ArrayList<ArgumentativeAgent>();
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
@@ -110,7 +112,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 		this.goToIdle();
 
 		// Register in manager
-		this.getArgumentationManager().addSubscriber(this);
+		this.getArgumentationManager().addArgumentationGroupMember(this);
 	}
 
 	/*
@@ -162,11 +164,21 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 
 	private void evaluateNextAction(SolarFlareClassificationSimulation sim) {
 		// Check graph and/or argumentation and try to generate arguments
+		boolean usefulArgument = this.evaluatePossibleArguments();
 		if (usefulArgument) {
 			this.goToArgumenting(sim);
 		} else {
 			this.goToIdle();
 		}
+	}
+
+	private boolean evaluatePossibleArguments() {
+		// Get all available givens
+		boolean newEvidences = this.updateEvidences(this.pendingArguments);
+		
+		//TODO check other possibilities
+		
+		return newEvidences;
 	}
 
 	/**
@@ -175,16 +187,12 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	private void processPendingArguments(
 			SolarFlareClassificationSimulation simulation) {
 
-		// Get all available givens
-		boolean newEvidences = this.updateEvidences(this.pendingArguments);
-
 		// Process incoming messages
 		for (Argument arg : this.pendingArguments) {
 			simulation.getLogger().finer(
 					"Agent: " + this.getID() + " -> Received arguments from: "
 							+ arg.getProponent().getProponentName());
-			this.processNewArgument(arg, newEvidences,
-					simulation);
+			this.argumentation.addArgument(arg);
 		}
 		this.pendingArguments.clear();
 
@@ -416,7 +424,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 					System.currentTimeMillis());
 			AgentArgumentativeCapability.sendArgument(this, arg);
 
-			this.argumenting = true;
+			
 			sim.getLogger().fine(
 					"Initial argument sent by agent: " + this.getID());
 		} catch (ShanksException e) {
@@ -464,7 +472,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
 	 * #getArgumentationManager()
 	 */
-	public ArgumentationManagerAgent getArgumentationManager() {
+	public ArgumentativeAgent getArgumentationManager() {
 		return this.manager;
 	}
 
@@ -503,7 +511,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 		return this.bnFilePath;
 	}
 
-	public void setArgumentationManager(ArgumentationManagerAgent manager) {
+	public void setArgumentationManager(ArgumentativeAgent manager) {
 		this.manager = manager;
 	}
 

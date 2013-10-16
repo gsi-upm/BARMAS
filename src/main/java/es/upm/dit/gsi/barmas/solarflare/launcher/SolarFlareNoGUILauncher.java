@@ -67,12 +67,21 @@ public class SolarFlareNoGUILauncher {
 		// summaryFile);
 		// }
 
-		SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed, summaryFile);
-		SolarFlareNoGUILauncher.launchSimulationBasic3Agents(seed, summaryFile);
-		SolarFlareNoGUILauncher.launchSimulationBasic4Agents(seed, summaryFile);
-//		SolarFlareNoGUILauncher.launchSimulationAdvanced2Agents(seed, summaryFile);
-//		SolarFlareNoGUILauncher.launchSimulationAdvanced3Agents(seed, summaryFile);
-//		SolarFlareNoGUILauncher.launchSimulationAdvanced4Agents(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationBasic1Agent1(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationBasic1Agent2(seed, summaryFile);
+//		
+		SolarFlareNoGUILauncher.launchSimulationBasic2AgentsKFold(seed, summaryFile);
+		
+//		SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationBasic3Agents(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationBasic4Agents(seed, summaryFile);
+		
+		// SolarFlareNoGUILauncher.launchSimulationAdvanced2Agents(seed,
+		// summaryFile);
+		// SolarFlareNoGUILauncher.launchSimulationAdvanced3Agents(seed,
+		// summaryFile);
+		// SolarFlareNoGUILauncher.launchSimulationAdvanced4Agents(seed,
+		// summaryFile);
 	}
 
 	public static void makeNumbers(String simulationName, String origPath,
@@ -250,28 +259,27 @@ public class SolarFlareNoGUILauncher {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
-		List<String> sensors1 = new ArrayList<String>();
-		sensors1.add(Activity.class.getSimpleName());
-		sensors1.add(LargestSpotSize.class.getSimpleName());
-		sensors1.add(Area.class.getSimpleName());
-		sensors1.add(BecomeHist.class.getSimpleName());
-		sensors1.add(SpotDistribution.class.getSimpleName());
-		sensors1.add(Evolution.class.getSimpleName());
-		BasicClassificatorAgent agent1 = new BasicClassificatorAgent(
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		BasicClassificatorAgent agent = new BasicClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-1.net", sensors1);
-		agents.add(agent1);
+						+ "/bayes/agentdataset-1.net", sensors);
+		agents.add(agent);
 
-		List<String> sensors2 = new ArrayList<String>();
-		sensors2.add(PrevStatus24Hour.class.getSimpleName());
-		sensors2.add(HistComplex.class.getSimpleName());
-		sensors2.add(CNode.class.getSimpleName());
-		sensors2.add(MNode.class.getSimpleName());
-		sensors2.add(XNode.class.getSimpleName());
-		BasicClassificatorAgent agent2 = new BasicClassificatorAgent(
-				"ArgAgent2", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-2.net", sensors2);
-		agents.add(agent2);
+		sensors = new ArrayList<String>();
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		agent = new BasicClassificatorAgent("ArgAgent2", manager,
+				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors);
+		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
 
@@ -340,35 +348,33 @@ public class SolarFlareNoGUILauncher {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
-		List<String> sensors1 = new ArrayList<String>();
-		sensors1.add(Activity.class.getSimpleName());
-		sensors1.add(LargestSpotSize.class.getSimpleName());
-		sensors1.add(Area.class.getSimpleName());
-		sensors1.add(BecomeHist.class.getSimpleName());
-		sensors1.add(SpotDistribution.class.getSimpleName());
-		sensors1.add(Evolution.class.getSimpleName());
-		BasicClassificatorAgent agent1 = new BasicClassificatorAgent(
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		BasicClassificatorAgent agent = new BasicClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-1.net", sensors1);
-		agents.add(agent1);
+						+ "/bayes/agentdataset-1.net", sensors);
+		agents.add(agent);
 
-		List<String> sensors2 = new ArrayList<String>();
-		sensors2.add(PrevStatus24Hour.class.getSimpleName());
-		sensors2.add(HistComplex.class.getSimpleName());
-		BasicClassificatorAgent agent2 = new BasicClassificatorAgent(
-				"ArgAgent2", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-2.net", sensors2);
-		agents.add(agent2);
+		sensors = new ArrayList<String>();
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		agent = new BasicClassificatorAgent("ArgAgent2", manager,
+				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors);
+		agents.add(agent);
 
-		List<String> sensors3 = new ArrayList<String>();
-		sensors3.add(CNode.class.getSimpleName());
-		sensors3.add(MNode.class.getSimpleName());
-		sensors3.add(XNode.class.getSimpleName());
-		BasicClassificatorAgent agent3 = new BasicClassificatorAgent(
-				"ArgAgent3", manager,
+		sensors = new ArrayList<String>();
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		agent = new BasicClassificatorAgent("ArgAgent3", manager,
 				"src/main/resources/exp1/bayes/agentdataset-central.net",
-				sensors3);
-		agents.add(agent3);
+				sensors);
+		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
 
@@ -433,41 +439,38 @@ public class SolarFlareNoGUILauncher {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
-		List<String> sensors1 = new ArrayList<String>();
-		sensors1.add(Activity.class.getSimpleName());
-		sensors1.add(LargestSpotSize.class.getSimpleName());
-		sensors1.add(Area.class.getSimpleName());
-		BasicClassificatorAgent agent1 = new BasicClassificatorAgent(
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		BasicClassificatorAgent agent = new BasicClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-1.net", sensors1);
-		agents.add(agent1);
+						+ "/bayes/agentdataset-1.net", sensors);
+		agents.add(agent);
 
-		List<String> sensors2 = new ArrayList<String>();
-		sensors2.add(PrevStatus24Hour.class.getSimpleName());
-		sensors2.add(HistComplex.class.getSimpleName());
-		BasicClassificatorAgent agent2 = new BasicClassificatorAgent(
-				"ArgAgent2", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-2.net", sensors2);
-		agents.add(agent2);
+		sensors = new ArrayList<String>();
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		agent = new BasicClassificatorAgent("ArgAgent2", manager,
+				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors);
+		agents.add(agent);
 
-		List<String> sensors3 = new ArrayList<String>();
-		sensors3.add(CNode.class.getSimpleName());
-		sensors3.add(MNode.class.getSimpleName());
-		sensors3.add(XNode.class.getSimpleName());
-		BasicClassificatorAgent agent3 = new BasicClassificatorAgent(
-				"ArgAgent3", manager,
+		sensors = new ArrayList<String>();
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		agent = new BasicClassificatorAgent("ArgAgent3", manager,
 				"src/main/resources/exp1/bayes/agentdataset-central.net",
-				sensors3);
-		agents.add(agent3);
+				sensors);
+		agents.add(agent);
 
-		List<String> sensors4 = new ArrayList<String>();
-		sensors1.add(BecomeHist.class.getSimpleName());
-		sensors1.add(SpotDistribution.class.getSimpleName());
-		sensors1.add(Evolution.class.getSimpleName());
-		BasicClassificatorAgent agent4 = new BasicClassificatorAgent(
-				"ArgAgent4", manager,
-				"src/main/resources/knowledge/flare-all-data.net", sensors4);
-		agents.add(agent4);
+		sensors = new ArrayList<String>();
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		agent = new BasicClassificatorAgent("ArgAgent4", manager,
+				"src/main/resources/knowledge/flare-all-data.net", sensors);
+		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
 
@@ -492,4 +495,263 @@ public class SolarFlareNoGUILauncher {
 			e.printStackTrace();
 		}
 	}
+
+	public static void launchSimulationBasic1Agent1(long seed,
+			String summaryFile) {
+		// Simulation properties
+		String simulationName = "SolarFlareClassificatorScenario"
+				+ "-1AgentsHigherResolution-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Level level = Level.ALL;
+		String name = "NoGUI-" + simulationName;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp1";
+		String experimentOutputPath = experimentDatasetPath + File.separator
+				+ "output" + File.separator + simulationName;
+		LogConfigurator.log2File(logger, name, level, experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT,
+				experimentOutputPath);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/agentdataset-central.net");
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+		BasicCentralManagerAgent manager = new BasicCentralManagerAgent(
+				"Manager", experimentOutputPath);
+		scenarioProperties.put("ManagerAgent", manager);
+
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		BasicClassificatorAgent agent = new BasicClassificatorAgent(
+				"ArgAgent1", manager, experimentDatasetPath
+						+ "/bayes/agentdataset-1.net", sensors);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SolarFlareNoGUILauncher.makeNumbers(simulationName,
+					experimentOutputPath + File.separator + "summary.csv",
+					summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void launchSimulationBasic1Agent2(long seed,
+			String summaryFile) {
+		// Simulation properties
+		String simulationName = "SolarFlareClassificatorScenario"
+				+ "-1AgentsHigherResolution-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Level level = Level.ALL;
+		String name = "NoGUI-" + simulationName;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp1";
+		String experimentOutputPath = experimentDatasetPath + File.separator
+				+ "output" + File.separator + simulationName;
+		LogConfigurator.log2File(logger, name, level, experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT,
+				experimentOutputPath);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/agentdataset-central.net");
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+		BasicCentralManagerAgent manager = new BasicCentralManagerAgent(
+				"Manager", experimentOutputPath);
+		scenarioProperties.put("ManagerAgent", manager);
+
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		BasicClassificatorAgent agent = new BasicClassificatorAgent(
+				"ArgAgent2", manager, experimentDatasetPath
+						+ "/bayes/agentdataset-2.net", sensors);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SolarFlareNoGUILauncher.makeNumbers(simulationName,
+					experimentOutputPath + File.separator + "summary.csv",
+					summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+}
+
+	public static void launchSimulationBasic2AgentsKFold(long seed,
+			String summaryFile) {
+		// Simulation properties
+		String simulationName = "SolarFlareClassificatorScenario"
+				+ "-2AgentsKFold-HigherResolution-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Level level = Level.ALL;
+		String name = "NoGUI-" + simulationName;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp1";
+		String experimentOutputPath = experimentDatasetPath + File.separator
+				+ "output" + File.separator + simulationName;
+		LogConfigurator.log2File(logger, name, level, experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT,
+				experimentOutputPath);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/k-fold-10/agentdataset-central.net");
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+		BasicCentralManagerAgent manager = new BasicCentralManagerAgent(
+				"Manager", experimentOutputPath);
+		scenarioProperties.put("ManagerAgent", manager);
+
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		BasicClassificatorAgent agent = new BasicClassificatorAgent(
+				"ArgAgent1", manager, experimentDatasetPath
+						+ "/bayes/k-fold-10/agentdataset-1.net", sensors);
+		agents.add(agent);
+
+		sensors = new ArrayList<String>();
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		agent = new BasicClassificatorAgent("ArgAgent2", manager,
+				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net", sensors);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SolarFlareNoGUILauncher.makeNumbers(simulationName,
+					experimentOutputPath + File.separator + "summary.csv",
+					summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 }

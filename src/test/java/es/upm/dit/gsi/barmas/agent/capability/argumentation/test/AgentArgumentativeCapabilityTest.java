@@ -36,11 +36,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.AgentArgumentativeCapability;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.exception.UnknowkNodeStateException;
@@ -119,7 +118,7 @@ public class AgentArgumentativeCapabilityTest {
 				return this;
 			}
 
-			public ArgumentationManagerAgent getArgumentationManager() {
+			public ArgumentativeAgent getArgumentationManager() {
 				return null;
 			}
 
@@ -138,7 +137,7 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			public void setArgumentationManager(
-					ArgumentationManagerAgent manager) {
+					ArgumentativeAgent manager) {
 				// TODO Auto-generated method stub
 
 			}

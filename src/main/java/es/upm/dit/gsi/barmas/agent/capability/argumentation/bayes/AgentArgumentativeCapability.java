@@ -16,19 +16,19 @@
 /**
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.AgentArgumentativeCapability.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import unbbayes.prs.bn.ProbabilisticNode;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -182,6 +182,189 @@ public class AgentArgumentativeCapability {
 	 */
 	public static void sendArgument(ArgumentativeAgent proponent, Argument arg) {
 		proponent.sendArgument(arg);
+	}
+
+
+	/**
+	 * Return the type of the attack (from a to b) using the following rules:
+	 * 
+	 * 0 - a does not attack b
+	 * 
+	 * 1 - a is defeater of b if Claim(A) implies not all Support(B)
+	 * 
+	 * 2 - a is a direct defeater of b if there is phi in Support(B) such that
+	 * Claim(A) implies not phi
+	 * 
+	 * 3 - a is a undercut of b if there is Phi subset of Support(B) such that
+	 * Claim(A) is exactly not all Phi
+	 * 
+	 * 4 - a is a direct undercut of b if there is phi in Support(B) such that
+	 * Claim(A) is exactly not phi
+	 * 
+	 * 5 - a is a canonical undercut of b if Claim(A) is exactly not Support(B)
+	 * 
+	 * 6 - a is a rebuttal of b if Claim(A) is exactly not Claim(B)
+	 * 
+	 * 7 - a is a defeating rebuttal of b if Claim(A) implies not Claim(B)
+	 * 
+	 * @param a
+	 * @param b
+	 * @return 0-7 attack type
+	 */
+	public static int getAttackType(Argument a, Argument b) {
+
+		// In the code (Claim = Givens + Proposal) and (Support = Givens +
+		// Assumptions)
+		// Check if argument a attacks b:
+
+		if (!b.equals(a)) {
+			Set<Given> agivens = a.getGivens();
+			Set<Given> bgivens = b.getGivens();
+			// Set<Assumption> aassumptions = a.getAssumptions();
+			// Set<Assumption> bassumptions = b.getAssumptions();
+			Set<Proposal> aproposals = a.getProposals();
+			Set<Proposal> bproposals = b.getProposals();
+
+			// Type -1 if evidences are not coherent
+			for (Given bgiven : bgivens) {
+				for (Given agiven : agivens) {
+					if (agiven.getNode().equals(bgiven.getNode())) {
+						if (!agiven.getValue().equals(bgiven.getValue())) {
+							Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).severe(
+									"Incoherent evidence in arguments");
+							return -1; // This has no sense!!
+						}
+					}
+				}
+			}
+
+			// Check type 1 - a is defeater of b if Claim(A) implies not all
+			// Support(B)
+			if (agivens.size() > bgivens.size()) {
+				return 1;
+			}
+
+			// Check type 2 - a is a direct defeater of b if there is phi in
+			// Support(B) such that Claim(A) implies not phi
+
+			// Check type 3 - a is a undercut of b if there is Phi subset of
+			// Support(B) such that Claim(A) is exactly not all Phi
+
+			// Check type 4 - a is a direct undercut of b if there is phi in
+			// Support(B) such that Claim(A) is exactly not phi
+
+			// Check type 5 - a is a canonical undercut of b if Claim(A) is
+			// exactly
+			// not Support(B)
+
+			// Check types 6 and 7
+			int aux = 0;
+			for (Proposal bp : bproposals) {
+				for (Proposal ap : aproposals) {
+					String anode = bp.getNode();
+					String node = ap.getNode();
+					// If the proposed node are equals...
+					if (node.equals(anode)) {
+						String astate = ap.getMaxState();
+						String bstate = bp.getMaxState();
+						// if they don't aggree with the state
+						if (!astate.equals(bstate)) {
+							aux++;
+						}
+					}
+				}
+			}
+			if (aux == bproposals.size()) {
+				// Check type 6 - a is a rebuttal of b if Claim(A) is exactly
+				// not
+				// Claim(B)
+				return 6;
+			} else if (aux > 0) {
+				// Check type 7 - a is a defeating rebuttal of b if Claim(A)
+				// implies not
+				// Claim(B)
+				return 7;
+			}
+
+		}
+
+		// If not... a does not attack b (Type 0)
+		return 0;
+	}
+	
+	/**
+	 * Update the graph of the argumentation
+	 * 
+	 * @param argument
+	 * @param argumentation
+	 */
+	public static void updateAtacksGraph(Argument argument, Argumentation argumentation) {
+		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation.getGraph();
+		for (Argument arg : argumentation.getArguments()) {
+			int attackType = AgentArgumentativeCapability.getAttackType(argument, arg);
+			graph.get(argument).put(arg, attackType);
+			attackType = AgentArgumentativeCapability.getAttackType(arg, argument);
+			graph.get(arg).put(argument, attackType);
+		}
+	}
+	
+
+
+	/**
+	 * Resolution conflicts method
+	 * 
+	 * @param argumentation
+	 */
+	public static void addConclusionHigherHypothesis(Argumentation argumentation) {
+
+		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		logger.fine("Getting the higher hypothesis...");
+		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
+				.getGraph();
+		logger.finest("Evaluating possible conclusions...");
+		List<Argument> possibleConclusions = new ArrayList<Argument>();
+		possibleConclusions.addAll(argumentation.getArguments());
+		for (Argument arg : argumentation.getArguments()) {
+			HashMap<Argument, Integer> attacks = graph.get(arg);
+			for (Argument attacked : attacks.keySet()) {
+				int attackType = attacks.get(attacked);
+				if (attackType == 1) {
+					possibleConclusions.remove(attacked);
+					logger.finest("Argument " + attacked.getId() + " (Proponent: " + attacked.getProponent().getProponentName() +") removed because it is defeated by Argument " + arg.getId() + " (Proponent: " + attacked.getProponent().getProponentName() +")");
+					
+				}
+			}
+		}
+		
+		int maxEvidences = 0;
+		for (Argument arg : argumentation.getArguments()) {
+			int evCardinal = arg.getGivens().size();
+			if (evCardinal > maxEvidences) {
+				maxEvidences = evCardinal;
+			}
+		}
+		// Pick possible arguments
+		String hyp = "";
+		double max = 0;
+		Argument argumentConclusion = null;
+		for (Argument arg : possibleConclusions) {
+			if (arg.getGivens().size() == maxEvidences) {
+				for (Proposal p : arg.getProposals()) {
+					if (p.getMaxValue() > max) {
+						max = p.getMaxValue();
+						hyp = p.getMaxState();
+						argumentConclusion = arg;
+					}
+				}
+			}
+		}
+
+		logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp
+				+ " - " + max + " from "
+				+ argumentConclusion.getProponent().getProponentName()
+				+ " - ArgumentID: " + argumentConclusion.getId());
+
+		argumentation.getConclusions().add(argumentConclusion);
 	}
 
 }

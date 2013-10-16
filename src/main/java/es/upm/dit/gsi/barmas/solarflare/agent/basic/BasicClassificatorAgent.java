@@ -28,12 +28,11 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.AgentArgumentativeCapability;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
@@ -65,7 +64,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	private static final long serialVersionUID = 8582918551821278046L;
 
-	private ArgumentationManagerAgent manager;
+	private ArgumentativeAgent manager;
 	private String bnFilePath;
 	private ProbabilisticNetwork bn;
 	private List<String> sensors;
@@ -86,7 +85,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 	 * @param bnPath
 	 */
 	public BasicClassificatorAgent(String id,
-			ArgumentationManagerAgent manager, String bnPath,
+			ArgumentativeAgent manager, String bnPath,
 			List<String> sensors) {
 		super(id);
 		this.bnFilePath = bnPath;
@@ -103,7 +102,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 		}
 
 		// Register in manager
-		this.getArgumentationManager().addSubscriber(this);
+		this.getArgumentationManager().addArgumentationGroupMember(this);
 	}
 
 	/*
@@ -424,17 +423,6 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 	 * 
 	 * @see
 	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
-	 * #getArgumentationManager()
-	 */
-	public ArgumentationManagerAgent getArgumentationManager() {
-		return this.manager;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent
 	 * #getArgumentationManagerName()
 	 */
 	public String getArgumentationManagerName() {
@@ -443,13 +431,13 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 	}
 
 	public Set<Argument> getCurrentArguments() throws ShanksException {
-		// TODO Auto-generated method stub
+		// Nothing to do
 		return null;
 	}
 
 	public void updateBeliefsWithNewArguments(Set<Argument> args)
 			throws ShanksException {
-		// TODO Auto-generated method stub
+		// Nothing to do
 
 	}
 
@@ -465,7 +453,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 		return this.bnFilePath;
 	}
 
-	public void setArgumentationManager(ArgumentationManagerAgent manager) {
+	public void setArgumentationManager(ArgumentativeAgent manager) {
 		this.manager = manager;
 	}
 
@@ -526,5 +514,9 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
 		this.argumentationGroup.remove(agent);
+	}
+
+	public ArgumentativeAgent getArgumentationManager() {
+		return this.manager;
 	}
 }

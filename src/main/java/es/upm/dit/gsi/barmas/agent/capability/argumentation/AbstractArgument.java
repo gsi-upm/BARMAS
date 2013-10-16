@@ -20,6 +20,8 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation;
 
 import java.util.Set;
 
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
+
 /**
  * Project: barmas
  * File: es.upm.dit.gsi.barmas.model.AbstractArgument.java

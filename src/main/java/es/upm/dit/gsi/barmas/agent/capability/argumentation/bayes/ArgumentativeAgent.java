@@ -16,12 +16,10 @@
 /**
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
 import java.util.Set;
 
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
@@ -53,12 +51,12 @@ public interface ArgumentativeAgent {
 	/**
 	 * @return return the argumentation manager agent
 	 */
-	public ArgumentationManagerAgent getArgumentationManager();
+	public ArgumentativeAgent getArgumentationManager();
 
 	/**
 	 * @param manager
 	 */
-	public void setArgumentationManager(ArgumentationManagerAgent manager);
+	public void setArgumentationManager(ArgumentativeAgent manager);
 
 	/**
 	 * @return the name of the argumentation manager agent

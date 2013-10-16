@@ -19,13 +19,13 @@ import java.util.logging.Logger;
 
 import com.csvreader.CsvWriter;
 
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentation;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
@@ -47,7 +47,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * 
  */
 public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
-		ArgumentationManagerAgent, ArgumentativeAgent {
+		ArgumentativeAgent {
 
 	/**
 	 * 
@@ -560,7 +560,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	private void updateArgumentationGraph(Argument arg,
 			Argumentation argumentation) {
 		for (Argument a : argumentation.getArguments()) {
-			int attack = this.getAttackType(arg, a);
+			int attack = AgentArgumentativeCapability.getAttackType(arg, a);
 			if (attack == -1) {
 				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
@@ -569,7 +569,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 						+ " and argument: " + a.getId());
 			}
 			argumentation.getGraph().get(arg).put(a, attack);
-			attack = this.getAttackType(a, arg);
+			attack = AgentArgumentativeCapability.getAttackType(a, arg);
 			if (attack == -1) {
 				Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 				logger.severe("INCOHERENCE IN EVIDENCES IN ARGUMENTATION "
@@ -647,12 +647,12 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 		return null;
 	}
 
-	public ArgumentationManagerAgent getArgumentationManager() {
+	public ArgumentativeAgent getArgumentationManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void setArgumentationManager(ArgumentationManagerAgent manager) {
+	public void setArgumentationManager(ArgumentativeAgent manager) {
 		// TODO Auto-generated method stub
 
 	}
@@ -690,113 +690,6 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 
 	public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
 		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Return the type of the attack (from a to b) using the following rules:
-	 * 
-	 * 0 - a does not attack b
-	 * 
-	 * 1 - a is defeater of b if Claim(A) implies not all Support(B)
-	 * 
-	 * 2 - a is a direct defeater of b if there is phi in Support(B) such that
-	 * Claim(A) implies not phi
-	 * 
-	 * 3 - a is a undercut of b if there is Phi subset of Support(B) such that
-	 * Claim(A) is exactly not all Phi
-	 * 
-	 * 4 - a is a direct undercut of b if there is phi in Support(B) such that
-	 * Claim(A) is exactly not phi
-	 * 
-	 * 5 - a is a canonical undercut of b if Claim(A) is exactly not Support(B)
-	 * 
-	 * 6 - a is a rebuttal of b if Claim(A) is exactly not Claim(B)
-	 * 
-	 * 7 - a is a defeating rebuttal of b if Claim(A) implies not Claim(B)
-	 * 
-	 * @param a
-	 * @param b
-	 * @return 0-7 attack type
-	 */
-	private int getAttackType(Argument a, Argument b) {
-
-		// In the code (Claim = Givens + Proposal) and (Support = Givens +
-		// Assumptions)
-		// Check if argument a attacks b:
-
-		if (!b.equals(a)) {
-			Set<Given> agivens = a.getGivens();
-			Set<Given> bgivens = b.getGivens();
-			Set<Assumption> aassumptions = a.getAssumptions();
-			Set<Assumption> bassumptions = b.getAssumptions();
-			Set<Proposal> aproposals = a.getProposals();
-			Set<Proposal> bproposals = b.getProposals();
-
-			// Type -1 if evidences are not coherent
-			for (Given bgiven : bgivens) {
-				for (Given agiven : agivens) {
-					if (agiven.getNode().equals(bgiven.getNode())) {
-						if (!agiven.getValue().equals(bgiven.getValue())) {
-							Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).severe(
-									"Incoherent evidence in arguments");
-							return -1; // This has no sense!!
-						}
-					}
-				}
-			}
-
-			// Check type 1 - a is defeater of b if Claim(A) implies not all
-			// Support(B)
-			if (agivens.size() > bgivens.size()) {
-				return 1;
-			}
-
-			// Check type 2 - a is a direct defeater of b if there is phi in
-			// Support(B) such that Claim(A) implies not phi
-
-			// Check type 3 - a is a undercut of b if there is Phi subset of
-			// Support(B) such that Claim(A) is exactly not all Phi
-
-			// Check type 4 - a is a direct undercut of b if there is phi in
-			// Support(B) such that Claim(A) is exactly not phi
-
-			// Check type 5 - a is a canonical undercut of b if Claim(A) is
-			// exactly
-			// not Support(B)
-
-			// Check types 6 and 7
-			int aux = 0;
-			for (Proposal bp : bproposals) {
-				for (Proposal ap : aproposals) {
-					String anode = bp.getNode();
-					String node = ap.getNode();
-					// If the proposed node are equals...
-					if (node.equals(anode)) {
-						String astate = ap.getMaxState();
-						String bstate = bp.getMaxState();
-						// if they don't aggree with the state
-						if (!astate.equals(bstate)) {
-							aux++;
-						}
-					}
-				}
-			}
-			if (aux == bproposals.size()) {
-				// Check type 6 - a is a rebuttal of b if Claim(A) is exactly
-				// not
-				// Claim(B)
-				return 6;
-			} else if (aux > 0) {
-				// Check type 7 - a is a defeating rebuttal of b if Claim(A)
-				// implies not
-				// Claim(B)
-				return 7;
-			}
-
-		}
-
-		// If not... a does not attack b (Type 0)
-		return 0;
+		
 	}
 }
