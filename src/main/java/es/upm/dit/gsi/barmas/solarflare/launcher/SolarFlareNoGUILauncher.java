@@ -19,6 +19,7 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.assumptions.AdvancedCentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.assumptions.AdvancedClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.basic.BasicCentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.basic.BasicClassificatorAgent;
@@ -791,7 +792,7 @@ public class SolarFlareNoGUILauncher {
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		BasicCentralManagerAgent manager = new BasicCentralManagerAgent(
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 

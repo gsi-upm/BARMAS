@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import com.csvreader.CsvWriter;
 
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
@@ -56,13 +56,16 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	private List<ArgumentativeAgent> suscribers;
 	private List<Argumentation> argumentations;
 
-	private boolean idle;
-	private int idleSteps;
-
 	private List<Argument> pendingArguments;
 
 	private String outputDir;
 	private String argumentationDir;
+
+	// STATES
+	private boolean IDLE;
+	private boolean PROCESSING;
+	private boolean WAITING;
+	private boolean FINISHING;
 
 	/**
 	 * Constructor
@@ -74,9 +77,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 		super(id);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
-		this.idle = true;
 		this.pendingArguments = new ArrayList<Argument>();
-		this.idleSteps = 0;
 		this.outputDir = outputDir;
 		this.argumentationDir = this.outputDir + File.separator
 				+ "argumentation";
@@ -90,6 +91,9 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 						"Impossible to create argumentation directory");
 			}
 		}
+
+		this.goToIdle();
+
 	}
 
 	/*
@@ -101,15 +105,6 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 		// Check incoming new argumentation
 		List<Message> inbox = this.getInbox();
 		if (inbox.size() > 0) {
-			if (this.getCurrentArgumentation() == null) {
-				Argumentation argumentation = new Argumentation(
-						this.argumentations.size());
-				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).finer(
-						"Creating new argumentation - ID: "
-								+ this.argumentations.size());
-				this.argumentations.add(argumentation);
-
-			}
 
 			this.pendingArguments = new ArrayList<Argument>();
 			for (Message msg : inbox) {
@@ -132,28 +127,35 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	@Override
 	public void executeReasoningCycle(ShanksSimulation simulation) {
+
 		if (this.pendingArguments.size() > 0) {
-			this.busy();
-			for (Argument arg : pendingArguments) {
-				this.registerNewArgument(arg, simulation);
-			}
-			this.pendingArguments.clear();
-		} else if (this.idle && this.getCurrentArgumentation() != null
-				&& this.getCurrentArgumentation().isFinished() == false) {
-			this.busy();
+			this.goToProcessing();
+			this.goToWaiting();
+		} else if (this.WAITING) {
 			Argumentation a = this.getCurrentArgumentation();
-			this.finishCurrentArgumentation();
-			simulation.getLogger().info(
-					"Argumentation Manager: Finishing argumentation...");
-			for (ArgumentativeAgent s : this.suscribers) {
-				s.finishArgumenation();
-			}
+			this.goToFinishing();
 			this.updateSolarFlare(a, simulation);
-		} else {
-			this.idle();
-			simulation.getLogger().fine(
-					"Argumentation Manager: Nothing to do. IDLE STEPS: "
-							+ this.idleSteps);
+		}
+
+		this.pendingArguments.clear();
+	}
+
+	/**
+	 * 
+	 */
+	private void processPendingArguments() {
+
+		if (this.getCurrentArgumentation() == null) {
+			Argumentation argumentation = new Argumentation(
+					this.argumentations.size());
+			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).finer(
+					"Creating new argumentation - ID: "
+							+ this.argumentations.size());
+			this.argumentations.add(argumentation);
+		}
+
+		for (Argument arg : pendingArguments) {
+			this.registerNewArgument(arg);
 		}
 
 	}
@@ -197,57 +199,9 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	/**
 	 * 
 	 */
-	private void busy() {
-		this.idle = false;
-		this.idleSteps = 0;
-	}
-
-	/**
-	 * 
-	 */
-	private void idle() {
-		this.idle = true;
-		this.idleSteps++;
-	}
-
-	/**
-	 * 
-	 */
 	private void finishCurrentArgumentation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		Map<Argument, HashMap<Argument, Integer>> graph = argumentation
-				.getGraph();
-		Set<Argument> args = graph.keySet();
-		Map<Argument, Boolean> undefeated = new HashMap<Argument, Boolean>();
-		for (Argument a : args) {
-			undefeated.put(a, true);
-		}
-		for (Entry<Argument, HashMap<Argument, Integer>> e : graph.entrySet()) {
-			HashMap<Argument, Integer> attacks = e.getValue();
-			for (Argument a : attacks.keySet()) {
-				if (attacks.get(a) != 0) {
-					undefeated.put(a, false);
-				}
-			}
-		}
-
-		// Add undefeated arguments
-		List<Argument> conclusions = argumentation.getConclusions();
-		for (Entry<Argument, Boolean> e : undefeated.entrySet()) {
-			if (e.getValue()) {
-				conclusions.add(e.getKey());
-			}
-		}
-
-		if (conclusions.size() == 0) {
-			// If no conclusions...
-			this.getHigherHypothesis(argumentation);
-		} else {
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
-					"Argumentation Manager--> Found undefeated arguments. Count: "
-							+ conclusions.size());
-		}
-
+		AgentArgumentativeCapability.addConclusionHigherHypothesis(argumentation);
 		this.argumentation2File(this.getCurrentArgumentation());
 		argumentation.setFinished(true);
 	}
@@ -267,188 +221,14 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 								+ currentArgumentation.getId());
 			}
 		}
-		// f = new File(argumentationDir + File.separator + "argumentation"
-		// + currentArgumentation.getId() + File.separator + "arguments");
-		// if (!f.isDirectory()) {
-		// boolean made = f.mkdir();
-		// if (!made) {
-		// Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
-		// "Impossible to create arguments directory. -> Argumentation: "
-		// + currentArgumentation.getId());
-		// }
-		// }
 
-		// Write argumentation general info in csv
 		try {
-			List<String> headers = new ArrayList<String>();
-
-			headers.add("ArgumentationID");
-			headers.add("ArgumentID");
-			headers.add("ProponentID");
-			headers.add("Step");
-			headers.add("Timestamp");
-			int size = headers.size();
-			String[] newHeaders = new String[size];
-			int i = 0;
-			for (String header : headers) {
-				newHeaders[i++] = header;
-			}
-
-			String generalArgumentationsFile = this.outputDir + File.separator
-					+ "allArgumentations.csv";
-			f = new File(generalArgumentationsFile);
-			CsvWriter generalWriter = null;
-			if (!f.exists()) {
-				generalWriter = new CsvWriter(new FileWriter(
-						generalArgumentationsFile), ',');
-				generalWriter.writeRecord(newHeaders);
-				generalWriter.flush();
-			} else {
-				generalWriter = new CsvWriter(new FileWriter(
-						generalArgumentationsFile, true), ',');
-			}
-
-			CsvWriter concreteWriter = null;
-
-			String concreteArgumentationFile = argumentationDir
-					+ File.separator + "argumentation"
-					+ currentArgumentation.getId() + File.separator
-					+ "argumentation-" + currentArgumentation.getId() + ".csv";
-			f = new File(concreteArgumentationFile);
-			if (!f.exists()) {
-				concreteWriter = new CsvWriter(new FileWriter(
-						concreteArgumentationFile), ',');
-				concreteWriter.writeRecord(newHeaders);
-				concreteWriter.flush();
-			} else {
-				concreteWriter = new CsvWriter(new FileWriter(
-						concreteArgumentationFile, true), ',');
-			}
-
-			int argNums = currentArgumentation.getArgumentsWithID().size();
-			for (int argNum = 0; argNum < argNums; argNum++) {
-				Argument arg = currentArgumentation.getArgumentsWithID().get(
-						argNum);
-				String[] data = new String[newHeaders.length];
-				data[0] = Integer.toString(currentArgumentation.getId());
-				data[1] = Integer.toString(arg.getId());
-				data[2] = arg.getProponent().getProponentName();
-				data[3] = Long.toString(arg.getStep());
-				data[4] = Long.toString(arg.getTimestamp());
-				generalWriter.writeRecord(data);
-				generalWriter.flush();
-				concreteWriter.writeRecord(data);
-				concreteWriter.flush();
-			}
-
-			generalWriter.close();
-			concreteWriter.close();
-
+			// Write argumentation general info in csv
+			this.writeArgumentationInCSVFile(currentArgumentation);
 			// Write the graph
-			HashMap<Argument, HashMap<Argument, Integer>> graph = currentArgumentation
-					.getGraph();
-			String graphFile = argumentationDir + File.separator
-					+ "argumentation" + currentArgumentation.getId()
-					+ File.separator + "graph-argumentation-"
-					+ currentArgumentation.getId() + ".csv";
-			CsvWriter graphWriter = null;
-			String[] graphHeaders = new String[currentArgumentation
-					.getArgumentsWithID().size() + 2];
-			graphHeaders[0] = "ProponentID";
-			graphHeaders[1] = "ArgID";
-			for (int aux = 2; aux < graphHeaders.length; aux++) {
-				graphHeaders[aux] = "Arg" + (aux - 2);
-			}
-			f = new File(graphFile);
-			if (!f.exists()) {
-				graphWriter = new CsvWriter(new FileWriter(graphFile), ',');
-				graphWriter.writeRecord(graphHeaders);
-				graphWriter.flush();
-			} else {
-				graphWriter = new CsvWriter(new FileWriter(graphFile, true),
-						',');
-			}
-
-			for (int aux = 2; aux < graphHeaders.length; aux++) {
-				String[] graphData = new String[graphHeaders.length];
-				graphData[0] = currentArgumentation.getArgumentsWithID()
-						.get(aux - 2).getProponent().getProponentName();
-				graphData[1] = Integer.toString(aux - 2);
-				Argument arg = currentArgumentation.getArgumentsWithID().get(
-						aux - 2);
-				HashMap<Argument, Integer> attacks = graph.get(arg);
-				for (int aux2 = 0; aux2 < graphHeaders.length - 2; aux2++) {
-					Argument arg2 = currentArgumentation.getArgumentsWithID()
-							.get(aux2);
-					graphData[aux2 + 2] = attacks.get(arg2).toString();
-				}
-				graphWriter.writeRecord(graphData);
-				graphWriter.flush();
-			}
-
-			graphWriter.close();
-
-			// Arguments
-
-			for (int aux = 0; aux < currentArgumentation.getArgumentsWithID()
-					.size(); aux++) {
-				Argument argument = currentArgumentation.getArgumentsWithID()
-						.get(aux);
-				FileWriter fw = new FileWriter(this.argumentationDir
-						+ File.separator + "argumentation"
-						+ currentArgumentation.getId() + File.separator
-						+ "arguments-argumentation-"
-						+ currentArgumentation.getId() + ".info", true);
-				// FileWriter fw = new FileWriter(this.argumentationDir
-				// + File.separator + "argumentation"
-				// + currentArgumentation.getId() + File.separator
-				// + "arguments" + File.separator + "argument"
-				// + argument.getId() + ".info");
-				fw.write("Argumentation: " + currentArgumentation.getId()
-						+ " - Argument: " + argument.getId() + "\nProponent: "
-						+ argument.getProponent().getProponentName()
-						+ "\n\nStep: " + argument.getStep() + " - Timestamp: "
-						+ argument.getTimestamp() + "\n\n");
-				fw.flush();
-				fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size()
-						+ "\n");
-				fw.flush();
-				for (Given given : argument.getGivens()) {
-					fw.write("\t\tNode: " + given.getNode() + "\n\t\t\tValue: "
-							+ given.getValue() + "\n");
-					fw.flush();
-				}
-				fw.write("\n\tAssumptions:\n\tQuantity:"
-						+ argument.getAssumptions().size() + "\n");
-				fw.flush();
-				for (Assumption assump : argument.getAssumptions()) {
-					fw.write("\t\tNode: " + assump.getNode() + "\n");
-					fw.flush();
-					for (Entry<String, Double> entry : assump
-							.getValuesWithConfidence().entrySet()) {
-						fw.write("\t\t\tValue: " + entry.getKey()
-								+ " - Confidene: " + entry.getValue() + "\n");
-						fw.flush();
-					}
-				}
-				fw.write("\n\tProposal:\n\tQuantity:"
-						+ argument.getProposals().size() + "\n");
-				fw.flush();
-				for (Proposal proposal : argument.getProposals()) {
-					fw.write("\t\tNode: " + proposal.getNode() + "\n");
-					fw.flush();
-					for (Entry<String, Double> entry : proposal
-							.getValuesWithConfidence().entrySet()) {
-						fw.write("\t\t\tValue: " + entry.getKey()
-								+ " - Confidene: " + entry.getValue() + "\n");
-						fw.flush();
-					}
-				}
-				fw.write("\n\n");
-				fw.flush();
-				fw.close();
-			}
-
+			this.writeGraphInCSVFile(currentArgumentation);
+			// Write arguments
+			this.writeArgumentsInFriendlyFormat(currentArgumentation);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -457,56 +237,190 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	}
 
 	/**
-	 * Resolution conflicts method
-	 * 
-	 * @param argumentation
+	 * @param currentArgumentation
+	 * @throws IOException
 	 */
-	private void getHigherHypothesis(Argumentation argumentation) {
+	private void writeArgumentsInFriendlyFormat(
+			Argumentation currentArgumentation) throws IOException {
 
-		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
-				.getGraph();
-		List<Argument> possibleConclusions = new ArrayList<Argument>();
-		possibleConclusions.addAll(argumentation.getArguments());
-		for (Argument arg : argumentation.getArguments()) {
-			HashMap<Argument, Integer> attacks = graph.get(arg);
-			for (Argument attacked : attacks.keySet()) {
-				int attackType = attacks.get(attacked);
-				if (attackType == 1) {
-					possibleConclusions.remove(attacked);
+		for (int aux = 0; aux < currentArgumentation.getArgumentsWithID()
+				.size(); aux++) {
+			Argument argument = currentArgumentation.getArgumentsWithID().get(
+					aux);
+			FileWriter fw = new FileWriter(this.argumentationDir
+					+ File.separator + "argumentation"
+					+ currentArgumentation.getId() + File.separator
+					+ "arguments-argumentation-" + currentArgumentation.getId()
+					+ ".info", true);
+			fw.write("Argumentation: " + currentArgumentation.getId()
+					+ " - Argument: " + argument.getId() + "\nProponent: "
+					+ argument.getProponent().getProponentName() + "\n\nStep: "
+					+ argument.getStep() + " - Timestamp: "
+					+ argument.getTimestamp() + "\n\n");
+			fw.flush();
+			fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size()
+					+ "\n");
+			fw.flush();
+			for (Given given : argument.getGivens()) {
+				fw.write("\t\tNode: " + given.getNode() + "\n\t\t\tValue: "
+						+ given.getValue() + "\n");
+				fw.flush();
+			}
+			fw.write("\n\tAssumptions:\n\tQuantity:"
+					+ argument.getAssumptions().size() + "\n");
+			fw.flush();
+			for (Assumption assump : argument.getAssumptions()) {
+				fw.write("\t\tNode: " + assump.getNode() + "\n");
+				fw.flush();
+				for (Entry<String, Double> entry : assump
+						.getValuesWithConfidence().entrySet()) {
+					fw.write("\t\t\tValue: " + entry.getKey()
+							+ " - Confidene: " + entry.getValue() + "\n");
+					fw.flush();
 				}
 			}
-		}
-
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-		int maxEvidences = 0;
-		for (Argument arg : argumentation.getArguments()) {
-			int evCardinal = arg.getGivens().size();
-			if (evCardinal > maxEvidences) {
-				maxEvidences = evCardinal;
-			}
-		}
-		// Pick possible arguments
-		String hyp = "";
-		double max = 0;
-		Argument argumentConclusion = null;
-		for (Argument arg : possibleConclusions) {
-			if (arg.getGivens().size() == maxEvidences) {
-				for (Proposal p : arg.getProposals()) {
-					if (p.getMaxValue() > max) {
-						max = p.getMaxValue();
-						hyp = p.getMaxState();
-						argumentConclusion = arg;
-					}
+			fw.write("\n\tProposal:\n\tQuantity:"
+					+ argument.getProposals().size() + "\n");
+			fw.flush();
+			for (Proposal proposal : argument.getProposals()) {
+				fw.write("\t\tNode: " + proposal.getNode() + "\n");
+				fw.flush();
+				for (Entry<String, Double> entry : proposal
+						.getValuesWithConfidence().entrySet()) {
+					fw.write("\t\t\tValue: " + entry.getKey()
+							+ " - Confidene: " + entry.getValue() + "\n");
+					fw.flush();
 				}
 			}
+			fw.write("\n\n");
+			fw.flush();
+			fw.close();
 		}
 
-		logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp
-				+ " - " + max);
-
-		argumentation.getConclusions().add(argumentConclusion);
 	}
 
+	/**
+	 * @param currentArgumentation
+	 * @throws IOException
+	 */
+	private void writeGraphInCSVFile(Argumentation currentArgumentation)
+			throws IOException {
+		HashMap<Argument, HashMap<Argument, Integer>> graph = currentArgumentation
+				.getGraph();
+		String graphFile = argumentationDir + File.separator + "argumentation"
+				+ currentArgumentation.getId() + File.separator
+				+ "graph-argumentation-" + currentArgumentation.getId()
+				+ ".csv";
+		CsvWriter graphWriter = null;
+		String[] graphHeaders = new String[currentArgumentation
+				.getArgumentsWithID().size() + 2];
+		graphHeaders[0] = "ProponentID";
+		graphHeaders[1] = "ArgID";
+		for (int aux = 2; aux < graphHeaders.length; aux++) {
+			graphHeaders[aux] = "Arg" + (aux - 2);
+		}
+		File f = new File(graphFile);
+		if (!f.exists()) {
+			graphWriter = new CsvWriter(new FileWriter(graphFile), ',');
+			graphWriter.writeRecord(graphHeaders);
+			graphWriter.flush();
+		} else {
+			graphWriter = new CsvWriter(new FileWriter(graphFile, true), ',');
+		}
+
+		for (int aux = 2; aux < graphHeaders.length; aux++) {
+			String[] graphData = new String[graphHeaders.length];
+			graphData[0] = currentArgumentation.getArgumentsWithID()
+					.get(aux - 2).getProponent().getProponentName();
+			graphData[1] = Integer.toString(aux - 2);
+			Argument arg = currentArgumentation.getArgumentsWithID().get(
+					aux - 2);
+			HashMap<Argument, Integer> attacks = graph.get(arg);
+			for (int aux2 = 0; aux2 < graphHeaders.length - 2; aux2++) {
+				Argument arg2 = currentArgumentation.getArgumentsWithID().get(
+						aux2);
+				graphData[aux2 + 2] = attacks.get(arg2).toString();
+			}
+			graphWriter.writeRecord(graphData);
+			graphWriter.flush();
+		}
+
+		graphWriter.close();
+	}
+
+	/**
+	 * Wrtie the argumentation info in general CSV file and individual CSV file.
+	 * 
+	 * @param currentArgumentation
+	 * @throws IOException
+	 */
+	private void writeArgumentationInCSVFile(Argumentation currentArgumentation)
+			throws IOException {
+		List<String> headers = new ArrayList<String>();
+
+		headers.add("ArgumentationID");
+		headers.add("ArgumentID");
+		headers.add("ProponentID");
+		headers.add("Step");
+		headers.add("Timestamp");
+		int size = headers.size();
+		String[] newHeaders = new String[size];
+		int i = 0;
+		for (String header : headers) {
+			newHeaders[i++] = header;
+		}
+
+		String generalArgumentationsFile = this.outputDir + File.separator
+				+ "allArgumentations.csv";
+		File f = new File(generalArgumentationsFile);
+		CsvWriter generalWriter = null;
+		if (!f.exists()) {
+			generalWriter = new CsvWriter(new FileWriter(
+					generalArgumentationsFile), ',');
+			generalWriter.writeRecord(newHeaders);
+			generalWriter.flush();
+		} else {
+			generalWriter = new CsvWriter(new FileWriter(
+					generalArgumentationsFile, true), ',');
+		}
+
+		CsvWriter concreteWriter = null;
+
+		String concreteArgumentationFile = argumentationDir + File.separator
+				+ "argumentation" + currentArgumentation.getId()
+				+ File.separator + "argumentation-"
+				+ currentArgumentation.getId() + ".csv";
+		f = new File(concreteArgumentationFile);
+		if (!f.exists()) {
+			concreteWriter = new CsvWriter(new FileWriter(
+					concreteArgumentationFile), ',');
+			concreteWriter.writeRecord(newHeaders);
+			concreteWriter.flush();
+		} else {
+			concreteWriter = new CsvWriter(new FileWriter(
+					concreteArgumentationFile, true), ',');
+		}
+
+		int argNums = currentArgumentation.getArgumentsWithID().size();
+		for (int argNum = 0; argNum < argNums; argNum++) {
+			Argument arg = currentArgumentation.getArgumentsWithID()
+					.get(argNum);
+			String[] data = new String[newHeaders.length];
+			data[0] = Integer.toString(currentArgumentation.getId());
+			data[1] = Integer.toString(arg.getId());
+			data[2] = arg.getProponent().getProponentName();
+			data[3] = Long.toString(arg.getStep());
+			data[4] = Long.toString(arg.getTimestamp());
+			generalWriter.writeRecord(data);
+			generalWriter.flush();
+			concreteWriter.writeRecord(data);
+			concreteWriter.flush();
+		}
+
+		generalWriter.close();
+		concreteWriter.close();
+
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -537,16 +451,10 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 		return this.argumentations;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.
-	 * ArgumentationManagerAgent
-	 * #registerNewArgument(es.upm.dit.gsi.barmas.agent.
-	 * capability.argumentation.bayes.Argument,
-	 * es.upm.dit.gsi.shanks.ShanksSimulation)
+	/**
+	 * @param arg
 	 */
-	public void registerNewArgument(Argument arg, ShanksSimulation simulation) {
+	private void registerNewArgument(Argument arg) {
 		Argumentation argumentation = this.getCurrentArgumentation();
 		argumentation.addArgument(arg);
 	}
@@ -648,18 +556,148 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #finishArgumenation()
+	 */
 	public void finishArgumenation() {
-		// TODO Auto-generated method stub
-
+		this.finishCurrentArgumentation();
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
+				"Argumentation Manager: Finishing argumentation...");
+		for (ArgumentativeAgent s : this.suscribers) {
+			s.finishArgumenation();
+		}
 	}
 
 	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
-		// TODO Auto-generated method stub
-
+		this.suscribers.add(agent);
+		agent.addArgumentationGroupMember(this);
+		for (ArgumentativeAgent ag : this.getSubscribers()) {
+			ag.addArgumentationGroupMember(agent);
+			agent.addArgumentationGroupMember(ag);
+		}
 	}
 
 	public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
-		// TODO Auto-generated method stub
-		
+		this.suscribers.remove(agent);
+		for (ArgumentativeAgent ag : this.getSubscribers()) {
+			ag.removeArgumentationGroupMember(agent);
+		}
 	}
+
+	/**
+	 * @return the iDLE
+	 */
+	public boolean isIDLE() {
+		return IDLE;
+	}
+
+	/**
+	 * @param iDLE
+	 *            the iDLE to set
+	 */
+	public void setIDLE(boolean iDLE) {
+		IDLE = iDLE;
+	}
+
+	/**
+	 * @return the pROCESSING
+	 */
+	public boolean isPROCESSING() {
+		return PROCESSING;
+	}
+
+	/**
+	 * @param pROCESSING
+	 *            the pROCESSING to set
+	 */
+	public void setPROCESSING(boolean pROCESSING) {
+		PROCESSING = pROCESSING;
+	}
+
+	/**
+	 * @return the wAITING
+	 */
+	public boolean isWAITING() {
+		return WAITING;
+	}
+
+	/**
+	 * @param wAITING
+	 *            the wAITING to set
+	 */
+	public void setWAITING(boolean wAITING) {
+		WAITING = wAITING;
+	}
+
+	/**
+	 * @return the fINISHING
+	 */
+	public boolean isFINISHING() {
+		return FINISHING;
+	}
+
+	/**
+	 * @param fINISHING
+	 *            the fINISHING to set
+	 */
+	public void setFINISHING(boolean fINISHING) {
+		FINISHING = fINISHING;
+	}
+
+	/**
+	 * Go to status IDLE
+	 */
+	private void goToIdle() {
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+				this.getID() + " going to status: IDLE");
+		this.IDLE = true;
+		this.FINISHING = false;
+		this.PROCESSING = false;
+		this.WAITING = false;
+	}
+
+	/**
+	 * Go to status PROCESSING
+	 * 
+	 * @param sim
+	 */
+	private void goToProcessing() {
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+				this.getID() + " going to status: PROCESSING");
+		this.IDLE = false;
+		this.FINISHING = false;
+		this.PROCESSING = true;
+		this.WAITING = false;
+		this.processPendingArguments();
+	}
+
+	/**
+	 * Go to status WAITING
+	 */
+	private void goToWaiting() {
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+				this.getID() + " going to status: WAITING");
+		this.IDLE = false;
+		this.FINISHING = false;
+		this.PROCESSING = false;
+		this.WAITING = true;
+	}
+
+	/**
+	 * Go to status FINISHING
+	 */
+	private void goToFinishing() {
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+				this.getID() + " going to status: FINISHING");
+		this.IDLE = false;
+		this.FINISHING = true;
+		this.PROCESSING = false;
+		this.WAITING = false;
+		this.finishArgumenation();
+	}
+
 }

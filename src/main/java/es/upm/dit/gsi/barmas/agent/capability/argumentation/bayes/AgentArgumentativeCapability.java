@@ -366,5 +366,4 @@ public class AgentArgumentativeCapability {
 
 		argumentation.getConclusions().add(argumentConclusion);
 	}
-
 }
