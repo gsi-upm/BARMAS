@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  */
-package es.upm.dit.gsi.barmas.solarflare.agent.advanced;
+package es.upm.dit.gsi.barmas.solarflare.agent.advancedWithAssumptions;
 
 import jason.asSemantics.Message;
 
@@ -45,7 +45,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * @version 0.1
  * 
  */
-public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
+public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 		ArgumentativeAgent {
 
 	/**
@@ -73,7 +73,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	 * @param id
 	 * @param outputDir
 	 */
-	public AdvancedCentralManagerAgent(String id, String outputDir) {
+	public AdvancedWACentralManagerAgent(String id, String outputDir) {
 		super(id);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();

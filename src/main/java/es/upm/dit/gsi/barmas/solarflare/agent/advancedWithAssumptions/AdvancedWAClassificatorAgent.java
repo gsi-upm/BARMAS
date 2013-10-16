@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.BarmasAgent.java
  */
-package es.upm.dit.gsi.barmas.solarflare.agent.advanced;
+package es.upm.dit.gsi.barmas.solarflare.agent.advancedWithAssumptions;
 
 import jason.asSemantics.Message;
 
@@ -56,7 +56,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * @version 0.1
  * 
  */
-public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
+public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 		BayesianReasonerShanksAgent, ArgumentativeAgent {
 
 	/**
@@ -92,7 +92,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * @param manager
 	 * @param bnPath
 	 */
-	public AdvancedClassificatorAgent(String id, ArgumentativeAgent manager,
+	public AdvancedWAClassificatorAgent(String id, ArgumentativeAgent manager,
 			String bnPath, List<String> sensors) {
 		super(id);
 		this.bnFilePath = bnPath;
