@@ -146,7 +146,10 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 		SolarFlare orig = (SolarFlare) sim.getScenario().getNetworkElement(
 				SolarFlareScenario.ORIGINALFLARE);
 		// Check sensors
-		boolean newEvent = this.getSensorsUpdateData(sim);
+		boolean newEvent = false;
+		if (this.IDLE) {
+			newEvent = this.getSensorsUpdateData(sim);
+		}
 
 		// State machine
 		if (this.pendingArguments.size() > 0) {
@@ -157,7 +160,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 				this.goToProcessing(sim);
 				this.evaluateNextAction(sim);
 			}
-		} else if (this.IDLE && newEvent && this.argumentation == null) {
+		} else if (this.IDLE && newEvent) {
 			this.argumentation = new Argumentation(orig.getCaseID());
 			this.goToArgumenting(sim);
 			this.goToWaiting();
@@ -176,7 +179,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			this.goToArgumenting(sim);
 			this.goToWaiting();
 		} else {
-			this.goToIdle();
+			this.goToWaiting();
 		}
 	}
 
