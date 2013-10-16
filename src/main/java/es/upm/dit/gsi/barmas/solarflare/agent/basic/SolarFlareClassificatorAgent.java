@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.BarmasAgent.java
  */
-package es.upm.dit.gsi.barmas.solarflare.agent;
+package es.upm.dit.gsi.barmas.solarflare.agent.basic;
 
 import jason.asSemantics.Message;
 

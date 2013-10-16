@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  */
-package es.upm.dit.gsi.barmas.solarflare.agent;
+package es.upm.dit.gsi.barmas.solarflare.agent.basic;
 
 import jason.asSemantics.Message;
 
@@ -28,7 +28,6 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.Argumentatio
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.ArgumentationManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -469,6 +468,19 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 	 * @param argumentation
 	 */
 	private void getHigherHypothesis(Argumentation argumentation) {
+		
+		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation.getGraph();
+		List<Argument> possibleConclusions = new ArrayList<Argument>();
+		possibleConclusions.addAll(argumentation.getArguments());
+		for (Argument arg : argumentation.getArguments()) {
+			HashMap<Argument, Integer> attacks = graph.get(arg);
+			for (Argument attacked : attacks.keySet()) {
+				int attackType = attacks.get(attacked);
+				if (attackType==1) {
+					possibleConclusions.remove(attacked);
+				}
+			}
+		}
 
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		int maxEvidences = 0;
@@ -481,15 +493,14 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 		// Pick possible arguments
 		String hyp = "";
 		double max = 0;
-		for (Argument arg : argumentation.getArguments()) {
+		Argument argumentConclusion = null;
+		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
-					for (Entry<String, Double> e : p.getValuesWithConfidence()
-							.entrySet()) {
-						if (e.getValue() >= max) {
-							max = e.getValue();
-							hyp = e.getKey();
-						}
+					if (p.getMaxValue()>max) {
+						max=p.getMaxValue();
+						hyp=p.getMaxState();
+						argumentConclusion = arg;
 					}
 				}
 			}
@@ -497,23 +508,8 @@ public class SolarFlareCentralManagerAgent extends SimpleShanksAgent implements
 
 		logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp
 				+ " - " + max);
-
-		Argument a = new Argument();
-		for (Argument arg : argumentation.getArguments()) {
-			if (arg.getGivens().size() == maxEvidences) {
-				for (Given g : arg.getGivens()) {
-					a.addGiven(g);
-				}
-				break;
-			}
-		}
-		HashMap<String, Double> beliefs = new HashMap<String, Double>();
-		beliefs.put(hyp, max);
-		Proposal proposal = new Proposal(SolarFlareType.class.getSimpleName(),
-				beliefs);
-		a.addProposal(proposal);
-
-		argumentation.getConclusions().add(a);
+		
+		argumentation.getConclusions().add(argumentConclusion);
 	}
 
 	/*
