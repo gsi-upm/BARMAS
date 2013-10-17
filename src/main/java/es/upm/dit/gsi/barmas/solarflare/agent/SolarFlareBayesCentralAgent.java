@@ -4,23 +4,13 @@
 package es.upm.dit.gsi.barmas.solarflare.agent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Evolution;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SpotDistribution;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.XNode;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
@@ -51,15 +41,17 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 	private static final long serialVersionUID = -6542107693613585524L;
 	private String bnPath;
 	private ProbabilisticNetwork bn;
+	private List<String> sensors;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param id
 	 */
-	public SolarFlareBayesCentralAgent(String id, String bnPath) {
+	public SolarFlareBayesCentralAgent(String id, String bnPath, List<String> sensors) {
 		super(id);
 		this.bnPath = bnPath;
+		this.sensors = sensors;
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
@@ -133,49 +125,10 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 
 			HashMap<String, String> evidences = new HashMap<String, String>();
 
-			String key = LargestSpotSize.class.getSimpleName();
-			String evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = SpotDistribution.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = Activity.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = Evolution.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = PrevStatus24Hour.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = HistComplex.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = BecomeHist.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = Area.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = CNode.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = MNode.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
-
-			key = XNode.class.getSimpleName();
-			evidence = (String) origflare.getProperty(key);
-			evidences.put(key, evidence);
+			for (String key : this.sensors) {
+				String evidence = (String) origflare.getProperty(key);
+				evidences.put(key, evidence);
+			}
 
 			try {
 				ShanksAgentBayesianReasoningCapability.addEvidences(bn,

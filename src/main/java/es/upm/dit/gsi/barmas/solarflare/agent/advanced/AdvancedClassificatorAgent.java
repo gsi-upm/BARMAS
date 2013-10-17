@@ -399,6 +399,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	public void finishArgumenation() {
 		this.evidences.clear();
 		this.pendingArguments.clear();
+		this.mySentArguments.clear();
 		this.argumentation = null;
 		try {
 			ShanksAgentBayesianReasoningCapability.clearEvidences(this);

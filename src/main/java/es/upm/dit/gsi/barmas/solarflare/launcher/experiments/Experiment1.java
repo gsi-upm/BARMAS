@@ -90,9 +90,21 @@ public class Experiment1 {
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
 		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
-						+ "/bayes/agentdataset-central.net");
+						+ "/bayes/agentdataset-central.net", sensors);
 		agents.add(bayes);
 
 		// Argumentation AGENTS
@@ -100,7 +112,7 @@ public class Experiment1 {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
-		List<String> sensors = new ArrayList<String>();
+		sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
@@ -179,9 +191,21 @@ public class Experiment1 {
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 	
 		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
-						+ "/bayes/k-fold-10/agentdataset-central.net");
+						+ "/bayes/k-fold-10/agentdataset-central.net", sensors);
 		agents.add(bayes);
 	
 		// Argumentation AGENTS
@@ -189,7 +213,7 @@ public class Experiment1 {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 	
-		List<String> sensors = new ArrayList<String>();
+		sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
