@@ -94,17 +94,20 @@ public class AgentArgumentativeCapability {
 			Given given = new Given(entry.getKey(), entry.getValue());
 			arg.addGiven(given);
 		}
-		
-		for (Entry<String, HashMap<String, Double>> entry : assumptions.entrySet()) {
-			Assumption assumption = new Assumption(entry.getKey(), entry.getValue());
+
+		for (Entry<String, HashMap<String, Double>> entry : assumptions
+				.entrySet()) {
+			Assumption assumption = new Assumption(entry.getKey(),
+					entry.getValue());
 			arg.addAssumption(assumption);
 		}
 
-		for (Entry<String, HashMap<String, Double>> entry : proposals.entrySet()) {
+		for (Entry<String, HashMap<String, Double>> entry : proposals
+				.entrySet()) {
 			Proposal proposal = new Proposal(entry.getKey(), entry.getValue());
 			arg.addProposal(proposal);
 		}
-		
+
 		return arg;
 
 	}
@@ -410,4 +413,111 @@ public class AgentArgumentativeCapability {
 
 		argumentation.getConclusions().add(argumentConclusion);
 	}
+
+	/**
+	 * @param p
+	 * @param q
+	 * @return normalised euclidean distance between both probability
+	 *         distributions, -1 if there is any problem
+	 * 
+	 */
+	public static double getNormalisedEuclideanDistance(
+			HashMap<String, Double> p, HashMap<String, Double> q) {
+		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+			return -1;
+		}
+		double distance = 0;
+		for (String s : p.keySet()) {
+			distance = distance + Math.pow((p.get(s) - q.get(s)), 2);
+		}
+		distance = Math.sqrt(distance) / Math.sqrt(2);
+		return distance;
+	}
+
+	/**
+	 * @param p
+	 * @param q
+	 * @return normalised hellinger distance between both probability
+	 *         distributions, -1 if there is any problem
+	 */
+	public static double getNormalisedHellingerDistance(
+			HashMap<String, Double> p, HashMap<String, Double> q) {
+		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+			return -1;
+		}
+		double distance = 0;
+		for (String s : p.keySet()) {
+			distance = distance
+					+ Math.pow((Math.sqrt(p.get(s)) - Math.sqrt(q.get(s))), 2);
+		}
+		distance = Math.sqrt(distance) / Math.sqrt(2);
+		return distance;
+	}
+
+	/**
+	 * @param p
+	 * @param q
+	 * @return normalised j-divergence distance between both probability
+	 *         distributions, -1 if there is any problem
+	 */
+	public static double getNormalisedJDivergeDistance(
+			HashMap<String, Double> p, HashMap<String, Double> q) {
+		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+			return -1;
+		}
+		for (String s : p.keySet()) {
+			if (p.get(s) == 0 || q.get(s) == 0) {
+				return 1;
+			}
+		}
+		double distance = AgentArgumentativeCapability
+				.getKullBackLeiberDistance(p, q)
+				+ AgentArgumentativeCapability.getKullBackLeiberDistance(q, p);
+		distance = distance / 2;
+		int alpha = 10;
+		distance = distance
+				/ Math.sqrt(Math.sqrt(Math.pow(distance, 2)) + alpha);
+		return distance;
+	}
+
+	/**
+	 * @param p
+	 * @param q
+	 * @return kullback-leiber distance between both probability distributions,
+	 *         -1 if there is any problem
+	 */
+	private static double getKullBackLeiberDistance(HashMap<String, Double> p,
+			HashMap<String, Double> q) {
+		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+			return -1;
+		}
+		double distance = 0;
+		for (String s : p.keySet()) {
+			distance = distance
+					- (p.get(s) * (Math.log10(q.get(s) / Math.log10(2))))
+					+ (p.get(s) * (Math.log10(p.get(s) / Math.log10(2))));
+		}
+		return distance;
+
+	}
+	
+	/**
+	 * @param p
+	 * @return true if sum(pi)=1+-0.01; false if the distribution is not coherent
+	 */
+	private static boolean isCoherentProbabilityDistribution(HashMap<String, Double> p) {
+		double counter = 0;
+		for (Double d : p.values()) {
+			if (d<0 || d>1.001) {
+				return false;
+			}
+			counter = counter + d;
+		}
+		if (counter>1.001 || counter < 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }

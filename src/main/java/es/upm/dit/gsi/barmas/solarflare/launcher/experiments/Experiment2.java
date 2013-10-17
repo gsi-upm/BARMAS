@@ -111,6 +111,8 @@ public class Experiment2 {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
+		double threshold = 0.8;
+		
 		sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
 		sensors.add(LargestSpotSize.class.getSimpleName());
@@ -120,7 +122,7 @@ public class Experiment2 {
 		sensors.add(Evolution.class.getSimpleName());
 		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-1.net", sensors);
+						+ "/bayes/agentdataset-1.net", sensors, threshold);
 		agents.add(agent);
 
 		sensors = new ArrayList<String>();
@@ -130,7 +132,7 @@ public class Experiment2 {
 		sensors.add(MNode.class.getSimpleName());
 		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedWAClassificatorAgent("ArgAgent2", manager,
-				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors);
+				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors, threshold);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
@@ -212,6 +214,8 @@ public class Experiment2 {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
+		double threshold = 0.8;
+		
 		sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
 		sensors.add(LargestSpotSize.class.getSimpleName());
@@ -221,7 +225,7 @@ public class Experiment2 {
 		sensors.add(Evolution.class.getSimpleName());
 		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/k-fold-10/agentdataset-1.net", sensors);
+						+ "/bayes/k-fold-10/agentdataset-1.net", sensors, threshold);
 		agents.add(agent);
 
 		sensors = new ArrayList<String>();
@@ -232,7 +236,7 @@ public class Experiment2 {
 		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedWAClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",
-				sensors);
+				sensors, threshold);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);

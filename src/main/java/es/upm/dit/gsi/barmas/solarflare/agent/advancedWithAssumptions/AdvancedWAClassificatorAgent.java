@@ -32,7 +32,9 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumenta
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
@@ -78,6 +80,10 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	private Argumentation argumentation;
 
 	private HashMap<Integer, Argument> mySentArguments;
+	
+	private HashMap<String, HashMap<String, Double>> updatedBeliefs;
+	
+	private double threshold;
 
 	// STATES
 	private boolean IDLE;
@@ -93,10 +99,11 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * @param bnPath
 	 */
 	public AdvancedWAClassificatorAgent(String id, ArgumentativeAgent manager,
-			String bnPath, List<String> sensors) {
+			String bnPath, List<String> sensors, double threshold) {
 		super(id);
 		this.bnFilePath = bnPath;
 		this.sensors = sensors;
+		this.threshold = threshold;
 		this.setArgumentationManager(manager);
 		this.pendingArguments = new ArrayList<Argument>();
 		this.evidences = new HashMap<String, String>();
@@ -210,6 +217,9 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 							+ arg.getProponent().getProponentName());
 			this.argumentation.addArgument(arg);
 		}
+	
+		// TODO implement this method
+//		this.updatedBeliefs(this.pendingArguments);
 
 	}
 
@@ -268,39 +278,10 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			this.sendFullArgument(sim);
 		} else {
 			// Check assumptions and try to improve them
+			// TODO implement these methods
+//			List<Assumption> assumptionsToImprove = this.findAssumptionsToImprove(sim);
+//			this.sendCounterArgument(assumptionsToImprove);
 			
-			// TODO implement divergence/distance metrics
-			try {
-				// Add evidences
-				sim.getLogger().finer(
-						"Agent: " + this.getID() + " -> Number of evidences: "
-								+ this.evidences.size());
-				for (Entry<String, String> entry : evidences.entrySet()) {
-					try {
-						sim.getLogger().finer(
-								"Agent: " + this.getID() + " adding evidence: "
-										+ entry.getKey() + " - "
-										+ entry.getValue());
-						ShanksAgentBayesianReasoningCapability.addEvidence(
-								this, entry.getKey(), entry.getValue());
-					} catch (Exception e) {
-						sim.getLogger().fine(
-								"Agent: " + this.getID()
-										+ " -> Unknown state for node: "
-										+ entry.getKey() + " -> State: "
-										+ entry.getValue());
-					}
-				}
-				// Get hypothesis
-				HashMap<String, HashMap<String, Float>> hypotheses = ShanksAgentBayesianReasoningCapability
-						.getAllHypotheses(this);
-
-				
-
-				sim.getLogger().fine("Argument sent by agent: " + this.getID());
-			} catch (ShanksException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
