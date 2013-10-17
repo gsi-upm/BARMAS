@@ -283,28 +283,30 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 
 			}
 			// Get hypothesis
-			HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability
-					.getNodeStatesHypotheses(this,
-							SolarFlareType.class.getSimpleName());
-			String hyp = "";
-			float maxValue = 0;
+			HashMap<String, HashMap<String, Float>> hypotheses = ShanksAgentBayesianReasoningCapability.getAllHypotheses(this);
+			
+			HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String,Double>>();
+			HashMap<String, Float> hyps =hypotheses.get(SolarFlareType.class.getSimpleName());
+			
+			HashMap<String, Double> beliefs = new HashMap<String, Double>();
 			for (Entry<String, Float> entry : hyps.entrySet()) {
-				if (entry.getValue() > maxValue) {
-					maxValue = entry.getValue();
-					hyp = entry.getKey();
-				}
+				beliefs.put(entry.getKey(), new Double(entry.getValue()));
 			}
-
-			sim.logger.finer("Agent: " + this.getID()
-					+ " has hypothesis for case SolarFlareID: "
-					+ this.argumentation.getId() + " "
-					+ SolarFlareType.class.getSimpleName() + " - " + hyp
-					+ " -> Confidence: " + maxValue);
-
-			Argument arg = AgentArgumentativeCapability.createArgument(this,
-					SolarFlareType.class.getSimpleName(), hyp, maxValue,
-					evidences, sim.schedule.getSteps(),
-					System.currentTimeMillis());
+			proposals.put(SolarFlareType.class.getSimpleName(), beliefs);
+			
+			HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String,Double>>();
+			for (Entry<String, HashMap<String, Float>> entry : hypotheses.entrySet()) {
+				String node = entry.getKey();
+				if (!node.equals(SolarFlareType.class.getSimpleName()) && !evidences.keySet().contains(node)) {
+					beliefs = new HashMap<String, Double>();
+					for (Entry<String, Float> values : entry.getValue().entrySet()) {
+						beliefs.put(values.getKey(), new Double(values.getValue()));
+					}
+					assumptions.put(node, beliefs);
+				}
+			}			
+			
+			Argument arg = AgentArgumentativeCapability.createArgument(this, proposals, assumptions, evidences, sim.schedule.getSteps(), System.currentTimeMillis());
 			AgentArgumentativeCapability.sendArgument(this, arg);
 
 			sim.getLogger().fine("Argument sent by agent: " + this.getID());

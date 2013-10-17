@@ -75,6 +75,41 @@ public class AgentArgumentativeCapability {
 	}
 
 	/**
+	 * @param proponent
+	 * @param proposals
+	 * @param assumptions
+	 * @param evidences
+	 * @param step
+	 * @param timestamp
+	 * @return
+	 */
+	public static Argument createArgument(ArgumentativeAgent proponent,
+			HashMap<String, HashMap<String, Double>> proposals,
+			HashMap<String, HashMap<String, Double>> assumptions,
+			HashMap<String, String> evidences, long step, long timestamp) {
+
+		Argument arg = new Argument(proponent, step, timestamp);
+
+		for (Entry<String, String> entry : evidences.entrySet()) {
+			Given given = new Given(entry.getKey(), entry.getValue());
+			arg.addGiven(given);
+		}
+		
+		for (Entry<String, HashMap<String, Double>> entry : assumptions.entrySet()) {
+			Assumption assumption = new Assumption(entry.getKey(), entry.getValue());
+			arg.addAssumption(assumption);
+		}
+
+		for (Entry<String, HashMap<String, Double>> entry : proposals.entrySet()) {
+			Proposal proposal = new Proposal(entry.getKey(), entry.getValue());
+			arg.addProposal(proposal);
+		}
+		
+		return arg;
+
+	}
+
+	/**
 	 * 
 	 * @param proponent
 	 * @param bn
@@ -82,7 +117,8 @@ public class AgentArgumentativeCapability {
 	 * @throws ShanksException
 	 */
 	public static Set<Argument> createArguments(ArgumentativeAgent proponent,
-			ProbabilisticNetwork bn, long step, long timestamp) throws ShanksException {
+			ProbabilisticNetwork bn, long step, long timestamp)
+			throws ShanksException {
 		Set<Argument> args = new HashSet<Argument>();
 		HashMap<String, String> evidences = (HashMap<String, String>) ShanksAgentBayesianReasoningCapability
 				.getEvidences(bn);
@@ -111,9 +147,11 @@ public class AgentArgumentativeCapability {
 	 * @throws ShanksException
 	 */
 	public static Set<Argument> createArguments(
-			BayesianReasonerShanksAgent agent, long step, long timestamp) throws ShanksException {
+			BayesianReasonerShanksAgent agent, long step, long timestamp)
+			throws ShanksException {
 		return AgentArgumentativeCapability.createArguments(
-				(ArgumentativeAgent) agent, agent.getBayesianNetwork(), step, timestamp);
+				(ArgumentativeAgent) agent, agent.getBayesianNetwork(), step,
+				timestamp);
 	}
 
 	/**
@@ -183,7 +221,6 @@ public class AgentArgumentativeCapability {
 	public static void sendArgument(ArgumentativeAgent proponent, Argument arg) {
 		proponent.sendArgument(arg);
 	}
-
 
 	/**
 	 * Return the type of the attack (from a to b) using the following rules:
@@ -291,24 +328,26 @@ public class AgentArgumentativeCapability {
 		// If not... a does not attack b (Type 0)
 		return 0;
 	}
-	
+
 	/**
 	 * Update the graph of the argumentation
 	 * 
 	 * @param argument
 	 * @param argumentation
 	 */
-	public static void updateAtacksGraph(Argument argument, Argumentation argumentation) {
-		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation.getGraph();
+	public static void updateAtacksGraph(Argument argument,
+			Argumentation argumentation) {
+		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
+				.getGraph();
 		for (Argument arg : argumentation.getArguments()) {
-			int attackType = AgentArgumentativeCapability.getAttackType(argument, arg);
+			int attackType = AgentArgumentativeCapability.getAttackType(
+					argument, arg);
 			graph.get(argument).put(arg, attackType);
-			attackType = AgentArgumentativeCapability.getAttackType(arg, argument);
+			attackType = AgentArgumentativeCapability.getAttackType(arg,
+					argument);
 			graph.get(arg).put(argument, attackType);
 		}
 	}
-	
-
 
 	/**
 	 * Resolution conflicts method
@@ -330,12 +369,17 @@ public class AgentArgumentativeCapability {
 				int attackType = attacks.get(attacked);
 				if (attackType == 1) {
 					possibleConclusions.remove(attacked);
-					logger.finest("Argument " + attacked.getId() + " (Proponent: " + attacked.getProponent().getProponentName() +") removed because it is defeated by Argument " + arg.getId() + " (Proponent: " + attacked.getProponent().getProponentName() +")");
-					
+					logger.finest("Argument " + attacked.getId()
+							+ " (Proponent: "
+							+ attacked.getProponent().getProponentName()
+							+ ") removed because it is defeated by Argument "
+							+ arg.getId() + " (Proponent: "
+							+ attacked.getProponent().getProponentName() + ")");
+
 				}
 			}
 		}
-		
+
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
 			int evCardinal = arg.getGivens().size();

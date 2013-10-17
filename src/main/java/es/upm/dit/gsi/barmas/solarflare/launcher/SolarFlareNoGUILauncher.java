@@ -50,13 +50,11 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  */
 public class SolarFlareNoGUILauncher {
 
-	private static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
 	public static void main(String[] args) {
 
-		String summaryFile = "src/main/resources/exp1/output/global-summary.csv";
+//		String summaryFile = "src/main/resources/exp1/output/global-summary.csv";
 		// long seed = System.currentTimeMillis();
-		long seed = 0;
+//		long seed = 0;
 		// for (int i = 0; i < 10; i++) {
 		// SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed,
 		// summaryFile);
@@ -68,12 +66,12 @@ public class SolarFlareNoGUILauncher {
 //		SolarFlareNoGUILauncher.launchSimulationBasic2AgentsKFold(seed,
 //				summaryFile);
 //
-		SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed, summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationBasic2Agents(seed, summaryFile);
 //		SolarFlareNoGUILauncher.launchSimulationBasic3Agents(seed, summaryFile);
 //		SolarFlareNoGUILauncher.launchSimulationBasic4Agents(seed, summaryFile);
 
-		SolarFlareNoGUILauncher.launchSimulationAdvanced2Agents(seed,
-				summaryFile);
+//		SolarFlareNoGUILauncher.launchSimulationAdvanced2Agents(seed,
+//				summaryFile);
 		// SolarFlareNoGUILauncher.launchSimulationAdvanced3Agents(seed,
 		// summaryFile);
 		// SolarFlareNoGUILauncher.launchSimulationAdvanced4Agents(seed,

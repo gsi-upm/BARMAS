@@ -1,0 +1,107 @@
+Argumentation: 130 - Argument: 0
+Proponent: ArgAgent1
+
+Step: 391 - Timestamp: 1381942590451
+
+	Givens:
+	Quantity:6
+		Node: LargestSpotSize
+			Value: A
+		Node: SpotDistribution
+			Value: O
+		Node: Area
+			Value: Status1
+		Node: Evolution
+			Value: Status1
+		Node: Activity
+			Value: Status1
+		Node: BecomeHist
+			Value: Status2
+
+	Assumptions:
+	Quantity:0
+
+	Proposal:
+	Quantity:1
+		Node: SolarFlareType
+			Value: D - Confidene: 0.4672534465789795
+
+
+Argumentation: 130 - Argument: 0
+Proponent: ArgAgent2
+
+Step: 391 - Timestamp: 1381942590456
+
+	Givens:
+	Quantity:11
+		Node: BecomeHist
+			Value: Status2
+		Node: MNode
+			Value: Status0
+		Node: HistComplex
+			Value: Status1
+		Node: PrevStatus24Hour
+			Value: Status1
+		Node: Area
+			Value: Status1
+		Node: Activity
+			Value: Status1
+		Node: LargestSpotSize
+			Value: A
+		Node: SpotDistribution
+			Value: O
+		Node: XNode
+			Value: Status0
+		Node: Evolution
+			Value: Status1
+		Node: CNode
+			Value: Status0
+
+	Assumptions:
+	Quantity:0
+
+	Proposal:
+	Quantity:1
+		Node: SolarFlareType
+			Value: D - Confidene: 0.5104665160179138
+
+
+Argumentation: 130 - Argument: 2
+Proponent: ArgAgent1
+
+Step: 392 - Timestamp: 1381942590474
+
+	Givens:
+	Quantity:11
+		Node: Area
+			Value: Status1
+		Node: PrevStatus24Hour
+			Value: Status1
+		Node: Evolution
+			Value: Status1
+		Node: MNode
+			Value: Status0
+		Node: XNode
+			Value: Status0
+		Node: BecomeHist
+			Value: Status2
+		Node: CNode
+			Value: Status0
+		Node: Activity
+			Value: Status1
+		Node: LargestSpotSize
+			Value: A
+		Node: SpotDistribution
+			Value: O
+		Node: HistComplex
+			Value: Status1
+
+	Assumptions:
+	Quantity:0
+
+	Proposal:
+	Quantity:1
+		Node: SolarFlareType
+			Value: D - Confidene: 0.43829160928726196
+
+

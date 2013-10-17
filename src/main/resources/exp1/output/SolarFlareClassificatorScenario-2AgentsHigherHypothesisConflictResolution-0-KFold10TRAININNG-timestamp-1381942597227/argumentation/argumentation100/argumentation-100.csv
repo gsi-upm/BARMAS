@@ -1,0 +1,4 @@
+ArgumentationID,ArgumentID,ProponentID,Step,Timestamp
+100,0,ArgAgent1,301,1381942612117
+100,0,ArgAgent2,301,1381942612126
+100,1,ArgAgent1,302,1381942612137
