@@ -181,4 +181,14 @@ public class Argument extends AbstractArgument {
 		return this.getProponent().getProponentName();
 	}
 
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#clone()
+	 */
+	@Override
+	public AbstractArgument clone() {
+		Argument clone = new Argument(this.proponent, this.givens, this.assumptions, this.proposals, this.step, this.timestamp);
+		clone.setId(this.getId());
+		return clone;
+	}
+
 }

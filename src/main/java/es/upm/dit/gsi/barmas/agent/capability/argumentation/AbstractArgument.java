@@ -63,5 +63,10 @@ public abstract class AbstractArgument {
 	 * @return The name of the agent that proposes the argument
 	 */
 	public abstract String getProponentName();
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public abstract AbstractArgument clone();
 
 }
