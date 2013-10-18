@@ -463,7 +463,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	private void registerNewArgument(Argument arg) {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		argumentation.addArgument(arg);
+		argumentation.addArgument((Argument) arg.clone());
 	}
 
 	/*

@@ -207,7 +207,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			simulation.getLogger().finer(
 					"Agent: " + this.getID() + " -> Received arguments from: "
 							+ arg.getProponent().getProponentName());
-			this.argumentation.addArgument(arg);
+			this.argumentation.addArgument((Argument) arg.clone());
 			
 		}
 
