@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  */
-package es.upm.dit.gsi.barmas.solarflare.agent.advancedWithAssumptions;
+package es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.eficient;
 
 import jason.asSemantics.Message;
 
@@ -34,8 +34,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingenierï¿½a de Sistemas
+ * Telemï¿½ticos Universidad Politï¿½cnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -44,7 +44,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * @version 0.1
  * 
  */
-public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
+public class AdvancedEficientWACentralManagerAgent extends SimpleShanksAgent implements
 		ArgumentativeAgent {
 
 	/**
@@ -72,7 +72,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * @param id
 	 * @param outputDir
 	 */
-	public AdvancedWACentralManagerAgent(String id, String outputDir) {
+	public AdvancedEficientWACentralManagerAgent(String id, String outputDir) {
 		super(id);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();

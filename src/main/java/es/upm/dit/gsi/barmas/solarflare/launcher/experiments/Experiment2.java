@@ -11,8 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.advancedWithAssumptions.AdvancedWACentralManagerAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.advancedWithAssumptions.AdvancedWAClassificatorAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.classic.AdvancedWACentralManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.classic.AdvancedWAClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
 import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
@@ -36,8 +36,8 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingenierï¿½a de Sistemas
+ * Telemï¿½ticos Universidad Politï¿½cnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
