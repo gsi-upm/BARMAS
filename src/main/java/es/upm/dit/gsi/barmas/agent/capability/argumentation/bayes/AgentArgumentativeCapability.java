@@ -37,9 +37,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * Project: barmas File: es.upm.dit.gsi.barmas.agent.capability.argumentation.
  * AgentArgumentativeCapability.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -49,6 +48,15 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * 
  */
 public class AgentArgumentativeCapability {
+
+	public static final int NOATTACK = 0;
+	public static final int DEFEATER = 1;
+	public static final int DIRECTDEFEATER = 2;
+	public static final int UNDERCUT = 3;
+	public static final int DIRECTUNDERCUT = 4;
+	public static final int CANONICALUNDERCUT = 5;
+	public static final int REBUTTAL = 6;
+	public static final int DEFEATINGREBUTTAL = 7;
 
 	/**
 	 * 
@@ -217,6 +225,58 @@ public class AgentArgumentativeCapability {
 	}
 
 	/**
+	 * @param args
+	 * @param argumentation
+	 * @param attackType
+	 * @return a list of arguments no attacked for other arguments of given
+	 *         attack type from the given args list
+	 */
+	public static List<Argument> getUnattackedArguments(List<Argument> args,
+			Argumentation argumentation, int attackType) {
+		List<Argument> unattackedArgs = new ArrayList<Argument>();
+		unattackedArgs.addAll(args);
+		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
+				.getGraph();
+		for (Argument arg : args) {
+			boolean defeated = false;
+			for (Entry<Argument, HashMap<Argument, Integer>> entry : graph
+					.entrySet()) {
+				HashMap<Argument, Integer> attacks = entry.getValue();
+				for (Entry<Argument, Integer> entry2 : attacks.entrySet()) {
+					if (entry2.getKey().equals(arg)
+							&& entry2.getValue() == attackType) {
+						unattackedArgs.remove(arg);
+						defeated = true;
+						break;
+					}
+				}
+				if (defeated) {
+					break;
+				}
+			}
+		}
+		return unattackedArgs;
+	}
+
+	/**
+	 * @param args
+	 * @param argumentation
+	 * @param attackTypes
+	 * @return a list of arguments no attacked for other arguments of given
+	 *         attack types from the given args list
+	 */
+	public static List<Argument> getUnattackedArguments(List<Argument> args,
+			Argumentation argumentation, List<Integer> attackTypes) {
+		List<Argument> unattackedArgs = new ArrayList<Argument>();
+		unattackedArgs.addAll(args);
+		for (Integer attackType : attackTypes) {
+			unattackedArgs = AgentArgumentativeCapability.getUnattackedArguments(
+					unattackedArgs, argumentation, attackType);
+		}
+		return unattackedArgs;
+	}
+
+	/**
 	 * Return the type of the attack (from a to b) using the following rules:
 	 * 
 	 * 0 - a does not attack b
@@ -272,7 +332,7 @@ public class AgentArgumentativeCapability {
 			// Check type 1 - a is defeater of b if Claim(A) implies not all
 			// Support(B)
 			if (agivens.size() > bgivens.size()) {
-				return 1;
+				return DEFEATER;
 			}
 
 			// Check type 2 - a is a direct defeater of b if there is phi in
@@ -309,18 +369,18 @@ public class AgentArgumentativeCapability {
 				// Check type 6 - a is a rebuttal of b if Claim(A) is exactly
 				// not
 				// Claim(B)
-				return 6;
+				return REBUTTAL;
 			} else if (aux > 0) {
 				// Check type 7 - a is a defeating rebuttal of b if Claim(A)
 				// implies not
 				// Claim(B)
-				return 7;
+				return DEFEATINGREBUTTAL;
 			}
 
 		}
 
 		// If not... a does not attack b (Type 0)
-		return 0;
+		return NOATTACK;
 	}
 
 	/**
@@ -414,7 +474,11 @@ public class AgentArgumentativeCapability {
 	 */
 	public static double getNormalisedEuclideanDistance(
 			HashMap<String, Double> p, HashMap<String, Double> q) {
-		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+		if (p.size() != q.size()
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		double distance = 0;
@@ -433,7 +497,11 @@ public class AgentArgumentativeCapability {
 	 */
 	public static double getNormalisedHellingerDistance(
 			HashMap<String, Double> p, HashMap<String, Double> q) {
-		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+		if (p.size() != q.size()
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		double distance = 0;
@@ -453,7 +521,11 @@ public class AgentArgumentativeCapability {
 	 */
 	public static double getNormalisedJDivergeDistance(
 			HashMap<String, Double> p, HashMap<String, Double> q) {
-		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+		if (p.size() != q.size()
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		for (String s : p.keySet()) {
@@ -479,7 +551,11 @@ public class AgentArgumentativeCapability {
 	 */
 	private static double getKullBackLeiberDistance(HashMap<String, Double> p,
 			HashMap<String, Double> q) {
-		if (p.size() != q.size() || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p)) || !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
+		if (p.size() != q.size()
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability
+						.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		double distance = 0;
@@ -491,24 +567,50 @@ public class AgentArgumentativeCapability {
 		return distance;
 
 	}
-	
+
 	/**
 	 * @param p
-	 * @return true if sum(pi)=1+-0.01; false if the distribution is not coherent
+	 * @return true if sum(pi)=1+-0.01; false if the distribution is not
+	 *         coherent
 	 */
-	private static boolean isCoherentProbabilityDistribution(HashMap<String, Double> p) {
+	private static boolean isCoherentProbabilityDistribution(
+			HashMap<String, Double> p) {
 		double counter = 0;
 		for (Double d : p.values()) {
-			if (d<0 || d>1.001) {
+			if (d < 0 || d > 1.001) {
 				return false;
 			}
 			counter = counter + d;
 		}
-		if (counter>1.001 || counter < 0) {
+		if (counter > 1.001 || counter < 0) {
 			return false;
 		} else {
 			return true;
 		}
+	}
+	
+	/**
+	 * @param map
+	 * @return
+	 */
+	public static HashMap<String, Double> convertToDoubleValues(HashMap<String, Float> map) {
+		HashMap<String, Double> newMap = new HashMap<String, Double>();
+		for (Entry<String, Float> entry : map.entrySet()) {
+			newMap.put(entry.getKey(), new Double(entry.getValue()));
+		}
+		return newMap;
+	}
+	
+	/**
+	 * @param map
+	 * @return
+	 */
+	public static HashMap<String, Float> convertToFloatValues(HashMap<String, Double> map) {
+		HashMap<String, Float> newMap = new HashMap<String, Float>();
+		for (Entry<String, Double> entry : map.entrySet()) {
+			newMap.put(entry.getKey(), new Float(entry.getValue()));
+		}
+		return newMap;
 	}
 
 }
