@@ -34,14 +34,10 @@ import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Evolution;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SpotDistribution;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.XNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.shanks.agent.ShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -51,9 +47,8 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -110,13 +105,13 @@ public class Experiment2 {
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		sensors.add(SpotDistribution.class.getSimpleName());
-		sensors.add(Evolution.class.getSimpleName());
+//		sensors.add(SpotDistribution.class.getSimpleName());
+//		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		sensors.add(CNode.class.getSimpleName());
-		sensors.add(MNode.class.getSimpleName());
-		sensors.add(XNode.class.getSimpleName());
+//		sensors.add(CNode.class.getSimpleName());
+//		sensors.add(MNode.class.getSimpleName());
+//		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
 						+ "/bayes/agentdataset-central.net", sensors);
@@ -127,28 +122,35 @@ public class Experiment2 {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
-		double threshold = 0.8;
-		
+		double threshold = 0.5;
+		double beliefThreshold = 0.05;
+
 		sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		sensors.add(SpotDistribution.class.getSimpleName());
-		sensors.add(Evolution.class.getSimpleName());
+//		sensors.add(SpotDistribution.class.getSimpleName());
+//		sensors.add(Evolution.class.getSimpleName());
 		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-1.net", sensors, threshold);
+						+ "/bayes/agentdataset-1.net",
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-1.csv", sensors, threshold,
+				beliefThreshold);
 		agents.add(agent);
 
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		sensors.add(CNode.class.getSimpleName());
-		sensors.add(MNode.class.getSimpleName());
-		sensors.add(XNode.class.getSimpleName());
+//		sensors.add(CNode.class.getSimpleName());
+//		sensors.add(MNode.class.getSimpleName());
+//		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedWAClassificatorAgent("ArgAgent2", manager,
-				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors, threshold);
+				experimentDatasetPath + "/bayes/agentdataset-2.net",
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-2.csv", sensors, threshold,
+				beliefThreshold);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
@@ -213,13 +215,13 @@ public class Experiment2 {
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		sensors.add(SpotDistribution.class.getSimpleName());
-		sensors.add(Evolution.class.getSimpleName());
+//		sensors.add(SpotDistribution.class.getSimpleName());
+//		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		sensors.add(CNode.class.getSimpleName());
-		sensors.add(MNode.class.getSimpleName());
-		sensors.add(XNode.class.getSimpleName());
+//		sensors.add(CNode.class.getSimpleName());
+//		sensors.add(MNode.class.getSimpleName());
+//		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
 						+ "/bayes/k-fold-10/agentdataset-central.net", sensors);
@@ -230,29 +232,35 @@ public class Experiment2 {
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
 
-		double threshold = 0.8;
-		
+		double threshold = 0.5;
+		double beliefThreshold = 0.05;
+
 		sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		sensors.add(SpotDistribution.class.getSimpleName());
-		sensors.add(Evolution.class.getSimpleName());
+//		sensors.add(SpotDistribution.class.getSimpleName());
+//		sensors.add(Evolution.class.getSimpleName());
 		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/k-fold-10/agentdataset-1.net", sensors, threshold);
+						+ "/bayes/k-fold-10/agentdataset-1.net",
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-1.csv", sensors, threshold,
+				beliefThreshold);
 		agents.add(agent);
 
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		sensors.add(CNode.class.getSimpleName());
-		sensors.add(MNode.class.getSimpleName());
-		sensors.add(XNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
+		// sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedWAClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",
-				sensors, threshold);
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-2.csv", sensors, threshold,
+				beliefThreshold);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
