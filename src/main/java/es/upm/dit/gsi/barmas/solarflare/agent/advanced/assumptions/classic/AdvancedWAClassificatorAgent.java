@@ -32,10 +32,11 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumenta
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
@@ -46,9 +47,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 /**
  * Project: barmas File: es.upm.dit.gsi.barmas.agent.BarmasAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -64,6 +64,8 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * 
 	 */
 	private static final long serialVersionUID = 8582918551821278046L;
+
+	private Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	private ArgumentativeAgent manager;
 	private String bnFilePath;
@@ -81,8 +83,12 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	private HashMap<Integer, Argument> mySentArguments;
 
 	private HashMap<String, HashMap<String, Double>> updatedBeliefs;
+	private boolean newInfo;
 
 	private double threshold;
+	private double beliefThreshold;
+	private String classificationTarget;
+//	private String datasetPath;
 
 	// STATES
 	private boolean IDLE;
@@ -98,17 +104,22 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * @param bnPath
 	 */
 	public AdvancedWAClassificatorAgent(String id, ArgumentativeAgent manager,
-			String bnPath, List<String> sensors, double threshold) {
+			String bnPath, String classificationTarget, String datasetPath,
+			List<String> sensors, double threshold, double beliefThreshold) {
 		super(id);
 		this.bnFilePath = bnPath;
 		this.sensors = sensors;
 		this.threshold = threshold;
+		this.beliefThreshold = beliefThreshold;
+//		this.datasetPath = datasetPath;
+		this.classificationTarget = classificationTarget;
+		this.newInfo = false;
 		this.setArgumentationManager(manager);
 		this.pendingArguments = new ArrayList<Argument>();
 		this.evidences = new HashMap<String, String>();
 		this.mySentArguments = new HashMap<Integer, Argument>();
 		this.argumentationGroup = new ArrayList<ArgumentativeAgent>();
-		this.updatedBeliefs = new HashMap<String, HashMap<String,Double>>();
+		this.updatedBeliefs = new HashMap<String, HashMap<String, Double>>();
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
@@ -196,14 +207,11 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	private boolean evaluatePossibleArguments() {
 
 		// If there are new evidences
-		if (this.getMyLastArgument().getGivens().size() < this.evidences.size()) {
+		if (this.newInfo) {
 			return true;
 		} else {
 			return false;
 		}
-
-		// TODO check other possibilities
-
 	}
 
 	/**
@@ -214,10 +222,10 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 
 		// Process incoming messages
 		for (Argument arg : this.pendingArguments) {
-			simulation.getLogger().finer(
-					"Agent: " + this.getID() + " -> Received arguments from: "
-							+ arg.getProponent().getProponentName());
-			this.argumentation.addArgument(arg);
+			logger.finer("Agent: " + this.getID()
+					+ " -> Received arguments from: "
+					+ arg.getProponent().getProponentName());
+			this.argumentation.addArgument((Argument) arg.clone());
 		}
 
 		// Update evidences and add them to the BN
@@ -227,10 +235,74 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	}
 
 	/**
+	 * Check possible beliefs to update once no new evidences are found
+	 * 
 	 * @param args
 	 */
 	private void updatedBeliefs(List<Argument> args) {
-		// TODO Auto-generated method stub
+
+		if (this.getMyLastArgument() != null
+				&& this.getMyLastArgument().getGivens().size() == this.evidences
+						.size()) {
+			// check if it is valid
+			List<Argument> unattacked = AgentArgumentativeCapability
+					.getUnattackedArguments(args, this.argumentation,
+							AgentArgumentativeCapability.DEFEATER); // TODO
+																	// check if
+																	// more
+																	// attacks
+																	// must be
+																	// checked
+																	// here
+			for (Argument arg : unattacked) {
+				// check the proposals that are not the classification class
+				for (Proposal p : arg.getProposals()) {
+					if (!p.getNode().equals(this.classificationTarget)) {
+						try {
+							// Compare with local belief
+							HashMap<String, Double> receivedBelief = (HashMap<String, Double>) p
+									.getValuesWithConfidence();
+							HashMap<String, Double> ownBelief = AgentArgumentativeCapability
+									.convertToDoubleValues(ShanksAgentBayesianReasoningCapability
+											.getAllHypotheses(this).get(
+													p.getNode()));
+							double distance = AgentArgumentativeCapability
+									.getNormalisedHellingerDistance(
+											receivedBelief, ownBelief);
+							logger.fine("Distance for belief: " + p.getNode()
+									+ " is " + distance);
+							// Only strong beliefs are proposed (sent as
+							// proposals), so no more constrains must be added.
+							// Anyway, you must check if you have other
+							// different strong belief in that node.
+							Proposal auxp = new Proposal(p.getNode(), ownBelief);
+							double maxDiff = p.getMaxValue()
+									- auxp.getMaxValue();
+							if (distance >= this.threshold
+									&& maxDiff >= beliefThreshold) {
+								this.updatedBeliefs.put(p.getNode(),
+										receivedBelief);
+								this.newInfo = true;
+							}
+						} catch (ShanksException e) {
+							logger.warning("Problem comparing received beliefs with local beliefs. ->");
+							logger.warning(e.getMessage());
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			// Add beliefs to BN
+			try {
+				ShanksAgentBayesianReasoningCapability.addSoftEvidences(this,
+						this.updatedBeliefs);
+				logger.fine("Beliefs updated for agent: " + this.getID());
+			} catch (ShanksException e) {
+				logger.warning(this.getID() + " -> Problems updating beliefs.");
+				logger.warning(e.getMessage());
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -240,7 +312,6 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	private void updateEvidences(List<Argument> pendingArguments) {
 		// Update current evidences with new givens received in the incoming
 		// argument
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		for (Argument arg : pendingArguments) {
 			Set<Given> givens = arg.getGivens();
 			for (Given given : givens) {
@@ -258,6 +329,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 					}
 				} else {
 					this.evidences.put(given.getNode(), given.getValue());
+					this.newInfo = true;
 					logger.finer("Agent: " + this.getID()
 							+ " -> Adding evidence received from "
 							+ arg.getProponent().getProponentName()
@@ -271,25 +343,23 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 		this.addEvidencesToBN();
 	}
 
+	/**
+	 * 
+	 */
 	private void addEvidencesToBN() {
 		// Add evidences
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-		logger.finer(
-				"Agent: " + this.getID() + " -> Number of evidences: "
-						+ this.evidences.size());
+		logger.finer("Agent: " + this.getID() + " -> Number of evidences: "
+				+ this.evidences.size());
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			try {
-				logger.finer(
-						"Agent: " + this.getID() + " adding evidence: "
-								+ entry.getKey() + " - " + entry.getValue());
+				logger.finer("Agent: " + this.getID() + " adding evidence: "
+						+ entry.getKey() + " - " + entry.getValue());
 				ShanksAgentBayesianReasoningCapability.addEvidence(this,
 						entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				logger.fine(
-						"Agent: " + this.getID()
-								+ " -> Unknown state for node: "
-								+ entry.getKey() + " -> State: "
-								+ entry.getValue());
+				logger.fine("Agent: " + this.getID()
+						+ " -> Unknown state for node: " + entry.getKey()
+						+ " -> State: " + entry.getValue());
 			}
 
 		}
@@ -302,46 +372,141 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 
 		// If the agent is starting the argumentation or
 		// if it is the first argument from this agent in this argumentation
-		// if new evidences can be added
+		// if new evidences can be added or new belief has been updated
 		if (this.argumentation.getArguments().isEmpty()
-				|| this.mySentArguments.isEmpty()
-				|| this.evidences.size() > this.getMyLastArgument().getGivens()
-						.size()) {
+				|| this.mySentArguments.isEmpty() || this.newInfo) {
 			// Full argument
 			this.sendFullArgument(sim);
 		} else {
 			// Check assumptions and try to improve them
-			// TODO implement these methods
-			// List<Assumption> assumptionsToImprove =
-			// this.findAssumptionsToImprove(sim);
-			// this.sendCounterArgument(assumptionsToImprove);
+			List<Assumption> assumptionsToImprove = this
+					.findAssumptionsToImprove(sim);
+			this.sendCounterArgument(assumptionsToImprove, sim);
 
 		}
+
+		this.newInfo = false;
+	}
+
+	/**
+	 * @param sim
+	 * @return
+	 */
+	private List<Assumption> findAssumptionsToImprove(
+			SolarFlareClassificationSimulation sim) {
+		List<Assumption> assumptionsToImprove = new ArrayList<Assumption>();
+		try {
+			HashMap<String, HashMap<String, Float>> ownHypotheses = ShanksAgentBayesianReasoningCapability
+					.getAllHypotheses(this);
+
+			for (Argument arg : this.pendingArguments) {
+				for (Assumption assum : arg.getAssumptions()) {
+					try {
+						HashMap<String, Double> receivedBelief = (HashMap<String, Double>) assum
+								.getValuesWithConfidence();
+						HashMap<String, Double> ownBelief = AgentArgumentativeCapability
+								.convertToDoubleValues(ownHypotheses.get(assum
+										.getNode()));
+						double distance = AgentArgumentativeCapability
+								.getNormalisedHellingerDistance(receivedBelief,
+										ownBelief);
+						logger.fine("Looking for assumptions to improve -> Distance for belief: "
+								+ assum.getNode() + " is " + distance);
+						if (distance > this.threshold) {
+							assumptionsToImprove.add(assum);
+						}
+					} catch (Exception e) {
+						logger.warning("Problems getting local belief for: "
+								+ assum.getNode());
+						logger.warning(e.getMessage());
+						e.printStackTrace();
+					}
+				}
+			}
+
+		} catch (ShanksException e) {
+			logger.warning("Problems finding assumptions to improve.");
+			logger.warning(e.getMessage());
+			e.printStackTrace();
+		}
+		return assumptionsToImprove;
+	}
+
+	/**
+	 * @param assumptionsToImprove
+	 */
+	private void sendCounterArgument(List<Assumption> assumptionsToImprove,
+			ShanksSimulation sim) {
+		try {
+			this.addEvidencesToBN();
+			HashMap<String, HashMap<String, Float>> ownHypotheses = ShanksAgentBayesianReasoningCapability
+					.getAllHypotheses(this);
+			for (Assumption assum : assumptionsToImprove) {
+				// Get proposal
+				HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
+				HashMap<String, Float> hyps = ownHypotheses
+						.get(assum.getNode());
+	
+				HashMap<String, Double> beliefs = new HashMap<String, Double>();
+				for (Entry<String, Float> entry : hyps.entrySet()) {
+					beliefs.put(entry.getKey(), new Double(entry.getValue()));
+				}
+				proposals.put(assum.getNode(), beliefs);
+	
+				HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String, Double>>();
+				for (Entry<String, HashMap<String, Float>> entry : ownHypotheses
+						.entrySet()) {
+					String node = entry.getKey();
+					if (!node.equals(this.classificationTarget)
+							&& !node.equals(assum.getNode())
+							&& !evidences.keySet().contains(node)) {
+						beliefs = new HashMap<String, Double>();
+						for (Entry<String, Float> values : entry.getValue()
+								.entrySet()) {
+							beliefs.put(values.getKey(),
+									new Double(values.getValue()));
+						}
+						assumptions.put(node, beliefs);
+					}
+				}
+	
+				Argument arg = AgentArgumentativeCapability.createArgument(
+						this, proposals, assumptions, evidences,
+						sim.schedule.getSteps(), System.currentTimeMillis());
+				this.sendArgument(arg);
+	
+			}
+		} catch (ShanksException e) {
+			logger.warning("Problems getting hypotheses...");
+			logger.warning(e.getMessage());
+			e.printStackTrace();
+		}
+	
 	}
 
 	private void sendFullArgument(ShanksSimulation sim) {
-		try {			
+		try {
 			this.addEvidencesToBN();
-			
+
 			// Get hypothesis
 			HashMap<String, HashMap<String, Float>> hypotheses = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(this);
 
 			HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
-			HashMap<String, Float> hyps = hypotheses.get(SolarFlareType.class
-					.getSimpleName());
+			HashMap<String, Float> hyps = hypotheses
+					.get(this.classificationTarget);
 
 			HashMap<String, Double> beliefs = new HashMap<String, Double>();
 			for (Entry<String, Float> entry : hyps.entrySet()) {
 				beliefs.put(entry.getKey(), new Double(entry.getValue()));
 			}
-			proposals.put(SolarFlareType.class.getSimpleName(), beliefs);
+			proposals.put(this.classificationTarget, beliefs);
 
 			HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String, Double>>();
 			for (Entry<String, HashMap<String, Float>> entry : hypotheses
 					.entrySet()) {
 				String node = entry.getKey();
-				if (!node.equals(SolarFlareType.class.getSimpleName())
+				if (!node.equals(this.classificationTarget)
 						&& !evidences.keySet().contains(node)) {
 					beliefs = new HashMap<String, Double>();
 					for (Entry<String, Float> values : entry.getValue()
@@ -358,7 +523,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 					System.currentTimeMillis());
 			this.sendArgument(arg);
 
-			sim.getLogger().fine("Argument sent by agent: " + this.getID());
+			logger.fine("Argument sent by agent: " + this.getID());
 		} catch (ShanksException e) {
 			e.printStackTrace();
 		}
@@ -488,11 +653,10 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
 		if (!agent.equals(this) && !this.argumentationGroup.contains(agent)) {
 			this.argumentationGroup.add(agent);
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
-					.fine("Agent: "
-							+ this.getID()
-							+ " has added a new agent as argumentation member -> New member: "
-							+ agent.getProponentName());
+			logger.fine("Agent: "
+					+ this.getID()
+					+ " has added a new agent as argumentation member -> New member: "
+					+ agent.getProponentName());
 		}
 	}
 
@@ -572,8 +736,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status IDLE
 	 */
 	private void goToIdle() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: IDLE");
+		logger.fine(this.getID() + " going to status: IDLE");
 		this.IDLE = true;
 		this.ARGUMENTING = false;
 		this.PROCESSING = false;
@@ -584,8 +747,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status ARGUMENTING
 	 */
 	private void goToArgumenting(SolarFlareClassificationSimulation sim) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: ARGUMENTING");
+		logger.fine(this.getID() + " going to status: ARGUMENTING");
 		this.IDLE = false;
 		this.ARGUMENTING = true;
 		this.PROCESSING = false;
@@ -600,8 +762,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * @param sim
 	 */
 	private void goToProcessing(SolarFlareClassificationSimulation sim) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: PROCESSING");
+		logger.fine(this.getID() + " going to status: PROCESSING");
 		this.IDLE = false;
 		this.ARGUMENTING = false;
 		this.PROCESSING = true;
@@ -613,8 +774,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status WAITING
 	 */
 	private void goToWaiting() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: WAITING");
+		logger.fine(this.getID() + " going to status: WAITING");
 		this.IDLE = false;
 		this.ARGUMENTING = false;
 		this.PROCESSING = false;
