@@ -193,8 +193,6 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			return false;
 		}
 
-		// TODO check other possibilities
-
 	}
 
 	/**
@@ -209,6 +207,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 					"Agent: " + this.getID() + " -> Received arguments from: "
 							+ arg.getProponent().getProponentName());
 			this.argumentation.addArgument(arg);
+			
 		}
 
 	}
@@ -305,7 +304,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 					SolarFlareType.class.getSimpleName(), hyp, maxValue,
 					evidences, sim.schedule.getSteps(),
 					System.currentTimeMillis());
-			AgentArgumentativeCapability.sendArgument(this, arg);
+			this.sendArgument(arg);
 
 			sim.getLogger().fine("Argument sent by agent: " + this.getID());
 		} catch (ShanksException e) {
@@ -367,17 +366,6 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	public String getArgumentationManagerName() {
 		SimpleShanksAgent ag = (SimpleShanksAgent) this.manager;
 		return ag.getID();
-	}
-
-	public Set<Argument> getCurrentArguments() throws ShanksException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void updateBeliefsWithNewArguments(Set<Argument> args)
-			throws ShanksException {
-		// TODO Auto-generated method stub
-
 	}
 
 	public ProbabilisticNetwork getBayesianNetwork() {

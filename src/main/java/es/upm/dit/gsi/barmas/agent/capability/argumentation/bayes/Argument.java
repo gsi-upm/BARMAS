@@ -173,4 +173,12 @@ public class Argument extends AbstractArgument {
 		return timestamp;
 	}
 
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#getProponentName()
+	 */
+	@Override
+	public String getProponentName() {
+		return this.getProponent().getProponentName();
+	}
+
 }

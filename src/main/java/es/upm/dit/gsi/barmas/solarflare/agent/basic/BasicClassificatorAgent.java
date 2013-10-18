@@ -159,7 +159,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 								+ arg.getProponent().getProponentName());
 				boolean response = this.processNewArgument(arg, newEvidences, sim);
 				if (response) {
-					break; // TODO when assumptions exist, this is now valid
+					break; // when assumptions exist, this is now valid -> there are no assumptions in this basic agent
 				}
 			}
 			this.pendingArguments.clear();
@@ -216,43 +216,27 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 			SolarFlareClassificationSimulation sim) {
 		boolean sent = false;
 		if (newInfo) {
-			try {
-				// ********
-				// TODO check if this is required
-				// Maybe it could be done only once per argumentation, at
-				// finishing steps
-				ShanksAgentBayesianReasoningCapability.clearEvidences(this
-						.getBayesianNetwork());
-				// *********
+			sim.getLogger().finer(
+					"Agent: " + this.getID() + " -> Number of evidences: "
+							+ this.evidences.size());
+			for (Entry<String, String> entry : evidences.entrySet()) {
+				sim.getLogger()
+						.finest("Agent: " + this.getID()
+								+ " adding evidence: " + entry.getKey()
+								+ " - " + entry.getValue());
+				try {
 
-				sim.getLogger().finer(
-						"Agent: " + this.getID() + " -> Number of evidences: "
-								+ this.evidences.size());
-				for (Entry<String, String> entry : evidences.entrySet()) {
-					sim.getLogger()
-							.finest("Agent: " + this.getID()
-									+ " adding evidence: " + entry.getKey()
-									+ " - " + entry.getValue());
-					try {
+					ShanksAgentBayesianReasoningCapability.addEvidence(
+							this, entry.getKey(), entry.getValue());
+				} catch (ShanksException e) {
+					sim.getLogger().fine(
+							"Agent: " + this.getID()
+									+ " -> Unknown state for node: "
+									+ entry.getKey() + " -> State: "
+									+ entry.getValue());
 
-						ShanksAgentBayesianReasoningCapability.addEvidence(
-								this, entry.getKey(), entry.getValue());
-					} catch (ShanksException e) {
-						sim.getLogger().fine(
-								"Agent: " + this.getID()
-										+ " -> Unknown state for node: "
-										+ entry.getKey() + " -> State: "
-										+ entry.getValue());
-
-						sim.getLogger().warning(e.getMessage());
-					}
+					sim.getLogger().warning(e.getMessage());
 				}
-			} catch (ShanksException e) {
-				sim.getLogger().warning(
-						"Given received from agent: "
-								+ arg.getProponent().getProponentName()
-								+ ": -->");
-				sim.getLogger().warning(e.getMessage());
 			}
 		}
 
@@ -307,9 +291,9 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 								SolarFlareType.class.getSimpleName(), hyp,
 								maxValue, evidences, sim.schedule.getSteps(),
 								System.currentTimeMillis());
-				AgentArgumentativeCapability.sendArgument(this, counterArg);
+				this.sendArgument(counterArg);
 				sent = true;
-				// TODO if no new evidences can be offered - add assumptions??
+				// if no new evidences can be offered - add assumptions?? -> This is not done in this basic agent
 
 				sim.getLogger().finer(
 						"Counter argument sent by agent: " + this.getID());
@@ -324,7 +308,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 					this, SolarFlareType.class.getSimpleName(), hyp, maxValue,
 					evidences, sim.schedule.getSteps(),
 					System.currentTimeMillis());
-			AgentArgumentativeCapability.sendArgument(this, supportArg);
+			this.sendArgument(supportArg);
 			sent = true;
 		} else {
 			sim.getLogger().finer(
@@ -383,7 +367,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 					SolarFlareType.class.getSimpleName(), hyp, maxValue,
 					evidences, sim.schedule.getSteps(),
 					System.currentTimeMillis());
-			AgentArgumentativeCapability.sendArgument(this, arg);
+			this.sendArgument(arg);
 
 			this.argumenting = true;
 			sim.getLogger().fine(
@@ -428,17 +412,6 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 	public String getArgumentationManagerName() {
 		SimpleShanksAgent ag = (SimpleShanksAgent) this.manager;
 		return ag.getID();
-	}
-
-	public Set<Argument> getCurrentArguments() throws ShanksException {
-		// Nothing to do
-		return null;
-	}
-
-	public void updateBeliefsWithNewArguments(Set<Argument> args)
-			throws ShanksException {
-		// Nothing to do
-
 	}
 
 	public ProbabilisticNetwork getBayesianNetwork() {

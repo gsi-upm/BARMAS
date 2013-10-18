@@ -216,16 +216,6 @@ public class AgentArgumentativeCapability {
 	}
 
 	/**
-	 * Send one argument to the argumentation manager
-	 * 
-	 * @param proponent
-	 * @param arg
-	 */
-	public static void sendArgument(ArgumentativeAgent proponent, Argument arg) {
-		proponent.sendArgument(arg);
-	}
-
-	/**
 	 * Return the type of the attack (from a to b) using the following rules:
 	 * 
 	 * 0 - a does not attack b

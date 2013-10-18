@@ -18,9 +18,6 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
-import java.util.Set;
-
-import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
  * Project: barmas File:
@@ -62,17 +59,6 @@ public interface ArgumentativeAgent {
 	 * @return the name of the argumentation manager agent
 	 */
 	public String getArgumentationManagerName();
-
-	/**
-	 * @return all its arguments
-	 */
-	public Set<Argument> getCurrentArguments() throws ShanksException;
-
-	/**
-	 * @param args
-	 */
-	public void updateBeliefsWithNewArguments(Set<Argument> args)
-			throws ShanksException;
 
 	/**
 	 * Send the argument

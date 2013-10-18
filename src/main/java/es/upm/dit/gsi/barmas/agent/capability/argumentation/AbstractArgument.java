@@ -58,5 +58,10 @@ public abstract class AbstractArgument {
 	 * @return The agent that proposes the argument
 	 */
 	public abstract ArgumentativeAgent getProponent();
+	
+	/**
+	 * @return The name of the agent that proposes the argument
+	 */
+	public abstract String getProponentName();
 
 }

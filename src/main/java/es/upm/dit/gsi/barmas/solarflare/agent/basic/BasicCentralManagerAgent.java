@@ -544,43 +544,32 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 	}
 
 	public ArgumentativeAgent getProponent() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public ArgumentativeAgent getArgumentationManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
 
 	public void setArgumentationManager(ArgumentativeAgent manager) {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 
 	public String getArgumentationManagerName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Set<Argument> getCurrentArguments() throws ShanksException {
-		// TODO Auto-generated method stub
+		// Nothing to do
 		return null;
 	}
 
 	public void updateBeliefsWithNewArguments(Set<Argument> args)
 			throws ShanksException {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 
 	public void sendArgument(Argument arg) {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 
 	public void finishArgumenation() {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 }

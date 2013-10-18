@@ -56,7 +56,6 @@ public class SolarFlareScenario2DPortrayal extends Scenario2DPortrayal {
 	public SolarFlareScenario2DPortrayal(Scenario scenario, int width,
 			int height) throws ShanksException {
 		super(scenario, width, height);
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -64,7 +63,7 @@ public class SolarFlareScenario2DPortrayal extends Scenario2DPortrayal {
 	 */
 	@Override
 	public void addPortrayals() {
-		// TODO Auto-generated method stub
+		// Nothing to do
 
 	}
 

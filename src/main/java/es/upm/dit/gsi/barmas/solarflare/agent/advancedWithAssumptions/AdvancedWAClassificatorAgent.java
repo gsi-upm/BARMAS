@@ -32,9 +32,7 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumenta
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
@@ -342,7 +340,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			Argument arg = AgentArgumentativeCapability.createArgument(
 					this, proposals, assumptions, evidences,
 					sim.schedule.getSteps(), System.currentTimeMillis());
-			AgentArgumentativeCapability.sendArgument(this, arg);
+			this.sendArgument(arg);
 
 			sim.getLogger().fine("Argument sent by agent: " + this.getID());
 		} catch (ShanksException e) {
@@ -412,17 +410,6 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	public String getArgumentationManagerName() {
 		SimpleShanksAgent ag = (SimpleShanksAgent) this.manager;
 		return ag.getID();
-	}
-
-	public Set<Argument> getCurrentArguments() throws ShanksException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void updateBeliefsWithNewArguments(Set<Argument> args)
-			throws ShanksException {
-		// TODO Auto-generated method stub
-
 	}
 
 	public ProbabilisticNetwork getBayesianNetwork() {

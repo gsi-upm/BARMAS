@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import com.csvreader.CsvWriter;
@@ -512,41 +511,8 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	}
 
 	public ArgumentativeAgent getProponent() {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
-
-	public ArgumentativeAgent getArgumentationManager() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setArgumentationManager(ArgumentativeAgent manager) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String getArgumentationManagerName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Set<Argument> getCurrentArguments() throws ShanksException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void updateBeliefsWithNewArguments(Set<Argument> args)
-			throws ShanksException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void sendArgument(Argument arg) {
-		// TODO Auto-generated method stub
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -693,6 +659,24 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 		this.PROCESSING = false;
 		this.WAITING = false;
 		this.finishArgumenation();
+	}
+
+	public ArgumentativeAgent getArgumentationManager() {
+		// Nothing to do
+		return null;
+	}
+
+	public void setArgumentationManager(ArgumentativeAgent manager) {
+		// Nothing to do
+	}
+
+	public String getArgumentationManagerName() {
+		// Nothing to do
+		return null;
+	}
+
+	public void sendArgument(Argument arg) {
+		// Nothing to do		
 	}
 
 }

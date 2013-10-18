@@ -52,8 +52,7 @@ public class SolarFlareClassificationSimulation3DGUI extends
 	 */
 	@Override
 	public void addDisplays(Scenario3DPortrayal scenarioPortrayal) {
-		// TODO Auto-generated method stub
-
+		// Nothing to do
 	}
 
 	/* (non-Javadoc)

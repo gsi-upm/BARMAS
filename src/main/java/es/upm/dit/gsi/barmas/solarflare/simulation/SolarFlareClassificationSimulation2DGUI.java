@@ -51,7 +51,7 @@ public class SolarFlareClassificationSimulation2DGUI extends
 	 */
 	@Override
 	public void addDisplays(Scenario2DPortrayal scenarioPortrayal) {
-		// TODO Auto-generated method stub
+		// Nothing to do
 	}
 
 	/* (non-Javadoc)

@@ -69,6 +69,8 @@ public class AgentArgumentativeCapabilityTest {
 	private interface MyArgumentativeAgent extends BayesianReasonerShanksAgent,
 			ArgumentativeAgent {
 
+		Set<Argument> getCurrentArguments() throws ShanksException;
+
 	}
 
 	MyArgumentativeAgent agent;
@@ -125,12 +127,13 @@ public class AgentArgumentativeCapabilityTest {
 			public String getArgumentationManagerName() {
 				return null;
 			}
-
+			
 			public Set<Argument> getCurrentArguments() throws ShanksException {
 				return AgentArgumentativeCapability.createArguments(agent, 0,
 						System.currentTimeMillis());
 			}
 
+			@SuppressWarnings("unused")
 			public void updateBeliefsWithNewArguments(Set<Argument> args)
 					throws ShanksException {
 				AgentArgumentativeCapability.updateBeliefs(args, agent);
@@ -138,27 +141,25 @@ public class AgentArgumentativeCapabilityTest {
 
 			public void setArgumentationManager(
 					ArgumentativeAgent manager) {
-				// TODO Auto-generated method stub
-
+				// Nothing to do
 			}
 
 			public void sendArgument(Argument arg) {
-				// TODO Auto-generated method stub
-
+				// Nothing to do
 			}
 
 			public void finishArgumenation() {
-				// TODO Auto-generated method stub
+				// Nothing to do
 
 			}
 
 			public void addArgumentationGroupMember(ArgumentativeAgent agent) {
-				// TODO Auto-generated method stub
+				// Nothing to do
 
 			}
 
 			public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
-				// TODO Auto-generated method stub
+				// Nothing to do
 
 			}
 		};
