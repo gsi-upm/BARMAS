@@ -68,7 +68,7 @@ public class Argumentation {
 		arg.setId(ids.keySet().size());
 		this.ids.put(ids.keySet().size(), arg);
 		this.graph.put(arg, new HashMap<Argument, Integer>());
-		AgentArgumentativeCapability.updateAtacksGraph(arg, this);
+		AgentArgumentativeCapability.updateAttacksGraph(arg, this);
 	}
 
 	/**

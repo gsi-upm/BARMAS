@@ -238,7 +238,7 @@ public class AgentArgumentativeCapability {
 		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
 				.getGraph();
 		for (Argument arg : args) {
-			boolean defeated = false;
+			boolean attacked = false;
 			for (Entry<Argument, HashMap<Argument, Integer>> entry : graph
 					.entrySet()) {
 				HashMap<Argument, Integer> attacks = entry.getValue();
@@ -246,11 +246,11 @@ public class AgentArgumentativeCapability {
 					if (entry2.getKey().equals(arg)
 							&& entry2.getValue() == attackType) {
 						unattackedArgs.remove(arg);
-						defeated = true;
+						attacked = true;
 						break;
 					}
 				}
-				if (defeated) {
+				if (attacked) {
 					break;
 				}
 			}
@@ -270,8 +270,9 @@ public class AgentArgumentativeCapability {
 		List<Argument> unattackedArgs = new ArrayList<Argument>();
 		unattackedArgs.addAll(args);
 		for (Integer attackType : attackTypes) {
-			unattackedArgs = AgentArgumentativeCapability.getUnattackedArguments(
-					unattackedArgs, argumentation, attackType);
+			unattackedArgs = AgentArgumentativeCapability
+					.getUnattackedArguments(unattackedArgs, argumentation,
+							attackType);
 		}
 		return unattackedArgs;
 	}
@@ -312,7 +313,7 @@ public class AgentArgumentativeCapability {
 			Set<Given> agivens = a.getGivens();
 			Set<Given> bgivens = b.getGivens();
 			// Set<Assumption> aassumptions = a.getAssumptions();
-			// Set<Assumption> bassumptions = b.getAssumptions();
+			Set<Assumption> bassumptions = b.getAssumptions();
 			Set<Proposal> aproposals = a.getProposals();
 			Set<Proposal> bproposals = b.getProposals();
 
@@ -329,24 +330,46 @@ public class AgentArgumentativeCapability {
 				}
 			}
 
+			// Check type 5 - a is a canonical undercut of b if Claim(A) is
+			// exactly
+			// not Support(B)
+			if (bgivens.size() == 0 && agivens.size() > 0) {
+				return CANONICALUNDERCUT;
+			}
+
+			// Check type 4 - a is a direct undercut of b if there is phi in
+			// Support(B) such that Claim(A) is exactly not phi
+			if (agivens.size() == (bgivens.size() + 1)) {
+				return DIRECTUNDERCUT;
+			}
+
+			// Check type 3 - a is a undercut of b if there is Phi subset of
+			// Support(B) such that Claim(A) is exactly not all Phi
+			if (agivens.size() > bgivens.size()) {
+				return UNDERCUT;
+			}
+
 			// Check type 1 - a is defeater of b if Claim(A) implies not all
 			// Support(B)
-			if (agivens.size() > bgivens.size()) {
-				return DEFEATER;
+			if (bassumptions.size() == 1) {
+				for (Proposal ap : aproposals) {
+					for (Assumption ba : bassumptions) {
+						if (ba.getNode().equals(ap.getNode())) {
+							return DEFEATER;
+						}
+					}
+				}
 			}
 
 			// Check type 2 - a is a direct defeater of b if there is phi in
 			// Support(B) such that Claim(A) implies not phi
-
-			// Check type 3 - a is a undercut of b if there is Phi subset of
-			// Support(B) such that Claim(A) is exactly not all Phi
-
-			// Check type 4 - a is a direct undercut of b if there is phi in
-			// Support(B) such that Claim(A) is exactly not phi
-
-			// Check type 5 - a is a canonical undercut of b if Claim(A) is
-			// exactly
-			// not Support(B)
+			for (Proposal ap : aproposals) {
+				for (Assumption ba : bassumptions) {
+					if (ba.getNode().equals(ap.getNode())) {
+						return DIRECTDEFEATER;
+					}
+				}
+			}
 
 			// Check types 6 and 7
 			int aux = 0;
@@ -362,6 +385,7 @@ public class AgentArgumentativeCapability {
 						if (!astate.equals(bstate)) {
 							aux++;
 						}
+						break;
 					}
 				}
 			}
@@ -389,7 +413,7 @@ public class AgentArgumentativeCapability {
 	 * @param argument
 	 * @param argumentation
 	 */
-	public static void updateAtacksGraph(Argument argument,
+	public static void updateAttacksGraph(Argument argument,
 			Argumentation argumentation) {
 		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
 				.getGraph();
@@ -412,27 +436,11 @@ public class AgentArgumentativeCapability {
 
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		logger.fine("Getting the higher hypothesis...");
-		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
-				.getGraph();
 		logger.finest("Evaluating possible conclusions...");
-		List<Argument> possibleConclusions = new ArrayList<Argument>();
-		possibleConclusions.addAll(argumentation.getArguments());
-		for (Argument arg : argumentation.getArguments()) {
-			HashMap<Argument, Integer> attacks = graph.get(arg);
-			for (Argument attacked : attacks.keySet()) {
-				int attackType = attacks.get(attacked);
-				if (attackType == 1) {
-					possibleConclusions.remove(attacked);
-					logger.finest("Argument " + attacked.getId()
-							+ " (Proponent: "
-							+ attacked.getProponent().getProponentName()
-							+ ") removed because it is defeated by Argument "
-							+ arg.getId() + " (Proponent: "
-							+ attacked.getProponent().getProponentName() + ")");
-
-				}
-			}
-		}
+		List<Argument> allArguments = new ArrayList<Argument>();
+		allArguments.addAll(argumentation.getArguments());
+		List<Argument> possibleConclusions = AgentArgumentativeCapability
+				.getUnattackedArguments(allArguments, argumentation, UNDERCUT);
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -588,24 +596,26 @@ public class AgentArgumentativeCapability {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * @param map
 	 * @return
 	 */
-	public static HashMap<String, Double> convertToDoubleValues(HashMap<String, Float> map) {
+	public static HashMap<String, Double> convertToDoubleValues(
+			HashMap<String, Float> map) {
 		HashMap<String, Double> newMap = new HashMap<String, Double>();
 		for (Entry<String, Float> entry : map.entrySet()) {
 			newMap.put(entry.getKey(), new Double(entry.getValue()));
 		}
 		return newMap;
 	}
-	
+
 	/**
 	 * @param map
 	 * @return
 	 */
-	public static HashMap<String, Float> convertToFloatValues(HashMap<String, Double> map) {
+	public static HashMap<String, Float> convertToFloatValues(
+			HashMap<String, Double> map) {
 		HashMap<String, Float> newMap = new HashMap<String, Float>();
 		for (Entry<String, Double> entry : map.entrySet()) {
 			newMap.put(entry.getKey(), new Float(entry.getValue()));

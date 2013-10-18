@@ -247,7 +247,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			// check if it is valid
 			List<Argument> unattacked = AgentArgumentativeCapability
 					.getUnattackedArguments(args, this.argumentation,
-							AgentArgumentativeCapability.DEFEATER); // TODO
+							AgentArgumentativeCapability.UNDERCUT); // TODO
 																	// check if
 																	// more
 																	// attacks
