@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 alvarocarrera Grupo de Sistemas Inteligentes - Universidad PolitÈcnica de Madrid. (GSI-UPM)
+ * Copyright (c) 2013 alvarocarrera Grupo de Sistemas Inteligentes - Universidad Polit√©cnica de Madrid. (GSI-UPM)
  * http://www.gsi.dit.upm.es/
  * 
  * All rights reserved. This program and the accompanying materials
@@ -32,8 +32,9 @@ import es.upm.dit.gsi.shanks.model.scenario.portrayal.ScenarioPortrayal;
  * Project: barmas File: es.upm.dit.gsi.barmas.model.scenario.portrayal.
  * SolarFlareScenario3DPortrayal.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de IngenierÌa de Sistemas
- * Telem·ticos Universidad PolitÈcnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingenier√≠a de Sistemas Telem√°ticos
+ * Universidad Polit√©cnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es

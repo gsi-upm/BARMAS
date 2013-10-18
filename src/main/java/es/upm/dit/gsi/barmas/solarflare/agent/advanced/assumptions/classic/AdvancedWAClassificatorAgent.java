@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 alvarocarrera Grupo de Sistemas Inteligentes - Universidad Polit�cnica de Madrid. (GSI-UPM)
+ * Copyright (c) 2013 alvarocarrera Grupo de Sistemas Inteligentes - Universidad Politécnica de Madrid. (GSI-UPM)
  * http://www.gsi.dit.upm.es/
  * 
  * All rights reserved. This program and the accompanying materials
@@ -46,8 +46,9 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 /**
  * Project: barmas File: es.upm.dit.gsi.barmas.agent.BarmasAgent.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingenier�a de Sistemas
- * Telem�ticos Universidad Polit�cnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
