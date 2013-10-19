@@ -78,8 +78,11 @@
 				</executions>
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.AllExperiments</mainClass>
-<!-- 					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1</mainClass> -->
-<!-- 					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2</mainClass> -->
+					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1</mainClass> -->
+					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2</mainClass> -->
+					<arguments>
+						<argument>-Xmx10024m</argument>
+					</arguments>
 				</configuration>
 			</plugin>
 			<plugin>
