@@ -18,10 +18,13 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -78,9 +81,9 @@ public class AgentArgumentativeCapabilityTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-//		LogManager lm = LogManager.getLogManager();
-//		File configFile = new File("src/test/resources/logging.properties");
-//		lm.readConfiguration(new FileInputStream(configFile));
+		LogManager lm = LogManager.getLogManager();
+		File configFile = new File("src/test/resources/logging.properties");
+		lm.readConfiguration(new FileInputStream(configFile));
 	}
 
 	/**
