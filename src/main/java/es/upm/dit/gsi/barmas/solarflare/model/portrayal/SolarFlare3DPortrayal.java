@@ -41,6 +41,7 @@ import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
  * @version 0.1
  * 
  */
+@SuppressWarnings("restriction")
 public class SolarFlare3DPortrayal extends SpherePortrayal3D {
 
 	/**
