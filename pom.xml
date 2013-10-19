@@ -72,14 +72,20 @@
 					<execution>
 						<id>experiments-execution</id>
 						<goals>
-							<goal>java</goal>
+							<goal>exec</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.AllExperiments</mainClass>
-<!-- 					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1</mainClass> -->
-<!-- 					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2</mainClass> -->
+					<executable>java</executable>
+					<arguments>
+						<argument>-classpath</argument>
+						<classpath />
+						<argument>es.upm.dit.gsi.barmas.solarflare.launcher.AllExperiments</argument>
+					</arguments>
+					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.AllExperiments</mainClass> -->
+					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1</mainClass> -->
+					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2</mainClass> -->
 				</configuration>
 			</plugin>
 			<plugin>
