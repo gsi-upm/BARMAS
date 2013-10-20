@@ -21,6 +21,7 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractAssumption;
 
@@ -104,6 +105,28 @@ public class Assumption extends AbstractAssumption {
 	public double getConfidenceForValue(String value) {
 		double confidence = this.beliefs.get(value);
 		return confidence;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getMaxState() {
+		double max = 0;
+		String state = "";
+		for (Entry<String, Double> e : this.beliefs.entrySet()) {
+			if (e.getValue() > max) {
+				max = e.getValue();
+				state = e.getKey();
+			}
+		}
+		return state;
+	}
+
+	/**
+	 * @return
+	 */
+	public double getMaxValue() {
+		return this.beliefs.get(this.getMaxState());
 	}
 
 }
