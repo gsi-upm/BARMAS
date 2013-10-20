@@ -83,12 +83,14 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	private HashMap<Integer, Argument> mySentArguments;
 
 	private HashMap<String, HashMap<String, Double>> updatedBeliefs;
-	private boolean newInfo;
+	private List<Assumption> assumptionsToImprove = new ArrayList<Assumption>();
+	private boolean newEvidences;
+	private boolean newBeliefs;
 
 	private double threshold;
 	private double beliefThreshold;
 	private String classificationTarget;
-//	private String datasetPath;
+	// private String datasetPath;
 
 	// STATES
 	private boolean IDLE;
@@ -111,9 +113,10 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 		this.sensors = sensors;
 		this.threshold = threshold;
 		this.beliefThreshold = beliefThreshold;
-//		this.datasetPath = datasetPath;
+		// this.datasetPath = datasetPath;
 		this.classificationTarget = classificationTarget;
-		this.newInfo = false;
+		this.newEvidences = false;
+		this.newBeliefs = false;
 		this.setArgumentationManager(manager);
 		this.pendingArguments = new ArrayList<Argument>();
 		this.evidences = new HashMap<String, String>();
@@ -192,11 +195,12 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	private void evaluateNextAction(SolarFlareClassificationSimulation sim) {
 		// Check graph and/or argumentation and try to generate arguments
-		boolean usefulArgument = this.evaluatePossibleArguments();
-		if (usefulArgument) {
+		if (this.isThereNewInfo() || this.isThereAssumptionsToImprove(sim)) {
+			logger.fine("Useful information found by " + this.getID());
 			this.goToArgumenting(sim);
 			this.goToWaiting();
 		} else {
+			logger.fine("No useful information found by " + this.getID());
 			this.goToWaiting();
 		}
 	}
@@ -204,10 +208,10 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	/**
 	 * @return if there is useful info to generate new arguments
 	 */
-	private boolean evaluatePossibleArguments() {
+	private boolean isThereNewInfo() {
 
-		// If there are new evidences
-		if (this.newInfo) {
+		// If there are new info
+		if (this.newEvidences || this.newBeliefs) {
 			return true;
 		} else {
 			return false;
@@ -258,49 +262,44 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				// check the proposals that are not the classification class
 				for (Proposal p : arg.getProposals()) {
 					if (!p.getNode().equals(this.classificationTarget)) {
-						try {
-							// Compare with local belief
-							HashMap<String, Double> receivedBelief = (HashMap<String, Double>) p
-									.getValuesWithConfidence();
-							HashMap<String, Double> ownBelief = AgentArgumentativeCapability
-									.convertToDoubleValues(ShanksAgentBayesianReasoningCapability
-											.getAllHypotheses(this).get(
-													p.getNode()));
-							double distance = AgentArgumentativeCapability
-									.getNormalisedHellingerDistance(
-											receivedBelief, ownBelief);
-							logger.fine("Distance for belief: " + p.getNode()
-									+ " is " + distance);
-							// Only strong beliefs are proposed (sent as
-							// proposals), so no more constrains must be added.
-							// Anyway, you must check if you have other
-							// different strong belief in that node.
-							Proposal auxp = new Proposal(p.getNode(), ownBelief);
-							double maxDiff = p.getMaxValue()
-									- auxp.getMaxValue();
-							if (distance >= this.threshold
-									&& maxDiff >= beliefThreshold) {
-								this.updatedBeliefs.put(p.getNode(),
-										receivedBelief);
-								this.newInfo = true;
-							}
-						} catch (ShanksException e) {
-							logger.warning("Problem comparing received beliefs with local beliefs. ->");
-							logger.warning(e.getMessage());
-							e.printStackTrace();
+						// Compare with local belief
+						HashMap<String, Double> receivedBelief = (HashMap<String, Double>) p
+								.getValuesWithConfidence();
+						HashMap<String, Double> ownBelief = AgentArgumentativeCapability
+								.convertToDoubleValues(this
+										.getAllMyHypotheses().get(p.getNode()));
+						double distance = AgentArgumentativeCapability
+								.getNormalisedHellingerDistance(receivedBelief,
+										ownBelief);
+						logger.fine("Distance for belief: " + p.getNode()
+								+ " is " + distance);
+						// Only strong beliefs are proposed (sent as
+						// proposals), so no more constrains must be added.
+						// Anyway, you must check if you have other
+						// different strong belief in that node.
+						Proposal auxp = new Proposal(p.getNode(), ownBelief);
+						double maxDiff = p.getMaxValue() - auxp.getMaxValue();
+						if (distance >= this.threshold
+								&& maxDiff >= beliefThreshold) {
+							this.updatedBeliefs
+									.put(p.getNode(), receivedBelief);
+							this.newBeliefs = true;
 						}
 					}
 				}
 			}
 			// Add beliefs to BN
-			try {
-				ShanksAgentBayesianReasoningCapability.addSoftEvidences(this,
-						this.updatedBeliefs);
-				logger.fine("Beliefs updated for agent: " + this.getID());
-			} catch (ShanksException e) {
-				logger.warning(this.getID() + " -> Problems updating beliefs.");
-				logger.warning(e.getMessage());
-				e.printStackTrace();
+			if (this.newBeliefs) {
+				try {
+					ShanksAgentBayesianReasoningCapability.addSoftEvidences(
+							this, this.updatedBeliefs);
+					logger.fine("Beliefs updated for agent: " + this.getID());
+				} catch (ShanksException e) {
+					logger.warning(this.getID()
+							+ " -> Problems updating beliefs.");
+					logger.warning(e.getMessage());
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -329,7 +328,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 					}
 				} else {
 					this.evidences.put(given.getNode(), given.getValue());
-					this.newInfo = true;
+					this.newEvidences = true;
 					logger.finer("Agent: " + this.getID()
 							+ " -> Adding evidence received from "
 							+ arg.getProponent().getProponentName()
@@ -374,62 +373,64 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 		// if it is the first argument from this agent in this argumentation
 		// if new evidences can be added or new belief has been updated
 		if (this.argumentation.getArguments().isEmpty()
-				|| this.mySentArguments.isEmpty() || this.newInfo) {
+				|| this.mySentArguments.isEmpty() || this.newEvidences) {
 			// Full argument
 			this.sendFullArgument(sim);
 		} else {
 			// Check assumptions and try to improve them
-			List<Assumption> assumptionsToImprove = this
-					.findAssumptionsToImprove(sim);
-			this.sendCounterArgument(assumptionsToImprove, sim);
+			this.sendCounterArgument(this.assumptionsToImprove, sim);
 
 		}
 
-		this.newInfo = false;
+		this.newEvidences = false;
+		this.newBeliefs = false;
 	}
 
 	/**
 	 * @param sim
 	 * @return
 	 */
-	private List<Assumption> findAssumptionsToImprove(
+	private boolean isThereAssumptionsToImprove(
 			SolarFlareClassificationSimulation sim) {
-		List<Assumption> assumptionsToImprove = new ArrayList<Assumption>();
-		try {
-			HashMap<String, HashMap<String, Float>> ownHypotheses = ShanksAgentBayesianReasoningCapability
-					.getAllHypotheses(this);
+		HashMap<String, HashMap<String, Float>> ownHypotheses = this
+				.getAllMyHypotheses();
 
-			for (Argument arg : this.pendingArguments) {
-				for (Assumption assum : arg.getAssumptions()) {
-					try {
-						HashMap<String, Double> receivedBelief = (HashMap<String, Double>) assum
-								.getValuesWithConfidence();
-						HashMap<String, Double> ownBelief = AgentArgumentativeCapability
-								.convertToDoubleValues(ownHypotheses.get(assum
-										.getNode()));
-						double distance = AgentArgumentativeCapability
-								.getNormalisedHellingerDistance(receivedBelief,
-										ownBelief);
-						logger.fine("Looking for assumptions to improve -> Distance for belief: "
-								+ assum.getNode() + " is " + distance);
-						if (distance > this.threshold) {
-							assumptionsToImprove.add(assum);
+		for (Argument arg : this.pendingArguments) {
+			for (Assumption assum : arg.getAssumptions()) {
+				try {
+					HashMap<String, Double> receivedBelief = (HashMap<String, Double>) assum
+							.getValuesWithConfidence();
+					HashMap<String, Double> ownBelief = AgentArgumentativeCapability
+							.convertToDoubleValues(ownHypotheses.get(assum
+									.getNode()));
+					double distance = AgentArgumentativeCapability
+							.getNormalisedHellingerDistance(receivedBelief,
+									ownBelief);
+					logger.fine("Looking for assumptions to improve -> Distance for belief: "
+							+ assum.getNode() + " is " + distance);
+					if (distance > this.threshold) {
+						Proposal auxp = new Proposal(assum.getNode(), ownBelief);
+						boolean myBeliefIsBetter = (auxp.getMaxValue()
+								- assum.getMaxValue() > this.beliefThreshold);
+						if (myBeliefIsBetter) { // TODO this is only for
+												// non-eficcient approach
+												// because if it is
+												// efficient, this belief
+												// should be taken in the
+												// updateBeliefs method as
+												// relevant/interesting
+							this.assumptionsToImprove.add(assum);
 						}
-					} catch (Exception e) {
-						logger.warning("Problems getting local belief for: "
-								+ assum.getNode());
-						logger.warning(e.getMessage());
-						e.printStackTrace();
 					}
+				} catch (Exception e) {
+					logger.warning("Problems getting local belief for: "
+							+ assum.getNode());
+					logger.warning(e.getMessage());
+					e.printStackTrace();
 				}
 			}
-
-		} catch (ShanksException e) {
-			logger.warning("Problems finding assumptions to improve.");
-			logger.warning(e.getMessage());
-			e.printStackTrace();
 		}
-		return assumptionsToImprove;
+		return !this.assumptionsToImprove.isEmpty();
 	}
 
 	/**
@@ -437,76 +438,26 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	private void sendCounterArgument(List<Assumption> assumptionsToImprove,
 			ShanksSimulation sim) {
-		try {
-			this.addEvidencesToBN();
-			HashMap<String, HashMap<String, Float>> ownHypotheses = ShanksAgentBayesianReasoningCapability
-					.getAllHypotheses(this);
-			for (Assumption assum : assumptionsToImprove) {
-				// Get proposal
-				HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
-				HashMap<String, Float> hyps = ownHypotheses
-						.get(assum.getNode());
-	
-				HashMap<String, Double> beliefs = new HashMap<String, Double>();
-				for (Entry<String, Float> entry : hyps.entrySet()) {
-					beliefs.put(entry.getKey(), new Double(entry.getValue()));
-				}
-				proposals.put(assum.getNode(), beliefs);
-	
-				HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String, Double>>();
-				for (Entry<String, HashMap<String, Float>> entry : ownHypotheses
-						.entrySet()) {
-					String node = entry.getKey();
-					if (!node.equals(this.classificationTarget)
-							&& !node.equals(assum.getNode())
-							&& !evidences.keySet().contains(node)) {
-						beliefs = new HashMap<String, Double>();
-						for (Entry<String, Float> values : entry.getValue()
-								.entrySet()) {
-							beliefs.put(values.getKey(),
-									new Double(values.getValue()));
-						}
-						assumptions.put(node, beliefs);
-					}
-				}
-	
-				Argument arg = AgentArgumentativeCapability.createArgument(
-						this, proposals, assumptions, evidences,
-						sim.schedule.getSteps(), System.currentTimeMillis());
-				this.sendArgument(arg);
-	
-			}
-		} catch (ShanksException e) {
-			logger.warning("Problems getting hypotheses...");
-			logger.warning(e.getMessage());
-			e.printStackTrace();
-		}
-	
-	}
-
-	private void sendFullArgument(ShanksSimulation sim) {
-		try {
-			this.addEvidencesToBN();
-
-			// Get hypothesis
-			HashMap<String, HashMap<String, Float>> hypotheses = ShanksAgentBayesianReasoningCapability
-					.getAllHypotheses(this);
-
+		this.addEvidencesToBN();
+		HashMap<String, HashMap<String, Float>> ownHypotheses = this
+				.getAllMyHypotheses();
+		for (Assumption assum : assumptionsToImprove) {
+			// Get proposal
 			HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
-			HashMap<String, Float> hyps = hypotheses
-					.get(this.classificationTarget);
+			HashMap<String, Float> hyps = ownHypotheses.get(assum.getNode());
 
 			HashMap<String, Double> beliefs = new HashMap<String, Double>();
 			for (Entry<String, Float> entry : hyps.entrySet()) {
 				beliefs.put(entry.getKey(), new Double(entry.getValue()));
 			}
-			proposals.put(this.classificationTarget, beliefs);
+			proposals.put(assum.getNode(), beliefs);
 
 			HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String, Double>>();
-			for (Entry<String, HashMap<String, Float>> entry : hypotheses
+			for (Entry<String, HashMap<String, Float>> entry : ownHypotheses
 					.entrySet()) {
 				String node = entry.getKey();
 				if (!node.equals(this.classificationTarget)
+						&& !node.equals(assum.getNode())
 						&& !evidences.keySet().contains(node)) {
 					beliefs = new HashMap<String, Double>();
 					for (Entry<String, Float> values : entry.getValue()
@@ -523,10 +474,74 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 					System.currentTimeMillis());
 			this.sendArgument(arg);
 
-			logger.fine("Argument sent by agent: " + this.getID());
+		}
+
+	}
+
+	private void sendFullArgument(ShanksSimulation sim) {
+		this.addEvidencesToBN();
+
+		// Get hypothesis
+		HashMap<String, HashMap<String, Float>> hypotheses = this
+				.getAllMyHypotheses();
+
+		HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
+		HashMap<String, Float> hyps = hypotheses.get(this.classificationTarget);
+
+		HashMap<String, Double> beliefs = new HashMap<String, Double>();
+		for (Entry<String, Float> entry : hyps.entrySet()) {
+			beliefs.put(entry.getKey(), new Double(entry.getValue()));
+		}
+		proposals.put(this.classificationTarget, beliefs);
+
+		HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String, Double>>();
+		for (Entry<String, HashMap<String, Float>> entry : hypotheses
+				.entrySet()) {
+			String node = entry.getKey();
+			if (!node.equals(this.classificationTarget)
+					&& !evidences.keySet().contains(node)) {
+				beliefs = new HashMap<String, Double>();
+				for (Entry<String, Float> values : entry.getValue().entrySet()) {
+					beliefs.put(values.getKey(), new Double(values.getValue()));
+				}
+				assumptions.put(node, beliefs);
+			}
+		}
+
+		Argument arg = AgentArgumentativeCapability.createArgument(this,
+				proposals, assumptions, evidences, sim.schedule.getSteps(),
+				System.currentTimeMillis());
+		this.sendArgument(arg);
+
+		logger.fine("Argument sent by agent: " + this.getID());
+	}
+
+	/**
+	 * Remove all "softEvidenceNode" beliefs (not relevant for classfication).
+	 * These nodes are processed as auxiliary info to update beliefs 
+	 * 
+	 * @return
+	 */
+	private HashMap<String, HashMap<String, Float>> getAllMyHypotheses() {
+		HashMap<String, HashMap<String, Float>> ownBeliefs = null;
+		try {
+			ownBeliefs = ShanksAgentBayesianReasoningCapability.getAllHypotheses(this);
+			List<String> beliefsToRemove = new ArrayList<String>();
+			for (Entry<String, HashMap<String, Float>> entry : ownBeliefs.entrySet()) {
+				if (entry.getKey().startsWith("softEvidenceNode")) {
+					beliefsToRemove.add(entry.getKey());
+				}
+			}
+			for (String b : beliefsToRemove) {
+				ownBeliefs.remove(b);
+			}
+
 		} catch (ShanksException e) {
+			logger.warning("Problems getting hypotheses...");
+			logger.warning(e.getMessage());
 			e.printStackTrace();
 		}
+		return ownBeliefs;
 	}
 
 	/**
@@ -753,7 +768,6 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 		this.PROCESSING = false;
 		this.WAITING = false;
 		this.generateArguments(sim);
-		this.goToWaiting();
 	}
 
 	/**
