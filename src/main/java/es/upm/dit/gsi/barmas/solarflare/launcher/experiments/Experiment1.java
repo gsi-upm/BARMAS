@@ -80,7 +80,7 @@ public class Experiment1 {
 	private static void launchSimulationWith2Agents(long seed,
 			String summaryFile) {
 		// Simulation properties
-		String simulationName = "SolarFlareClassificatorScenario"
+		String simulationName = "EXPERIMENT-1-SolarFlareClassificatorScenario"
 				+ "-2AgentsHigherHypothesisConflictResolution-" + seed
 				+ "-timestamp-" + System.currentTimeMillis();
 
@@ -181,7 +181,7 @@ public class Experiment1 {
 	private static void launchSimulationWith2AgentsKFold(long seed,
 			String summaryFile) {
 		// Simulation properties
-		String simulationName = "SolarFlareClassificatorScenario"
+		String simulationName = "EXPERIMENT-1-SolarFlareClassificatorScenario"
 				+ "-2AgentsHigherHypothesisConflictResolution-" + seed
 				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
 	

@@ -33,9 +33,8 @@ import com.csvreader.CsvWriter;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es

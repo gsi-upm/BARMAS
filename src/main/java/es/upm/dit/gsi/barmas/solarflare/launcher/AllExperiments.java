@@ -20,6 +20,7 @@ package es.upm.dit.gsi.barmas.solarflare.launcher;
 
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2;
+import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3;
 
 /**
  * Project: barmas
@@ -45,6 +46,7 @@ public class AllExperiments {
 		
 		Experiment1.main(null);
 		Experiment2.main(null);
+		Experiment3.main(null);
 	}
 
 }

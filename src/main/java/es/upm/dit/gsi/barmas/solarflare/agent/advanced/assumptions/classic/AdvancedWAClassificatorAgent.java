@@ -186,8 +186,6 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			this.goToArgumenting(sim);
 			this.goToWaiting();
 		}
-
-		this.pendingArguments.clear();
 	}
 
 	/**
@@ -381,9 +379,6 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			this.sendCounterArgument(this.assumptionsToImprove, sim);
 
 		}
-
-		this.newEvidences = false;
-		this.newBeliefs = false;
 	}
 
 	/**
@@ -469,6 +464,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				}
 			}
 
+			logger.fine(this.getID() + " -> Counter argument sent for belief: " + assum.getNode());
 			Argument arg = AgentArgumentativeCapability.createArgument(this,
 					proposals, assumptions, evidences, sim.schedule.getSteps(),
 					System.currentTimeMillis());
@@ -793,5 +789,9 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 		this.ARGUMENTING = false;
 		this.PROCESSING = false;
 		this.WAITING = true;
+		this.pendingArguments.clear();
+		this.newEvidences = false;
+		this.newBeliefs = false;
+		this.assumptionsToImprove.clear();
 	}
 }
