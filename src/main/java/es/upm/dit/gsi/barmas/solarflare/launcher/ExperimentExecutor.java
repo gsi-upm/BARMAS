@@ -69,8 +69,9 @@ public class ExperimentExecutor {
 		Experiment3 exp3 = new Experiment3();
 		experiments.add(exp3);
 
-
-		int maxThreads = 5;
+		
+		// Lauch experiments
+		int maxThreads = 10;
 		ExperimentExecutor executor = new ExperimentExecutor();
 		executor.executeExperiments(experiments, maxThreads);
 
