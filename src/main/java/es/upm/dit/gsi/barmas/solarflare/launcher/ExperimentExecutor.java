@@ -47,29 +47,29 @@ public class ExperimentExecutor {
 	public static void main(String[] args) {
 
 		List<Runnable> experiments = new ArrayList<Runnable>();
-
-		// Experiment1 exp1 = new Experiment1();
-		// experiments.add(exp1);
+		Experiment1 exp1 = new Experiment1();
+		experiments.add(exp1);
 
 		String summaryFile = "src/main/resources/exp2/output/global-summary.csv";
 		long seed = 0;
-		double threshold = 0.5;
+		double threshold = 1;
 		double beliefThreshold = 1;
 
-//		while (threshold > 0.01) {
+		while (threshold > 0.01) {
 			while (beliefThreshold > 0.01) {
 				Experiment2 exp2 = new Experiment2(summaryFile, seed,
 						threshold, beliefThreshold);
 				experiments.add(exp2);
 				beliefThreshold = beliefThreshold - 0.05;
 			}
-//			beliefThreshold = 1;
-//			threshold = threshold - 0.05;
-//		}
+			beliefThreshold = 1;
+			threshold = threshold - 0.05;
+		}
 
-		// Experiment3 exp3 = new Experiment3();
-		// experiments.add(exp3);
+		Experiment3 exp3 = new Experiment3();
+		experiments.add(exp3);
 
+		
 		// Lauch experiments
 		int maxThreads = 10;
 		ExperimentExecutor executor = new ExperimentExecutor();
