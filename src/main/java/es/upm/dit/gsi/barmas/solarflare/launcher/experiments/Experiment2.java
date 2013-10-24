@@ -66,7 +66,6 @@ public class Experiment2 implements Runnable {
 
 	public Experiment2(String summaryFile, long seed, double threshold,
 			double beliefThreshold) {
-
 		this.summaryFile = summaryFile;
 		this.seed = seed;
 		this.threshold = threshold;
