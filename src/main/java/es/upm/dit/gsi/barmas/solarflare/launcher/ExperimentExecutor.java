@@ -91,9 +91,10 @@ public class ExperimentExecutor {
 							}
 						}
 						if (!threads2Remove.isEmpty()) {
-							for (Thread t : threads) {
+							for (Thread t : threads2Remove) {
 								threads.remove(t);
 							}
+							threads2Remove.clear();
 						}
 					}
 				} catch (InterruptedException e) {
