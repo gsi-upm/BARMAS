@@ -50,8 +50,11 @@ public class SummaryCreator {
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		File origFile = new File(origPath);
 		File outputFile = new File(outputPath);
+		File outputFile2 = new File(outputPath.replaceAll(".csv",
+				"-onlyratios.csv"));
 		// Calculate comparative data
 		CsvWriter writer = null;
+		CsvWriter writer2 = null;
 		try {
 			if (!outputFile.exists()) {
 				writer = new CsvWriter(new FileWriter(outputFile), ',');
@@ -69,7 +72,27 @@ public class SummaryCreator {
 			} else {
 				writer = new CsvWriter(new FileWriter(outputFile, true), ',');
 			}
+
 			writer.flush();
+			if (!outputFile2.exists()) {
+				writer2 = new CsvWriter(new FileWriter(outputFile2), ',');
+				String[] headers = new String[11];
+				headers[0] = "SimulationID";
+				headers[1] = "Type";
+				headers[2] = "Cases";
+				headers[3] = "BayesCentralOK";
+				headers[4] = "ArgumentationOK";
+				headers[5] = "BayesCentralBetter";
+				headers[6] = "ArgumentationBetter";
+				headers[7] = "BothOK";
+				headers[8] = "BothWrong";
+				headers[9] = "GlobalImprovementWithArgumentation";
+				headers[10] = "Draw";
+				writer2.writeRecord(headers);
+			} else {
+				writer2 = new CsvWriter(new FileWriter(outputFile2, true), ',');
+			}
+			writer2.flush();
 
 			CsvReader reader = new CsvReader(new FileReader(origFile));
 			reader.readHeaders();
@@ -166,14 +189,27 @@ public class SummaryCreator {
 			logger.info(info);
 
 			String[] totalRatio = new String[9];
+			String[] totalRatio2 = new String[11];
 			totalRatio[0] = simulationName;
 			totalRatio[1] = "RATIO-TOTAL";
+			totalRatio2[0] = simulationName;
+			totalRatio2[1] = "RATIO-TOTAL";
 			for (int i = 0; i < total.length; i++) {
 				double aux = new Double(total[i]) / total[0];
 				totalRatio[i + 2] = Double.toString(aux);
+				totalRatio2[i + 2] = Double.toString(aux);
 			}
+			double totalBayesCentralOK = new Double(totalRatio[3]);
+			double totalArgumentationOK = new Double(totalRatio[4]);
+			totalRatio2[9] = Double.toString(totalArgumentationOK
+					- totalBayesCentralOK);
+			double totalBothOK = new Double(totalRatio[7]);
+			double totalBothWrong = new Double(totalRatio[8]);
+			totalRatio2[10] = Double.toString(totalBothOK + totalBothWrong);
 			writer.writeRecord(totalRatio);
 			writer.flush();
+			writer2.writeRecord(totalRatio2);
+			writer2.flush();
 			logger.info("RATIO-TOTAL row in " + outputPath);
 			info = "";
 			for (String s : totalRatio) {
@@ -182,6 +218,7 @@ public class SummaryCreator {
 			logger.info(info);
 
 			writer.close();
+			writer2.close();
 
 		} catch (IOException e) {
 			logger.warning("Impossible to create summary file for simulation: "

@@ -67,14 +67,18 @@ public class Experiment2 {
 		String summaryFile = "src/main/resources/exp2/output/global-summary.csv";
 		long seed = 0;
 		double threshold = 1;
-		double beliefThreshold = 0.05;
+		double beliefThreshold = 1;
 
 		while (threshold > 0.01) {
-			Experiment2.launchSimulationWith2Agents(seed, summaryFile,
-					threshold, beliefThreshold);
-			Experiment2.launchSimulationWith2AgentsKFold(seed, summaryFile,
-					threshold, beliefThreshold);
-			threshold=threshold-0.05;
+			while (beliefThreshold > 0.01) {
+				Experiment2.launchSimulationWith2Agents(seed, summaryFile,
+						threshold, beliefThreshold);
+				Experiment2.launchSimulationWith2AgentsKFold(seed, summaryFile,
+						threshold, beliefThreshold);
+				beliefThreshold = beliefThreshold - 0.05;
+			}
+			beliefThreshold = 1;
+			threshold = threshold - 0.05;
 		}
 	}
 
