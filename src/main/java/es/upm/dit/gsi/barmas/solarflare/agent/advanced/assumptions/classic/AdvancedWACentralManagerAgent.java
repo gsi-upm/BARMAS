@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
@@ -49,9 +50,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -76,6 +76,8 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	private String outputDir;
 	private String argumentationDir;
 
+	private double threshold;
+
 	// STATES
 	private boolean IDLE;
 	private boolean PROCESSING;
@@ -88,12 +90,14 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * @param id
 	 * @param outputDir
 	 */
-	public AdvancedWACentralManagerAgent(String id, String outputDir) {
+	public AdvancedWACentralManagerAgent(String id, String outputDir,
+			double threshold) {
 		super(id);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.pendingArguments = new ArrayList<Argument>();
 		this.outputDir = outputDir;
+		this.threshold = threshold;
 		this.argumentationDir = this.outputDir + File.separator
 				+ "argumentation";
 
@@ -462,7 +466,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	private void registerNewArgument(Argument arg) {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		argumentation.addArgument((Argument) arg.clone());
+		argumentation.addArgument((Argument) arg.clone(), this);
 	}
 
 	/*
@@ -529,6 +533,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	public ArgumentativeAgent getProponent() {
 		return this;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -692,7 +697,25 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	}
 
 	public void sendArgument(Argument arg) {
-		// Nothing to do		
+		// Nothing to do
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #areDistributionsFarEnough(java.util.Map, java.util.Map)
+	 */
+	@Override
+	public boolean areDistributionsFarEnough(Map<String, Double> a,
+			Map<String, Double> b) {
+		if (AgentArgumentativeCapability.getNormalisedHellingerDistance(
+				(HashMap<String, Double>) a, (HashMap<String, Double>) b) >= threshold) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

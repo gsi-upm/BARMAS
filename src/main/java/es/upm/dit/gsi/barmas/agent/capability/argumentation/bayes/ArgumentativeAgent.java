@@ -18,6 +18,8 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
+import java.util.Map;
+
 
 /**
  * Project: barmas File:
@@ -82,5 +84,10 @@ public interface ArgumentativeAgent {
 	 * @param agent
 	 */
 	public void removeArgumentationGroupMember(ArgumentativeAgent agent);
+	
+	/**
+	 * @return
+	 */
+	public boolean areDistributionsFarEnough(Map<String, Double> a, Map<String, Double> b);
 
 }

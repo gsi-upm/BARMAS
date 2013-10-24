@@ -64,11 +64,11 @@ public class Argumentation {
 	 * @param arg
 	 * @param simulation
 	 */
-	public void addArgument(Argument arg) {
+	public void addArgument(Argument arg, ArgumentativeAgent agent) {
 		arg.setId(ids.keySet().size());
 		this.ids.put(ids.keySet().size(), arg);
 		this.graph.put(arg, new HashMap<Argument, Integer>());
-		AgentArgumentativeCapability.updateAttacksGraph(arg, this);
+		AgentArgumentativeCapability.updateAttacksGraph(arg, this, agent);
 	}
 
 	/**

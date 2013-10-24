@@ -23,6 +23,7 @@ import jason.asSemantics.Message;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -492,5 +493,15 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 
 	public ArgumentativeAgent getArgumentationManager() {
 		return this.manager;
+	}
+
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent#areDistributionsFarEnough(java.util.Map, java.util.Map)
+	 */
+	@Override
+	public boolean areDistributionsFarEnough(Map<String, Double> a,
+			Map<String, Double> b) {
+		// Nothing to do
+		return false;
 	}
 }

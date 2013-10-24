@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import unbbayes.prs.bn.ProbabilisticNode;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -231,8 +232,8 @@ public class AgentArgumentativeCapability {
 	 * @return a list of arguments no attacked for other arguments of given
 	 *         attack type from the given args list
 	 */
-	public static List<Argument> getUnattackedArguments(List<Argument> args,
-			Argumentation argumentation, int attackType) {
+	public static List<Argument> getUnattackedArgumentsForAttackType(
+			List<Argument> args, Argumentation argumentation, int attackType) {
 		List<Argument> unattackedArgs = new ArrayList<Argument>();
 		unattackedArgs.addAll(args);
 		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
@@ -271,8 +272,8 @@ public class AgentArgumentativeCapability {
 		unattackedArgs.addAll(args);
 		for (Integer attackType : attackTypes) {
 			unattackedArgs = AgentArgumentativeCapability
-					.getUnattackedArguments(unattackedArgs, argumentation,
-							attackType);
+					.getUnattackedArgumentsForAttackType(unattackedArgs,
+							argumentation, attackType);
 		}
 		return unattackedArgs;
 	}
@@ -301,9 +302,11 @@ public class AgentArgumentativeCapability {
 	 * 
 	 * @param a
 	 * @param b
+	 * @param agent
 	 * @return 0-7 attack type
 	 */
-	public static int getAttackType(Argument a, Argument b) {
+	public static int getAttackType(Argument a, Argument b,
+			ArgumentativeAgent agent) {
 
 		// In the code (Claim = Givens + Proposal) and (Support = Givens +
 		// Assumptions)
@@ -355,7 +358,11 @@ public class AgentArgumentativeCapability {
 				for (Proposal ap : aproposals) {
 					for (Assumption ba : bassumptions) {
 						if (ba.getNode().equals(ap.getNode())) {
-							return DEFEATER;
+							if (agent.areDistributionsFarEnough(
+									ba.getValuesWithConfidence(),
+									ap.getValuesWithConfidence())) {
+								return DEFEATER;
+							}
 						}
 					}
 				}
@@ -366,7 +373,11 @@ public class AgentArgumentativeCapability {
 			for (Proposal ap : aproposals) {
 				for (Assumption ba : bassumptions) {
 					if (ba.getNode().equals(ap.getNode())) {
-						return DIRECTDEFEATER;
+						if (agent.areDistributionsFarEnough(
+								ba.getValuesWithConfidence(),
+								ap.getValuesWithConfidence())) {
+							return DIRECTDEFEATER;
+						}
 					}
 				}
 			}
@@ -412,17 +423,18 @@ public class AgentArgumentativeCapability {
 	 * 
 	 * @param argument
 	 * @param argumentation
+	 * @param agent
 	 */
 	public static void updateAttacksGraph(Argument argument,
-			Argumentation argumentation) {
+			Argumentation argumentation, ArgumentativeAgent agent) {
 		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
 				.getGraph();
 		for (Argument arg : argumentation.getArguments()) {
 			int attackType = AgentArgumentativeCapability.getAttackType(
-					argument, arg);
+					argument, arg, agent);
 			graph.get(argument).put(arg, attackType);
 			attackType = AgentArgumentativeCapability.getAttackType(arg,
-					argument);
+					argument, agent);
 			graph.get(arg).put(argument, attackType);
 		}
 	}
@@ -439,8 +451,15 @@ public class AgentArgumentativeCapability {
 		logger.finest("Evaluating possible conclusions...");
 		List<Argument> allArguments = new ArrayList<Argument>();
 		allArguments.addAll(argumentation.getArguments());
+		List<Integer> attackTypes = new ArrayList<Integer>();
+		attackTypes.add(UNDERCUT);
+		attackTypes.add(DIRECTUNDERCUT);
+		attackTypes.add(CANONICALUNDERCUT);
+		attackTypes.add(DEFEATER);
+		attackTypes.add(DIRECTDEFEATER);
 		List<Argument> possibleConclusions = AgentArgumentativeCapability
-				.getUnattackedArguments(allArguments, argumentation, UNDERCUT);
+				.getUnattackedArguments(allArguments, argumentation,
+						attackTypes);
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -456,7 +475,9 @@ public class AgentArgumentativeCapability {
 		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
-					if (p.getMaxValue() > max) {
+					if (p.getNode()
+							.equals(SolarFlareType.class.getSimpleName())
+							&& p.getMaxValue() > max) {// TODO check this
 						max = p.getMaxValue();
 						hyp = p.getMaxState();
 						argumentConclusion = arg;
@@ -465,12 +486,19 @@ public class AgentArgumentativeCapability {
 			}
 		}
 
-		logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp
-				+ " - " + max + " from "
-				+ argumentConclusion.getProponent().getProponentName()
-				+ " - ArgumentID: " + argumentConclusion.getId());
+		if (argumentConclusion != null) {
 
-		argumentation.getConclusions().add(argumentConclusion);
+			logger.fine("Argumentation Manager --> Higher hypothesis found: "
+					+ hyp + " - " + max + " from "
+					+ argumentConclusion.getProponent().getProponentName()
+					+ " - ArgumentID: " + argumentConclusion.getId());
+
+			argumentation.getConclusions().add(argumentConclusion);
+
+		} else {
+			logger.warning("No conclusion found for argumentation: "
+					+ argumentation.getId());
+		}
 	}
 
 	/**

@@ -23,6 +23,7 @@ import jason.asSemantics.Message;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -207,7 +208,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			simulation.getLogger().finer(
 					"Agent: " + this.getID() + " -> Received arguments from: "
 							+ arg.getProponent().getProponentName());
-			this.argumentation.addArgument((Argument) arg.clone());
+			this.argumentation.addArgument((Argument) arg.clone(), this);
 			
 		}
 
@@ -559,5 +560,15 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 		this.ARGUMENTING = false;
 		this.PROCESSING = false;
 		this.WAITING = true;
+	}
+
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent#areDistributionsFarEnough(java.util.Map, java.util.Map)
+	 */
+	@Override
+	public boolean areDistributionsFarEnough(Map<String, Double> a,
+			Map<String, Double> b) {
+		// Nothing to do
+		return false;
 	}
 }

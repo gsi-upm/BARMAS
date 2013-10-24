@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -463,7 +464,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	private void registerNewArgument(Argument arg) {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		argumentation.addArgument((Argument) arg.clone());
+		argumentation.addArgument((Argument) arg.clone(), this);
 	}
 
 	/*
@@ -705,6 +706,16 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 		this.PROCESSING = false;
 		this.WAITING = false;
 		this.finishArgumenation();
+	}
+
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent#areDistributionsFarEnough(java.util.Map, java.util.Map)
+	 */
+	@Override
+	public boolean areDistributionsFarEnough(Map<String, Double> a,
+			Map<String, Double> b) {
+		// Nothing to do
+		return false;
 	}
 
 }

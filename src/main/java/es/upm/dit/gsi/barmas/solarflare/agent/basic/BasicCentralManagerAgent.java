@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -50,9 +51,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -485,7 +485,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void registerNewArgument(Argument arg, ShanksSimulation simulation) {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		argumentation.addArgument(arg);
+		argumentation.addArgument(arg, this);
 	}
 
 	/*
@@ -587,5 +587,19 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 
 	public void finishArgumenation() {
 		// Nothing to do
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #areDistributionsFarEnough(java.util.Map, java.util.Map)
+	 */
+	@Override
+	public boolean areDistributionsFarEnough(Map<String, Double> a,
+			Map<String, Double> b) {
+		// Nothing to do
+		return false;
 	}
 }

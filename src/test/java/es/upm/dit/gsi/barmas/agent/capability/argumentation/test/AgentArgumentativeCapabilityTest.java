@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.LogManager;
@@ -51,9 +52,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.test
  * .AgentArgumentativeCapabilityTest.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -128,7 +128,7 @@ public class AgentArgumentativeCapabilityTest {
 			public String getArgumentationManagerName() {
 				return null;
 			}
-			
+
 			public Set<Argument> getCurrentArguments() throws ShanksException {
 				return AgentArgumentativeCapability.createArguments(agent, 0,
 						System.currentTimeMillis());
@@ -140,8 +140,7 @@ public class AgentArgumentativeCapabilityTest {
 				AgentArgumentativeCapability.updateBeliefs(args, agent);
 			}
 
-			public void setArgumentationManager(
-					ArgumentativeAgent manager) {
+			public void setArgumentationManager(ArgumentativeAgent manager) {
 				// Nothing to do
 			}
 
@@ -162,6 +161,12 @@ public class AgentArgumentativeCapabilityTest {
 			public void removeArgumentationGroupMember(ArgumentativeAgent agent) {
 				// Nothing to do
 
+			}
+
+			@Override
+			public boolean areDistributionsFarEnough(Map<String, Double> a,
+					Map<String, Double> b) {
+				return false;
 			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);

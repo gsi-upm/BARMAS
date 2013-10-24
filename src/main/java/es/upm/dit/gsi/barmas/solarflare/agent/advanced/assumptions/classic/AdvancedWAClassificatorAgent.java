@@ -23,6 +23,7 @@ import jason.asSemantics.Message;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -227,7 +228,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			logger.finer("Agent: " + this.getID()
 					+ " -> Received arguments from: "
 					+ arg.getProponent().getProponentName());
-			this.argumentation.addArgument((Argument) arg.clone());
+			this.argumentation.addArgument((Argument) arg.clone(), this);
 		}
 
 		// Update evidences and add them to the BN
@@ -247,15 +248,15 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				&& this.getMyLastArgument().getGivens().size() == this.evidences
 						.size()) {
 			// check if it is valid
+			List<Integer> attackTypes = new ArrayList<Integer>();
+			attackTypes.add(AgentArgumentativeCapability.UNDERCUT);
+			attackTypes.add(AgentArgumentativeCapability.DIRECTUNDERCUT);
+			attackTypes.add(AgentArgumentativeCapability.CANONICALUNDERCUT);
+			attackTypes.add(AgentArgumentativeCapability.DEFEATER);
+			attackTypes.add(AgentArgumentativeCapability.DIRECTDEFEATER);
 			List<Argument> unattacked = AgentArgumentativeCapability
 					.getUnattackedArguments(args, this.argumentation,
-							AgentArgumentativeCapability.UNDERCUT); // TODO
-																	// check if
-																	// more
-																	// attacks
-																	// must be
-																	// checked
-																	// here
+							attackTypes);
 			for (Argument arg : unattacked) {
 				// check the proposals that are not the classification class
 				for (Proposal p : arg.getProposals()) {
@@ -266,22 +267,19 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 						HashMap<String, Double> ownBelief = AgentArgumentativeCapability
 								.convertToDoubleValues(this
 										.getAllMyHypotheses().get(p.getNode()));
-						double distance = AgentArgumentativeCapability
-								.getNormalisedHellingerDistance(receivedBelief,
-										ownBelief);
-						logger.fine("Distance for belief: " + p.getNode()
-								+ " is " + distance);
 						// Only strong beliefs are proposed (sent as
 						// proposals), so no more constrains must be added.
 						// Anyway, you must check if you have other
 						// different strong belief in that node.
 						Proposal auxp = new Proposal(p.getNode(), ownBelief);
 						double maxDiff = p.getMaxValue() - auxp.getMaxValue();
-						if (distance >= this.threshold
-								&& maxDiff >= beliefThreshold) {
+						if (this.areDistributionsFarEnough(receivedBelief,
+								ownBelief) && maxDiff >= beliefThreshold) {
 							this.updatedBeliefs
 									.put(p.getNode(), receivedBelief);
 							this.newBeliefs = true;
+						} else {
+							logger.fine("Belief discarded because it is not so strong. Node: " + p.getNode());
 						}
 					}
 				}
@@ -398,12 +396,10 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 					HashMap<String, Double> ownBelief = AgentArgumentativeCapability
 							.convertToDoubleValues(ownHypotheses.get(assum
 									.getNode()));
-					double distance = AgentArgumentativeCapability
-							.getNormalisedHellingerDistance(receivedBelief,
-									ownBelief);
 					logger.fine("Looking for assumptions to improve -> Distance for belief: "
-							+ assum.getNode() + " is " + distance);
-					if (distance > this.threshold) {
+							+ assum.getNode());
+					if (this.areDistributionsFarEnough(receivedBelief,
+							ownBelief)) {
 						Proposal auxp = new Proposal(assum.getNode(), ownBelief);
 						boolean myBeliefIsBetter = (auxp.getMaxValue()
 								- assum.getMaxValue() > this.beliefThreshold);
@@ -464,7 +460,8 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				}
 			}
 
-			logger.fine(this.getID() + " -> Counter argument sent for belief: " + assum.getNode());
+			logger.fine(this.getID() + " -> Counter argument sent for belief: "
+					+ assum.getNode());
 			Argument arg = AgentArgumentativeCapability.createArgument(this,
 					proposals, assumptions, evidences, sim.schedule.getSteps(),
 					System.currentTimeMillis());
@@ -514,16 +511,18 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 
 	/**
 	 * Remove all "softEvidenceNode" beliefs (not relevant for classfication).
-	 * These nodes are processed as auxiliary info to update beliefs 
+	 * These nodes are processed as auxiliary info to update beliefs
 	 * 
 	 * @return
 	 */
 	private HashMap<String, HashMap<String, Float>> getAllMyHypotheses() {
 		HashMap<String, HashMap<String, Float>> ownBeliefs = null;
 		try {
-			ownBeliefs = ShanksAgentBayesianReasoningCapability.getAllHypotheses(this);
+			ownBeliefs = ShanksAgentBayesianReasoningCapability
+					.getAllHypotheses(this);
 			List<String> beliefsToRemove = new ArrayList<String>();
-			for (Entry<String, HashMap<String, Float>> entry : ownBeliefs.entrySet()) {
+			for (Entry<String, HashMap<String, Float>> entry : ownBeliefs
+					.entrySet()) {
 				if (entry.getKey().startsWith("softEvidenceNode")) {
 					beliefsToRemove.add(entry.getKey());
 				}
@@ -793,5 +792,23 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 		this.newEvidences = false;
 		this.newBeliefs = false;
 		this.assumptionsToImprove.clear();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #areDistributionsFarEnough(java.util.Map, java.util.Map)
+	 */
+	@Override
+	public boolean areDistributionsFarEnough(Map<String, Double> a,
+			Map<String, Double> b) {
+		if (AgentArgumentativeCapability.getNormalisedHellingerDistance(
+				(HashMap<String, Double>) a, (HashMap<String, Double>) b) >= threshold) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
