@@ -19,8 +19,8 @@
 package es.upm.dit.gsi.barmas.solarflare.launcher;
 
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3;
+import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Expermient2MultiCore;
 
 /**
  * Project: barmas
@@ -45,7 +45,8 @@ public class AllExperiments {
 	public static void main(String[] args) {
 		
 		Experiment1.main(null);
-		Experiment2.main(null);
+//		Experiment2.main(null);
+		Expermient2MultiCore.main(null);
 		Experiment3.main(null);
 	}
 
