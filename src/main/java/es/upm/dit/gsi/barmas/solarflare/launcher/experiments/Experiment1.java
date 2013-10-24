@@ -51,9 +51,8 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -62,26 +61,13 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class Experiment1 {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		String summaryFile = "src/main/resources/exp1/output/global-summary.csv";
-		long seed = 0;
-
-		Experiment1.launchSimulationWith2Agents(seed,
-				summaryFile);
-		Experiment1.launchSimulationWith2AgentsKFold(seed, summaryFile);
-	}
+public class Experiment1 implements Runnable {
 
 	private static void launchSimulationWith2Agents(long seed,
 			String summaryFile) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-1-seed-" + seed
-				+ "-timestamp-" + System.currentTimeMillis();
+		String simulationName = "EXPERIMENT-1-seed-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
 
 		// Logging properties
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -169,9 +155,8 @@ public class Experiment1 {
 			// while (sim.schedule.getSteps() < totalSteps);
 			// sim.finish();
 
-			SummaryCreator.makeNumbers(simulationName,
-					experimentOutputPath + File.separator + "summary.csv",
-					summaryFile);
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
 		}
@@ -182,7 +167,7 @@ public class Experiment1 {
 		// Simulation properties
 		String simulationName = "EXPERIMENT-1-seed-" + seed
 				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
-	
+
 		// Logging properties
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		Level level = Level.ALL;
@@ -192,18 +177,18 @@ public class Experiment1 {
 				+ "output" + File.separator + simulationName;
 		LogConfigurator.log2File(logger, simulationName, level,
 				experimentOutputPath);
-	
+
 		logger.info("--> Configuring simulation...");
-	
+
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
 		scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA,
 				experimentDatasetPath);
 		scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT,
 				experimentOutputPath);
-	
+
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
-	
+
 		// CENTRAL AGENT
 		List<String> sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
@@ -221,12 +206,12 @@ public class Experiment1 {
 				"BayesCentral", experimentDatasetPath
 						+ "/bayes/k-fold-10/agentdataset-central.net", sensors);
 		agents.add(bayes);
-	
+
 		// Argumentation AGENTS
 		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
 				"Manager", experimentOutputPath);
 		scenarioProperties.put("ManagerAgent", manager);
-	
+
 		sensors = new ArrayList<String>();
 		sensors.add(Activity.class.getSimpleName());
 		sensors.add(LargestSpotSize.class.getSimpleName());
@@ -238,7 +223,7 @@ public class Experiment1 {
 				"ArgAgent1", manager, experimentDatasetPath
 						+ "/bayes/k-fold-10/agentdataset-1.net", sensors);
 		agents.add(agent);
-	
+
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
@@ -246,19 +231,20 @@ public class Experiment1 {
 		sensors.add(MNode.class.getSimpleName());
 		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedClassificatorAgent("ArgAgent2", manager,
-				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net", sensors);
+				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",
+				sensors);
 		agents.add(agent);
-	
+
 		scenarioProperties.put("AGENTS", agents);
-	
+
 		logger.info("--> Simulation configured");
-	
+
 		SolarFlareClassificationSimulation sim;
 		try {
 			sim = new SolarFlareClassificationSimulation(seed,
 					SolarFlareScenario.class, simulationName,
 					SolarFlareScenario.NORMALSTATE, scenarioProperties);
-	
+
 			logger.info("--> Launching simulation...");
 			sim.start();
 			do
@@ -268,13 +254,26 @@ public class Experiment1 {
 			while (true);
 			// while (sim.schedule.getSteps() < totalSteps);
 			// sim.finish();
-	
-			SummaryCreator.makeNumbers(simulationName,
-					experimentOutputPath + File.separator + "summary.csv",
-					summaryFile);
+
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		String summaryFile = "src/main/resources/exp1/output/global-summary.csv";
+		long seed = 0;
+
+		Experiment1.launchSimulationWith2Agents(seed, summaryFile);
+		Experiment1.launchSimulationWith2AgentsKFold(seed, summaryFile);
 	}
 
 }

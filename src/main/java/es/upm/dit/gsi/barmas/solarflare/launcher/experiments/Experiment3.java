@@ -61,25 +61,13 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class Experiment3 {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-
-		String summaryFile = "src/main/resources/exp3/output/global-summary.csv";
-		long seed = 0;
-
-		Experiment3.launchSimulationWith2Agents(seed, summaryFile);
-		Experiment3.launchSimulationWith2AgentsKFold(seed, summaryFile);
-	}
+public class Experiment3 implements Runnable {
 
 	private static void launchSimulationWith2Agents(long seed,
 			String summaryFile) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-seed-"
-				+ seed + "-timestamp-" + System.currentTimeMillis();
+		String simulationName = "EXPERIMENT-3-seed-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
 
 		// Logging properties
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -108,13 +96,13 @@ public class Experiment3 {
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		 sensors.add(SpotDistribution.class.getSimpleName());
-		 sensors.add(Evolution.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
-		 sensors.add(XNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
 						+ "/bayes/agentdataset-central.net", sensors);
@@ -130,8 +118,8 @@ public class Experiment3 {
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		 sensors.add(SpotDistribution.class.getSimpleName());
-		 sensors.add(Evolution.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
 		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
 						+ "/bayes/agentdataset-1.net", sensors);
@@ -140,9 +128,9 @@ public class Experiment3 {
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
-		 sensors.add(XNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors);
 		agents.add(agent);
@@ -177,9 +165,8 @@ public class Experiment3 {
 	private static void launchSimulationWith2AgentsKFold(long seed,
 			String summaryFile) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-seed-"
-				+ seed + "-KFold10TRAININNG-timestamp-"
-				+ System.currentTimeMillis();
+		String simulationName = "EXPERIMENT-3-seed-" + seed
+				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
 		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -208,13 +195,13 @@ public class Experiment3 {
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		 sensors.add(SpotDistribution.class.getSimpleName());
-		 sensors.add(Evolution.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
-		 sensors.add(XNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
 						+ "/bayes/k-fold-10/agentdataset-central.net", sensors);
@@ -230,8 +217,8 @@ public class Experiment3 {
 		sensors.add(LargestSpotSize.class.getSimpleName());
 		sensors.add(Area.class.getSimpleName());
 		sensors.add(BecomeHist.class.getSimpleName());
-		 sensors.add(SpotDistribution.class.getSimpleName());
-		 sensors.add(Evolution.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
 		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
 						+ "/bayes/k-fold-10/agentdataset-1.net", sensors);
@@ -240,9 +227,9 @@ public class Experiment3 {
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
-		 sensors.add(XNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",
 				sensors);
@@ -273,6 +260,21 @@ public class Experiment3 {
 		} catch (ShanksException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+
+		String summaryFile = "src/main/resources/exp3/output/global-summary.csv";
+		long seed = 0;
+
+		Experiment3.launchSimulationWith2Agents(seed, summaryFile);
+		Experiment3.launchSimulationWith2AgentsKFold(seed, summaryFile);
 	}
 
 }

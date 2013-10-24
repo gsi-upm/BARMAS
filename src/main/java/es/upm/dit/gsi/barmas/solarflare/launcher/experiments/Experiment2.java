@@ -57,33 +57,25 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class Experiment2 {
+public class Experiment2 implements Runnable {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	private String summaryFile;
+	private long seed;
+	private double threshold;
+	private double beliefThreshold;
 
-		String summaryFile = "src/main/resources/exp2/output/global-summary.csv";
-		long seed = 0;
-		double threshold = 1;
-		double beliefThreshold = 1;
+	public Experiment2(String summaryFile, long seed, double threshold,
+			double beliefThreshold) {
 
-		while (threshold > 0.01) {
-			while (beliefThreshold > 0.01) {
-				Experiment2.launchSimulationWith2Agents(seed, summaryFile,
-						threshold, beliefThreshold);
-				Experiment2.launchSimulationWith2AgentsKFold(seed, summaryFile,
-						threshold, beliefThreshold);
-				beliefThreshold = beliefThreshold - 0.05;
-			}
-			beliefThreshold = 1;
-			threshold = threshold - 0.05;
-		}
+		this.summaryFile = summaryFile;
+		this.seed = seed;
+		this.threshold = threshold;
+		this.beliefThreshold = beliefThreshold;
+
 	}
 
-	private static void launchSimulationWith2Agents(long seed,
-			String summaryFile, double threshold, double beliefThreshold) {
+	private void launchSimulationWith2Agents(long seed, String summaryFile,
+			double threshold, double beliefThreshold) {
 		// Simulation properties
 		String simulationName = "EXPERIMENT-2-threshold-" + threshold
 				+ "-seed-" + seed + "-timestamp-" + System.currentTimeMillis();
@@ -188,7 +180,7 @@ public class Experiment2 {
 		}
 	}
 
-	private static void launchSimulationWith2AgentsKFold(long seed,
+	private void launchSimulationWith2AgentsKFold(long seed,
 			String summaryFile, double threshold, double beliefThreshold) {
 		// Simulation properties
 		String simulationName = "EXPERIMENT-2-threshold-" + threshold
@@ -293,6 +285,19 @@ public class Experiment2 {
 		} catch (ShanksException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
+		this.launchSimulationWith2Agents(seed, summaryFile, threshold,
+				beliefThreshold);
+		this.launchSimulationWith2AgentsKFold(seed, summaryFile, threshold,
+				beliefThreshold);
 	}
 
 }

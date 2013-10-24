@@ -19,8 +19,8 @@
 package es.upm.dit.gsi.barmas.solarflare.launcher;
 
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1;
+import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Expermient2MultiCore;
 
 /**
  * Project: barmas
@@ -43,11 +43,35 @@ public class AllExperiments {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
+		Thread t;
+		Experiment1 exp1 = new Experiment1();
+		t=new Thread(exp1);
+		t.start();
 		
-		Experiment1.main(null);
-//		Experiment2.main(null);
-		Expermient2MultiCore.main(null);
-		Experiment3.main(null);
+		
+		
+		String summaryFile = "src/main/resources/exp2/output/global-summary.csv";
+		long seed = 0;
+		double threshold = 1;
+		double beliefThreshold = 1;
+
+		while (threshold > 0.01) {
+			while (beliefThreshold > 0.01) {
+				Experiment2 exp2 = new Experiment2(summaryFile,
+						seed, threshold, beliefThreshold);
+				t = new Thread(exp2);
+				t.start();
+				beliefThreshold = beliefThreshold - 0.05;
+			}
+			beliefThreshold = 1;
+			threshold = threshold - 0.05;
+		}
+		
+		
+		Experiment3 exp3 = new Experiment3();
+		t = new Thread(exp3);
+		t.start();
 	}
 
 }
