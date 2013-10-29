@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.classic.AdvancedWACentralManagerAgent;
-import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.classic.AdvancedWAClassificatorAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.AdvancedWACentralManagerAgent;
+import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.AdvancedWAClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
 import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
