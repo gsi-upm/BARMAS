@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
-import es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal.SolarFlareScenario2DPortrayal;
-import es.upm.dit.gsi.barmas.solarflare.model.scenario.portrayal.SolarFlareScenario3DPortrayal;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.event.failiure.Failure;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
@@ -72,7 +70,7 @@ public class SolarFlareScenario extends Scenario {
 	@Override
 	public Scenario2DPortrayal createScenario2DPortrayal()
 			throws ShanksException {
-        return new SolarFlareScenario2DPortrayal(this, 100, 100);
+        return null;
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +79,7 @@ public class SolarFlareScenario extends Scenario {
 	@Override
 	public Scenario3DPortrayal createScenario3DPortrayal()
 			throws ShanksException {
-        return new SolarFlareScenario3DPortrayal(this, 100, 100, 100);
+        return null;
 	}
 
 	/* (non-Javadoc)
