@@ -86,8 +86,8 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 	 * @param id
 	 * @param outputDir
 	 */
-	public BasicCentralManagerAgent(String id, String outputDir) {
-		super(id);
+	public BasicCentralManagerAgent(String id, String outputDir, Logger logger) {
+		super(id, logger);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.idle = true;

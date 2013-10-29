@@ -70,7 +70,7 @@ public class Experiment3 implements Runnable {
 				+ System.currentTimeMillis();
 
 		// Logging properties
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Logger logger = Logger.getLogger(simulationName);
 		Level level = Level.ALL;
 		String experimentDatasetPath = "src" + File.separator + "main"
 				+ File.separator + "resources" + File.separator + "exp3";
@@ -105,12 +105,12 @@ public class Experiment3 implements Runnable {
 		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
-						+ "/bayes/agentdataset-central.net", sensors);
+						+ "/bayes/agentdataset-central.net", sensors, logger);
 		agents.add(bayes);
 
 		// Argumentation AGENTS
 		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
-				"Manager", experimentOutputPath);
+				"Manager", experimentOutputPath, logger);
 		scenarioProperties.put("ManagerAgent", manager);
 
 		sensors = new ArrayList<String>();
@@ -122,7 +122,7 @@ public class Experiment3 implements Runnable {
 		sensors.add(Evolution.class.getSimpleName());
 		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/agentdataset-1.net", sensors);
+						+ "/bayes/agentdataset-1.net", sensors, logger);
 		agents.add(agent);
 
 		sensors = new ArrayList<String>();
@@ -132,7 +132,7 @@ public class Experiment3 implements Runnable {
 		sensors.add(MNode.class.getSimpleName());
 		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedClassificatorAgent("ArgAgent2", manager,
-				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors);
+				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors, logger);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
@@ -169,7 +169,7 @@ public class Experiment3 implements Runnable {
 				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Logger logger = Logger.getLogger(simulationName);
 		Level level = Level.ALL;
 		String experimentDatasetPath = "src" + File.separator + "main"
 				+ File.separator + "resources" + File.separator + "exp3";
@@ -204,12 +204,12 @@ public class Experiment3 implements Runnable {
 		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
-						+ "/bayes/k-fold-10/agentdataset-central.net", sensors);
+						+ "/bayes/k-fold-10/agentdataset-central.net", sensors, logger);
 		agents.add(bayes);
 
 		// Argumentation AGENTS
 		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
-				"Manager", experimentOutputPath);
+				"Manager", experimentOutputPath, logger);
 		scenarioProperties.put("ManagerAgent", manager);
 
 		sensors = new ArrayList<String>();
@@ -221,7 +221,7 @@ public class Experiment3 implements Runnable {
 		sensors.add(Evolution.class.getSimpleName());
 		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
 				"ArgAgent1", manager, experimentDatasetPath
-						+ "/bayes/k-fold-10/agentdataset-1.net", sensors);
+						+ "/bayes/k-fold-10/agentdataset-1.net", sensors, logger);
 		agents.add(agent);
 
 		sensors = new ArrayList<String>();
@@ -232,7 +232,7 @@ public class Experiment3 implements Runnable {
 		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",
-				sensors);
+				sensors, logger);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);

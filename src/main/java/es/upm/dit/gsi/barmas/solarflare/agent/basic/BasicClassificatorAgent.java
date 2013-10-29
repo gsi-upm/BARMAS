@@ -88,8 +88,8 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	public BasicClassificatorAgent(String id,
 			ArgumentativeAgent manager, String bnPath,
-			List<String> sensors) {
-		super(id);
+			List<String> sensors, Logger logger) {
+		super(id, logger);
 		this.bnFilePath = bnPath;
 		this.sensors = sensors;
 		this.setArgumentationManager(manager);

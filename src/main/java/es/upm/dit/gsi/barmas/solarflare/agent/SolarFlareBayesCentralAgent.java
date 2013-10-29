@@ -21,6 +21,7 @@ package es.upm.dit.gsi.barmas.solarflare.agent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
@@ -64,8 +65,8 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 	 * 
 	 * @param id
 	 */
-	public SolarFlareBayesCentralAgent(String id, String bnPath, List<String> sensors) {
-		super(id);
+	public SolarFlareBayesCentralAgent(String id, String bnPath, List<String> sensors, Logger logger) {
+		super(id, logger);
 		this.bnPath = bnPath;
 		this.sensors = sensors;
 		try {

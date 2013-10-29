@@ -91,8 +91,8 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * @param outputDir
 	 */
 	public AdvancedWACentralManagerAgent(String id, String outputDir,
-			double threshold) {
-		super(id);
+			double threshold, Logger logger) {
+		super(id, logger);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.pendingArguments = new ArrayList<Argument>();

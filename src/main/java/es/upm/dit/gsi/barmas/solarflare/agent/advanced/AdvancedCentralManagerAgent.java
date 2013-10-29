@@ -90,8 +90,8 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	 * @param id
 	 * @param outputDir
 	 */
-	public AdvancedCentralManagerAgent(String id, String outputDir) {
-		super(id);
+	public AdvancedCentralManagerAgent(String id, String outputDir, Logger logger) {
+		super(id, logger);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.pendingArguments = new ArrayList<Argument>();

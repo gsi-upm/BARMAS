@@ -20,6 +20,7 @@ package es.upm.dit.gsi.barmas.solarflare.model.scenario;
 
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -58,8 +59,8 @@ public class SolarFlareScenario extends Scenario {
 	 * @throws ShanksException
 	 */
 	public SolarFlareScenario(String id, String initialState,
-			Properties properties) throws ShanksException {
-		super(id, initialState, properties);
+			Properties properties, Logger logger) throws ShanksException {
+		super(id, initialState, properties, logger);
 	}
 	
 	public static final String NORMALSTATE= "NORMAL";
@@ -96,15 +97,15 @@ public class SolarFlareScenario extends Scenario {
 	@Override
 	public void addNetworkElements() throws ShanksException {
 		
-		SolarFlare flare = new SolarFlare(ORIGINALFLARE);
+		SolarFlare flare = new SolarFlare(ORIGINALFLARE, this.getLogger());
 		flare.setCurrentStatus(SolarFlare.READY, false);
 		this.addNetworkElement(flare);
 		
-		SolarFlare classified = new SolarFlare(ARGUMENTATIONCONCLUSION);
+		SolarFlare classified = new SolarFlare(ARGUMENTATIONCONCLUSION, this.getLogger());
 		classified.setCurrentStatus(SolarFlare.READY, false);
 		this.addNetworkElement(classified);
 		
-		SolarFlare bayesCentral = new SolarFlare(CENTRALCONCLUSION);
+		SolarFlare bayesCentral = new SolarFlare(CENTRALCONCLUSION, this.getLogger());
 		bayesCentral.setCurrentStatus(SolarFlare.READY, false);
 		this.addNetworkElement(bayesCentral);
 	}

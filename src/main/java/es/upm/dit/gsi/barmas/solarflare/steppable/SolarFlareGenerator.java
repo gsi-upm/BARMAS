@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.logging.Handler;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -145,6 +146,9 @@ public class SolarFlareGenerator implements Steppable {
 				} else {
 					sim.getLogger().info(
 							"Finishing simulation. No more test cases.");
+					for (Handler h : sim.getLogger().getHandlers()) {
+						h.close();
+					}
 					sim.finish();
 				}
 			}

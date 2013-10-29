@@ -18,6 +18,8 @@
  */
 package es.upm.dit.gsi.barmas.solarflare.model;
 
+import java.util.logging.Logger;
+
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
@@ -58,8 +60,8 @@ public class SolarFlare extends Device {
 	 * Constructor
 	 * 
 	 */
-	public SolarFlare(String id) {
-		super(id, READY, false);
+	public SolarFlare(String id, Logger logger) {
+		super(id, READY, false, logger);
 	}
 
 	/*

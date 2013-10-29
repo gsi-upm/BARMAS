@@ -95,8 +95,8 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * @param bnPath
 	 */
 	public AdvancedClassificatorAgent(String id, ArgumentativeAgent manager,
-			String bnPath, List<String> sensors) {
-		super(id);
+			String bnPath, List<String> sensors, Logger logger) {
+		super(id, logger);
 		this.bnFilePath = bnPath;
 		this.sensors = sensors;
 		this.setArgumentationManager(manager);

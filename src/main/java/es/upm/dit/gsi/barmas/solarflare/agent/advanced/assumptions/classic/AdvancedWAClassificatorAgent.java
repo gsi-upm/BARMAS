@@ -108,8 +108,8 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	public AdvancedWAClassificatorAgent(String id, ArgumentativeAgent manager,
 			String bnPath, String classificationTarget, String datasetPath,
-			List<String> sensors, double threshold, double beliefThreshold) {
-		super(id);
+			List<String> sensors, double threshold, double beliefThreshold, Logger logger) {
+		super(id, logger);
 		this.bnFilePath = bnPath;
 		this.sensors = sensors;
 		this.threshold = threshold;
