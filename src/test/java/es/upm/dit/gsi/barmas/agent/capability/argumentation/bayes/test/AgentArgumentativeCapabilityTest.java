@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.test.AgentArgumentativeCapabilityTest.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation.test;
+package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.test;
 
 import java.io.File;
 import java.io.FileInputStream;
