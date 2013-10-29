@@ -82,7 +82,7 @@
 					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2</mainClass> -->
 					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3</mainClass> -->
 					<arguments>
-						<argument>2</argument> <!-- Max Threads -->
+						<argument>5</argument> <!-- Max Threads -->
 					</arguments>
 				</configuration>
 			</plugin>
