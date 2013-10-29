@@ -14,15 +14,15 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.capability.learning.bayes.BayesLearningAgent.java
+ * es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent.java
  */
-package es.upm.dit.gsi.barmas.capability.learning.bayes;
+package es.upm.dit.gsi.barmas.agent.capability.learning.bayes;
 
 import java.util.logging.Logger;
 
 /**
  * Project: barmas
- * File: es.upm.dit.gsi.barmas.capability.learning.bayes.BayesLearningAgent.java
+ * File: es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos

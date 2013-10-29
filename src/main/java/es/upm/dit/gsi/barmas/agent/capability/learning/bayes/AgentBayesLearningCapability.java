@@ -14,9 +14,9 @@
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
 /**
- * es.upm.dit.gsi.barmas.capability.learning.bayes.AgentBayesLearningCapability.java
+ * es.upm.dit.gsi.barmas.agent.capability.learning.bayes.AgentBayesLearningCapability.java
  */
-package es.upm.dit.gsi.barmas.capability.learning.bayes;
+package es.upm.dit.gsi.barmas.agent.capability.learning.bayes;
 
 import smile.Network;
 import smile.learning.BayesianSearch;
@@ -25,7 +25,7 @@ import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesia
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
- * Project: barmas File: es.upm.dit.gsi.barmas.capability.learning.bayes.
+ * Project: barmas File: es.upm.dit.gsi.barmas.agent.capability.learning.bayes.
  * AgentBayesLearningCapability.java
  * 
  * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas

@@ -19,8 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
-import es.upm.dit.gsi.barmas.capability.learning.bayes.AgentBayesLearningCapability;
-import es.upm.dit.gsi.barmas.capability.learning.bayes.BayesLearningAgent;
+import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.AgentBayesLearningCapability;
+import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 
