@@ -71,7 +71,7 @@ public class ExperimentExecutor {
 
 		
 		// Lauch experiments
-		int maxThreads = 10;
+		int maxThreads = new Integer(args[0]);
 		ExperimentExecutor executor = new ExperimentExecutor();
 		executor.executeExperiments(experiments, maxThreads);
 
