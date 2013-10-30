@@ -83,7 +83,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent1(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4-validationAgent1-TH-" + threshold
+		String simulationName = "EXPERIMENT-4A-validationAgent1-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 
@@ -171,7 +171,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent1KFold(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4-validationAgent1KFold-TH-" + threshold
+		String simulationName = "EXPERIMENT-4A-validationAgent1KFold-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 	
@@ -259,7 +259,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent2(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4-validationAgent2-TH-" + threshold
+		String simulationName = "EXPERIMENT-4A-validationAgent2-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 
@@ -347,7 +347,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent2KFold(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4-validationAgent2KFold-TH-" + threshold
+		String simulationName = "EXPERIMENT-4A-validationAgent2KFold-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 	
@@ -433,7 +433,7 @@ public class Experiment4A implements Runnable {
 	private void launchSimulationWith2Agents(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4-TH-" + threshold + "-BTH-"
+		String simulationName = "EXPERIMENT-4A-TH-" + threshold + "-BTH-"
 				+ beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 
@@ -543,7 +543,7 @@ public class Experiment4A implements Runnable {
 			String summaryFile, double threshold, double beliefThreshold,
 			int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4-TH-" + threshold + "-BTH-"
+		String simulationName = "EXPERIMENT-4A-TH-" + threshold + "-BTH-"
 				+ beliefThreshold + "-seed-" + seed
 				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
 
