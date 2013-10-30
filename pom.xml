@@ -78,9 +78,6 @@
 				</executions>
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.ExperimentExecutor</mainClass>
-					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1</mainClass> -->
-					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2</mainClass> -->
-					<!-- <mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3</mainClass> -->
 					<arguments>
 						<argument>5</argument> <!-- Max Threads -->
 					</arguments>
@@ -93,44 +90,6 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>src/main/resources/exp1/output</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-							<excludes>
-								<exclude>README</exclude>
-							</excludes>
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-						<fileset>
-							<directory>src/main/resources/exp2/output</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-							<excludes>
-								<exclude>README</exclude>
-							</excludes>
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-						<fileset>
-							<directory>src/main/resources/exp3/output</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-							<excludes>
-								<exclude>README</exclude>
-							</excludes>
-							<followSymlinks>false</followSymlinks>
-						</fileset>
-					</filesets>
 				</configuration>
 			</plugin>
 		</plugins>
