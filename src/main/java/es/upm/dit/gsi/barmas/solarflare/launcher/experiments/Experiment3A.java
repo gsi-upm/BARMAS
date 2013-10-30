@@ -82,7 +82,7 @@ public class Experiment3A implements Runnable {
 
 	private void launchValidationAgent1(long seed, String summaryFile, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-validationAgent1-seed-" + seed
+		String simulationName = "EXPERIMENT-3A-validationAgent1-seed-" + seed
 				+ "-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
@@ -165,7 +165,7 @@ public class Experiment3A implements Runnable {
 	private void launchValidationAgent1KFold(long seed, String summaryFile,
 			int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-validationAgent1KFold-seed-"
+		String simulationName = "EXPERIMENT-3A-validationAgent1KFold-seed-"
 				+ seed + "-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
@@ -249,7 +249,7 @@ public class Experiment3A implements Runnable {
 
 	private void launchValidationAgent2(long seed, String summaryFile, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-validationAgent2-seed-" + seed
+		String simulationName = "EXPERIMENT-3A-validationAgent2-seed-" + seed
 				+ "-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
@@ -332,7 +332,7 @@ public class Experiment3A implements Runnable {
 	private void launchValidationAgent2KFold(long seed, String summaryFile,
 			int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-validationAgent2KFold-seed-"
+		String simulationName = "EXPERIMENT-3A-validationAgent2KFold-seed-"
 				+ seed + "-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
@@ -417,7 +417,7 @@ public class Experiment3A implements Runnable {
 	private void launchSimulationWith2Agents(long seed, String summaryFile,
 			int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-seed-" + seed + "-timestamp-"
+		String simulationName = "EXPERIMENT-3A-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 
 		// Logging properties
@@ -519,7 +519,7 @@ public class Experiment3A implements Runnable {
 	private void launchSimulationWith2AgentsKFold(long seed,
 			String summaryFile, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-3-seed-" + seed
+		String simulationName = "EXPERIMENT-3A-seed-" + seed
 				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
