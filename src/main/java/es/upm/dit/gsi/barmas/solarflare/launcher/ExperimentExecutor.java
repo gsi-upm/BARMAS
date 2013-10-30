@@ -24,6 +24,7 @@ import java.util.List;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3;
+import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
 
 /**
  * Project: barmas File:
@@ -45,28 +46,30 @@ public class ExperimentExecutor {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		List<Runnable> experiments = new ArrayList<Runnable>();
-		Experiment1 exp1 = new Experiment1();
-		experiments.add(exp1);
-
-		String summaryFile = "src/main/resources/exp2/output/global-summary.csv";
+		
+		String summaryFile = "output/global-summary.csv";
 		long seed = 0;
+		int mode = SimulationConfiguration.DEBUGGING_MODE;
+		
+		List<Runnable> experiments = new ArrayList<Runnable>();
+		Experiment1 exp1 = new Experiment1(summaryFile, seed, mode);
+		experiments.add(exp1);
+		
 		double threshold = 1;
 		double beliefThreshold = 1;
 
-		while (threshold > 0.01) {
-			while (beliefThreshold > 0.01) {
+//		while (threshold > 0.01) {
+//			while (beliefThreshold > 0.01) {
 				Experiment2 exp2 = new Experiment2(summaryFile, seed,
-						threshold, beliefThreshold);
+						threshold, beliefThreshold, mode);
 				experiments.add(exp2);
-				beliefThreshold = beliefThreshold - 0.05;
-			}
-			beliefThreshold = 1;
-			threshold = threshold - 0.05;
-		}
+//				beliefThreshold = beliefThreshold - 0.05;
+//			}
+//			beliefThreshold = 1;
+//			threshold = threshold - 0.05;
+//		}
 
-		Experiment3 exp3 = new Experiment3();
+		Experiment3 exp3 = new Experiment3(summaryFile, seed, mode);
 		experiments.add(exp3);
 
 		

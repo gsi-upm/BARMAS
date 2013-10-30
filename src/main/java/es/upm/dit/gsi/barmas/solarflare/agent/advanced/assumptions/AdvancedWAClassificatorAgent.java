@@ -66,8 +66,6 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	private static final long serialVersionUID = 8582918551821278046L;
 
-	private Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-
 	private ArgumentativeAgent manager;
 	private String bnFilePath;
 	private ProbabilisticNetwork bn;
@@ -195,11 +193,11 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	private void evaluateNextAction(SolarFlareClassificationSimulation sim) {
 		// Check graph and/or argumentation and try to generate arguments
 		if (this.isThereNewInfo() || this.isThereAssumptionsToImprove(sim)) {
-			logger.fine("Useful information found by " + this.getID());
+			this.getLogger().fine("Useful information found by " + this.getID());
 			this.goToArgumenting(sim);
 			this.goToWaiting();
 		} else {
-			logger.fine("No useful information found by " + this.getID());
+			this.getLogger().fine("No useful information found by " + this.getID());
 			this.goToWaiting();
 		}
 	}
@@ -225,7 +223,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 
 		// Process incoming messages
 		for (Argument arg : this.pendingArguments) {
-			logger.finer("Agent: " + this.getID()
+			this.getLogger().finer("Agent: " + this.getID()
 					+ " -> Received arguments from: "
 					+ arg.getProponent().getProponentName());
 			this.argumentation.addArgument((Argument) arg.clone(), this);
@@ -279,7 +277,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 									.put(p.getNode(), receivedBelief);
 							this.newBeliefs = true;
 						} else {
-							logger.fine("Belief discarded because it is not so strong. Node: " + p.getNode());
+							this.getLogger().fine("Belief discarded because it is not so strong. Node: " + p.getNode());
 						}
 					}
 				}
@@ -289,11 +287,11 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				try {
 					ShanksAgentBayesianReasoningCapability.addSoftEvidences(
 							this, this.updatedBeliefs);
-					logger.fine("Beliefs updated for agent: " + this.getID());
+					this.getLogger().fine("Beliefs updated for agent: " + this.getID());
 				} catch (ShanksException e) {
-					logger.warning(this.getID()
+					this.getLogger().warning(this.getID()
 							+ " -> Problems updating beliefs.");
-					logger.warning(e.getMessage());
+					this.getLogger().warning(e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -313,11 +311,11 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				if (evidences.keySet().contains(given.getNode())) {
 					if (!evidences.get(given.getNode())
 							.equals(given.getValue())) {
-						logger.warning("INCOHERENCE! -> No sense! Different evidences from different agents.");
-						logger.finest("Agent: " + this.getID() + " Evidence: "
+						this.getLogger().warning("INCOHERENCE! -> No sense! Different evidences from different agents.");
+						this.getLogger().finest("Agent: " + this.getID() + " Evidence: "
 								+ given.getNode() + " - "
 								+ evidences.get(given.getValue()));
-						logger.finest("Agent: "
+						this.getLogger().finest("Agent: "
 								+ arg.getProponent().getProponentName()
 								+ " Evidence: " + given.getNode() + " - "
 								+ given.getValue());
@@ -325,7 +323,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				} else {
 					this.evidences.put(given.getNode(), given.getValue());
 					this.newEvidences = true;
-					logger.finer("Agent: " + this.getID()
+					this.getLogger().finer("Agent: " + this.getID()
 							+ " -> Adding evidence received from "
 							+ arg.getProponent().getProponentName()
 							+ " Evidence: " + given.getNode() + " - "
@@ -343,16 +341,16 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	private void addEvidencesToBN() {
 		// Add evidences
-		logger.finer("Agent: " + this.getID() + " -> Number of evidences: "
+		this.getLogger().finer("Agent: " + this.getID() + " -> Number of evidences: "
 				+ this.evidences.size());
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			try {
-				logger.finer("Agent: " + this.getID() + " adding evidence: "
+				this.getLogger().finer("Agent: " + this.getID() + " adding evidence: "
 						+ entry.getKey() + " - " + entry.getValue());
 				ShanksAgentBayesianReasoningCapability.addEvidence(this,
 						entry.getKey(), entry.getValue());
 			} catch (Exception e) {
-				logger.fine("Agent: " + this.getID()
+				this.getLogger().fine("Agent: " + this.getID()
 						+ " -> Unknown state for node: " + entry.getKey()
 						+ " -> State: " + entry.getValue());
 			}
@@ -396,7 +394,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 					HashMap<String, Double> ownBelief = AgentArgumentativeCapability
 							.convertToDoubleValues(ownHypotheses.get(assum
 									.getNode()));
-					logger.fine("Looking for assumptions to improve -> Distance for belief: "
+					this.getLogger().fine("Looking for assumptions to improve -> Distance for belief: "
 							+ assum.getNode());
 					if (this.areDistributionsFarEnough(receivedBelief,
 							ownBelief)) {
@@ -414,9 +412,9 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 						}
 					}
 				} catch (Exception e) {
-					logger.warning("Problems getting local belief for: "
+					this.getLogger().warning("Problems getting local belief for: "
 							+ assum.getNode());
-					logger.warning(e.getMessage());
+					this.getLogger().warning(e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -460,7 +458,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				}
 			}
 
-			logger.fine(this.getID() + " -> Counter argument sent for belief: "
+			this.getLogger().fine(this.getID() + " -> Counter argument sent for belief: "
 					+ assum.getNode());
 			Argument arg = AgentArgumentativeCapability.createArgument(this,
 					proposals, assumptions, evidences, sim.schedule.getSteps(),
@@ -506,7 +504,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 				System.currentTimeMillis());
 		this.sendArgument(arg);
 
-		logger.fine("Argument sent by agent: " + this.getID());
+		this.getLogger().fine("Argument sent by agent: " + this.getID());
 	}
 
 	/**
@@ -532,8 +530,8 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			}
 
 		} catch (ShanksException e) {
-			logger.warning("Problems getting hypotheses...");
-			logger.warning(e.getMessage());
+			this.getLogger().warning("Problems getting hypotheses...");
+			this.getLogger().warning(e.getMessage());
 			e.printStackTrace();
 		}
 		return ownBeliefs;
@@ -663,7 +661,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
 		if (!agent.equals(this) && !this.argumentationGroup.contains(agent)) {
 			this.argumentationGroup.add(agent);
-			logger.fine("Agent: "
+			this.getLogger().fine("Agent: "
 					+ this.getID()
 					+ " has added a new agent as argumentation member -> New member: "
 					+ agent.getProponentName());
@@ -746,7 +744,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status IDLE
 	 */
 	private void goToIdle() {
-		logger.fine(this.getID() + " going to status: IDLE");
+		this.getLogger().fine(this.getID() + " going to status: IDLE");
 		this.IDLE = true;
 		this.ARGUMENTING = false;
 		this.PROCESSING = false;
@@ -757,7 +755,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status ARGUMENTING
 	 */
 	private void goToArgumenting(SolarFlareClassificationSimulation sim) {
-		logger.fine(this.getID() + " going to status: ARGUMENTING");
+		this.getLogger().fine(this.getID() + " going to status: ARGUMENTING");
 		this.IDLE = false;
 		this.ARGUMENTING = true;
 		this.PROCESSING = false;
@@ -771,7 +769,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * @param sim
 	 */
 	private void goToProcessing(SolarFlareClassificationSimulation sim) {
-		logger.fine(this.getID() + " going to status: PROCESSING");
+		this.getLogger().fine(this.getID() + " going to status: PROCESSING");
 		this.IDLE = false;
 		this.ARGUMENTING = false;
 		this.PROCESSING = true;
@@ -783,7 +781,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status WAITING
 	 */
 	private void goToWaiting() {
-		logger.fine(this.getID() + " going to status: WAITING");
+		this.getLogger().fine(this.getID() + " going to status: WAITING");
 		this.IDLE = false;
 		this.ARGUMENTING = false;
 		this.PROCESSING = false;

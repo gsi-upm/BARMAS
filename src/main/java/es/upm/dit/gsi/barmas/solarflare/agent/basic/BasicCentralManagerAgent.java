@@ -102,7 +102,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 		if (!f.isDirectory()) {
 			boolean made = f.mkdir();
 			if (!made) {
-				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+				this.getLogger().warning(
 						"Impossible to create argumentation directory");
 			}
 		}
@@ -120,7 +120,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 			if (this.getCurrentArgumentation() == null) {
 				Argumentation argumentation = new Argumentation(
 						this.argumentations.size());
-				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).finer(
+				this.getLogger().finer(
 						"Creating new argumentation - ID: "
 								+ this.argumentations.size());
 				this.argumentations.add(argumentation);
@@ -198,7 +198,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 						}
 					}
 					argflare.changeProperty(node, state);
-					Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
+					this.getLogger().info(
 							"Argumentative agents concludes that " + node
 									+ " - " + state + " with confidence: "
 									+ max);
@@ -235,7 +235,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 		// THIS IS THE MOST IMPORTANT METHOD IN THIS AGENT
 		// IT EVALUATES THE ARGUMENTATION AND EXTRACTS THE FINAL CONCLUSION
 		AgentArgumentativeCapability
-				.addConclusionHigherHypothesis(argumentation);
+				.addConclusionHigherHypothesis(argumentation, this.getLogger());
 
 		this.argumentation2File(argumentation);
 		argumentation.setFinished(true);
@@ -251,7 +251,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 		if (!f.isDirectory()) {
 			boolean made = f.mkdir();
 			if (!made) {
-				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+				this.getLogger().warning(
 						"Impossible to create argumentation directory. -> Argumentation: "
 								+ currentArgumentation.getId());
 			}
@@ -261,7 +261,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 		// if (!f.isDirectory()) {
 		// boolean made = f.mkdir();
 		// if (!made) {
-		// Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
+		// this.getLogger().warning(
 		// "Impossible to create arguments directory. -> Argumentation: "
 		// + currentArgumentation.getId());
 		// }

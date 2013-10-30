@@ -40,6 +40,7 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeA
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
+import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
@@ -84,6 +85,8 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	private boolean WAITING;
 	private boolean FINISHING;
 
+	private int mode;
+
 	/**
 	 * Constructor
 	 * 
@@ -91,23 +94,26 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * @param outputDir
 	 */
 	public AdvancedWACentralManagerAgent(String id, String outputDir,
-			double threshold, Logger logger) {
+			double threshold, Logger logger, int mode) {
 		super(id, logger);
+		this.mode = mode;
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.pendingArguments = new ArrayList<Argument>();
 		this.outputDir = outputDir;
 		this.threshold = threshold;
-		this.argumentationDir = this.outputDir + File.separator
-				+ "argumentation";
 
-		// Create folders
-		File f = new File(argumentationDir);
-		if (!f.isDirectory()) {
-			boolean made = f.mkdir();
-			if (!made) {
-				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
-						"Impossible to create argumentation directory");
+		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
+			this.argumentationDir = this.outputDir + File.separator
+					+ "argumentation";
+
+			// Create folders
+			File f = new File(argumentationDir);
+			if (!f.isDirectory()) {
+				boolean made = f.mkdir();
+				if (!made) {
+					logger.warning("Impossible to create argumentation directory");
+				}
 			}
 		}
 
@@ -167,7 +173,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 		if (this.getCurrentArgumentation() == null) {
 			Argumentation argumentation = new Argumentation(
 					this.argumentations.size());
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).finer(
+			this.getLogger().finer(
 					"Creating new argumentation - ID: "
 							+ this.argumentations.size());
 			this.argumentations.add(argumentation);
@@ -203,7 +209,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 						}
 					}
 					argflare.changeProperty(node, state);
-					Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
+					this.getLogger().info(
 							"Argumentative agents concludes that " + node
 									+ " - " + state + " with confidence: "
 									+ max);
@@ -220,14 +226,16 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	private void argumentation2File(Argumentation currentArgumentation) {
 
-		File f = new File(argumentationDir + File.separator + "argumentation"
-				+ currentArgumentation.getId());
-		if (!f.isDirectory()) {
-			boolean made = f.mkdir();
-			if (!made) {
-				Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).warning(
-						"Impossible to create argumentation directory. -> Argumentation: "
-								+ currentArgumentation.getId());
+		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
+			File f = new File(argumentationDir + File.separator
+					+ "argumentation" + currentArgumentation.getId());
+			if (!f.isDirectory()) {
+				boolean made = f.mkdir();
+				if (!made) {
+					this.getLogger().warning(
+							"Impossible to create argumentation directory. -> Argumentation: "
+									+ currentArgumentation.getId());
+				}
 			}
 		}
 
@@ -252,58 +260,60 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	private void writeArgumentsInFriendlyFormat(
 			Argumentation currentArgumentation) throws IOException {
 
-		for (int aux = 0; aux < currentArgumentation.getArgumentsWithID()
-				.size(); aux++) {
-			Argument argument = currentArgumentation.getArgumentsWithID().get(
-					aux);
-			FileWriter fw = new FileWriter(this.argumentationDir
-					+ File.separator + "argumentation"
-					+ currentArgumentation.getId() + File.separator
-					+ "arguments-argumentation-" + currentArgumentation.getId()
-					+ ".info", true);
-			fw.write("Argumentation: " + currentArgumentation.getId()
-					+ " - Argument: " + argument.getId() + "\nProponent: "
-					+ argument.getProponent().getProponentName() + "\n\nStep: "
-					+ argument.getStep() + " - Timestamp: "
-					+ argument.getTimestamp() + "\n\n");
-			fw.flush();
-			fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size()
-					+ "\n");
-			fw.flush();
-			for (Given given : argument.getGivens()) {
-				fw.write("\t\tNode: " + given.getNode() + "\n\t\t\tValue: "
-						+ given.getValue() + "\n");
+		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
+			for (int aux = 0; aux < currentArgumentation.getArgumentsWithID()
+					.size(); aux++) {
+				Argument argument = currentArgumentation.getArgumentsWithID()
+						.get(aux);
+				FileWriter fw = new FileWriter(this.argumentationDir
+						+ File.separator + "argumentation"
+						+ currentArgumentation.getId() + File.separator
+						+ "arguments-argumentation-"
+						+ currentArgumentation.getId() + ".info", true);
+				fw.write("Argumentation: " + currentArgumentation.getId()
+						+ " - Argument: " + argument.getId() + "\nProponent: "
+						+ argument.getProponent().getProponentName()
+						+ "\n\nStep: " + argument.getStep() + " - Timestamp: "
+						+ argument.getTimestamp() + "\n\n");
 				fw.flush();
-			}
-			fw.write("\n\tAssumptions:\n\tQuantity:"
-					+ argument.getAssumptions().size() + "\n");
-			fw.flush();
-			for (Assumption assump : argument.getAssumptions()) {
-				fw.write("\t\tNode: " + assump.getNode() + "\n");
+				fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size()
+						+ "\n");
 				fw.flush();
-				for (Entry<String, Double> entry : assump
-						.getValuesWithConfidence().entrySet()) {
-					fw.write("\t\t\tValue: " + entry.getKey()
-							+ " - Confidene: " + entry.getValue() + "\n");
+				for (Given given : argument.getGivens()) {
+					fw.write("\t\tNode: " + given.getNode() + "\n\t\t\tValue: "
+							+ given.getValue() + "\n");
 					fw.flush();
 				}
-			}
-			fw.write("\n\tProposal:\n\tQuantity:"
-					+ argument.getProposals().size() + "\n");
-			fw.flush();
-			for (Proposal proposal : argument.getProposals()) {
-				fw.write("\t\tNode: " + proposal.getNode() + "\n");
+				fw.write("\n\tAssumptions:\n\tQuantity:"
+						+ argument.getAssumptions().size() + "\n");
 				fw.flush();
-				for (Entry<String, Double> entry : proposal
-						.getValuesWithConfidence().entrySet()) {
-					fw.write("\t\t\tValue: " + entry.getKey()
-							+ " - Confidene: " + entry.getValue() + "\n");
+				for (Assumption assump : argument.getAssumptions()) {
+					fw.write("\t\tNode: " + assump.getNode() + "\n");
 					fw.flush();
+					for (Entry<String, Double> entry : assump
+							.getValuesWithConfidence().entrySet()) {
+						fw.write("\t\t\tValue: " + entry.getKey()
+								+ " - Confidene: " + entry.getValue() + "\n");
+						fw.flush();
+					}
 				}
+				fw.write("\n\tProposal:\n\tQuantity:"
+						+ argument.getProposals().size() + "\n");
+				fw.flush();
+				for (Proposal proposal : argument.getProposals()) {
+					fw.write("\t\tNode: " + proposal.getNode() + "\n");
+					fw.flush();
+					for (Entry<String, Double> entry : proposal
+							.getValuesWithConfidence().entrySet()) {
+						fw.write("\t\t\tValue: " + entry.getKey()
+								+ " - Confidene: " + entry.getValue() + "\n");
+						fw.flush();
+					}
+				}
+				fw.write("\n\n");
+				fw.flush();
+				fw.close();
 			}
-			fw.write("\n\n");
-			fw.flush();
-			fw.close();
 		}
 
 	}
@@ -314,47 +324,50 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	private void writeGraphInCSVFile(Argumentation currentArgumentation)
 			throws IOException {
-		HashMap<Argument, HashMap<Argument, Integer>> graph = currentArgumentation
-				.getGraph();
-		String graphFile = argumentationDir + File.separator + "argumentation"
-				+ currentArgumentation.getId() + File.separator
-				+ "graph-argumentation-" + currentArgumentation.getId()
-				+ ".csv";
-		CsvWriter graphWriter = null;
-		String[] graphHeaders = new String[currentArgumentation
-				.getArgumentsWithID().size() + 2];
-		graphHeaders[0] = "ProponentID";
-		graphHeaders[1] = "ArgID";
-		for (int aux = 2; aux < graphHeaders.length; aux++) {
-			graphHeaders[aux] = "Arg" + (aux - 2);
-		}
-		File f = new File(graphFile);
-		if (!f.exists()) {
-			graphWriter = new CsvWriter(new FileWriter(graphFile), ',');
-			graphWriter.writeRecord(graphHeaders);
-			graphWriter.flush();
-		} else {
-			graphWriter = new CsvWriter(new FileWriter(graphFile, true), ',');
-		}
-
-		for (int aux = 2; aux < graphHeaders.length; aux++) {
-			String[] graphData = new String[graphHeaders.length];
-			graphData[0] = currentArgumentation.getArgumentsWithID()
-					.get(aux - 2).getProponent().getProponentName();
-			graphData[1] = Integer.toString(aux - 2);
-			Argument arg = currentArgumentation.getArgumentsWithID().get(
-					aux - 2);
-			HashMap<Argument, Integer> attacks = graph.get(arg);
-			for (int aux2 = 0; aux2 < graphHeaders.length - 2; aux2++) {
-				Argument arg2 = currentArgumentation.getArgumentsWithID().get(
-						aux2);
-				graphData[aux2 + 2] = attacks.get(arg2).toString();
+		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
+			HashMap<Argument, HashMap<Argument, Integer>> graph = currentArgumentation
+					.getGraph();
+			String graphFile = argumentationDir + File.separator
+					+ "argumentation" + currentArgumentation.getId()
+					+ File.separator + "graph-argumentation-"
+					+ currentArgumentation.getId() + ".csv";
+			CsvWriter graphWriter = null;
+			String[] graphHeaders = new String[currentArgumentation
+					.getArgumentsWithID().size() + 2];
+			graphHeaders[0] = "ProponentID";
+			graphHeaders[1] = "ArgID";
+			for (int aux = 2; aux < graphHeaders.length; aux++) {
+				graphHeaders[aux] = "Arg" + (aux - 2);
 			}
-			graphWriter.writeRecord(graphData);
-			graphWriter.flush();
-		}
+			File f = new File(graphFile);
+			if (!f.exists()) {
+				graphWriter = new CsvWriter(new FileWriter(graphFile), ',');
+				graphWriter.writeRecord(graphHeaders);
+				graphWriter.flush();
+			} else {
+				graphWriter = new CsvWriter(new FileWriter(graphFile, true),
+						',');
+			}
 
-		graphWriter.close();
+			for (int aux = 2; aux < graphHeaders.length; aux++) {
+				String[] graphData = new String[graphHeaders.length];
+				graphData[0] = currentArgumentation.getArgumentsWithID()
+						.get(aux - 2).getProponent().getProponentName();
+				graphData[1] = Integer.toString(aux - 2);
+				Argument arg = currentArgumentation.getArgumentsWithID().get(
+						aux - 2);
+				HashMap<Argument, Integer> attacks = graph.get(arg);
+				for (int aux2 = 0; aux2 < graphHeaders.length - 2; aux2++) {
+					Argument arg2 = currentArgumentation.getArgumentsWithID()
+							.get(aux2);
+					graphData[aux2 + 2] = attacks.get(arg2).toString();
+				}
+				graphWriter.writeRecord(graphData);
+				graphWriter.flush();
+			}
+
+			graphWriter.close();
+		}
 	}
 
 	/**
@@ -395,19 +408,21 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 
 		CsvWriter concreteWriter = null;
 
-		String concreteArgumentationFile = argumentationDir + File.separator
-				+ "argumentation" + currentArgumentation.getId()
-				+ File.separator + "argumentation-"
-				+ currentArgumentation.getId() + ".csv";
-		f = new File(concreteArgumentationFile);
-		if (!f.exists()) {
-			concreteWriter = new CsvWriter(new FileWriter(
-					concreteArgumentationFile), ',');
-			concreteWriter.writeRecord(newHeaders);
-			concreteWriter.flush();
-		} else {
-			concreteWriter = new CsvWriter(new FileWriter(
-					concreteArgumentationFile, true), ',');
+		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
+			String concreteArgumentationFile = argumentationDir
+					+ File.separator + "argumentation"
+					+ currentArgumentation.getId() + File.separator
+					+ "argumentation-" + currentArgumentation.getId() + ".csv";
+			f = new File(concreteArgumentationFile);
+			if (!f.exists()) {
+				concreteWriter = new CsvWriter(new FileWriter(
+						concreteArgumentationFile), ',');
+				concreteWriter.writeRecord(newHeaders);
+				concreteWriter.flush();
+			} else {
+				concreteWriter = new CsvWriter(new FileWriter(
+						concreteArgumentationFile, true), ',');
+			}
 		}
 
 		int argNums = currentArgumentation.getArgumentsWithID().size();
@@ -422,12 +437,16 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 			data[4] = Long.toString(arg.getTimestamp());
 			generalWriter.writeRecord(data);
 			generalWriter.flush();
-			concreteWriter.writeRecord(data);
-			concreteWriter.flush();
+			if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
+				concreteWriter.writeRecord(data);
+				concreteWriter.flush();
+			}
 		}
 
 		generalWriter.close();
-		concreteWriter.close();
+		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
+			concreteWriter.close();
+		}
 
 	}
 
@@ -543,11 +562,11 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void finishArgumenation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		AgentArgumentativeCapability
-				.addConclusionHigherHypothesis(argumentation);
+		AgentArgumentativeCapability.addConclusionHigherHypothesis(
+				argumentation, this.getLogger());
 		this.argumentation2File(this.getCurrentArgumentation());
 		argumentation.setFinished(true);
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
+		this.getLogger().info(
 				"Argumentation Manager: Finishing argumentation...");
 		for (ArgumentativeAgent s : this.suscribers) {
 			s.finishArgumenation();
@@ -634,8 +653,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * Go to status IDLE
 	 */
 	private void goToIdle() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: IDLE");
+		this.getLogger().fine(this.getID() + " going to status: IDLE");
 		this.IDLE = true;
 		this.FINISHING = false;
 		this.PROCESSING = false;
@@ -648,8 +666,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * @param sim
 	 */
 	private void goToProcessing() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: PROCESSING");
+		this.getLogger().fine(this.getID() + " going to status: PROCESSING");
 		this.IDLE = false;
 		this.FINISHING = false;
 		this.PROCESSING = true;
@@ -661,8 +678,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * Go to status WAITING
 	 */
 	private void goToWaiting() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: WAITING");
+		this.getLogger().fine(this.getID() + " going to status: WAITING");
 		this.IDLE = false;
 		this.FINISHING = false;
 		this.PROCESSING = false;
@@ -673,8 +689,7 @@ public class AdvancedWACentralManagerAgent extends SimpleShanksAgent implements
 	 * Go to status FINISHING
 	 */
 	private void goToFinishing() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
-				this.getID() + " going to status: FINISHING");
+		this.getLogger().fine(this.getID() + " going to status: FINISHING");
 		this.IDLE = false;
 		this.FINISHING = true;
 		this.PROCESSING = false;

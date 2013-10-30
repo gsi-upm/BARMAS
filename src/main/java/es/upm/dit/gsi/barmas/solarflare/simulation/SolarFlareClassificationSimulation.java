@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import sim.engine.Schedule;
 import sim.engine.Steppable;
+import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareGenerator;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
@@ -51,9 +52,6 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	 * 
 	 */
 	private static final long serialVersionUID = 4766549890044944967L;
-
-	public final static String EXPDATA = "expDataPath";
-	public final static String EXPOUTPUT = "expOutputPath";
 
 	/**
 	 * Constructor
@@ -87,12 +85,12 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 		}
 		schedule.scheduleRepeating(Schedule.EPOCH, 3, manager, 1);
 		Steppable generator = new SolarFlareGenerator(this.getScenario()
-				.getProperties().getProperty(EXPDATA)
+				.getProperties().getProperty(SimulationConfiguration.EXPDATA)
 				+ "/dataset/testdataset.csv");
 		schedule.scheduleRepeating(Schedule.EPOCH, 6, generator, 1);
 		Steppable evaluator = new SolarFlareEvaluator(this.getScenario()
-				.getProperties().getProperty(EXPOUTPUT), this.getScenario()
-				.getProperties().getProperty(EXPDATA)
+				.getProperties().getProperty(SimulationConfiguration.EXPOUTPUT), this.getScenario()
+				.getProperties().getProperty(SimulationConfiguration.EXPDATA)
 				+ "/dataset/testdataset.csv");
 		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 1);
 	}

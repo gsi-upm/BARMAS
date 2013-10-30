@@ -19,6 +19,7 @@
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 
 /**
@@ -89,5 +90,10 @@ public interface ArgumentativeAgent {
 	 * @return
 	 */
 	public boolean areDistributionsFarEnough(Map<String, Double> a, Map<String, Double> b);
+
+	/**
+	 * @return
+	 */
+	public Logger getLogger();
 
 }

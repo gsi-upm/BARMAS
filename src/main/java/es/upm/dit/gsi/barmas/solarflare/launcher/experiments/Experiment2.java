@@ -29,6 +29,7 @@ import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.AdvancedWACentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.AdvancedWAClassificatorAgent;
 import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
+import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
@@ -63,20 +64,22 @@ public class Experiment2 implements Runnable {
 	private long seed;
 	private double threshold;
 	private double beliefThreshold;
+	private int mode;
 
 	public Experiment2(String summaryFile, long seed, double threshold,
-			double beliefThreshold) {
+			double beliefThreshold, int mode) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;
 		this.threshold = threshold;
 		this.beliefThreshold = beliefThreshold;
+		this.mode = mode;
 
 	}
 
 	private void launchSimulationWith2Agents(long seed, String summaryFile,
-			double threshold, double beliefThreshold) {
+			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-2-threshold-" + threshold
+		String simulationName = "EXPERIMENT-2-TH-" + threshold + "-BTH-" + beliefThreshold
 				+ "-seed-" + seed + "-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
@@ -84,8 +87,7 @@ public class Experiment2 implements Runnable {
 		Level level = Level.ALL;
 		String experimentDatasetPath = "src" + File.separator + "main"
 				+ File.separator + "resources" + File.separator + "exp2";
-		String experimentOutputPath = experimentDatasetPath + File.separator
-				+ "output" + File.separator + simulationName;
+		String experimentOutputPath ="output" + File.separator + simulationName;
 		LogConfigurator.log2File(logger, simulationName, level,
 				experimentOutputPath);
 
@@ -93,10 +95,11 @@ public class Experiment2 implements Runnable {
 
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
-		scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA,
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
 				experimentDatasetPath);
-		scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT,
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
 				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
 
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
@@ -121,7 +124,7 @@ public class Experiment2 implements Runnable {
 		// Argumentation AGENTS
 
 		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
-				"Manager", experimentOutputPath, threshold, logger);
+				"Manager", experimentOutputPath, threshold, logger, (Integer) scenarioProperties.get(SimulationConfiguration.MODE));
 		scenarioProperties.put("ManagerAgent", manager);
 
 		sensors = new ArrayList<String>();
@@ -180,9 +183,9 @@ public class Experiment2 implements Runnable {
 	}
 
 	private void launchSimulationWith2AgentsKFold(long seed,
-			String summaryFile, double threshold, double beliefThreshold) {
+			String summaryFile, double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-2-threshold-" + threshold
+		String simulationName = "EXPERIMENT-2-TH-" + threshold + "-BTH-" + beliefThreshold
 				+ "-seed-" + seed + "-KFold10TRAININNG-timestamp-"
 				+ System.currentTimeMillis();
 
@@ -191,8 +194,7 @@ public class Experiment2 implements Runnable {
 		Level level = Level.ALL;
 		String experimentDatasetPath = "src" + File.separator + "main"
 				+ File.separator + "resources" + File.separator + "exp2";
-		String experimentOutputPath = experimentDatasetPath + File.separator
-				+ "output" + File.separator + simulationName;
+		String experimentOutputPath = "output" + File.separator + simulationName;
 		LogConfigurator.log2File(logger, simulationName, level,
 				experimentOutputPath);
 
@@ -200,10 +202,11 @@ public class Experiment2 implements Runnable {
 
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
-		scenarioProperties.put(SolarFlareClassificationSimulation.EXPDATA,
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
 				experimentDatasetPath);
-		scenarioProperties.put(SolarFlareClassificationSimulation.EXPOUTPUT,
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
 				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
 
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
@@ -228,7 +231,7 @@ public class Experiment2 implements Runnable {
 		// Argumentation AGENTS
 
 		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
-				"Manager", experimentOutputPath, threshold, logger);
+				"Manager", experimentOutputPath, threshold, logger, (Integer) scenarioProperties.get(SimulationConfiguration.MODE));
 		scenarioProperties.put("ManagerAgent", manager);
 
 		sensors = new ArrayList<String>();
@@ -294,9 +297,9 @@ public class Experiment2 implements Runnable {
 	@Override
 	public void run() {
 		this.launchSimulationWith2Agents(seed, summaryFile, threshold,
-				beliefThreshold);
+				beliefThreshold, mode);
 		this.launchSimulationWith2AgentsKFold(seed, summaryFile, threshold,
-				beliefThreshold);
+				beliefThreshold, mode);
 	}
 
 }

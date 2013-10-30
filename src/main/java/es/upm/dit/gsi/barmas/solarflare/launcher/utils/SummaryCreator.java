@@ -47,7 +47,7 @@ public class SummaryCreator {
 
 	public static void makeNumbers(String simulationName, String origPath,
 			String outputPath) {
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		Logger logger = Logger.getLogger(simulationName);
 		File origFile = new File(origPath);
 		File outputFile = new File(outputPath);
 		File outputFile2 = new File(outputPath.replaceAll(".csv",

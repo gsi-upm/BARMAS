@@ -224,7 +224,6 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	private boolean updateEvidences(List<Argument> pendingArguments) {
 		// Update current evidences with new givens received in the incoming
 		// argument
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		boolean newInfo = false;
 		for (Argument arg : pendingArguments) {
 			Set<Given> givens = arg.getGivens();
@@ -232,11 +231,11 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 				if (evidences.keySet().contains(given.getNode())) {
 					if (!evidences.get(given.getNode())
 							.equals(given.getValue())) {
-						logger.warning("INCOHERENCE! -> No sense! Different evidences from different agents.");
-						logger.finest("Agent: " + this.getID() + " Evidence: "
+						this.getLogger().warning("INCOHERENCE! -> No sense! Different evidences from different agents.");
+						this.getLogger().finest("Agent: " + this.getID() + " Evidence: "
 								+ given.getNode() + " - "
 								+ evidences.get(given.getValue()));
-						logger.finest("Agent: "
+						this.getLogger().finest("Agent: "
 								+ arg.getProponent().getProponentName()
 								+ " Evidence: " + given.getNode() + " - "
 								+ given.getValue());
@@ -244,7 +243,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 				} else {
 					newInfo = true;
 					this.evidences.put(given.getNode(), given.getValue());
-					logger.finer("Agent: " + this.getID()
+					this.getLogger().finer("Agent: " + this.getID()
 							+ " -> Adding evidence received from "
 							+ arg.getProponent().getProponentName()
 							+ " Evidence: " + given.getNode() + " - "
@@ -429,8 +428,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
 		if (!agent.equals(this) && !this.argumentationGroup.contains(agent)) {
 			this.argumentationGroup.add(agent);
-			Logger.getLogger(Logger.GLOBAL_LOGGER_NAME)
-					.fine("Agent: "
+			this.getLogger().fine("Agent: "
 							+ this.getID()
 							+ " has added a new agent as argumentation member -> New member: "
 							+ agent.getProponentName());
@@ -513,7 +511,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status IDLE
 	 */
 	private void goToIdle() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+		this.getLogger().fine(
 				this.getID() + " going to status: IDLE");
 		this.IDLE = true;
 		this.ARGUMENTING = false;
@@ -525,7 +523,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status ARGUMENTING
 	 */
 	private void goToArgumenting(SolarFlareClassificationSimulation sim) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+		this.getLogger().fine(
 				this.getID() + " going to status: ARGUMENTING");
 		this.IDLE = false;
 		this.ARGUMENTING = true;
@@ -541,7 +539,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * @param sim
 	 */
 	private void goToProcessing(SolarFlareClassificationSimulation sim) {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+		this.getLogger().fine(
 				this.getID() + " going to status: PROCESSING");
 		this.IDLE = false;
 		this.ARGUMENTING = false;
@@ -554,7 +552,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 	 * Go to status WAITING
 	 */
 	private void goToWaiting() {
-		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).fine(
+		this.getLogger().fine(
 				this.getID() + " going to status: WAITING");
 		this.IDLE = false;
 		this.ARGUMENTING = false;

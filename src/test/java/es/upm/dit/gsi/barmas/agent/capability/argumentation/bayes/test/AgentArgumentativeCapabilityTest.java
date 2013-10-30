@@ -168,6 +168,12 @@ public class AgentArgumentativeCapabilityTest {
 					Map<String, Double> b) {
 				return false;
 			}
+
+			@Override
+			public Logger getLogger() {
+				return Logger.getLogger(AgentArgumentativeCapabilityTest.class
+						.getName());
+			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 	}

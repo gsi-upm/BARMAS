@@ -325,7 +325,7 @@ public class AgentArgumentativeCapability {
 				for (Given agiven : agivens) {
 					if (agiven.getNode().equals(bgiven.getNode())) {
 						if (!agiven.getValue().equals(bgiven.getValue())) {
-							Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).severe(
+							agent.getLogger().severe(
 									"Incoherent evidence in arguments");
 							return -1; // This has no sense!!
 						}
@@ -443,10 +443,10 @@ public class AgentArgumentativeCapability {
 	 * Resolution conflicts method
 	 * 
 	 * @param argumentation
+	 * @param logger
 	 */
-	public static void addConclusionHigherHypothesis(Argumentation argumentation) {
+	public static void addConclusionHigherHypothesis(Argumentation argumentation, Logger logger) {
 
-		Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		logger.fine("Getting the higher hypothesis...");
 		logger.finest("Evaluating possible conclusions...");
 		List<Argument> allArguments = new ArrayList<Argument>();

@@ -47,7 +47,7 @@ import com.csvreader.CsvWriter;
  */
 public class DatasetGenerator {
 
-	private static Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	private static Logger logger = Logger.getLogger(DatasetGenerator.class.getName());
 
 	/**
 	 * @param args
