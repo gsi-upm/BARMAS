@@ -65,29 +65,383 @@ public class Experiment2 implements Runnable {
 	private double threshold;
 	private double beliefThreshold;
 	private int mode;
+	private boolean validation;
 
 	public Experiment2(String summaryFile, long seed, double threshold,
-			double beliefThreshold, int mode) {
+			double beliefThreshold, int mode, boolean validation) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;
 		this.threshold = threshold;
 		this.beliefThreshold = beliefThreshold;
 		this.mode = mode;
+		this.validation = validation;
 
 	}
 
-	private void launchSimulationWith2Agents(long seed, String summaryFile,
+	private void launchValidationAgent1(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-2-TH-" + threshold + "-BTH-" + beliefThreshold
-				+ "-seed-" + seed + "-timestamp-" + System.currentTimeMillis();
+		String simulationName = "EXPERIMENT-2-validationAgent1-TH-" + threshold
+				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
 
 		// Logging properties
 		Logger logger = Logger.getLogger(simulationName);
 		Level level = Level.ALL;
 		String experimentDatasetPath = "src" + File.separator + "main"
 				+ File.separator + "resources" + File.separator + "exp2";
-		String experimentOutputPath ="output" + File.separator + simulationName;
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		// sensors.add(SpotDistribution.class.getSimpleName());
+		// sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
+		// sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/agentdataset-1.net", sensors, logger);
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+
+		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
+				"Manager", experimentOutputPath, threshold, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
+				"ArgAgent1", manager, experimentDatasetPath
+						+ "/bayes/agentdataset-1.net",
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-1.csv", sensors, threshold,
+				beliefThreshold, logger);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchValidationAgent1KFold(long seed, String summaryFile,
+			double threshold, double beliefThreshold, int mode) {
+		// Simulation properties
+		String simulationName = "EXPERIMENT-2-validationAgent1KFold-TH-" + threshold
+				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
+	
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp2";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+	
+		logger.info("--> Configuring simulation...");
+	
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+	
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+	
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		// sensors.add(SpotDistribution.class.getSimpleName());
+		// sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
+		// sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+				+ "/bayes/k-fold-10/agentdataset-1.net", sensors, logger);
+		agents.add(bayes);
+	
+		// Argumentation AGENTS
+	
+		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
+				"Manager", experimentOutputPath, threshold, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
+				"ArgAgent1", manager, experimentDatasetPath
+				+ "/bayes/k-fold-10/agentdataset-1.net",
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-1.csv", sensors, threshold,
+				beliefThreshold, logger);
+		agents.add(agent);
+	
+		scenarioProperties.put("AGENTS", agents);
+	
+		logger.info("--> Simulation configured");
+	
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+	
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+	
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchValidationAgent2(long seed, String summaryFile,
+			double threshold, double beliefThreshold, int mode) {
+		// Simulation properties
+		String simulationName = "EXPERIMENT-2-validationAgent2-TH-" + threshold
+				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp2";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		// sensors.add(SpotDistribution.class.getSimpleName());
+		// sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
+		// sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/agentdataset-2.net", sensors, logger);
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+
+		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
+				"Manager", experimentOutputPath, threshold, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
+				"ArgAgent2", manager, experimentDatasetPath
+						+ "/bayes/agentdataset-2.net",
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-2.csv", sensors, threshold,
+				beliefThreshold, logger);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchValidationAgent2KFold(long seed, String summaryFile,
+			double threshold, double beliefThreshold, int mode) {
+		// Simulation properties
+		String simulationName = "EXPERIMENT-2-validationAgent2KFold-TH-" + threshold
+				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
+	
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp2";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+	
+		logger.info("--> Configuring simulation...");
+	
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+	
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+	
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		// sensors.add(SpotDistribution.class.getSimpleName());
+		// sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
+		// sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net", sensors, logger);
+		agents.add(bayes);
+	
+		// Argumentation AGENTS
+	
+		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
+				"Manager", experimentOutputPath, threshold, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+		AdvancedWAClassificatorAgent agent = new AdvancedWAClassificatorAgent(
+				"ArgAgent2", manager, experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",
+				SolarFlareType.class.getSimpleName(), experimentDatasetPath
+						+ "/dataset/agentdataset-2.csv", sensors, threshold,
+				beliefThreshold, logger);
+		agents.add(agent);
+	
+		scenarioProperties.put("AGENTS", agents);
+	
+		logger.info("--> Simulation configured");
+	
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+	
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+	
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchSimulationWith2Agents(long seed, String summaryFile,
+			double threshold, double beliefThreshold, int mode) {
+		// Simulation properties
+		String simulationName = "EXPERIMENT-2-TH-" + threshold + "-BTH-"
+				+ beliefThreshold + "-seed-" + seed + "-timestamp-"
+				+ System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp2";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
 		LogConfigurator.log2File(logger, simulationName, level,
 				experimentOutputPath);
 
@@ -124,7 +478,8 @@ public class Experiment2 implements Runnable {
 		// Argumentation AGENTS
 
 		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
-				"Manager", experimentOutputPath, threshold, logger, (Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+				"Manager", experimentOutputPath, threshold, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
 		scenarioProperties.put("ManagerAgent", manager);
 
 		sensors = new ArrayList<String>();
@@ -183,18 +538,20 @@ public class Experiment2 implements Runnable {
 	}
 
 	private void launchSimulationWith2AgentsKFold(long seed,
-			String summaryFile, double threshold, double beliefThreshold, int mode) {
+			String summaryFile, double threshold, double beliefThreshold,
+			int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-2-TH-" + threshold + "-BTH-" + beliefThreshold
-				+ "-seed-" + seed + "-KFold10TRAININNG-timestamp-"
-				+ System.currentTimeMillis();
+		String simulationName = "EXPERIMENT-2-TH-" + threshold + "-BTH-"
+				+ beliefThreshold + "-seed-" + seed
+				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
 
 		// Logging properties
 		Logger logger = Logger.getLogger(simulationName);
 		Level level = Level.ALL;
 		String experimentDatasetPath = "src" + File.separator + "main"
 				+ File.separator + "resources" + File.separator + "exp2";
-		String experimentOutputPath = "output" + File.separator + simulationName;
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
 		LogConfigurator.log2File(logger, simulationName, level,
 				experimentOutputPath);
 
@@ -225,13 +582,15 @@ public class Experiment2 implements Runnable {
 		// sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
-						+ "/bayes/k-fold-10/agentdataset-central.net", sensors, logger);
+						+ "/bayes/k-fold-10/agentdataset-central.net", sensors,
+				logger);
 		agents.add(bayes);
 
 		// Argumentation AGENTS
 
 		AdvancedWACentralManagerAgent manager = new AdvancedWACentralManagerAgent(
-				"Manager", experimentOutputPath, threshold, logger, (Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+				"Manager", experimentOutputPath, threshold, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
 		scenarioProperties.put("ManagerAgent", manager);
 
 		sensors = new ArrayList<String>();
@@ -296,6 +655,16 @@ public class Experiment2 implements Runnable {
 	 */
 	@Override
 	public void run() {
+		if (this.validation) {
+		this.launchValidationAgent1(seed, summaryFile, threshold,
+				beliefThreshold, mode);
+		this.launchValidationAgent1KFold(seed, summaryFile, threshold,
+				beliefThreshold, mode);
+		this.launchValidationAgent2(seed, summaryFile, threshold,
+				beliefThreshold, mode);
+		this.launchValidationAgent2KFold(seed, summaryFile, threshold,
+				beliefThreshold, mode);
+		}
 		this.launchSimulationWith2Agents(seed, summaryFile, threshold,
 				beliefThreshold, mode);
 		this.launchSimulationWith2AgentsKFold(seed, summaryFile, threshold,

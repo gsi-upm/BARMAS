@@ -67,6 +67,7 @@ public class Experiment1 implements Runnable {
 	private String summaryFile;
 	private long seed;
 	private int mode;
+	private boolean validation;
 
 	/**
 	 * Constructor
@@ -75,14 +76,358 @@ public class Experiment1 implements Runnable {
 	 * @param seed
 	 * @param mode
 	 */
-	public Experiment1(String summaryFile, long seed, int mode) {
+	public Experiment1(String summaryFile, long seed, int mode,
+			boolean validation) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;
 		this.mode = mode;
+		this.validation = validation;
 	}
 
-	private static void launchSimulationWith2Agents(long seed,
-			String summaryFile, int mode) {
+	private void launchValidationAgent1(long seed, String summaryFile, int mode) {
+
+		// Simulation properties
+		String simulationName = "EXPERIMENT-1-validationAgent1-seed-" + seed
+				+ "-timestamp-" + System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp1";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/agentdataset-1.net", sensors, logger);
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
+				"Manager", experimentOutputPath, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+
+		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
+				"ArgAgent1", manager, experimentDatasetPath
+						+ "/bayes/agentdataset-1.net", sensors, logger);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchValidationAgent1KFold(long seed, String summaryFile,
+			int mode) {
+
+		// Simulation properties
+		String simulationName = "EXPERIMENT-1-validationAgent1KFold-seed-"
+				+ seed + "-timestamp-" + System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp1";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/k-fold-10/agentdataset-1.net", sensors,
+				logger);
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
+				"Manager", experimentOutputPath, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+
+		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
+				"ArgAgent1", manager, experimentDatasetPath
+						+ "/bayes/k-fold-10/agentdataset-1.net", sensors,
+				logger);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchValidationAgent2(long seed, String summaryFile, int mode) {
+
+		// Simulation properties
+		String simulationName = "EXPERIMENT-1-validationAgent2-seed-" + seed
+				+ "-timestamp-" + System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp1";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/agentdataset-2.net", sensors, logger);
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
+				"Manager", experimentOutputPath, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+
+		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
+				"ArgAgent2", manager, experimentDatasetPath
+						+ "/bayes/agentdataset-2.net", sensors, logger);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchValidationAgent2KFold(long seed, String summaryFile,
+			int mode) {
+
+		// Simulation properties
+		String simulationName = "EXPERIMENT-1-validationAgent2KFold-seed-"
+				+ seed + "-timestamp-" + System.currentTimeMillis();
+
+		// Logging properties
+		Logger logger = Logger.getLogger(simulationName);
+		Level level = Level.ALL;
+		String experimentDatasetPath = "src" + File.separator + "main"
+				+ File.separator + "resources" + File.separator + "exp1";
+		String experimentOutputPath = "output" + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, simulationName, level,
+				experimentOutputPath);
+
+		logger.info("--> Configuring simulation...");
+
+		Properties scenarioProperties = new Properties();
+		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA,
+				experimentDatasetPath);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
+				experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+
+		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
+
+		// CENTRAL AGENT
+		List<String> sensors = new ArrayList<String>();
+		sensors.add(Activity.class.getSimpleName());
+		sensors.add(LargestSpotSize.class.getSimpleName());
+		sensors.add(Area.class.getSimpleName());
+		sensors.add(BecomeHist.class.getSimpleName());
+		sensors.add(SpotDistribution.class.getSimpleName());
+		sensors.add(Evolution.class.getSimpleName());
+		sensors.add(PrevStatus24Hour.class.getSimpleName());
+		sensors.add(HistComplex.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
+		sensors.add(XNode.class.getSimpleName());
+		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
+				"BayesCentral", experimentDatasetPath
+						+ "/bayes/k-fold-10/agentdataset-2.net", sensors,
+				logger);
+		agents.add(bayes);
+
+		// Argumentation AGENTS
+		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
+				"Manager", experimentOutputPath, logger,
+				(Integer) scenarioProperties.get(SimulationConfiguration.MODE));
+		scenarioProperties.put("ManagerAgent", manager);
+
+		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
+				"ArgAgent2", manager, experimentDatasetPath
+						+ "/bayes/k-fold-10/agentdataset-2.net", sensors,
+				logger);
+		agents.add(agent);
+
+		scenarioProperties.put("AGENTS", agents);
+
+		logger.info("--> Simulation configured");
+
+		SolarFlareClassificationSimulation sim;
+		try {
+			sim = new SolarFlareClassificationSimulation(seed,
+					SolarFlareScenario.class, simulationName,
+					SolarFlareScenario.NORMALSTATE, scenarioProperties);
+
+			logger.info("--> Launching simulation...");
+			sim.start();
+			do
+				if (!sim.schedule.step(sim)) {
+					break;
+				}
+			while (true);
+			// while (sim.schedule.getSteps() < totalSteps);
+			// sim.finish();
+
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
+					+ File.separator + "summary.csv", summaryFile);
+		} catch (ShanksException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void launchSimulationWith2Agents(long seed, String summaryFile,
+			int mode) {
 		// Simulation properties
 		String simulationName = "EXPERIMENT-1-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
@@ -183,7 +528,7 @@ public class Experiment1 implements Runnable {
 		}
 	}
 
-	private static void launchSimulationWith2AgentsKFold(long seed,
+	private void launchSimulationWith2AgentsKFold(long seed,
 			String summaryFile, int mode) {
 		// Simulation properties
 		String simulationName = "EXPERIMENT-1-seed-" + seed
@@ -294,8 +639,14 @@ public class Experiment1 implements Runnable {
 	 */
 	@Override
 	public void run() {
-		Experiment1.launchSimulationWith2Agents(seed, summaryFile, mode);
-		Experiment1.launchSimulationWith2AgentsKFold(seed, summaryFile, mode);
+		if (this.validation) {
+			this.launchValidationAgent1(seed, summaryFile, mode);
+			this.launchValidationAgent1KFold(seed, summaryFile, mode);
+			this.launchValidationAgent2(seed, summaryFile, mode);
+			this.launchValidationAgent2KFold(seed, summaryFile, mode);
+		}
+		this.launchSimulationWith2Agents(seed, summaryFile, mode);
+		this.launchSimulationWith2AgentsKFold(seed, summaryFile, mode);
 	}
 
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2;
 import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3;
+import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4;
 import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
 
 /**
@@ -46,33 +47,41 @@ public class ExperimentExecutor {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+
 		String summaryFile = "output/global-summary.csv";
 		long seed = 0;
 		int mode = SimulationConfiguration.DEBUGGING_MODE;
-		
 		List<Runnable> experiments = new ArrayList<Runnable>();
-		Experiment1 exp1 = new Experiment1(summaryFile, seed, mode);
-		experiments.add(exp1);
 		
-		double threshold = 1;
-		double beliefThreshold = 1;
+//		Experiment1 exp1 = new Experiment1(summaryFile, seed, mode, true);
+//		experiments.add(exp1);
+//		Experiment3 exp3 = new Experiment3(summaryFile, seed, mode, true);
+//		experiments.add(exp3);
 
-//		while (threshold > 0.01) {
-//			while (beliefThreshold > 0.01) {
-				Experiment2 exp2 = new Experiment2(summaryFile, seed,
-						threshold, beliefThreshold, mode);
-				experiments.add(exp2);
-//				beliefThreshold = beliefThreshold - 0.05;
-//			}
-//			beliefThreshold = 1;
-//			threshold = threshold - 0.05;
-//		}
-
-		Experiment3 exp3 = new Experiment3(summaryFile, seed, mode);
-		experiments.add(exp3);
-
+//		double threshold = 1;
+//		double beliefThreshold = 1;
+		boolean validated = false;
 		
+
+		double threshold = 0.2;
+		double beliefThreshold = 0.1;
+//		boolean validated = true;
+
+		// while (threshold > 0.01) {
+		// while (beliefThreshold > 0.01) {
+		Experiment2 exp2 = new Experiment2(summaryFile, seed, threshold,
+				beliefThreshold, mode, !validated);
+		experiments.add(exp2);
+		Experiment4 exp4 = new Experiment4(summaryFile, seed, threshold, beliefThreshold, mode, !validated);
+		experiments.add(exp4);
+		validated = true;
+		// beliefThreshold = beliefThreshold - 0.05;
+		// }
+		// beliefThreshold = 1;
+		// threshold = threshold - 0.05;
+		// }
+
+
 		// Lauch experiments
 		int maxThreads = new Integer(args[0]);
 		ExperimentExecutor executor = new ExperimentExecutor();
@@ -105,11 +114,10 @@ public class ExperimentExecutor {
 					e.printStackTrace();
 				}
 
-			} else {
-				Thread t = new Thread(experiment);
-				threads.add(t);
-				t.start();
 			}
+			Thread t = new Thread(experiment);
+			threads.add(t);
+			t.start();
 		}
 
 	}

@@ -45,7 +45,17 @@ public class AgentBayesLearningCapability {
 		DataSet dataset = new DataSet();
 		dataset.readFile(datasetFile);
 
+		// Learning algorithm configuration
 		BayesianSearch bs = new BayesianSearch();
+		bs.setRandSeed(0);
+		bs.setIterationCount(20);
+		bs.setLinkProbability(0.1);
+		bs.setMaxParents(8);
+		bs.setPriorSampleSize(50);
+		bs.setPriorLinkProbability(0.01);
+		bs.setMaxSearchTime(0);
+		
+		// Algorithm execution
 		Network bn = bs.learn(dataset);
 		bn.writeFile(agent.getBNOutputFile());
 		agent.getLogger().fine(
@@ -71,7 +81,13 @@ public class AgentBayesLearningCapability {
 			}
 			bn.writeFile(agent.getBNOutputFile());
 		}
-
 	}
+	
+	// TODO check if I really have to implement this method
+//	public static void validateBN(String netFile, String testDatasetFile) {
+//		DataMatch matching = new DataMatch();
+//		matching
+//		Validator validator = new Validator(net, testDataset, matching);
+//	}
 
 }

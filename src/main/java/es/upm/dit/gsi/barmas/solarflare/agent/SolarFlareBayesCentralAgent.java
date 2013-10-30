@@ -148,8 +148,23 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 			}
 
 			try {
-				ShanksAgentBayesianReasoningCapability.addEvidences(bn,
-						evidences);
+				for (Entry<String, String> entry : evidences.entrySet()) {
+					try {
+						sim.getLogger()
+								.finer("Agent: " + this.getID()
+										+ " adding evidence: " + entry.getKey()
+										+ " - " + entry.getValue());
+						ShanksAgentBayesianReasoningCapability.addEvidence(this,
+								entry.getKey(), entry.getValue());
+					} catch (Exception e) {
+						sim.getLogger().fine(
+								"Agent: " + this.getID()
+										+ " -> Unknown state for node: "
+										+ entry.getKey() + " -> State: "
+										+ entry.getValue());
+					}
+
+				}
 
 				// Get hypothesis
 				HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability
