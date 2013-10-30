@@ -35,8 +35,10 @@ import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
 import es.upm.dit.gsi.shanks.agent.ShanksAgent;
@@ -57,7 +59,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class Experiment3 implements Runnable {
+public class Experiment3A implements Runnable {
 
 	private String summaryFile;
 	private long seed;
@@ -70,7 +72,7 @@ public class Experiment3 implements Runnable {
 	 * @param summaryFile
 	 * @param seed
 	 */
-	public Experiment3(String summaryFile, long seed, int mode,
+	public Experiment3A(String summaryFile, long seed, int mode,
 			boolean validation) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;
@@ -115,8 +117,8 @@ public class Experiment3 implements Runnable {
 //		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -198,8 +200,8 @@ public class Experiment3 implements Runnable {
 //		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -282,8 +284,8 @@ public class Experiment3 implements Runnable {
 //		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -365,8 +367,8 @@ public class Experiment3 implements Runnable {
 //		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -450,8 +452,8 @@ public class Experiment3 implements Runnable {
 //		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -479,8 +481,8 @@ public class Experiment3 implements Runnable {
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/agentdataset-2.net", sensors,
@@ -552,8 +554,8 @@ public class Experiment3 implements Runnable {
 //		sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -583,8 +585,8 @@ public class Experiment3 implements Runnable {
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-//		sensors.add(CNode.class.getSimpleName());
-//		sensors.add(MNode.class.getSimpleName());
+		sensors.add(CNode.class.getSimpleName());
+		sensors.add(MNode.class.getSimpleName());
 //		sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",
