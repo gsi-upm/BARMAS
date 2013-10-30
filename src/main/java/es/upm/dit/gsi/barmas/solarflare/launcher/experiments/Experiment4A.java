@@ -48,7 +48,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
  * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4.java
+ * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4A.java
  * 
  * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
  * Telemáticos Universidad Politécnica de Madrid (UPM)
@@ -60,7 +60,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class Experiment4 implements Runnable {
+public class Experiment4A implements Runnable {
 
 	private String summaryFile;
 	private long seed;
@@ -69,7 +69,7 @@ public class Experiment4 implements Runnable {
 	private int mode;
 	private boolean validation;
 
-	public Experiment4(String summaryFile, long seed, double threshold,
+	public Experiment4A(String summaryFile, long seed, double threshold,
 			double beliefThreshold, int mode, boolean validation) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;

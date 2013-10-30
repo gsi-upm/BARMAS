@@ -79,7 +79,7 @@
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.solarflare.launcher.ExperimentExecutor</mainClass>
 					<arguments>
-						<argument>5</argument> <!-- Max Threads -->
+						<argument>3</argument> <!-- Max Threads -->
 					</arguments>
 				</configuration>
 			</plugin>
