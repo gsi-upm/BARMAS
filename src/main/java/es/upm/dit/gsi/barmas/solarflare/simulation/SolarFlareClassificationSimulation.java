@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import sim.engine.Schedule;
 import sim.engine.Steppable;
-import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
+import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator;
 import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareGenerator;
 import es.upm.dit.gsi.shanks.ShanksSimulation;

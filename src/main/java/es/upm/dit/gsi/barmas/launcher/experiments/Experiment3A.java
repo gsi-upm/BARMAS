@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1.java
  */
-package es.upm.dit.gsi.barmas.solarflare.launcher.experiments;
+package es.upm.dit.gsi.barmas.launcher.experiments;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,12 +25,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
+import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
+import es.upm.dit.gsi.barmas.launcher.utils.SummaryCreator;
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.advanced.AdvancedCentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.advanced.AdvancedClassificatorAgent;
-import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
-import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
-import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;

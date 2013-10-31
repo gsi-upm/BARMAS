@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1.java
  */
-package es.upm.dit.gsi.barmas.solarflare.launcher.experiments;
+package es.upm.dit.gsi.barmas.launcher.experiments;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,20 +25,18 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
+import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
+import es.upm.dit.gsi.barmas.launcher.utils.SummaryCreator;
 import es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.AdvancedWACentralManagerAgent;
 import es.upm.dit.gsi.barmas.solarflare.agent.advanced.assumptions.AdvancedWAClassificatorAgent;
-import es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator;
-import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
-import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
 import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
@@ -48,7 +46,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
  * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4A.java
+ * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4.java
  * 
  * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
  * Telemáticos Universidad Politécnica de Madrid (UPM)
@@ -60,7 +58,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class Experiment4A implements Runnable {
+public class Experiment4 implements Runnable {
 
 	private String summaryFile;
 	private long seed;
@@ -69,7 +67,7 @@ public class Experiment4A implements Runnable {
 	private int mode;
 	private boolean validation;
 
-	public Experiment4A(String summaryFile, long seed, double threshold,
+	public Experiment4(String summaryFile, long seed, double threshold,
 			double beliefThreshold, int mode, boolean validation) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;
@@ -83,7 +81,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent1(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4A-validationAgent1-TH-" + threshold
+		String simulationName = "EXPERIMENT-4-validationAgent1-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 
@@ -119,8 +117,8 @@ public class Experiment4A implements Runnable {
 		// sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -171,7 +169,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent1KFold(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4A-validationAgent1KFold-TH-" + threshold
+		String simulationName = "EXPERIMENT-4-validationAgent1KFold-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 	
@@ -207,8 +205,8 @@ public class Experiment4A implements Runnable {
 		// sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -259,7 +257,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent2(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4A-validationAgent2-TH-" + threshold
+		String simulationName = "EXPERIMENT-4-validationAgent2-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 
@@ -295,8 +293,8 @@ public class Experiment4A implements Runnable {
 		// sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -347,7 +345,7 @@ public class Experiment4A implements Runnable {
 	private void launchValidationAgent2KFold(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4A-validationAgent2KFold-TH-" + threshold
+		String simulationName = "EXPERIMENT-4-validationAgent2KFold-TH-" + threshold
 				+ "-BTH-" + beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 	
@@ -383,8 +381,8 @@ public class Experiment4A implements Runnable {
 		// sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net", sensors, logger);
@@ -433,7 +431,7 @@ public class Experiment4A implements Runnable {
 	private void launchSimulationWith2Agents(long seed, String summaryFile,
 			double threshold, double beliefThreshold, int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4A-TH-" + threshold + "-BTH-"
+		String simulationName = "EXPERIMENT-4-TH-" + threshold + "-BTH-"
 				+ beliefThreshold + "-seed-" + seed + "-timestamp-"
 				+ System.currentTimeMillis();
 
@@ -469,8 +467,8 @@ public class Experiment4A implements Runnable {
 		// sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -502,8 +500,8 @@ public class Experiment4A implements Runnable {
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedWAClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/agentdataset-2.net",
@@ -543,7 +541,7 @@ public class Experiment4A implements Runnable {
 			String summaryFile, double threshold, double beliefThreshold,
 			int mode) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT-4A-TH-" + threshold + "-BTH-"
+		String simulationName = "EXPERIMENT-4-TH-" + threshold + "-BTH-"
 				+ beliefThreshold + "-seed-" + seed
 				+ "-KFold10TRAININNG-timestamp-" + System.currentTimeMillis();
 
@@ -579,8 +577,8 @@ public class Experiment4A implements Runnable {
 		// sensors.add(Evolution.class.getSimpleName());
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		 sensors.add(CNode.class.getSimpleName());
-		 sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		SolarFlareBayesCentralAgent bayes = new SolarFlareBayesCentralAgent(
 				"BayesCentral", experimentDatasetPath
@@ -613,8 +611,8 @@ public class Experiment4A implements Runnable {
 		sensors = new ArrayList<String>();
 		sensors.add(PrevStatus24Hour.class.getSimpleName());
 		sensors.add(HistComplex.class.getSimpleName());
-		sensors.add(CNode.class.getSimpleName());
-		sensors.add(MNode.class.getSimpleName());
+		// sensors.add(CNode.class.getSimpleName());
+		// sensors.add(MNode.class.getSimpleName());
 		// sensors.add(XNode.class.getSimpleName());
 		agent = new AdvancedWAClassificatorAgent("ArgAgent2", manager,
 				experimentDatasetPath + "/bayes/k-fold-10/agentdataset-2.net",

@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration.java
  */
-package es.upm.dit.gsi.barmas.solarflare.launcher.utils;
+package es.upm.dit.gsi.barmas.launcher.utils;
 
 /**
  * Project: barmas

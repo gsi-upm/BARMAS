@@ -16,20 +16,20 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.launcher.ExperimentExecutor.java
  */
-package es.upm.dit.gsi.barmas.solarflare.launcher;
+package es.upm.dit.gsi.barmas.launcher;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3A;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3B;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3C;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4A;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4B;
-import es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment4C;
-import es.upm.dit.gsi.barmas.solarflare.launcher.utils.SimulationConfiguration;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3A;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3B;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3C;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4A;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4B;
+import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4C;
+import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
  * Project: barmas File:

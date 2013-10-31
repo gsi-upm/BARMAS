@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.launcher.logging.LogConfigurator.java
  */
-package es.upm.dit.gsi.barmas.solarflare.launcher.logging;
+package es.upm.dit.gsi.barmas.launcher.logging;
 
 import java.io.File;
 import java.io.IOException;

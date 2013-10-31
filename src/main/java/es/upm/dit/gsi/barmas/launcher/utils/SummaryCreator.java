@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator.java
  */
-package es.upm.dit.gsi.barmas.solarflare.launcher.utils;
+package es.upm.dit.gsi.barmas.launcher.utils;
 
 import java.io.File;
 import java.io.FileReader;
