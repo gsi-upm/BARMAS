@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1.java
- */
 package es.upm.dit.gsi.barmas.launcher.experiments.kowlancz;
 
 import java.io.File;
@@ -42,16 +39,17 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment3C.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.AgentValidator.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 16/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */

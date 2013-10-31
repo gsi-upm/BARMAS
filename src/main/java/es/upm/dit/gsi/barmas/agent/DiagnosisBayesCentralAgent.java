@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent.java
- */
 package es.upm.dit.gsi.barmas.agent;
 
 import java.util.HashMap;
@@ -34,16 +31,17 @@ import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesia
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.agent.DiagnosisBayesCentralAgent.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 03/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
@@ -135,7 +133,7 @@ public class DiagnosisBayesCentralAgent extends SimpleShanksAgent implements
 		DiagnosisCase bayesDiagnosis = (DiagnosisCase) sim.getScenario()
 				.getNetworkElement(DiagnosisScenario.CENTRALCONCLUSION);
 
-		// Check if it is time to check the solar flare
+		// Check if it is time to check the diagnosis case
 		if (origDiagnosis.getStatus().get(DiagnosisCase.READY)
 				&& !bayesDiagnosis.getStatus().get(DiagnosisCase.READY)) {
 
@@ -173,7 +171,7 @@ public class DiagnosisBayesCentralAgent extends SimpleShanksAgent implements
 				HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability
 						.getNodeStatesHypotheses(this, classificationTarget);
 
-				// Update the bayes central solar flare "device"
+				// Update the bayes central "device"
 
 				for (Entry<String, String> ev : evidences.entrySet()) {
 					bayesDiagnosis.changeProperty(ev.getKey(), ev.getValue());
@@ -193,7 +191,7 @@ public class DiagnosisBayesCentralAgent extends SimpleShanksAgent implements
 				bayesDiagnosis.setCurrentStatus(DiagnosisCase.READY, true);
 
 				sim.getLogger().info(
-						"Hypothesis by Central Bayesian Agent. SolarFlareID: "
+						"Hypothesis by Central Bayesian Agent. Diagnosis Case ID: "
 								+ bayesDiagnosis.getCaseID() + ": "
 								+ classificationTarget + " - " + conclusion
 								+ " -> Confidence: " + max);

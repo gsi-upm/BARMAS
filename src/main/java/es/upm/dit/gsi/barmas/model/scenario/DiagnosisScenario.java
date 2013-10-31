@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.scenario.SolarFlareScenario.java
- */
 package es.upm.dit.gsi.barmas.model.scenario;
 
 import java.io.File;
@@ -37,15 +34,17 @@ import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario2DPortrayal;
 import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal;
 
 /**
- * Project: barmas File: es.upm.dit.gsi.barmas.scenario.SolarFlareScenario.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 23/07/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */

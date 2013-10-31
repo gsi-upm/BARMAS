@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.model.element.device.SolarFlare.java
- */
 package es.upm.dit.gsi.barmas.model;
 
 import java.util.logging.Logger;
@@ -24,8 +21,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.element.device.Device;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.model.element.device.SolarFlare.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.model.DiagnosisCase.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -34,7 +31,7 @@ import es.upm.dit.gsi.shanks.model.element.device.Device;
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 23/07/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
@@ -115,7 +112,7 @@ public class DiagnosisCase extends Device {
 	}
 
 	/**
-	 * Delete all data of the solar flare.
+	 * Delete all data of the diagnosis case.
 	 */
 	public void clean() {
 		try {

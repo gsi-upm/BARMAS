@@ -49,16 +49,17 @@ import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.agent.ArgumentationManagerAgent.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.agent.AdvancedCentralManagerAgent.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 02/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
@@ -158,7 +159,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 		} else if (this.WAITING) {
 			Argumentation a = this.getCurrentArgumentation();
 			this.goToFinishing();
-			this.updateSolarFlare(a, simulation);
+			this.updateDiagnosisCase(a, simulation);
 		}
 
 		this.pendingArguments.clear();
@@ -188,7 +189,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	 * @param a
 	 * @param simulation
 	 */
-	private void updateSolarFlare(Argumentation a, ShanksSimulation simulation) {
+	private void updateDiagnosisCase(Argumentation a, ShanksSimulation simulation) {
 		DiagnosisCase argDiagnosis = (DiagnosisCase) simulation.getScenario()
 				.getNetworkElement(DiagnosisScenario.ARGUMENTATIONCONCLUSION);
 		try {

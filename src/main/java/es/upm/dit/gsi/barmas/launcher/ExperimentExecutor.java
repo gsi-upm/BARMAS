@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.solarflare.launcher.ExperimentExecutor.java
- */
 package es.upm.dit.gsi.barmas.launcher;
 
 import java.util.ArrayList;
@@ -26,16 +23,17 @@ import es.upm.dit.gsi.barmas.launcher.utils.ConsoleOutputDisabler;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.launcher.ExperimentExecutor.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.launcher.ExperimentExecutor.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 17/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
@@ -51,8 +49,8 @@ public class ExperimentExecutor {
 
 		String summaryFile = "global-summary.csv";
 		long seed = 0;
-		// int mode = SimulationConfiguration.DEBUGGING_MODE;
-		int mode = SimulationConfiguration.SIMULATION_MODE;
+		 int mode = SimulationConfiguration.DEBUGGING_MODE;
+//		int mode = SimulationConfiguration.SIMULATION_MODE;
 		List<Runnable> experiments = new ArrayList<Runnable>();
 
 		// **************************

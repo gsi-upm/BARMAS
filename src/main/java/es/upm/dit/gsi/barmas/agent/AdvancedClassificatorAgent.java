@@ -44,7 +44,8 @@ import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesia
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
- * Project: barmas File: es.upm.dit.gsi.barmas.agent.BarmasAgent.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.agent.AdvancedClassificatorAgent.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -53,7 +54,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 23/07/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
@@ -299,7 +300,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			}
 
 			sim.logger.finer("Agent: " + this.getID()
-					+ " has hypothesis for case SolarFlareID: "
+					+ " has hypothesis for diagnosis case ID: "
 					+ this.argumentation.getId() + " "
 					+ classificationTarget + " - " + hyp
 					+ " -> Confidence: " + maxValue);

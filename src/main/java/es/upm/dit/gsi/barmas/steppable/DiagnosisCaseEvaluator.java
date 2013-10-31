@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator.java
- */
 package es.upm.dit.gsi.barmas.steppable;
 
 import java.io.File;
@@ -38,10 +35,9 @@ import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
 import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
 
-
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.steppable.DiagnosisCaseEvaluator.java
  * 
  * Grupo de Sistemas Inteligentes
  * Departamento de Ingeniería de Sistemas Telemáticos
@@ -50,7 +46,7 @@ import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 02/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
@@ -156,7 +152,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 				.getNetworkElement(DiagnosisScenario.ARGUMENTATIONCONCLUSION);
 		DiagnosisCase centralConclusion = (DiagnosisCase) sim.getScenario()
 				.getNetworkElement(DiagnosisScenario.CENTRALCONCLUSION);
-		DiagnosisCase origflare = (DiagnosisCase) sim.getScenario()
+		DiagnosisCase origDiagnosis = (DiagnosisCase) sim.getScenario()
 				.getNetworkElement(DiagnosisScenario.ORIGINALDIAGNOSIS);
 
 		if (argConclusion.getStatus().get(DiagnosisCase.READY)
@@ -166,7 +162,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 					.getProperty(classificationTarget);
 			String centralClass = (String) centralConclusion
 					.getProperty(classificationTarget);
-			String origClass = (String) origflare
+			String origClass = (String) origDiagnosis
 					.getProperty(classificationTarget);
 			sim.getLogger().info("-----> Writing CSV files...");
 			try {
@@ -174,9 +170,9 @@ public class DiagnosisCaseEvaluator implements Steppable {
 				// content
 				CsvWriter writer = new CsvWriter(fw, ',');
 				String[] data = new String[this.classResultsHeaders.length];
-				data[0] = Integer.toString(origflare.getCaseID());
+				data[0] = Integer.toString(origDiagnosis.getCaseID());
 				for (int i = 0; i < this.classResultsHeaders.length - 3; i++) {
-					data[i + 1] = (String) origflare
+					data[i + 1] = (String) origDiagnosis
 							.getProperty(classResultsHeaders[i + 1]);
 				}
 				data[classResultsHeaders.length - 3] = origClass;
@@ -237,10 +233,10 @@ public class DiagnosisCaseEvaluator implements Steppable {
 
 			argConclusion.reset();
 			centralConclusion.reset();
-			origflare.reset();
+			origDiagnosis.reset();
 
 			sim.getLogger().info("-----> EVALUATION finished --- RESULTS: ");
-			sim.getLogger().info("-> Original Flare: " + origClass);
+			sim.getLogger().info("-> Original Diagnosis Case: " + origClass);
 			sim.getLogger().info("-> Bayes Central: " + centralClass);
 			sim.getLogger().info("-> Argumentation: " + argClass);
 

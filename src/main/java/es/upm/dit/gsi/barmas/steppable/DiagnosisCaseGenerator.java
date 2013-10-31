@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.solarflare.SolarFlareGenerator.java
- */
 package es.upm.dit.gsi.barmas.steppable;
 
 import java.io.FileNotFoundException;
@@ -35,16 +32,17 @@ import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.SolarFlareGenerator.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.steppable.DiagnosisCaseGenerator.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 02/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
@@ -92,8 +90,6 @@ public class DiagnosisCaseGenerator implements Steppable {
 
 		try {
 			if (!diagnosisCase.getStatus().get(DiagnosisCase.READY)) {
-				// if (!flare.getStatus().get(SolarFlare.READY) &&
-				// this.counter==0) {
 
 				if (reader.readRecord()) {
 					String[] diagnosisCaseValues = reader.getValues();
@@ -106,10 +102,10 @@ public class DiagnosisCaseGenerator implements Steppable {
 					diagnosisCase.setCurrentStatus(DiagnosisCase.READY, true);
 
 					sim.getLogger().info(
-							"New Solar Flare generated in step "
+							"New Diagnosis Case generated in step "
 									+ sim.schedule.getSteps() + ". Case ID: "
 									+ diagnosisCase.getCaseID()
-									+ " Solar Flare Type: " + diagnosisCaseValues[headers.length-1]);
+									+ " Diagnosis: " + diagnosisCaseValues[headers.length-1]);
 				} else {
 					sim.getLogger().info(
 							"Finishing simulation. No more test cases.");

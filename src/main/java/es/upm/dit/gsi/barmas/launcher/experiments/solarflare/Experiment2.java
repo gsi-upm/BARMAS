@@ -45,16 +45,17 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment2.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.launcher.experiments.solarflare.Experiment2.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 16/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */

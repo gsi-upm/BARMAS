@@ -13,9 +13,6 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-/**
- * es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator.java
- */
 package es.upm.dit.gsi.barmas.launcher.utils;
 
 import java.io.File;
@@ -30,16 +27,17 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 /**
- * Project: barmas File:
- * es.upm.dit.gsi.barmas.solarflare.launcher.utils.SummaryCreator.java
+ * Project: barmas
+ * File: es.upm.dit.gsi.barmas.launcher.utils.SummaryCreator.java
  * 
- * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
- * Telemáticos Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes
+ * Departamento de Ingeniería de Sistemas Telemáticos
+ * Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 16/10/2013
+ * @date 31/10/2013
  * @version 0.1
  * 
  */
