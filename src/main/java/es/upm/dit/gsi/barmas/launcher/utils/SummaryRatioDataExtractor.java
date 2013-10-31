@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.dataset.utils.Analyzer.java
  */
-package es.upm.dit.gsi.barmas.solarflare.dataset.utils;
+package es.upm.dit.gsi.barmas.launcher.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
