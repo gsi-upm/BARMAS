@@ -37,9 +37,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -65,7 +64,8 @@ public class DiagnosisBayesCentralAgent extends SimpleShanksAgent implements
 	 * 
 	 * @param id
 	 */
-	public DiagnosisBayesCentralAgent(String id, String classificationTarget, String bnPath, List<String> sensors, Logger logger) {
+	public DiagnosisBayesCentralAgent(String id, String classificationTarget,
+			String bnPath, List<String> sensors, Logger logger) {
 		super(id, logger);
 		this.classificationTarget = classificationTarget;
 		this.bnPath = bnPath;
@@ -152,12 +152,12 @@ public class DiagnosisBayesCentralAgent extends SimpleShanksAgent implements
 			try {
 				for (Entry<String, String> entry : evidences.entrySet()) {
 					try {
-						sim.getLogger()
-								.finer("Agent: " + this.getID()
-										+ " adding evidence: " + entry.getKey()
-										+ " - " + entry.getValue());
-						ShanksAgentBayesianReasoningCapability.addEvidence(this,
-								entry.getKey(), entry.getValue());
+						sim.getLogger().finer(
+								"Agent: " + this.getID() + " adding evidence: "
+										+ entry.getKey() + " - "
+										+ entry.getValue());
+						ShanksAgentBayesianReasoningCapability.addEvidence(
+								this, entry.getKey(), entry.getValue());
 					} catch (Exception e) {
 						sim.getLogger().fine(
 								"Agent: " + this.getID()
@@ -171,8 +171,7 @@ public class DiagnosisBayesCentralAgent extends SimpleShanksAgent implements
 
 				// Get hypothesis
 				HashMap<String, Float> hyps = ShanksAgentBayesianReasoningCapability
-						.getNodeStatesHypotheses(this,
-								classificationTarget);
+						.getNodeStatesHypotheses(this, classificationTarget);
 
 				// Update the bayes central solar flare "device"
 
@@ -189,15 +188,18 @@ public class DiagnosisBayesCentralAgent extends SimpleShanksAgent implements
 					}
 				}
 
-				bayesDiagnosis.changeProperty(classificationTarget,
-						conclusion);
+				bayesDiagnosis.changeProperty(classificationTarget, conclusion);
 
 				bayesDiagnosis.setCurrentStatus(DiagnosisCase.READY, true);
 
 				sim.getLogger().info(
-						"Hypothesis by Central Bayesian Agent. SolarFlareID: " + bayesDiagnosis.getCaseID() + ": "
-								+ classificationTarget + " - "
-								+ conclusion + " -> Confidence: " + max);
+						"Hypothesis by Central Bayesian Agent. SolarFlareID: "
+								+ bayesDiagnosis.getCaseID() + ": "
+								+ classificationTarget + " - " + conclusion
+								+ " -> Confidence: " + max);
+
+				ShanksAgentBayesianReasoningCapability.clearEvidences(this);
+
 			} catch (ShanksException e) {
 				e.printStackTrace();
 				System.exit(1);

@@ -38,9 +38,8 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.solarflare.agent.SolarFlareBayesCentralAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -65,7 +64,8 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 	 * 
 	 * @param id
 	 */
-	public SolarFlareBayesCentralAgent(String id, String bnPath, List<String> sensors, Logger logger) {
+	public SolarFlareBayesCentralAgent(String id, String bnPath,
+			List<String> sensors, Logger logger) {
 		super(id, logger);
 		this.bnPath = bnPath;
 		this.sensors = sensors;
@@ -151,12 +151,12 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 			try {
 				for (Entry<String, String> entry : evidences.entrySet()) {
 					try {
-						sim.getLogger()
-								.finer("Agent: " + this.getID()
-										+ " adding evidence: " + entry.getKey()
-										+ " - " + entry.getValue());
-						ShanksAgentBayesianReasoningCapability.addEvidence(this,
-								entry.getKey(), entry.getValue());
+						sim.getLogger().finer(
+								"Agent: " + this.getID() + " adding evidence: "
+										+ entry.getKey() + " - "
+										+ entry.getValue());
+						ShanksAgentBayesianReasoningCapability.addEvidence(
+								this, entry.getKey(), entry.getValue());
 					} catch (Exception e) {
 						sim.getLogger().fine(
 								"Agent: " + this.getID()
@@ -194,9 +194,12 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 				bayesflare.setCurrentStatus(SolarFlare.READY, true);
 
 				sim.getLogger().info(
-						"Hypothesis by Central Bayesian Agent. SolarFlareID: " + bayesflare.getCaseID() + ": "
+						"Hypothesis by Central Bayesian Agent. SolarFlareID: "
+								+ bayesflare.getCaseID() + ": "
 								+ SolarFlareType.class.getSimpleName() + " - "
 								+ conclusion + " -> Confidence: " + max);
+
+				ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 			} catch (ShanksException e) {
 				e.printStackTrace();
 				System.exit(1);

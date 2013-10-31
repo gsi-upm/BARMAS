@@ -21,7 +21,8 @@ package es.upm.dit.gsi.barmas.launcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.AgentValidator;
+import es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.Experiment5;
+import es.upm.dit.gsi.barmas.launcher.utils.ConsoleOutputDisabler;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
@@ -45,10 +46,13 @@ public class ExperimentExecutor {
 	 */
 	public static void main(String[] args) {
 
+		// Because unbbayes print a lot of things in console...
+		ConsoleOutputDisabler.disableConsoleOutput();
+
 		String summaryFile = "global-summary.csv";
 		long seed = 0;
-//		int mode = SimulationConfiguration.DEBUGGING_MODE;
-		 int mode = SimulationConfiguration.SIMULATION_MODE;
+		// int mode = SimulationConfiguration.DEBUGGING_MODE;
+		int mode = SimulationConfiguration.SIMULATION_MODE;
 		List<Runnable> experiments = new ArrayList<Runnable>();
 
 		// **************************
@@ -166,15 +170,18 @@ public class ExperimentExecutor {
 	 */
 	private static void addKowlanCZExperiments(List<Runnable> experiments,
 			int mode, long seed, String summaryFile) {
-		AgentValidator exp00 = new AgentValidator(summaryFile, seed, mode, 0);
-		experiments.add(exp00);
-		AgentValidator exp01 = new AgentValidator(summaryFile, seed, mode, 1);
-		experiments.add(exp01);
-		AgentValidator exp02 = new AgentValidator(summaryFile, seed, mode, 2);
-		experiments.add(exp02);
-		AgentValidator exp03 = new AgentValidator(summaryFile, seed, mode, 3);
-		experiments.add(exp03);
+//		AgentValidator exp00 = new AgentValidator(summaryFile, seed, mode, 0);
+//		experiments.add(exp00);
+//		AgentValidator exp01 = new AgentValidator(summaryFile, seed, mode, 1);
+//		experiments.add(exp01);
+//		AgentValidator exp02 = new AgentValidator(summaryFile, seed, mode, 2);
+//		experiments.add(exp02);
+//		AgentValidator exp03 = new AgentValidator(summaryFile, seed, mode, 3);
+//		experiments.add(exp03);
 
+		Experiment5 exp5 = new Experiment5(summaryFile, seed, mode);
+		experiments.add(exp5);
+		
 	}
 
 }
