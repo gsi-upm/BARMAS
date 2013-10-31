@@ -73,6 +73,7 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -162,6 +163,7 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 										+ " -> Unknown state for node: "
 										+ entry.getKey() + " -> State: "
 										+ entry.getValue());
+						System.exit(1);
 					}
 
 				}
@@ -197,6 +199,7 @@ public class SolarFlareBayesCentralAgent extends SimpleShanksAgent implements
 								+ conclusion + " -> Confidence: " + max);
 			} catch (ShanksException e) {
 				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 	}

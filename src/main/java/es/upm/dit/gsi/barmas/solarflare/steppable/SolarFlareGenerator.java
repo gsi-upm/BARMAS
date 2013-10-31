@@ -84,8 +84,10 @@ public class SolarFlareGenerator implements Steppable {
 			reader.readHeaders();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -154,8 +156,10 @@ public class SolarFlareGenerator implements Steppable {
 			}
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 	}

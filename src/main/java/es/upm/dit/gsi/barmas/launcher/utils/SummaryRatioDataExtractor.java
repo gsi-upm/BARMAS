@@ -86,8 +86,10 @@ public class SummaryRatioDataExtractor {
 			writer.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info("Analysis DONE");
 	}

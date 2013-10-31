@@ -162,6 +162,7 @@ public class Experiment3C implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -247,6 +248,7 @@ public class Experiment3C implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -329,6 +331,7 @@ public class Experiment3C implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -414,6 +417,7 @@ public class Experiment3C implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -516,6 +520,7 @@ public class Experiment3C implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -620,6 +625,7 @@ public class Experiment3C implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 

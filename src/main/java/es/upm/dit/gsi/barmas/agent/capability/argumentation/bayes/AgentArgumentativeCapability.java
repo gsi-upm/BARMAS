@@ -29,7 +29,6 @@ import java.util.logging.Logger;
 
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import unbbayes.prs.bn.ProbabilisticNode;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -445,7 +444,7 @@ public class AgentArgumentativeCapability {
 	 * @param argumentation
 	 * @param logger
 	 */
-	public static void addConclusionHigherHypothesis(Argumentation argumentation, Logger logger) {
+	public static void addConclusionHigherHypothesis(Argumentation argumentation, Logger logger, String classificationTarget) {
 
 		logger.fine("Getting the higher hypothesis...");
 		logger.finest("Evaluating possible conclusions...");
@@ -476,7 +475,7 @@ public class AgentArgumentativeCapability {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode()
-							.equals(SolarFlareType.class.getSimpleName())
+							.equals(classificationTarget)
 							&& p.getMaxValue() > max) {// TODO check this
 						max = p.getMaxValue();
 						hyp = p.getMaxState();

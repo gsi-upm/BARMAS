@@ -127,6 +127,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		this.goToIdle();
 
@@ -298,6 +299,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 														+ " -> Problems updating beliefs.");
 								this.getLogger().warning(e.getMessage());
 								e.printStackTrace();
+								System.exit(1);
 							}
 							this.newBeliefs = true;
 						} else {
@@ -375,6 +377,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 								+ " -> Unknown state for node: "
 								+ entry.getKey() + " -> State: "
 								+ entry.getValue());
+				System.exit(1);
 			}
 
 		}
@@ -440,6 +443,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 									+ assum.getNode());
 					this.getLogger().warning(e.getMessage());
 					e.printStackTrace();
+					System.exit(1);
 				}
 			}
 		}
@@ -558,6 +562,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			this.getLogger().warning("Problems getting hypotheses...");
 			this.getLogger().warning(e.getMessage());
 			e.printStackTrace();
+			System.exit(1);
 		}
 		return ownBeliefs;
 	}
@@ -652,6 +657,7 @@ public class AdvancedWAClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		this.goToIdle();
 	}

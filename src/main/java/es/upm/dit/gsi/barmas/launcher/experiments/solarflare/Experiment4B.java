@@ -166,6 +166,7 @@ public class Experiment4B implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -254,6 +255,7 @@ public class Experiment4B implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -342,6 +344,7 @@ public class Experiment4B implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -428,6 +431,7 @@ public class Experiment4B implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -537,6 +541,7 @@ public class Experiment4B implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -648,6 +653,7 @@ public class Experiment4B implements Runnable {
 					+ File.separator + "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 

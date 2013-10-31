@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator.java
  */
-package es.upm.dit.gsi.barmas.solarflare.steppable;
+package es.upm.dit.gsi.barmas.steppable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,10 +34,10 @@ import sim.engine.Steppable;
 import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
-import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
-import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
-import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimulation;
+import es.upm.dit.gsi.barmas.model.DiagnosisCase;
+import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
+import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
+
 
 /**
  * Project: barmas File:
@@ -54,7 +54,7 @@ import es.upm.dit.gsi.barmas.solarflare.simulation.SolarFlareClassificationSimul
  * @version 0.1
  * 
  */
-public class SolarFlareEvaluator implements Steppable {
+public class DiagnosisCaseEvaluator implements Steppable {
 
 	/**
 	 * 
@@ -67,10 +67,12 @@ public class SolarFlareEvaluator implements Steppable {
 	private String[] summaryHeaders;
 	private String classResultsFile;
 	private String summaryPerClassFile;
+	private String classificationTarget;
 
-	public SolarFlareEvaluator(String output, String originalTestCases) {
+	public DiagnosisCaseEvaluator(String classificationTarget, String output, String originalTestCases) {
 		this.outputPath = output;
 		this.originalPath = originalTestCases;
+		this.classificationTarget = classificationTarget;
 
 		// Output classification results file
 		// Writing csv headers
@@ -149,23 +151,23 @@ public class SolarFlareEvaluator implements Steppable {
 	 * @see sim.engine.Steppable#step(sim.engine.SimState)
 	 */
 	public void step(SimState simstate) {
-		SolarFlareClassificationSimulation sim = (SolarFlareClassificationSimulation) simstate;
-		SolarFlare argConclusion = (SolarFlare) sim.getScenario()
-				.getNetworkElement(SolarFlareScenario.ARGUMENTATIONCONCLUSION);
-		SolarFlare centralConclusion = (SolarFlare) sim.getScenario()
-				.getNetworkElement(SolarFlareScenario.CENTRALCONCLUSION);
-		SolarFlare origflare = (SolarFlare) sim.getScenario()
-				.getNetworkElement(SolarFlareScenario.ORIGINALFLARE);
+		DiagnosisSimulation sim = (DiagnosisSimulation) simstate;
+		DiagnosisCase argConclusion = (DiagnosisCase) sim.getScenario()
+				.getNetworkElement(DiagnosisScenario.ARGUMENTATIONCONCLUSION);
+		DiagnosisCase centralConclusion = (DiagnosisCase) sim.getScenario()
+				.getNetworkElement(DiagnosisScenario.CENTRALCONCLUSION);
+		DiagnosisCase origflare = (DiagnosisCase) sim.getScenario()
+				.getNetworkElement(DiagnosisScenario.ORIGINALDIAGNOSIS);
 
-		if (argConclusion.getStatus().get(SolarFlare.READY)
-				&& centralConclusion.getStatus().get(SolarFlare.READY)) {
+		if (argConclusion.getStatus().get(DiagnosisCase.READY)
+				&& centralConclusion.getStatus().get(DiagnosisCase.READY)) {
 
 			String argClass = (String) argConclusion
-					.getProperty(SolarFlareType.class.getSimpleName());
+					.getProperty(classificationTarget);
 			String centralClass = (String) centralConclusion
-					.getProperty(SolarFlareType.class.getSimpleName());
+					.getProperty(classificationTarget);
 			String origClass = (String) origflare
-					.getProperty(SolarFlareType.class.getSimpleName());
+					.getProperty(classificationTarget);
 			sim.getLogger().info("-----> Writing CSV files...");
 			try {
 				FileWriter fw = new FileWriter(classResultsFile, true); // append

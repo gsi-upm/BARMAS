@@ -224,6 +224,7 @@ public class SummaryCreator {
 			logger.warning("Impossible to create summary file for simulation: "
 					+ simulationName + " in file: " + outputPath);
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 	}

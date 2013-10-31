@@ -21,7 +21,7 @@ package es.upm.dit.gsi.barmas.launcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.upm.dit.gsi.barmas.launcher.experiments.solarflare.Experiment1;
+import es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.AgentValidator;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
@@ -45,10 +45,10 @@ public class ExperimentExecutor {
 	 */
 	public static void main(String[] args) {
 
-		String summaryFile = "output/global-summary.csv";
+		String summaryFile = "global-summary.csv";
 		long seed = 0;
-		// int mode = SimulationConfiguration.DEBUGGING_MODE;
-		int mode = SimulationConfiguration.SIMULATION_MODE;
+//		int mode = SimulationConfiguration.DEBUGGING_MODE;
+		 int mode = SimulationConfiguration.SIMULATION_MODE;
 		List<Runnable> experiments = new ArrayList<Runnable>();
 
 		// **************************
@@ -93,6 +93,7 @@ public class ExperimentExecutor {
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+					System.exit(1);
 				}
 			}
 
@@ -110,9 +111,9 @@ public class ExperimentExecutor {
 	 */
 	private static void addSolarFlareExperiments(List<Runnable> experiments,
 			int mode, long seed, String summaryFile) {
-		Experiment1 exp1 = new Experiment1(summaryFile, seed, mode, true);
-		experiments.add(exp1);
-	
+		// Experiment1 exp1 = new Experiment1(summaryFile, seed, mode, true);
+		// experiments.add(exp1);
+
 		// Experiment3 exp3 = new Experiment3(summaryFile, seed, mode, true);
 		// experiments.add(exp3);
 		// Experiment3A exp3a = new Experiment3A(summaryFile, seed, mode, true);
@@ -165,8 +166,15 @@ public class ExperimentExecutor {
 	 */
 	private static void addKowlanCZExperiments(List<Runnable> experiments,
 			int mode, long seed, String summaryFile) {
-		// TODO Auto-generated method stub
-		
+		AgentValidator exp00 = new AgentValidator(summaryFile, seed, mode, 0);
+		experiments.add(exp00);
+		AgentValidator exp01 = new AgentValidator(summaryFile, seed, mode, 1);
+		experiments.add(exp01);
+		AgentValidator exp02 = new AgentValidator(summaryFile, seed, mode, 2);
+		experiments.add(exp02);
+		AgentValidator exp03 = new AgentValidator(summaryFile, seed, mode, 3);
+		experiments.add(exp03);
+
 	}
 
 }

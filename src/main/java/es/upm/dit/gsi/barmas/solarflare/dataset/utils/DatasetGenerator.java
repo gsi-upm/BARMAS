@@ -132,8 +132,10 @@ public class DatasetGenerator {
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -174,6 +176,7 @@ public class DatasetGenerator {
 			logger.info("Number of Essentials: " + essentials.size());
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		
 		
@@ -251,8 +254,10 @@ public class DatasetGenerator {
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 }

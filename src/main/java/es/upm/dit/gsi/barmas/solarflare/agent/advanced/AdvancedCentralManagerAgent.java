@@ -44,6 +44,7 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -215,6 +216,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 			argflare.setCurrentStatus(SolarFlare.READY, true);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -245,8 +247,10 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 			this.writeArgumentsInFriendlyFormat(currentArgumentation);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -589,7 +593,7 @@ public class AdvancedCentralManagerAgent extends SimpleShanksAgent implements
 	public void finishArgumenation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
 		AgentArgumentativeCapability.addConclusionHigherHypothesis(
-				argumentation, this.getLogger());
+				argumentation, this.getLogger(), SolarFlareType.class.getSimpleName());
 		this.argumentation2File(this.getCurrentArgumentation());
 		argumentation.setFinished(true);
 		this.getLogger().info(

@@ -16,22 +16,10 @@
 /**
  * es.upm.dit.gsi.barmas.model.element.device.SolarFlare.java
  */
-package es.upm.dit.gsi.barmas.solarflare.model;
+package es.upm.dit.gsi.barmas.model;
 
 import java.util.logging.Logger;
 
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Activity;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Area;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.BecomeHist;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.CNode;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.Evolution;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.HistComplex;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.LargestSpotSize;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.MNode;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.PrevStatus24Hour;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SpotDistribution;
-import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.XNode;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.element.device.Device;
 
@@ -50,18 +38,23 @@ import es.upm.dit.gsi.shanks.model.element.device.Device;
  * @version 0.1
  * 
  */
-public class SolarFlare extends Device {
+public class DiagnosisCase extends Device {
 
 	public static final String READY = "READY";
 
 	private int caseID;
+	private String[] variables;
 
 	/**
 	 * Constructor
 	 * 
 	 */
-	public SolarFlare(String id, Logger logger) {
+	public DiagnosisCase(String id, String[] variables, Logger logger) {
 		super(id, READY, false, logger);
+		this.variables = variables;
+		for (String variable : variables) {
+			this.addProperty(variable, "");
+		}
 	}
 
 	/*
@@ -72,19 +65,7 @@ public class SolarFlare extends Device {
 	 */
 	@Override
 	public void fillIntialProperties() {
-		this.addProperty(Activity.class.getSimpleName(), "");
-		this.addProperty(Area.class.getSimpleName(), "");
-		this.addProperty(BecomeHist.class.getSimpleName(), "");
-		this.addProperty(CNode.class.getSimpleName(), "");
-		this.addProperty(Evolution.class.getSimpleName(), "");
-		this.addProperty(HistComplex.class.getSimpleName(), "");
-		this.addProperty(LargestSpotSize.class.getSimpleName(), "");
-		this.addProperty(MNode.class.getSimpleName(), "");
-		this.addProperty(PrevStatus24Hour.class.getSimpleName(), "");
-		this.addProperty(SpotDistribution.class.getSimpleName(), "");
-		this.addProperty(XNode.class.getSimpleName(), "");
-
-		this.addProperty(SolarFlareType.class.getSimpleName(), "");
+		//Nothing to do. This is done in the constructor.
 	}
 
 	/*
@@ -138,18 +119,9 @@ public class SolarFlare extends Device {
 	 */
 	public void clean() {
 		try {
-			this.changeProperty(Activity.class.getSimpleName(), "");
-			this.changeProperty(Area.class.getSimpleName(), "");
-			this.changeProperty(BecomeHist.class.getSimpleName(), "");
-			this.changeProperty(CNode.class.getSimpleName(), "");
-			this.changeProperty(Evolution.class.getSimpleName(), "");
-			this.changeProperty(HistComplex.class.getSimpleName(), "");
-			this.changeProperty(LargestSpotSize.class.getSimpleName(), "");
-			this.changeProperty(MNode.class.getSimpleName(), "");
-			this.changeProperty(PrevStatus24Hour.class.getSimpleName(), "");
-			this.changeProperty(SpotDistribution.class.getSimpleName(), "");
-			this.changeProperty(XNode.class.getSimpleName(), "");
-			this.changeProperty(SolarFlareType.class.getSimpleName(), "");
+			for (String variable : variables) {
+				this.changeProperty(variable, "");
+			}
 			this.setCaseID(-1);
 		} catch (ShanksException e) {
 			e.printStackTrace();
@@ -163,11 +135,15 @@ public class SolarFlare extends Device {
 	public void reset() {
 		try {
 			this.clean();
-			this.setCurrentStatus(SolarFlare.READY, false);
+			this.setCurrentStatus(DiagnosisCase.READY, false);
 		} catch (ShanksException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public String[] getPossibleVariables() {
+		return this.variables;
 	}
 
 }

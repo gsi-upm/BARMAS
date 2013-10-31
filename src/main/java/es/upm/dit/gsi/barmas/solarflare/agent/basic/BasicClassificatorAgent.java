@@ -101,6 +101,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 		// Register in manager
@@ -237,6 +238,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 									+ entry.getValue());
 
 					sim.getLogger().warning(e.getMessage());
+					System.exit(1);
 				}
 			}
 		}
@@ -249,6 +251,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 							SolarFlareType.class.getSimpleName());
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		String hyp = "";
 		float maxValue = 0;
@@ -340,6 +343,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 									+ " -> Unknown state for node: "
 									+ entry.getKey() + " -> State: "
 									+ entry.getValue());
+					System.exit(1);
 				}
 
 			}
@@ -375,6 +379,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 					"Initial argument sent by agent: " + this.getID());
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -439,6 +444,7 @@ public class BasicClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 

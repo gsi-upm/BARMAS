@@ -61,6 +61,7 @@ public class LogConfigurator {
 		} catch (IOException e) {
 			logger.warning("Error configuring the log file.");
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 

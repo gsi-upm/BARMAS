@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.simulation.BarmasBasicSimulation.java
  */
-package es.upm.dit.gsi.barmas.solarflare.simulation;
+package es.upm.dit.gsi.barmas.simulation;
 
 import java.util.List;
 import java.util.Properties;
@@ -24,8 +24,8 @@ import java.util.Properties;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
-import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareEvaluator;
-import es.upm.dit.gsi.barmas.solarflare.steppable.SolarFlareGenerator;
+import es.upm.dit.gsi.barmas.steppable.DiagnosisCaseEvaluator;
+import es.upm.dit.gsi.barmas.steppable.DiagnosisCaseGenerator;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.ShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -35,9 +35,8 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.simulation.BarmasBasicSimulation.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -46,7 +45,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class SolarFlareClassificationSimulation extends ShanksSimulation {
+public class DiagnosisSimulation extends ShanksSimulation {
 
 	/**
 	 * 
@@ -63,7 +62,7 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 	 * @param properties
 	 * @throws ShanksException
 	 */
-	public SolarFlareClassificationSimulation(long seed,
+	public DiagnosisSimulation(long seed,
 			Class<? extends Scenario> scenarioClass, String scenarioID,
 			String initialState, Properties properties) throws ShanksException {
 		super(seed, scenarioClass, scenarioID, initialState, properties);
@@ -85,14 +84,16 @@ public class SolarFlareClassificationSimulation extends ShanksSimulation {
 			System.exit(1);
 		}
 		schedule.scheduleRepeating(Schedule.EPOCH, 3, manager, 1);
-		Steppable generator = new SolarFlareGenerator(this.getScenario()
-				.getProperties().getProperty(SimulationConfiguration.EXPDATA)
-				+ "/dataset/testdataset.csv");
+		Steppable generator = new DiagnosisCaseGenerator(this.getScenario()
+				.getProperties().getProperty(SimulationConfiguration.TESTDATASET));
 		schedule.scheduleRepeating(Schedule.EPOCH, 6, generator, 1);
-		Steppable evaluator = new SolarFlareEvaluator(this.getScenario()
-				.getProperties().getProperty(SimulationConfiguration.EXPOUTPUT), this.getScenario()
-				.getProperties().getProperty(SimulationConfiguration.EXPDATA)
-				+ "/dataset/testdataset.csv");
+		Steppable evaluator = new DiagnosisCaseEvaluator(this.getScenario()
+				.getProperties()
+				.getProperty(SimulationConfiguration.CLASSIFICATIONTARGET),
+				this.getScenario().getProperties()
+						.getProperty(SimulationConfiguration.EXPOUTPUT), this
+						.getScenario().getProperties()
+						.getProperty(SimulationConfiguration.TESTDATASET));
 		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 1);
 	}
 

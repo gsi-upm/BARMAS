@@ -108,6 +108,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.loadNetwork(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		this.goToIdle();
 
@@ -279,6 +280,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 									+ " -> Unknown state for node: "
 									+ entry.getKey() + " -> State: "
 									+ entry.getValue());
+					System.exit(1);
 				}
 
 			}
@@ -310,6 +312,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			sim.getLogger().fine("Argument sent by agent: " + this.getID());
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -394,6 +397,7 @@ public class AdvancedClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 		this.goToIdle();
 	}

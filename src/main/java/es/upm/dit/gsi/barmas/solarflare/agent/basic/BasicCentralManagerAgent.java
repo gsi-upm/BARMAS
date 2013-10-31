@@ -43,6 +43,7 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.solarflare.model.SolarFlare;
 import es.upm.dit.gsi.barmas.solarflare.model.scenario.SolarFlareScenario;
+import es.upm.dit.gsi.barmas.solarflare.model.vocabulary.SolarFlareType;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -207,6 +208,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 			argflare.setCurrentStatus(SolarFlare.READY, true);
 		} catch (ShanksException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -235,7 +237,7 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 		// THIS IS THE MOST IMPORTANT METHOD IN THIS AGENT
 		// IT EVALUATES THE ARGUMENTATION AND EXTRACTS THE FINAL CONCLUSION
 		AgentArgumentativeCapability
-				.addConclusionHigherHypothesis(argumentation, this.getLogger());
+				.addConclusionHigherHypothesis(argumentation, this.getLogger(), SolarFlareType.class.getSimpleName());
 
 		this.argumentation2File(argumentation);
 		argumentation.setFinished(true);
@@ -440,8 +442,10 @@ public class BasicCentralManagerAgent extends SimpleShanksAgent implements
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
