@@ -146,6 +146,7 @@ public class AgentBayesLearningCapabilityTest {
 		} catch (Exception e) {
 			logger.warning("Exception reasoning with learnt BN -> ");
 			logger.warning(e.getMessage());
+			Assert.fail();
 		}
 	}
 
@@ -174,6 +175,7 @@ public class AgentBayesLearningCapabilityTest {
 		} catch (Exception e) {
 			logger.warning("Exception reasoning with learnt BN -> ");
 			logger.warning(e.getMessage());
+			Assert.fail();
 		}
 	}
 //
@@ -198,6 +200,7 @@ public class AgentBayesLearningCapabilityTest {
 //		} catch (Exception e) {
 //			logger.warning("Exception reasoning with learnt BN -> ");
 //			logger.warning(e.getMessage());
+//	Assert.fail();
 //		}
 //
 //	}
@@ -231,6 +234,7 @@ public class AgentBayesLearningCapabilityTest {
 //		} catch (Exception e) {
 //			logger.warning("Exception reasoning with learnt BN -> ");
 //			logger.warning(e.getMessage());
+//	Assert.fail();
 //		}
 //
 //	}
