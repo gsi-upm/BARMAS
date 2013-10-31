@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.solarflare.launcher.experiments.Experiment1.java
  */
-package es.upm.dit.gsi.barmas.launcher.experiments;
+package es.upm.dit.gsi.barmas.launcher.experiments.solarflare;
 
 import java.io.File;
 import java.util.ArrayList;

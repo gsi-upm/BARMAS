@@ -21,14 +21,7 @@ package es.upm.dit.gsi.barmas.launcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3;
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3A;
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3B;
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment3C;
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4;
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4A;
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4B;
-import es.upm.dit.gsi.barmas.launcher.experiments.Experiment4C;
+import es.upm.dit.gsi.barmas.launcher.experiments.solarflare.Experiment1;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
@@ -58,51 +51,19 @@ public class ExperimentExecutor {
 		int mode = SimulationConfiguration.SIMULATION_MODE;
 		List<Runnable> experiments = new ArrayList<Runnable>();
 
-		// Experiment1 exp1 = new Experiment1(summaryFile, seed, mode, true);
-		// experiments.add(exp1);
+		// **************************
+		// SOLAR FLARE EXPERIMENTS
+		// **************************
+		ExperimentExecutor.addSolarFlareExperiments(experiments, mode, seed,
+				summaryFile);
+		// ****************************************
 
-		Experiment3 exp3 = new Experiment3(summaryFile, seed, mode, true);
-		experiments.add(exp3);
-		Experiment3A exp3a = new Experiment3A(summaryFile, seed, mode, true);
-		experiments.add(exp3a);
-		Experiment3B exp3b = new Experiment3B(summaryFile, seed, mode, true);
-		experiments.add(exp3b);
-		Experiment3C exp3c = new Experiment3C(summaryFile, seed, mode, true);
-		experiments.add(exp3c);
-
-		double threshold = 1;
-		double beliefThreshold = 1;
-		boolean validated = false;
-		// double delta = 0.05;
-		double delta = 0.2;
-
-		// double threshold = 0.2;
-		// double beliefThreshold = 0.1;
-		// boolean validated = true;
-
-		while (threshold > 0.01) {
-			while (beliefThreshold > 0.01) {
-				// Experiment2 exp2 = new Experiment2(summaryFile, seed,
-				// threshold, beliefThreshold, mode, !validated);
-				// experiments.add(exp2);
-				Experiment4 exp4 = new Experiment4(summaryFile, seed,
-						threshold, beliefThreshold, mode, !validated);
-				experiments.add(exp4);
-				Experiment4A exp4a = new Experiment4A(summaryFile, seed,
-						threshold, beliefThreshold, mode, !validated);
-				experiments.add(exp4a);
-				Experiment4B exp4b = new Experiment4B(summaryFile, seed,
-						threshold, beliefThreshold, mode, !validated);
-				experiments.add(exp4b);
-				Experiment4C exp4c = new Experiment4C(summaryFile, seed,
-						threshold, beliefThreshold, mode, !validated);
-				experiments.add(exp4c);
-				validated = true;
-				beliefThreshold = beliefThreshold - delta;
-			}
-			beliefThreshold = 1;
-			threshold = threshold - delta;
-		}
+		// **************************
+		// KOWLANCZ EXPERIMENTS
+		// **************************
+		ExperimentExecutor.addKowlanCZExperiments(experiments, mode, seed,
+				summaryFile);
+		// ****************************************
 
 		// Lauch experiments
 		int maxThreads = new Integer(args[0]);
@@ -140,4 +101,72 @@ public class ExperimentExecutor {
 			t.start();
 		}
 	}
+
+	/**
+	 * @param experiments
+	 * @param mode
+	 * @param seed
+	 * @param summaryFile
+	 */
+	private static void addSolarFlareExperiments(List<Runnable> experiments,
+			int mode, long seed, String summaryFile) {
+		Experiment1 exp1 = new Experiment1(summaryFile, seed, mode, true);
+		experiments.add(exp1);
+	
+		// Experiment3 exp3 = new Experiment3(summaryFile, seed, mode, true);
+		// experiments.add(exp3);
+		// Experiment3A exp3a = new Experiment3A(summaryFile, seed, mode, true);
+		// experiments.add(exp3a);
+		// Experiment3B exp3b = new Experiment3B(summaryFile, seed, mode, true);
+		// experiments.add(exp3b);
+		// Experiment3C exp3c = new Experiment3C(summaryFile, seed, mode, true);
+		// experiments.add(exp3c);
+		//
+		// double threshold = 1;
+		// double beliefThreshold = 1;
+		// boolean validated = false;
+		// // double delta = 0.05;
+		// double delta = 0.2;
+		//
+		// // double threshold = 0.2;
+		// // double beliefThreshold = 0.1;
+		// // boolean validated = true;
+		//
+		// while (threshold > 0.01) {
+		// while (beliefThreshold > 0.01) {
+		// // Experiment2 exp2 = new Experiment2(summaryFile, seed,
+		// // threshold, beliefThreshold, mode, !validated);
+		// // experiments.add(exp2);
+		// Experiment4 exp4 = new Experiment4(summaryFile, seed,
+		// threshold, beliefThreshold, mode, !validated);
+		// experiments.add(exp4);
+		// Experiment4A exp4a = new Experiment4A(summaryFile, seed,
+		// threshold, beliefThreshold, mode, !validated);
+		// experiments.add(exp4a);
+		// Experiment4B exp4b = new Experiment4B(summaryFile, seed,
+		// threshold, beliefThreshold, mode, !validated);
+		// experiments.add(exp4b);
+		// Experiment4C exp4c = new Experiment4C(summaryFile, seed,
+		// threshold, beliefThreshold, mode, !validated);
+		// experiments.add(exp4c);
+		// validated = true;
+		// beliefThreshold = beliefThreshold - delta;
+		// }
+		// beliefThreshold = 1;
+		// threshold = threshold - delta;
+		// }
+	}
+
+	/**
+	 * @param experiments
+	 * @param mode
+	 * @param seed
+	 * @param summaryFile
+	 */
+	private static void addKowlanCZExperiments(List<Runnable> experiments,
+			int mode, long seed, String summaryFile) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

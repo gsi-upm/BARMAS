@@ -26,5 +26,7 @@ public class SimulationConfiguration {
 	
 	public final static String EXPDATA = "expDataPath";
 	public final static String EXPOUTPUT = "expOutputPath";
+	
+	public final static String CLASSIFICATIONTARGET = "classificationTarget";
 
 }
