@@ -16,7 +16,7 @@
 /**
  * es.upm.dit.gsi.barmas.kowlancz.dataset.utils.DatasetSplitter.java
  */
-package es.upm.dit.gsi.barmas.dataset.utils.kowlancz;
+package es.upm.dit.gsi.barmas.dataset.utils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -31,12 +31,11 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.dataset.utils.kowlancz.DatasetSplitter.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.dataset.utils.kowlancz.DatasetSplitter.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -91,7 +90,7 @@ public class DatasetSplitter {
 	 * @param scenario
 	 * @throws Exception
 	 */
-	private void splitDataset(double ratio, int agents,
+	public void splitDataset(double ratio, int agents,
 			String originalDatasetPath, String outputDir, boolean central,
 			String scenario) throws Exception {
 
@@ -101,6 +100,10 @@ public class DatasetSplitter {
 		}
 
 		logger.info("--> splitDataset()");
+		logger.info("Creating experiment.info...");
+		this.createExperimentInfoFile(ratio, agents, originalDatasetPath,
+				outputDir, central, scenario);
+
 		try {
 			// Look for essentials
 			List<String[]> essentials = this.getEssentials(originalDatasetPath,
@@ -196,6 +199,36 @@ public class DatasetSplitter {
 	}
 
 	/**
+	 * @param ratio
+	 * @param agents
+	 * @param originalDatasetPath
+	 * @param outputDir
+	 * @param central
+	 * @param scenario
+	 */
+	private void createExperimentInfoFile(double ratio, int agents,
+			String originalDatasetPath, String outputDir, boolean central,
+			String scenario) {
+
+		try {
+			String fileName = outputDir + "/experiment.info";
+
+			FileWriter fw = new FileWriter(new File(fileName));
+			fw.write("Scenario: " + scenario + "\n");
+			fw.write("Test Cases Ratio: " + Double.toString(ratio) + "\n");
+			fw.write("Number of Agents: " + Integer.toString(agents) + "\n");
+			fw.write("Original dataset: " + originalDatasetPath + "\n");
+			fw.write("Experiment dataset folder: " + outputDir + "\n");
+			fw.write("Central approach: " + Boolean.toString(central) + "\n");
+			fw.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	/**
 	 * @param originalDatasetPath
 	 * @param scenario
 	 * @return
@@ -226,16 +259,6 @@ public class DatasetSplitter {
 					}
 				}
 			}
-
-			// **********************
-			String[] row = new String[headers.length];
-			for (int i = 0; i < headers.length - 1; i++) {
-				row[i] = "OK";
-			}
-			row[headers.length - 1] = scenario + "AllOk";
-			essentials.add(row);
-			// ****************** ATTENTION WITH THIS, IT IS NOT GENERIC
-			// ONLY FOR KOWLAN CZ SCENARIOS
 
 			logger.info("Number of Essentials: " + essentials.size());
 		} catch (Exception e) {

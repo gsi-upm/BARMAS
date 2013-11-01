@@ -39,26 +39,31 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.AgentValidator.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.
+ * ExperimentArgumentationBasicXAgents.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
- * @date 31/10/2013
+ * @date 01/11/2013
  * @version 0.1
  * 
  */
-public class AgentValidator implements Runnable {
+public class ExperimentArgumentationBasicXAgents implements Runnable {
 
 	private String summaryFile;
+	private String experimentDatasetFolder;
+	private String experimentOutputFolder;
+	private String testDataset;
 	private long seed;
 	private int mode;
+	private String classificationTarget;
+	private String simulationID;
 	private int agentsNumber;
+	private int lostEvidencesPerAgent;
 
 	/**
 	 * Constructor
@@ -66,27 +71,48 @@ public class AgentValidator implements Runnable {
 	 * @param summaryFile
 	 * @param seed
 	 */
-	public AgentValidator(String summaryFile, long seed, int mode,
-			int agentsNumber) {
+	public ExperimentArgumentationBasicXAgents(String simulationID,
+			String summaryFile, long seed, int mode,
+			String experimentDatasetFolder, String experimentOutputFolder,
+			String testDataset, String classificationTarget, int agentsNumber,
+			int lostEvidencesPerAgent) {
 		this.summaryFile = summaryFile;
+		this.agentsNumber = agentsNumber;
 		this.seed = seed;
 		this.mode = mode;
-		this.agentsNumber = agentsNumber;
+		this.experimentDatasetFolder = experimentDatasetFolder;
+		this.experimentOutputFolder = experimentOutputFolder;
+		File f = new File(experimentOutputFolder);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		this.testDataset = testDataset;
+		this.classificationTarget = classificationTarget;
+		this.simulationID = simulationID;
+		this.lostEvidencesPerAgent = lostEvidencesPerAgent;
 	}
 
-	private void launchValidationAgent(long seed, String summaryFile, int mode,
-			int agentid) {
+	private void launchExperiment(String simulationID, long seed,
+			String summaryFile, int mode, String experimentDatasetFolder,
+			String experimentOutputFolder, String testDataset,
+			String classificationTarget, int agentsNumber,
+			int lostEvidencesPerAgent) {
 		// Simulation properties
-		String simulationName = "Validator-Agent" + agentid
-				+ "-seed-" + seed + "-timestamp-" + System.currentTimeMillis();
-		String classificationTarget = "Diagnosis";
+		String simulationName = "";
+		if (simulationID == null || simulationID.equals("")) {
+			simulationName = this.getClass().getSimpleName() + "-seed-" + seed
+					+ "-timestamp-" + System.currentTimeMillis();
+		} else {
+			simulationName = this.getClass().getSimpleName() + "-"
+					+ simulationID + "-seed-" + seed + "-timestamp-"
+					+ System.currentTimeMillis();
+		}
 		// Logging properties
 		Logger logger = Logger.getLogger(simulationName);
 		Level level = Level.ALL;
-		String experimentDatasetPath = "src/main/resources/kowlancz-CZ02/exp1";
-		String experimentOutputPath = "kowlancz-output/" + simulationName;
-		String testDataset = experimentDatasetPath + "/dataset/test-dataset.csv";
-		LogConfigurator.log2File(logger, simulationName, level,
+		String experimentOutputPath = experimentOutputFolder + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, "simulation-logs", level,
 				experimentOutputPath);
 
 		logger.info("--> Configuring simulation...");
@@ -94,9 +120,9 @@ public class AgentValidator implements Runnable {
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
 		scenarioProperties.put(SimulationConfiguration.EXPDATA,
-				experimentDatasetPath);
-		scenarioProperties.put(SimulationConfiguration.TESTDATASET,
-				testDataset);
+				experimentDatasetFolder);
+		scenarioProperties
+				.put(SimulationConfiguration.TESTDATASET, testDataset);
 		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
 				experimentOutputPath);
 		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET,
@@ -123,23 +149,36 @@ public class AgentValidator implements Runnable {
 		for (int i = 0; i < headers.length - 1; i++) {
 			sensors.add(headers[i]);
 		}
+		for (int i = 0; i < agentsNumber * lostEvidencesPerAgent; i++) {
+			sensors.remove(i);
+		}
 		DiagnosisBayesCentralAgent bayes = new DiagnosisBayesCentralAgent(
-				"BayesCentral", classificationTarget, experimentDatasetPath
-						+ "/bayes/agent-" + agentid + "-dataset.net", sensors,
-				logger);
+				"BayesCentral", classificationTarget, experimentDatasetFolder
+						+ "/bayes/bayes-central-dataset.net", sensors, logger);
 		agents.add(bayes);
 
-		// Argumentation AGENTS
+		// Argumentation Manager AGENTS
 		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
 				"Manager", experimentOutputPath, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
 				classificationTarget);
 		scenarioProperties.put("ManagerAgent", manager);
-		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
-				"ArgAgent" + agentid, manager, classificationTarget,
-				experimentDatasetPath + "/bayes/agent-" + agentid
-						+ "-dataset.net", sensors, logger);
-		agents.add(agent);
+
+		// Argumentation AGENTS
+		for (int agentNum = 0; agentNum < agentsNumber; agentNum++) {
+			sensors = new ArrayList<String>();
+			for (int i = 0; (i * agentsNumber) + agentNum < headers.length - 1; i++) {
+				sensors.add(headers[(i * agentsNumber) + agentNum]);
+			}
+			for (int i = 0; i < lostEvidencesPerAgent; i++) {
+				sensors.remove(i);
+			}
+			AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
+					"ArgAgent" + agentNum, manager, classificationTarget,
+					experimentDatasetFolder + "/bayes/agent-" + agentNum
+							+ "-dataset.net", sensors, logger);
+			agents.add(agent);
+		}
 
 		scenarioProperties.put("AGENTS", agents);
 
@@ -176,7 +215,9 @@ public class AgentValidator implements Runnable {
 	 */
 	@Override
 	public void run() {
-		this.launchValidationAgent(seed, summaryFile, mode, this.agentsNumber);
+		this.launchExperiment(simulationID, seed, summaryFile, mode,
+				experimentDatasetFolder, experimentOutputFolder, testDataset,
+				classificationTarget, agentsNumber, lostEvidencesPerAgent);
 	}
 
 }

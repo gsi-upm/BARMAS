@@ -58,7 +58,7 @@ public class LogConfigurator {
 			f = new File(parent + File.separator + dir + File.separator
 					+ "logs");
 			if (!f.isDirectory()) {
-				boolean made = f.mkdir();
+				boolean made = f.mkdirs();
 				if (!made) {
 					logger.warning("Impossible to create log directory");
 				}

@@ -18,6 +18,8 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.learning.bayes;
 
+import java.io.File;
+
 import smile.Network;
 import smile.learning.BayesianSearch;
 import smile.learning.DataSet;
@@ -54,10 +56,23 @@ public class AgentBayesLearningCapability {
 		bs.setPriorSampleSize(50);
 		bs.setPriorLinkProbability(0.01);
 		bs.setMaxSearchTime(0);
-		
+
 		// Algorithm execution
 		Network bn = bs.learn(dataset);
+
+		// Check if folder parent exists
+		File f = new File(agent.getBNOutputFile());
+		File parent = f.getParentFile();
+		if (!parent.exists()) {
+			parent.mkdirs();
+		}
+
+		// Write BN file
 		bn.writeFile(agent.getBNOutputFile());
+		File checkFile = new File(agent.getBNOutputFile());
+		while (!checkFile.exists()) {
+			// Wait a bit...
+		}
 		agent.getLogger().fine(
 				"BN learnt in: " + agent.getBNOutputFile() + " from: "
 						+ datasetFile);
@@ -66,8 +81,13 @@ public class AgentBayesLearningCapability {
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent
 					.getBNOutputFile());
+			agent.getLogger().info(
+					"BN learnt in: " + agent.getBNOutputFile() + " from: "
+							+ datasetFile 
+							 + " is compatible with Unbbayes.");
 		} catch (ShanksException e) {
-			agent.getLogger().warning("BN is disconnected. Looking for disconnected nodes.");
+			agent.getLogger().warning(
+					"BN is disconnected. Looking for disconnected nodes.");
 			// If there is an exception, the net is disconnected.
 			// So, new connections (arcs) are created.
 			int[] allNodes = bn.getAllNodes();
@@ -75,19 +95,39 @@ public class AgentBayesLearningCapability {
 				int[] parents = bn.getParents(node);
 				int[] children = bn.getChildren(node);
 				if (parents.length == 0 && children.length == 0) {
-					agent.getLogger().warning("Disconnected Node Found: " + bn.getNodeId(node));
-					bn.addArc(allNodes[0], node);
+					agent.getLogger().fine(
+							"Disconnected Node Found: " + bn.getNodeId(node));
+					if (node == allNodes[0]) {
+						bn.addArc(allNodes[1], node);
+					} else {
+						bn.addArc(allNodes[0], node);
+					}
+					agent.getLogger().fine(
+							"Node " + bn.getNodeId(node)
+									+ " is already connected in "
+									+ agent.getBNOutputFile());
 				}
 			}
 			bn.writeFile(agent.getBNOutputFile());
+			checkFile = new File(agent.getBNOutputFile());
+			while (!checkFile.exists()) {
+				// Wait a bit...
+			}
+			try {
+				ShanksAgentBayesianReasoningCapability.loadNetwork(agent
+						.getBNOutputFile());
+			} catch (Exception e1) {
+				if (e1.getMessage().contains("cicle")) {
+					agent.getLogger().warning(
+							"--> Cicle found. Trying again...");
+				} else {
+					agent.getLogger()
+							.warning(
+									"Learnt net is not compatible with Unbbayes. Trying again...");
+				}
+				AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+			}
 		}
 	}
-	
-	// TODO check if I really have to implement this method
-//	public static void validateBN(String netFile, String testDatasetFile) {
-//		DataMatch matching = new DataMatch();
-//		matching
-//		Validator validator = new Validator(net, testDataset, matching);
-//	}
 
 }

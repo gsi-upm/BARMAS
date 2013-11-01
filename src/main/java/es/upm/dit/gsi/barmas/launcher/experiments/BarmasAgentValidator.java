@@ -13,10 +13,11 @@
  * Contributors:
  *     alvarocarrera - initial API and implementation
  ******************************************************************************/
-package es.upm.dit.gsi.barmas.launcher.experiments.kowlancz;
+package es.upm.dit.gsi.barmas.launcher.experiments;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +27,9 @@ import java.util.logging.Logger;
 
 import com.csvreader.CsvReader;
 
-import es.upm.dit.gsi.barmas.agent.AdvancedCentralManagerAgent;
-import es.upm.dit.gsi.barmas.agent.AdvancedClassificatorAgent;
-import es.upm.dit.gsi.barmas.agent.DiagnosisBayesCentralAgent;
+import es.upm.dit.gsi.barmas.agent.BarmasBayesCentralAgent;
+import es.upm.dit.gsi.barmas.agent.BarmasClassificatorAgent;
+import es.upm.dit.gsi.barmas.agent.BarmasManagerAgent;
 import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.launcher.utils.SummaryCreator;
@@ -39,12 +40,11 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.Experiment5.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.launcher.experiments.kowlancz.AgentValidator.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -53,44 +53,69 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class Experiment5 implements Runnable {
+public class BarmasAgentValidator implements Runnable {
 
 	private String summaryFile;
 	private long seed;
 	private int mode;
+	private String agentID;
+	private String bnFile;
+	private String datasetFile;
+	private String experimentOutputFolder;
+	private String testDataset;
+	private String classificationTarget;
+	private String simulationID;
+
 	/**
 	 * Constructor
 	 * 
 	 * @param summaryFile
 	 * @param seed
 	 */
-	public Experiment5(String summaryFile, long seed, int mode) {
+	public BarmasAgentValidator(String simulationID, String summaryFile,
+			long seed, int mode, String agentID, String bnFile,
+			String datasetFile, String experimentOutputFolder,
+			String testDataset, String classificationTarget) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;
 		this.mode = mode;
+		this.agentID = agentID;
+		this.bnFile = bnFile;
+		this.datasetFile = datasetFile;
+		this.experimentOutputFolder = experimentOutputFolder;
+		this.testDataset = testDataset;
+		this.simulationID = simulationID;
+		this.classificationTarget = classificationTarget;
 	}
 
-	private void launchExperiment1(long seed, String summaryFile, int mode) {
+	private void launchValidationAgent(String simulationID, long seed,
+			String summaryFile, int mode, String agentID, String bnFile, String datasetFile,
+			String experimentOutputFolder, String testDataset,
+			String classificationTarget) {
 		// Simulation properties
-		String simulationName = "EXPERIMENT1-kowlancz02-seed-" + seed
-				+ "-timestamp-" + System.currentTimeMillis();
-		String classificationTarget = "Diagnosis";
+		String simulationName = "";
+		if (simulationID == null || simulationID.equals("")) {
+			simulationName = this.getClass().getSimpleName() + "-seed-" + seed
+					+ "-timestamp-" + System.currentTimeMillis();
+		} else {
+			simulationName = this.getClass().getSimpleName() + "-"
+					+ simulationID + "-seed-" + seed + "-timestamp-"
+					+ System.currentTimeMillis();
+		}
 		// Logging properties
 		Logger logger = Logger.getLogger(simulationName);
 		Level level = Level.ALL;
-		String experimentDatasetPath = "src/main/resources/kowlancz-CZ02/exp1";
-		String experimentOutputPath = "kowlancz-output/" + simulationName;
-		String testDataset = experimentDatasetPath
-				+ "/dataset/test-dataset.csv";
-		LogConfigurator.log2File(logger, simulationName, level,
+		String experimentOutputPath = experimentOutputFolder + File.separator
+				+ simulationName;
+		LogConfigurator.log2File(logger, "simulation-logs", level,
 				experimentOutputPath);
 
+		logger.info("Creating simulation info file...");
+		this.createSimulationInfoFile(experimentOutputPath);
 		logger.info("--> Configuring simulation...");
 
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
-		scenarioProperties.put(SimulationConfiguration.EXPDATA,
-				experimentDatasetPath);
 		scenarioProperties
 				.put(SimulationConfiguration.TESTDATASET, testDataset);
 		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
@@ -119,59 +144,23 @@ public class Experiment5 implements Runnable {
 		for (int i = 0; i < headers.length - 1; i++) {
 			sensors.add(headers[i]);
 		}
-		DiagnosisBayesCentralAgent bayes = new DiagnosisBayesCentralAgent(
-				"BayesCentral", classificationTarget, experimentDatasetPath
-						+ "/bayes/bayes-central-dataset.net", sensors, logger);
+		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent(
+				"BayesCentral", classificationTarget, bnFile, datasetFile, sensors,
+				logger);
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		AdvancedCentralManagerAgent manager = new AdvancedCentralManagerAgent(
-				"Manager", experimentOutputPath, logger,
+		double NOASSUMPTIONS = 2; // impossible to generate assumptions with thresholds > 1
+		BarmasManagerAgent manager = new BarmasManagerAgent(
+				"Manager", experimentOutputPath, NOASSUMPTIONS , logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
 				classificationTarget);
 		scenarioProperties.put("ManagerAgent", manager);
-
-		int agentid = 0;
-		sensors = new ArrayList<String>();
-		for (int i = 0; (i*4)+agentid<headers.length-1;i++) {
-			sensors.add(headers[(i*4)+agentid]);
-		}
-		AdvancedClassificatorAgent agent = new AdvancedClassificatorAgent(
-				"ArgAgent" + agentid, manager, classificationTarget,
-				experimentDatasetPath + "/bayes/agent-" + agentid
-						+ "-dataset.net", sensors, logger);
+		BarmasClassificatorAgent agent = new BarmasClassificatorAgent(
+				agentID, manager, classificationTarget, bnFile, datasetFile, sensors,
+				NOASSUMPTIONS, NOASSUMPTIONS, logger);
 		agents.add(agent);
 
-		agentid = 1;
-		sensors = new ArrayList<String>();
-		for (int i = 0; (i*4)+agentid<headers.length-1;i++) {
-			sensors.add(headers[(i*4)+agentid]);
-		}
-		agent = new AdvancedClassificatorAgent("ArgAgent" + agentid, manager,
-				classificationTarget, experimentDatasetPath + "/bayes/agent-"
-						+ agentid + "-dataset.net", sensors, logger);
-		agents.add(agent);
-
-		agentid = 2;
-		sensors = new ArrayList<String>();
-		for (int i = 0; (i*4)+agentid<headers.length-1;i++) {
-			sensors.add(headers[(i*4)+agentid]);
-		}
-		agent = new AdvancedClassificatorAgent("ArgAgent" + agentid, manager,
-				classificationTarget, experimentDatasetPath + "/bayes/agent-"
-						+ agentid + "-dataset.net", sensors, logger);
-		agents.add(agent);
-
-		agentid = 3;
-		sensors = new ArrayList<String>();
-		for (int i = 0; (i*4)+agentid<headers.length-1;i++) {
-			sensors.add(headers[(i*4)+agentid]);
-		}
-		agent = new AdvancedClassificatorAgent("ArgAgent" + agentid, manager,
-				classificationTarget, experimentDatasetPath + "/bayes/agent-"
-						+ agentid + "-dataset.net", sensors, logger);
-		agents.add(agent);
-		
 		scenarioProperties.put("AGENTS", agents);
 
 		logger.info("--> Simulation configured");
@@ -200,6 +189,37 @@ public class Experiment5 implements Runnable {
 		}
 	}
 
+	/**
+	 * @param experimentOutputPath
+	 */
+	private void createSimulationInfoFile(String experimentOutputPath) {
+		try {
+			String fileName = experimentOutputPath + "/simulation.info";
+
+			FileWriter fw = new FileWriter(new File(fileName));
+			fw.write("Simulation ID: " + simulationID + "\n");
+			fw.write("Seed: " + seed + "\n");
+			fw.write("Number of Agents: " + 1 + " (Validation process)\n");
+			if (mode == SimulationConfiguration.DEBUGGING_MODE) {
+				fw.write("Mode: DEBUGGING MODE\n");
+			} else {
+				fw.write("Mode: SIMULATION MODE\n");
+			}
+			fw.write("Global Summary File: " + summaryFile + "\n");
+			fw.write("Experiment Dataset File: " + testDataset
+					+ "\n");
+			fw.write("Simulation Output Folder: " + experimentOutputPath
+					+ "\n");
+			fw.write("Test dataset: " + testDataset + "\n");
+			fw.write("Classification Target: " + classificationTarget + "\n");
+			fw.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -207,7 +227,9 @@ public class Experiment5 implements Runnable {
 	 */
 	@Override
 	public void run() {
-		this.launchExperiment1(seed, summaryFile, mode);
+		this.launchValidationAgent(simulationID, seed, summaryFile, mode,
+				agentID, bnFile, datasetFile, experimentOutputFolder, testDataset,
+				classificationTarget);
 	}
 
 }
