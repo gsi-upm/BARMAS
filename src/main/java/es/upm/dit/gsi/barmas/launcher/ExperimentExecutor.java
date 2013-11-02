@@ -113,7 +113,7 @@ public class ExperimentExecutor {
 		double threshold = 1.0 + delta;
 		while (threshold > 0) {
 
-			double beliefThreshold = 1.0;
+			double beliefThreshold = 1.0 + delta;
 			while (beliefThreshold > 0) {
 
 				int lostEvidencesPerAgent = 0;
@@ -121,9 +121,9 @@ public class ExperimentExecutor {
 						/ agentsNumber) {
 
 					int tint = (int) (threshold * 100);
-					double roundedt = tint / 100;
+					double roundedt = ((double) tint) / 100;
 					int btint = (int) (beliefThreshold * 100);
-					double rounedbt = btint / 100;
+					double rounedbt = ((double) btint) / 100;
 					String simulationPrefix = simulationID + "-" + agentsNumber
 							+ "agents-TH-" + roundedt + "-BTH-" + rounedbt
 							+ "-LEPA-" + lostEvidencesPerAgent + "-IT-"
