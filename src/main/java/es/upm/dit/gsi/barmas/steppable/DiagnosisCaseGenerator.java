@@ -105,7 +105,7 @@ public class DiagnosisCaseGenerator implements Steppable {
 							"New Diagnosis Case generated in step "
 									+ sim.schedule.getSteps() + ". Case ID: "
 									+ diagnosisCase.getCaseID()
-									+ " Diagnosis: " + diagnosisCaseValues[headers.length-1]);
+									+ " Classification Target: " + diagnosisCaseValues[headers.length-1]);
 				} else {
 					sim.getLogger().info(
 							"Finishing simulation. No more test cases.");

@@ -236,7 +236,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 			origDiagnosis.reset();
 
 			sim.getLogger().info("-----> EVALUATION finished --- RESULTS: ");
-			sim.getLogger().info("-> Original Diagnosis Case: " + origClass);
+			sim.getLogger().info("-> Original Case: " + origClass);
 			sim.getLogger().info("-> Bayes Central: " + centralClass);
 			sim.getLogger().info("-> Argumentation: " + argClass);
 

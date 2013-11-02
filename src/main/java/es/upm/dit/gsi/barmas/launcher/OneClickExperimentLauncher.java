@@ -60,28 +60,49 @@ public class OneClickExperimentLauncher {
 	 * 
 	 */
 	private void click() {
-
 		// ***********************
-		// SOLAR FLARE SIMULACION BATCH
+		// MUSHROOM SIMULACION BATCH
 		// ***********************
-		simulationID = "SOLARFLARE";
-		dataset = "src/main/resources/dataset/solarflare-global.csv";
-		experimentFolder = "solarflare-simulation";
-		numberOfAgents = 5;
-		testRatio = 0.4;
+		simulationID = "MUSHROOM";
+		dataset = "src/main/resources/dataset/agaricus-lepiota.csv";
+		experimentFolder = "mushroom-simulation";
+		numberOfAgents = 10;
+		testRatio = 0.2;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		seed = 0;
 		maxThreads = 4;
-		iterations = 3;
-		classificationTarget = "SolarFlareType";
+		iterations = 1;
+		classificationTarget = "mushroomPoisonous";
 		delta = 0.6;
-
+		
 		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
 				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
 				maxThreads, iterations, classificationTarget, delta);
 		// ***********************
+
+//		// ***********************
+//		// SOLAR FLARE SIMULACION BATCH
+//		// ***********************
+//		simulationID = "SOLARFLARE";
+//		dataset = "src/main/resources/dataset/solarflare-global.csv";
+//		experimentFolder = "solarflare-simulation";
+//		numberOfAgents = 5;
+//		testRatio = 0.4;
+//		centralApproach = true;
+//		summaryFile = experimentFolder + "/" + experimentFolder
+//				+ "-summary.csv";
+//		seed = 0;
+//		maxThreads = 4;
+//		iterations = 3;
+//		classificationTarget = "SolarFlareType";
+//		delta = 0.6;
+//
+//		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+//				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+//				maxThreads, iterations, classificationTarget, delta);
+//		// ***********************
 
 		// // ***********************
 		// // KOWLANCZ02
