@@ -27,12 +27,11 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.launcher.utils.SummaryCreator.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.launcher.utils.SummaryCreator.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -49,7 +48,7 @@ public class SummaryCreator {
 		File origFile = new File(origPath);
 		File outputFile = new File(outputPath);
 		File outputFile2 = new File(outputPath.replaceAll(".csv",
-				"-onlyratios.csv"));
+				"-ready4analysis.csv"));
 		// Calculate comparative data
 		CsvWriter writer = null;
 		CsvWriter writer2 = null;
@@ -74,7 +73,7 @@ public class SummaryCreator {
 			writer.flush();
 			if (!outputFile2.exists()) {
 				writer2 = new CsvWriter(new FileWriter(outputFile2), ',');
-				String[] headers = new String[11];
+				String[] headers = new String[15];
 				headers[0] = "SimulationID";
 				headers[1] = "Type";
 				headers[2] = "Cases";
@@ -86,6 +85,10 @@ public class SummaryCreator {
 				headers[8] = "BothWrong";
 				headers[9] = "GlobalImprovementWithArgumentation";
 				headers[10] = "Draw";
+				headers[11] = "Threshold";
+				headers[12] = "BeliefThreshold";
+				headers[13] = "LEPA";
+				headers[14] = "Iteration";
 				writer2.writeRecord(headers);
 			} else {
 				writer2 = new CsvWriter(new FileWriter(outputFile2, true), ',');
@@ -187,7 +190,7 @@ public class SummaryCreator {
 			logger.info(info);
 
 			String[] totalRatio = new String[9];
-			String[] totalRatio2 = new String[11];
+			String[] totalRatio2 = new String[15];
 			totalRatio[0] = simulationName;
 			totalRatio[1] = "RATIO-TOTAL";
 			totalRatio2[0] = simulationName;
@@ -204,6 +207,21 @@ public class SummaryCreator {
 			double totalBothOK = new Double(totalRatio[7]);
 			double totalBothWrong = new Double(totalRatio[8]);
 			totalRatio2[10] = Double.toString(totalBothOK + totalBothWrong);
+
+			String[] nameSplits = simulationName.split("-");
+			for (int i = 0; i<nameSplits.length;i++) {
+				String split = nameSplits[i];
+				if (split.equals("TH")) {
+					totalRatio2[11] = nameSplits[++i];
+				} else if (split.equals("BTH")) {
+					totalRatio2[12] = nameSplits[++i];
+				} else if (split.equals("LEPA")) {
+					totalRatio2[13] = nameSplits[++i];
+				} else if (split.equals("IT")) {
+					totalRatio2[14] = nameSplits[++i];
+				}
+			}
+
 			writer.writeRecord(totalRatio);
 			writer.flush();
 			writer2.writeRecord(totalRatio2);

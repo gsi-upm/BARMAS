@@ -19,10 +19,14 @@
 package es.upm.dit.gsi.barmas.agent.capability.learning.bayes;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import smile.Network;
 import smile.learning.BayesianSearch;
+import smile.learning.DataMatch;
 import smile.learning.DataSet;
+import smile.learning.Validator;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
@@ -42,49 +46,121 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  */
 public class AgentBayesLearningCapability {
 
+	/**
+	 * @param agent
+	 * @param iterations
+	 * @param classificationTarget
+	 */
+	public static void learnBNWithBayesianSearch(BayesLearningAgent agent,
+			int iterations, String classificationTarget) {
+
+		String datasetFile = agent.getDatasetFile();
+		DataSet dataset = new DataSet();
+		dataset.readFile(datasetFile);
+
+		HashMap<Network, Double> results = new HashMap<Network, Double>();
+		for (int i = 0; i < iterations; i++) {
+			Network bn = AgentBayesLearningCapability.learnBN(dataset);
+			double validation = AgentBayesLearningCapability.validateBN(bn,
+					dataset, classificationTarget, agent);
+			results.put(bn, validation);
+		}
+		double max = 0;
+		Network betterBN = null;
+		for (Entry<Network, Double> entry : results.entrySet()) {
+			if (entry.getValue() > max) {
+				max = entry.getValue();
+				betterBN = entry.getKey();
+			}
+		}
+
+		AgentBayesLearningCapability.writeBNFile(betterBN, agent);
+		agent.getLogger()
+				.info("BN learnt in: " + agent.getBNOutputFile() + " from: "
+						+ datasetFile + " with accuracy " + max + " for node " + classificationTarget + " after " + iterations + " iterations.");
+		AgentBayesLearningCapability.testBNInUnbbayes(betterBN, agent);
+	}
+
+	/**
+	 * @param bn
+	 * @param dataset
+	 * @param classificationTarget
+	 * @return
+	 */
+	private static double validateBN(Network bn, DataSet dataset,
+			String classificationTarget, BayesLearningAgent agent) {
+		DataMatch[] matching = dataset.matchNetwork(bn);
+		Validator validator = new Validator(bn, dataset, matching);
+		validator.addClassNode(classificationTarget);
+		validator.test();
+		String[] states = bn.getOutcomeIds(classificationTarget);
+		int[][] confusionMatrix = validator
+				.getConfusionMatrix(classificationTarget);
+		double[] accuracies = new double[states.length];
+		int[] totalCasesInDatasetPerState = new int[states.length];
+		int[] successCasesInDatasetPerState = new int[states.length];
+		double globalAccuracy = 0;
+		for (int i = 0; i < states.length; i++) {
+			accuracies[i] = validator.getAccuracy(classificationTarget,
+					states[i]);
+			int totalCasesForThisState = 0;
+			int succesCasesForThisState = 0;
+			for (int j = 0; j < states.length; j++) {
+				totalCasesForThisState = totalCasesForThisState
+						+ confusionMatrix[i][j];
+				if (i == j) {
+					succesCasesForThisState = confusionMatrix[i][j];
+				}
+			}
+			totalCasesInDatasetPerState[i] = totalCasesForThisState;
+			successCasesInDatasetPerState[i] = succesCasesForThisState;
+		}
+
+		int successTotal = 0;
+		int totalCases = 0;
+		for (int i = 0; i < states.length; i++) {
+			totalCases = totalCases + totalCasesInDatasetPerState[i];
+			successTotal = successTotal + successCasesInDatasetPerState[i];
+		}
+		globalAccuracy = (double) successTotal / (double) totalCases;
+		agent.getLogger().finest(
+				"BN accuracy for node: " + classificationTarget + " equals to "
+						+ globalAccuracy);
+
+		return globalAccuracy;
+
+	}
+
+	/**
+	 * @param agent
+	 */
 	public static void learnBNWithBayesianSearch(BayesLearningAgent agent) {
 		String datasetFile = agent.getDatasetFile();
 		DataSet dataset = new DataSet();
 		dataset.readFile(datasetFile);
 
-		// Learning algorithm configuration
-		BayesianSearch bs = new BayesianSearch();
-		bs.setRandSeed(0);
-		bs.setIterationCount(20);
-		bs.setLinkProbability(0.1);
-		bs.setMaxParents(8);
-		bs.setPriorSampleSize(50);
-		bs.setPriorLinkProbability(0.01);
-		bs.setMaxSearchTime(0);
-
-		// Algorithm execution
-		Network bn = bs.learn(dataset);
-
-		// Check if folder parent exists
-		File f = new File(agent.getBNOutputFile());
-		File parent = f.getParentFile();
-		if (!parent.exists()) {
-			parent.mkdirs();
-		}
-
-		// Write BN file
-		bn.writeFile(agent.getBNOutputFile());
-		File checkFile = new File(agent.getBNOutputFile());
-		while (!checkFile.exists()) {
-			// Wait a bit...
-		}
+		Network bn = AgentBayesLearningCapability.learnBN(dataset);
+		AgentBayesLearningCapability.writeBNFile(bn, agent);
 		agent.getLogger().fine(
 				"BN learnt in: " + agent.getBNOutputFile() + " from: "
 						+ datasetFile);
 
 		// Test network in Unbbayes
+		AgentBayesLearningCapability.testBNInUnbbayes(bn, agent);
+	}
+
+	/**
+	 * @param bn
+	 * @param agent
+	 */
+	private static void testBNInUnbbayes(Network bn, BayesLearningAgent agent) {
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent
 					.getBNOutputFile());
 			agent.getLogger().info(
 					"BN learnt in: " + agent.getBNOutputFile() + " from: "
-							+ datasetFile 
-							 + " is compatible with Unbbayes.");
+							+ agent.getDatasetFile()
+							+ " is compatible with Unbbayes.");
 		} catch (ShanksException e) {
 			agent.getLogger().warning(
 					"BN is disconnected. Looking for disconnected nodes.");
@@ -109,7 +185,7 @@ public class AgentBayesLearningCapability {
 				}
 			}
 			bn.writeFile(agent.getBNOutputFile());
-			checkFile = new File(agent.getBNOutputFile());
+			File checkFile = new File(agent.getBNOutputFile());
 			while (!checkFile.exists()) {
 				// Wait a bit...
 			}
@@ -128,6 +204,45 @@ public class AgentBayesLearningCapability {
 				AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
 			}
 		}
+	}
+
+	/**
+	 * @param bn
+	 * @param agent
+	 */
+	private static void writeBNFile(Network bn, BayesLearningAgent agent) {
+		// Check if folder parent exists
+		File f = new File(agent.getBNOutputFile());
+		File parent = f.getParentFile();
+		if (!parent.exists()) {
+			parent.mkdirs();
+		}
+
+		// Write BN file
+		bn.writeFile(agent.getBNOutputFile());
+		File checkFile = new File(agent.getBNOutputFile());
+		while (!checkFile.exists()) {
+			// Wait a bit...
+		}
+	}
+
+	/**
+	 * @param dataset
+	 * @return
+	 */
+	private static Network learnBN(DataSet dataset) {
+		// Learning algorithm configuration
+		BayesianSearch bs = new BayesianSearch();
+		bs.setRandSeed(0);
+		bs.setIterationCount(20);
+		bs.setLinkProbability(0.1);
+		bs.setMaxParents(8);
+		bs.setPriorSampleSize(50);
+		bs.setPriorLinkProbability(0.01);
+		bs.setMaxSearchTime(0);
+
+		// Algorithm execution
+		return bs.learn(dataset);
 	}
 
 }

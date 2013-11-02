@@ -193,6 +193,32 @@ public class AgentBayesLearningCapabilityTest {
 			Assert.fail();
 		}
 	}
+	@Test
+	public void learningWithValidationAndReasoningTest() {
+		try {
+			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10, "SolarFlareType");
+			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
+			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
+					.getAllHypotheses(agent);
+			for (Entry<String, HashMap<String, Float>> hyp : hyps.entrySet()) {
+				float total = 0;
+				for (Entry<String, Float> values : hyp.getValue().entrySet()) {
+					float value = values.getValue();
+					total = total + value;
+					if (value > 1 || value < 0) {
+						Assert.fail();
+					}
+				}
+				Assert.assertEquals(1.0, total, 0.01);
+			}
+		} catch (Exception e) {
+			logger.warning("Exception reasoning with learnt BN -> ");
+			logger.warning(e.getMessage());
+			Assert.fail();
+		}
+	}
+	
+	
 //
 //	@Test
 //	public void ComparingLearningWithoutEvidencesTest() {

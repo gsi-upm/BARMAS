@@ -78,8 +78,8 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 				logger.info("Bayesian network loaded successfully by agent " + this.getID());
 			} catch (Exception e) {
 				try {
-					AgentBayesLearningCapability
-							.learnBNWithBayesianSearch(this);
+					AgentBayesLearningCapability.learnBNWithBayesianSearch(
+							this, 10, classificationTarget);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					System.exit(1);

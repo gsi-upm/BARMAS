@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.csvreader.CsvReader;
 
@@ -79,13 +80,14 @@ public class ExperimentExecutor {
 	public List<Runnable> getValidatorsBatch(String simulationID,
 			int agentsNumber, String summaryFile, long seed, int mode,
 			String experimentDatasetPath, String experimentOutputFolder,
-			String testDataset, String classificationTarget) {
+			String testDataset, String classificationTarget, int iteration) {
 
 		List<Runnable> experiments = new ArrayList<Runnable>();
 
 		// Validators
 		for (int i = 0; i < agentsNumber; i++) {
-			String simulationPrefix = simulationID + "-Agent" + i;
+			String simulationPrefix = simulationID + "-Agent" + i + "-TH-" + 2
+					+ "-BTH-" + 2 + "-LEPA-" + 0 + "-IT-" + iteration;
 			BarmasAgentValidator expValidator = new BarmasAgentValidator(
 					simulationPrefix, summaryFile, seed, mode, "Agent" + i,
 					experimentDatasetPath + "/bayes/agent-" + i
@@ -100,7 +102,8 @@ public class ExperimentExecutor {
 	public List<Runnable> getExperimentBatch(String simulationID,
 			int agentsNumber, String summaryFile, long seed, int mode,
 			String experimentDatasetPath, String experimentOutputFolder,
-			String testDataset, String classificationTarget, double delta) {
+			String testDataset, String classificationTarget, double delta,
+			int iteration) {
 		List<Runnable> experiments = new ArrayList<Runnable>();
 
 		// Experiments
@@ -114,7 +117,8 @@ public class ExperimentExecutor {
 			while (beliefThreshold > 0) {
 
 				int lostEvidencesPerAgent = 0;
-				while (lostEvidencesPerAgent <= numberOfEvidences) {
+				while (lostEvidencesPerAgent <= numberOfEvidences
+						/ agentsNumber) {
 
 					int tint = (int) (threshold * 100);
 					double roundedt = tint / 100;
@@ -122,7 +126,8 @@ public class ExperimentExecutor {
 					double rounedbt = btint / 100;
 					String simulationPrefix = simulationID + "-" + agentsNumber
 							+ "agents-TH-" + roundedt + "-BTH-" + rounedbt
-							+ "-LEPA-" + lostEvidencesPerAgent;
+							+ "-LEPA-" + lostEvidencesPerAgent + "-IT-"
+							+ iteration;
 					BarmasExperiment exp = new BarmasExperiment(
 							simulationPrefix, summaryFile, seed, mode,
 							experimentDatasetPath, experimentOutputFolder,
@@ -163,12 +168,17 @@ public class ExperimentExecutor {
 	/**
 	 * @param experiments
 	 * @param maxThreads
+	 * @param logger
 	 */
 	public void executeRunnables(List<Runnable> experiments, int maxThreads,
-			boolean concurrentManagement) {
+			boolean concurrentManagement, Logger logger) {
 
+		int startedExperiments = 0;
+		int finishedExperiments = 0;
 		List<Thread> threads = new ArrayList<Thread>();
 		for (Runnable experiment : experiments) {
+			logger.fine("Number of simulations executing right now: "
+					+ threads.size());
 			while (threads.size() >= maxThreads) {
 				try {
 					Thread.sleep(5000);
@@ -176,6 +186,9 @@ public class ExperimentExecutor {
 					for (Thread thread : threads) {
 						if (!thread.isAlive()) {
 							threads2Remove.add(thread);
+							finishedExperiments++;
+							logger.info("Finished experiment! -> Finished experiments: "
+									+ finishedExperiments);
 						}
 					}
 					if (!threads2Remove.isEmpty()) {
@@ -193,6 +206,9 @@ public class ExperimentExecutor {
 			Thread t = new Thread(experiment);
 			threads.add(t);
 			t.start();
+			startedExperiments++;
+			logger.info("Starting experiment... -> Number of launched experiments: "
+					+ startedExperiments);
 			if (concurrentManagement) {
 				try {
 					Thread.sleep(5000);
@@ -268,17 +284,21 @@ public class ExperimentExecutor {
 	/**
 	 * @param experiments
 	 * @param maxThreads
+	 * @param logger
 	 */
-	public void executeExperiments(List<Runnable> experiments, int maxThreads) {
-		this.executeRunnables(experiments, maxThreads, true);
+	public void executeExperiments(List<Runnable> experiments, int maxThreads,
+			Logger logger) {
+		this.executeRunnables(experiments, maxThreads, true, logger);
 	}
 
 	/**
 	 * @param experiments
 	 * @param maxThreads
+	 * @param logger
 	 */
-	public void executeValidators(List<Runnable> experiments, int maxThreads) {
-		this.executeRunnables(experiments, maxThreads, false);
+	public void executeValidators(List<Runnable> experiments, int maxThreads,
+			Logger logger) {
+		this.executeRunnables(experiments, maxThreads, false, logger);
 	}
 
 	// /**
