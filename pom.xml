@@ -79,7 +79,7 @@
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.launcher.OneClickExperimentLauncher</mainClass>
 					<arguments>
-<!-- 						<argument>4</argument> Max Threads -->
+<!-- 						<argument></argument> -->
 					</arguments>
 				</configuration>
 			</plugin>
