@@ -17,6 +17,7 @@ package es.upm.dit.gsi.barmas.launcher.logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,19 +44,12 @@ public class LogConfigurator {
 	 * Constructor
 	 * 
 	 */
-	public static void log2File(Logger logger, String name, Level level,
+	public static void log2File(Logger logger, String name, Level fileHandlerLevel, Level consoleHandlerLevel,
 			String dir) {
 		try {
 			File aux = new File(".");
 			String parent = aux.getCanonicalPath();
-			File f = new File(parent + File.separator + dir);
-			if (!f.isDirectory()) {
-				boolean made = f.mkdir();
-				if (!made) {
-					logger.warning("Impossible to create log directory");
-				}
-			}
-			f = new File(parent + File.separator + dir + File.separator
+			File f = new File(parent + File.separator + dir + File.separator
 					+ "logs");
 			if (!f.isDirectory()) {
 				boolean made = f.mkdirs();
@@ -63,14 +57,20 @@ public class LogConfigurator {
 					logger.warning("Impossible to create log directory");
 				}
 			}
+			logger.setUseParentHandlers(false);
 			logger.setLevel(Level.ALL);
 			String path = parent + File.separator + dir + File.separator
 					+ "logs" + File.separator + name + "%u.log";
 			FileHandler fh = new FileHandler(path);
 			fh.setFormatter(new SimpleFormatter());
 			fh.setEncoding("UTF-8");
-			fh.setLevel(level);
+			fh.setLevel(fileHandlerLevel);
 			logger.addHandler(fh);
+			ConsoleHandler ch = new ConsoleHandler();
+			ch.setFormatter(new SimpleFormatter());
+			ch.setEncoding("UTF-8");
+			ch.setLevel(consoleHandlerLevel);
+			logger.addHandler(ch);
 		} catch (IOException e) {
 			logger.warning("Error configuring the log file.");
 			e.printStackTrace();

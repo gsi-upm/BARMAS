@@ -162,7 +162,7 @@ public class AgentBayesLearningCapability {
 							+ agent.getDatasetFile()
 							+ " is compatible with Unbbayes.");
 		} catch (ShanksException e) {
-			agent.getLogger().warning(
+			agent.getLogger().fine(
 					"BN is disconnected. Looking for disconnected nodes.");
 			// If there is an exception, the net is disconnected.
 			// So, new connections (arcs) are created.
@@ -194,14 +194,13 @@ public class AgentBayesLearningCapability {
 						.getBNOutputFile());
 			} catch (Exception e1) {
 				if (e1.getMessage().contains("cicle")) {
-					agent.getLogger().warning(
+					agent.getLogger().fine(
 							"--> Cicle found. Trying again...");
 				} else {
 					agent.getLogger()
-							.warning(
+							.fine(
 									"Learnt net is not compatible with Unbbayes. Trying again...");
 				}
-				AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
 			}
 		}
 	}

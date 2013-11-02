@@ -34,12 +34,11 @@ import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario2DPortrayal;
 import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -78,7 +77,19 @@ public class DiagnosisScenario extends Scenario {
 	@Override
 	public Scenario2DPortrayal createScenario2DPortrayal()
 			throws ShanksException {
-		return null;
+		return new Scenario2DPortrayal(null, 0, 0) {
+			@Override
+			public void setupPortrayals() {
+			}
+
+			@Override
+			public void placeElements() {
+			}
+
+			@Override
+			public void addPortrayals() {
+			}
+		};
 	}
 
 	/*
@@ -90,7 +101,19 @@ public class DiagnosisScenario extends Scenario {
 	@Override
 	public Scenario3DPortrayal createScenario3DPortrayal()
 			throws ShanksException {
-		return null;
+		return new Scenario3DPortrayal(null, 0, 0, 0) {
+			@Override
+			public void setupPortrayals() {
+			}
+
+			@Override
+			public void placeElements() {
+			}
+
+			@Override
+			public void addPortrayals() {
+			}
+		};
 	}
 
 	/*
@@ -132,11 +155,9 @@ public class DiagnosisScenario extends Scenario {
 			bayesCentral.setCurrentStatus(DiagnosisCase.READY, false);
 			this.addNetworkElement(bayesCentral);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 		}

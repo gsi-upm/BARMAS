@@ -175,9 +175,10 @@ public class ExperimentExecutor {
 
 		int startedExperiments = 0;
 		int finishedExperiments = 0;
+		int experimentsQuantity = experiments.size();
 		List<Thread> threads = new ArrayList<Thread>();
 		for (Runnable experiment : experiments) {
-			logger.fine("Number of simulations executing right now: "
+			logger.info("Number of simulations executing right now: "
 					+ threads.size());
 			while (threads.size() >= maxThreads) {
 				try {
@@ -187,8 +188,8 @@ public class ExperimentExecutor {
 						if (!thread.isAlive()) {
 							threads2Remove.add(thread);
 							finishedExperiments++;
-							logger.info("Finished experiment! -> Finished experiments: "
-									+ finishedExperiments);
+							logger.info("Finished experiment! -> Pending experiments for this batch: "
+									+ (experimentsQuantity - finishedExperiments));
 						}
 					}
 					if (!threads2Remove.isEmpty()) {
@@ -207,8 +208,9 @@ public class ExperimentExecutor {
 			threads.add(t);
 			t.start();
 			startedExperiments++;
-			logger.info("Starting experiment... -> Number of launched experiments: "
-					+ startedExperiments);
+			logger.info("Starting experiment number: " + startedExperiments
+					+ " --> Pending experiments for this batch: "
+					+ (experimentsQuantity - finishedExperiments));
 			if (concurrentManagement) {
 				try {
 					Thread.sleep(5000);

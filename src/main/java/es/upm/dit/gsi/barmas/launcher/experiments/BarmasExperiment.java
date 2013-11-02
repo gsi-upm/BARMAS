@@ -151,10 +151,14 @@ public class BarmasExperiment implements Runnable {
 
 		// Logging properties
 		Logger logger = Logger.getLogger(simulationName);
-		Level level = Level.ALL;
+		Level fileHandlerLevel = Level.ALL;
+		Level consoleHandlerLevel = Level.WARNING;
+		if (mode==SimulationConfiguration.DEBUGGING_MODE) {
+			consoleHandlerLevel = Level.FINE;
+		}
 		String experimentOutputPath = experimentOutputFolder + File.separator
 				+ simulationName;
-		LogConfigurator.log2File(logger, "simulation-logs", level,
+		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel, consoleHandlerLevel,
 				experimentOutputPath);
 
 		logger.info("Creating simulation info file...");

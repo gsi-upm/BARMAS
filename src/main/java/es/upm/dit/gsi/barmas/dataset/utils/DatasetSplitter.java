@@ -46,8 +46,6 @@ import com.csvreader.CsvWriter;
  */
 public class DatasetSplitter {
 
-	private Logger logger = Logger.getLogger(DatasetSplitter.class.getName());
-
 	/**
 	 * @param args
 	 * @throws Exception
@@ -58,18 +56,19 @@ public class DatasetSplitter {
 
 		String originalDatasetPath = "src/main/resources/dataset/kowlancz/CZ02/CZ02-dataset.csv";
 		String outputParentDir = "src/main/resources/kowlancz-CZ02";
+		Logger logger = Logger.getLogger(DatasetSplitter.class.getSimpleName());
 
 		// Experiment 1
 		String outputDir = outputParentDir + File.separator + "exp1"
 				+ File.separator + "dataset";
 		splitter.splitDataset(0.3, 4, originalDatasetPath, outputDir, true,
-				"CZ02");
+				"CZ02", logger);
 
 		// Experiment 2
 		outputDir = outputParentDir + File.separator + "exp2" + File.separator
 				+ "dataset";
 		splitter.splitDataset(0.3, 8, originalDatasetPath, outputDir, true,
-				"CZ02");
+				"CZ02", logger);
 
 	}
 
@@ -92,22 +91,22 @@ public class DatasetSplitter {
 	 */
 	public void splitDataset(double ratio, int agents,
 			String originalDatasetPath, String outputDir, boolean central,
-			String scenario) throws Exception {
+			String scenario, Logger logger) throws Exception {
 
 		File dir = new File(outputDir);
 		if (!dir.exists() || !dir.isDirectory()) {
 			dir.mkdirs();
 		}
 
-		logger.info("--> splitDataset()");
-		logger.info("Creating experiment.info...");
+		logger.finer("--> splitDataset()");
+		logger.fine("Creating experiment.info...");
 		this.createExperimentInfoFile(ratio, agents, originalDatasetPath,
-				outputDir, central, scenario);
+				outputDir, central, scenario, logger);
 
 		try {
 			// Look for essentials
 			List<String[]> essentials = this.getEssentials(originalDatasetPath,
-					scenario);
+					scenario, logger);
 
 			HashMap<String, CsvWriter> writers = new HashMap<String, CsvWriter>();
 			CsvReader csvreader = new CsvReader(new FileReader(new File(
@@ -128,7 +127,7 @@ public class DatasetSplitter {
 				for (String[] essential : essentials) {
 					writer.writeRecord(essential);
 				}
-				logger.info("Bayes central dataset created.");
+				logger.fine("Bayes central dataset created.");
 			}
 
 			// Agent datasets
@@ -141,7 +140,7 @@ public class DatasetSplitter {
 					writer.writeRecord(essential);
 				}
 				writers.put("AGENT" + i, writer);
-				logger.info("AGENT" + i + " dataset created.");
+				logger.fine("AGENT" + i + " dataset created.");
 			}
 
 			// Test dataset
@@ -149,11 +148,11 @@ public class DatasetSplitter {
 			CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
 			writer.writeRecord(headers);
 			writers.put("TEST", writer);
-			logger.info("Test dataset created.");
+			logger.fine("Test dataset created.");
 
 			// Create an ordering queue
 			int testCases = this.calculeTestCasesQuantity(agents, ratio);
-			logger.info("For " + agents + " agents and ratio = " + ratio
+			logger.fine("For " + agents + " agents and ratio = " + ratio
 					+ " -> test cases are: " + testCases);
 			String[] ordering = new String[testCases + agents];
 			for (int i = 0; i < testCases; i++) {
@@ -195,7 +194,7 @@ public class DatasetSplitter {
 			throw e;
 		}
 
-		logger.info("<-- splitDataset()");
+		logger.finer("<-- splitDataset()");
 	}
 
 	/**
@@ -208,7 +207,7 @@ public class DatasetSplitter {
 	 */
 	private void createExperimentInfoFile(double ratio, int agents,
 			String originalDatasetPath, String outputDir, boolean central,
-			String scenario) {
+			String scenario, Logger logger) {
 
 		try {
 			String fileName = outputDir + "/experiment.info";
@@ -234,7 +233,7 @@ public class DatasetSplitter {
 	 * @return
 	 */
 	private List<String[]> getEssentials(String originalDatasetPath,
-			String scenario) {
+			String scenario, Logger logger) {
 		// Find essentials
 		List<String[]> essentials = new ArrayList<String[]>();
 		HashMap<String, List<String>> nodesAndStates = new HashMap<String, List<String>>();
@@ -260,7 +259,7 @@ public class DatasetSplitter {
 				}
 			}
 
-			logger.info("Number of Essentials: " + essentials.size());
+			logger.fine("Number of Essentials: " + essentials.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

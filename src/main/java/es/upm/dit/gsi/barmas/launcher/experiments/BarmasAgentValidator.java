@@ -89,9 +89,9 @@ public class BarmasAgentValidator implements Runnable {
 	}
 
 	private void launchValidationAgent(String simulationID, long seed,
-			String summaryFile, int mode, String agentID, String bnFile, String datasetFile,
-			String experimentOutputFolder, String testDataset,
-			String classificationTarget) {
+			String summaryFile, int mode, String agentID, String bnFile,
+			String datasetFile, String experimentOutputFolder,
+			String testDataset, String classificationTarget) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
@@ -104,11 +104,15 @@ public class BarmasAgentValidator implements Runnable {
 		}
 		// Logging properties
 		Logger logger = Logger.getLogger(simulationName);
-		Level level = Level.ALL;
+		Level fileHandlerLevel = Level.ALL;
+		Level consoleHandlerLevel = Level.WARNING;
+		if (mode == SimulationConfiguration.DEBUGGING_MODE) {
+			consoleHandlerLevel = Level.FINE;
+		}
 		String experimentOutputPath = experimentOutputFolder + File.separator
 				+ simulationName;
-		LogConfigurator.log2File(logger, "simulation-logs", level,
-				experimentOutputPath);
+		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel,
+				consoleHandlerLevel, experimentOutputPath);
 
 		logger.info("Creating simulation info file...");
 		this.createSimulationInfoFile(experimentOutputPath);
@@ -145,19 +149,20 @@ public class BarmasAgentValidator implements Runnable {
 			sensors.add(headers[i]);
 		}
 		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent(
-				"BayesCentral", classificationTarget, bnFile, datasetFile, sensors,
-				logger);
+				"BayesCentral", classificationTarget, bnFile, datasetFile,
+				sensors, logger);
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		double NOASSUMPTIONS = 2; // impossible to generate assumptions with thresholds > 1
-		BarmasManagerAgent manager = new BarmasManagerAgent(
-				"Manager", experimentOutputPath, NOASSUMPTIONS , logger,
+		double NOASSUMPTIONS = 2; // impossible to generate assumptions with
+									// thresholds > 1
+		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
+				experimentOutputPath, NOASSUMPTIONS, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
 				classificationTarget);
 		scenarioProperties.put("ManagerAgent", manager);
-		BarmasClassificatorAgent agent = new BarmasClassificatorAgent(
-				agentID, manager, classificationTarget, bnFile, datasetFile, sensors,
+		BarmasClassificatorAgent agent = new BarmasClassificatorAgent(agentID,
+				manager, classificationTarget, bnFile, datasetFile, sensors,
 				NOASSUMPTIONS, NOASSUMPTIONS, logger);
 		agents.add(agent);
 
@@ -206,10 +211,8 @@ public class BarmasAgentValidator implements Runnable {
 				fw.write("Mode: SIMULATION MODE\n");
 			}
 			fw.write("Global Summary File: " + summaryFile + "\n");
-			fw.write("Experiment Dataset File: " + testDataset
-					+ "\n");
-			fw.write("Simulation Output Folder: " + experimentOutputPath
-					+ "\n");
+			fw.write("Experiment Dataset File: " + testDataset + "\n");
+			fw.write("Simulation Output Folder: " + experimentOutputPath + "\n");
 			fw.write("Test dataset: " + testDataset + "\n");
 			fw.write("Classification Target: " + classificationTarget + "\n");
 			fw.close();
@@ -228,8 +231,8 @@ public class BarmasAgentValidator implements Runnable {
 	@Override
 	public void run() {
 		this.launchValidationAgent(simulationID, seed, summaryFile, mode,
-				agentID, bnFile, datasetFile, experimentOutputFolder, testDataset,
-				classificationTarget);
+				agentID, bnFile, datasetFile, experimentOutputFolder,
+				testDataset, classificationTarget);
 	}
 
 }
