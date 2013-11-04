@@ -79,7 +79,7 @@
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.launcher.OneClickExperimentLauncher</mainClass>
 					<arguments>
-<!-- 						<argument></argument> -->
+						<!-- <argument></argument> -->
 					</arguments>
 				</configuration>
 			</plugin>
@@ -117,7 +117,22 @@
 			<artifactId>jsmile</artifactId>
 			<version>2.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.jzy3d</groupId>
+			<artifactId>jzy3d-api</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 	</dependencies>
-
+	<repositories>
+		<repository>
+			<id>jzy3d-snapshots</id>
+			<name>Jzy3d Snapshots</name>
+			<url>http://www.jzy3d.org/maven/snapshots</url>
+		</repository>
+		<repository>
+			<id>jzy3d-releases</id>
+			<name>Jzy3d Snapshots</name>
+			<url>http://www.jzy3d.org/maven/releases</url>
+		</repository>
+	</repositories>
 </project>
