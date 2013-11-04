@@ -47,14 +47,14 @@ public class SummaryCreator {
 		Logger logger = Logger.getLogger(simulationName);
 		File origFile = new File(origPath);
 		File outputFile = new File(outputPath);
-		File outputFile2 = new File(outputPath.replaceAll(".csv",
-				"-ready4analysis.csv"));
+		File outputDetailedFile = new File(outputPath.replaceAll(".csv",
+				"-detailed.csv"));
 		// Calculate comparative data
 		CsvWriter writer = null;
 		CsvWriter writer2 = null;
 		try {
-			if (!outputFile.exists()) {
-				writer = new CsvWriter(new FileWriter(outputFile), ',');
+			if (!outputDetailedFile.exists()) {
+				writer = new CsvWriter(new FileWriter(outputDetailedFile), ',');
 				String[] headers = new String[9];
 				headers[0] = "SimulationID";
 				headers[1] = "Type";
@@ -67,12 +67,12 @@ public class SummaryCreator {
 				headers[8] = "BothWrong";
 				writer.writeRecord(headers);
 			} else {
-				writer = new CsvWriter(new FileWriter(outputFile, true), ',');
+				writer = new CsvWriter(new FileWriter(outputDetailedFile, true), ',');
 			}
 
 			writer.flush();
-			if (!outputFile2.exists()) {
-				writer2 = new CsvWriter(new FileWriter(outputFile2), ',');
+			if (!outputFile.exists()) {
+				writer2 = new CsvWriter(new FileWriter(outputFile), ',');
 				String[] headers = new String[15];
 				headers[0] = "SimulationID";
 				headers[1] = "Type";
@@ -91,7 +91,7 @@ public class SummaryCreator {
 				headers[14] = "Iteration";
 				writer2.writeRecord(headers);
 			} else {
-				writer2 = new CsvWriter(new FileWriter(outputFile2, true), ',');
+				writer2 = new CsvWriter(new FileWriter(outputFile, true), ',');
 			}
 			writer2.flush();
 
