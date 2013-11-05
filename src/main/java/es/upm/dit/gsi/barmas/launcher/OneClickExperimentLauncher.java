@@ -83,29 +83,125 @@ public class OneClickExperimentLauncher {
 		// maxThreads, iterations, classificationTarget, delta);
 		// // ***********************
 
+		// // ***********************
+		// // SOLAR FLARE SIMULACION BATCH
+		// // ***********************
+		// simulationID = "SOLARFLARE";
+		// dataset = "src/main/resources/dataset/solarflare-global.csv";
+		// experimentFolder = "solarflare-simulation";
+		// numberOfAgents = 5;
+		// testRatio = 0.4;
+		// centralApproach = true;
+		// summaryFile = experimentFolder + "/" + experimentFolder
+		// + "-summary.csv";
+		// seed = 0;
+		// maxThreads = 4;
+		// iterations = 1;
+		// classificationTarget = "SolarFlareType";
+		// delta = 0.4;
+		//
+		// this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+		// numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+		// maxThreads, iterations, classificationTarget, delta,
+		// SimulationConfiguration.DEBUGGING_MODE);
+		//
+		// // ***********************
+
+		// // ***********************
+		// // NURSERY SIMULACION BATCH
+		// // ***********************
+		// simulationID = "NURSERY";
+		// dataset = "src/main/resources/dataset/nursery.csv";
+		// experimentFolder = "nursery-simulation";
+		// numberOfAgents = 3;
+		// testRatio = 0.3;
+		// centralApproach = true;
+		// summaryFile = experimentFolder + "/" + experimentFolder
+		// + "-summary.csv";
+		// seed = 0;
+		// maxThreads = 4;
+		// iterations = 3;
+		// classificationTarget = "Classification";
+		// delta = 0.2;
+		//
+		// this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+		// numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+		// maxThreads, iterations, classificationTarget, delta,
+		// SimulationConfiguration.SIMULATION_MODE);
+		//
+		// // ***********************
+
 		// ***********************
-		// SOLAR FLARE SIMULACION BATCH
+		// POKER SIMULACION BATCH
 		// ***********************
-		simulationID = "SOLARFLARE";
-		dataset = "src/main/resources/dataset/solarflare-global.csv";
-		experimentFolder = "solarflare-simulation";
-		numberOfAgents = 5;
-		testRatio = 0.4;
+		simulationID = "POKER";
+		dataset = "src/main/resources/dataset/poker.csv";
+		experimentFolder = "poker-simulation";
+		numberOfAgents = 10;
+		testRatio = 0.1;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		seed = 0;
 		maxThreads = 4;
-		iterations = 1;
-		classificationTarget = "SolarFlareType";
-		delta = 0.4;
+		iterations = 3;
+		classificationTarget = "Classification";
+		delta = 0.2;
 
 		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
 				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
 				maxThreads, iterations, classificationTarget, delta,
-				SimulationConfiguration.DEBUGGING_MODE);
+				SimulationConfiguration.SIMULATION_MODE);
 
 		// ***********************
+
+		// // ***********************
+		// // MARKETING SIMULACION BATCH
+		// // ***********************
+		// simulationID = "MARKETING";
+		// dataset = "src/main/resources/dataset/marketing.csv";
+		// experimentFolder = "marketing-simulation";
+		// numberOfAgents = 3;
+		// testRatio = 0.5;
+		// centralApproach = true;
+		// summaryFile = experimentFolder + "/" + experimentFolder
+		// + "-summary.csv";
+		// seed = 0;
+		// maxThreads = 4;
+		// iterations = 3;
+		// classificationTarget = "Income";
+		// delta = 0.2;
+		//
+		// this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+		// numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+		// maxThreads, iterations, classificationTarget, delta,
+		// SimulationConfiguration.SIMULATION_MODE);
+		//
+		// // ***********************
+
+		// // ***********************
+		// // CHESS SIMULACION BATCH
+		// // ***********************
+		// simulationID = "CHESS";
+		// dataset = "src/main/resources/dataset/kr-vs-k.csv";
+		// experimentFolder = "chess-simulation";
+		// numberOfAgents = 10;
+		// testRatio = 0.5;
+		// centralApproach = true;
+		// summaryFile = experimentFolder + "/" + experimentFolder
+		// + "-summary.csv";
+		// seed = 0;
+		// maxThreads = 4;
+		// iterations = 3;
+		// classificationTarget = "Game";
+		// delta = 0.2;
+		//
+		// this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+		// numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+		// maxThreads, iterations, classificationTarget, delta,
+		// SimulationConfiguration.SIMULATION_MODE);
+		//
+		// // ***********************
 
 		// // ***********************
 		// // KOWLANCZ02

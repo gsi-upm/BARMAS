@@ -135,7 +135,8 @@ public class AgentBayesLearningCapabilityTest {
 
 	@Test
 	public void learningWithOutputTest() {
-		AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+		AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
+				"SolarFlareType");
 		File f = new File(agent.getBNOutputFile());
 		Assert.assertTrue(f.exists());
 	}
@@ -143,7 +144,8 @@ public class AgentBayesLearningCapabilityTest {
 	@Test
 	public void learningAndReasoningTest() {
 		try {
-			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
+					"SolarFlareType");
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(agent);
@@ -168,7 +170,8 @@ public class AgentBayesLearningCapabilityTest {
 	@Test
 	public void learningAndReasoningWithEvidencesTest() {
 		try {
-			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
+					"SolarFlareType");
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 			ShanksAgentBayesianReasoningCapability.addEvidence(
 					agent.getBayesianNetwork(), "LargestSpotSize", "R");
@@ -193,10 +196,12 @@ public class AgentBayesLearningCapabilityTest {
 			Assert.fail();
 		}
 	}
+
 	@Test
 	public void learningWithValidationAndReasoningTest() {
 		try {
-			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10, "SolarFlareType");
+			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
+					"SolarFlareType");
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(agent);
@@ -217,66 +222,69 @@ public class AgentBayesLearningCapabilityTest {
 			Assert.fail();
 		}
 	}
-	
-	
-//
-//	@Test
-//	public void ComparingLearningWithoutEvidencesTest() {
-//		try {
-//			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
-//			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
-//			HashMap<String, HashMap<String, Float>> hyps1 = ShanksAgentBayesianReasoningCapability
-//					.getAllHypotheses(agent);
-//			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
-//			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
-//			HashMap<String, HashMap<String, Float>> hyps2 = ShanksAgentBayesianReasoningCapability
-//					.getAllHypotheses(agent);
-//			for (Entry<String, HashMap<String, Float>> hyp : hyps1.entrySet()) {
-//				HashMap<String, Float> values2 = hyps2.get(hyp.getKey());
-//				for (Entry<String, Float> value : hyp.getValue().entrySet()) {
-//					float value2 = values2.get(value.getKey());
-//					Assert.assertEquals(value.getValue(), value2, 0.10);
-//				}
-//			}
-//		} catch (Exception e) {
-//			logger.warning("Exception reasoning with learnt BN -> ");
-//			logger.warning(e.getMessage());
-//	Assert.fail();
-//		}
-//
-//	}
-//
-//	@Test
-//	public void ComparingLearningTest() {
-//		try {
-//			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
-//			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
-//			ShanksAgentBayesianReasoningCapability.addEvidence(
-//					agent.getBayesianNetwork(), "LargestSpotSize", "R");
-//			ShanksAgentBayesianReasoningCapability.addEvidence(
-//					agent.getBayesianNetwork(), "SpotDistribution", "O");
-//			HashMap<String, HashMap<String, Float>> hyps1 = ShanksAgentBayesianReasoningCapability
-//					.getAllHypotheses(agent);
-//			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
-//			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
-//			ShanksAgentBayesianReasoningCapability.addEvidence(
-//					agent.getBayesianNetwork(), "LargestSpotSize", "R");
-//			ShanksAgentBayesianReasoningCapability.addEvidence(
-//					agent.getBayesianNetwork(), "SpotDistribution", "O");
-//			HashMap<String, HashMap<String, Float>> hyps2 = ShanksAgentBayesianReasoningCapability
-//					.getAllHypotheses(agent);
-//			for (Entry<String, HashMap<String, Float>> hyp : hyps1.entrySet()) {
-//				HashMap<String, Float> values2 = hyps2.get(hyp.getKey());
-//				for (Entry<String, Float> value : hyp.getValue().entrySet()) {
-//					float value2 = values2.get(value.getKey());
-//					Assert.assertEquals(value.getValue(), value2, 0.10);
-//				}
-//			}
-//		} catch (Exception e) {
-//			logger.warning("Exception reasoning with learnt BN -> ");
-//			logger.warning(e.getMessage());
-//	Assert.fail();
-//		}
-//
-//	}
+
+	//
+	// @Test
+	// public void ComparingLearningWithoutEvidencesTest() {
+	// try {
+	// AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+	// ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
+	// HashMap<String, HashMap<String, Float>> hyps1 =
+	// ShanksAgentBayesianReasoningCapability
+	// .getAllHypotheses(agent);
+	// AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+	// ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
+	// HashMap<String, HashMap<String, Float>> hyps2 =
+	// ShanksAgentBayesianReasoningCapability
+	// .getAllHypotheses(agent);
+	// for (Entry<String, HashMap<String, Float>> hyp : hyps1.entrySet()) {
+	// HashMap<String, Float> values2 = hyps2.get(hyp.getKey());
+	// for (Entry<String, Float> value : hyp.getValue().entrySet()) {
+	// float value2 = values2.get(value.getKey());
+	// Assert.assertEquals(value.getValue(), value2, 0.10);
+	// }
+	// }
+	// } catch (Exception e) {
+	// logger.warning("Exception reasoning with learnt BN -> ");
+	// logger.warning(e.getMessage());
+	// Assert.fail();
+	// }
+	//
+	// }
+	//
+	// @Test
+	// public void ComparingLearningTest() {
+	// try {
+	// AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+	// ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
+	// ShanksAgentBayesianReasoningCapability.addEvidence(
+	// agent.getBayesianNetwork(), "LargestSpotSize", "R");
+	// ShanksAgentBayesianReasoningCapability.addEvidence(
+	// agent.getBayesianNetwork(), "SpotDistribution", "O");
+	// HashMap<String, HashMap<String, Float>> hyps1 =
+	// ShanksAgentBayesianReasoningCapability
+	// .getAllHypotheses(agent);
+	// AgentBayesLearningCapability.learnBNWithBayesianSearch(agent);
+	// ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
+	// ShanksAgentBayesianReasoningCapability.addEvidence(
+	// agent.getBayesianNetwork(), "LargestSpotSize", "R");
+	// ShanksAgentBayesianReasoningCapability.addEvidence(
+	// agent.getBayesianNetwork(), "SpotDistribution", "O");
+	// HashMap<String, HashMap<String, Float>> hyps2 =
+	// ShanksAgentBayesianReasoningCapability
+	// .getAllHypotheses(agent);
+	// for (Entry<String, HashMap<String, Float>> hyp : hyps1.entrySet()) {
+	// HashMap<String, Float> values2 = hyps2.get(hyp.getKey());
+	// for (Entry<String, Float> value : hyp.getValue().entrySet()) {
+	// float value2 = values2.get(value.getKey());
+	// Assert.assertEquals(value.getValue(), value2, 0.10);
+	// }
+	// }
+	// } catch (Exception e) {
+	// logger.warning("Exception reasoning with learnt BN -> ");
+	// logger.warning(e.getMessage());
+	// Assert.fail();
+	// }
+	//
+	// }
 }

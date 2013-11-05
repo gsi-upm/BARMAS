@@ -51,7 +51,7 @@ public class AgentBayesLearningCapability {
 	 * @param iterations
 	 * @param classificationTarget
 	 */
-	public static void learnBNWithBayesianSearch(BayesLearningAgent agent,
+	public synchronized static void learnBNWithBayesianSearch(BayesLearningAgent agent,
 			int iterations, String classificationTarget) {
 
 		String datasetFile = agent.getDatasetFile();
@@ -87,7 +87,7 @@ public class AgentBayesLearningCapability {
 	 * @param classificationTarget
 	 * @return
 	 */
-	private static double validateBN(Network bn, DataSet dataset,
+	private synchronized static double validateBN(Network bn, DataSet dataset,
 			String classificationTarget, BayesLearningAgent agent) {
 		DataMatch[] matching = dataset.matchNetwork(bn);
 		Validator validator = new Validator(bn, dataset, matching);
@@ -132,28 +132,10 @@ public class AgentBayesLearningCapability {
 	}
 
 	/**
-	 * @param agent
-	 */
-	public static void learnBNWithBayesianSearch(BayesLearningAgent agent) {
-		String datasetFile = agent.getDatasetFile();
-		DataSet dataset = new DataSet();
-		dataset.readFile(datasetFile);
-
-		Network bn = AgentBayesLearningCapability.learnBN(dataset);
-		AgentBayesLearningCapability.writeBNFile(bn, agent);
-		agent.getLogger().fine(
-				"BN learnt in: " + agent.getBNOutputFile() + " from: "
-						+ datasetFile);
-
-		// Test network in Unbbayes
-		AgentBayesLearningCapability.testBNInUnbbayes(bn, agent);
-	}
-
-	/**
 	 * @param bn
 	 * @param agent
 	 */
-	private static void testBNInUnbbayes(Network bn, BayesLearningAgent agent) {
+	private synchronized static void testBNInUnbbayes(Network bn, BayesLearningAgent agent) {
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent
 					.getBNOutputFile());
@@ -209,7 +191,7 @@ public class AgentBayesLearningCapability {
 	 * @param bn
 	 * @param agent
 	 */
-	private static void writeBNFile(Network bn, BayesLearningAgent agent) {
+	private synchronized static void writeBNFile(Network bn, BayesLearningAgent agent) {
 		// Check if folder parent exists
 		File f = new File(agent.getBNOutputFile());
 		File parent = f.getParentFile();
@@ -229,7 +211,7 @@ public class AgentBayesLearningCapability {
 	 * @param dataset
 	 * @return
 	 */
-	private static Network learnBN(DataSet dataset) {
+	private synchronized static Network learnBN(DataSet dataset) {
 		// Learning algorithm configuration
 		BayesianSearch bs = new BayesianSearch();
 		bs.setRandSeed(0);
