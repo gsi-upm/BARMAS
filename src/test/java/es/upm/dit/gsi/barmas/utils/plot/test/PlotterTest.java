@@ -46,6 +46,7 @@ public class PlotterTest {
 
 	private List<Coord3d> coordinates;
 	private String outputFile;
+	private String[] axisLabels;
 
 	/**
 	 * @throws Exception
@@ -69,6 +70,11 @@ public class PlotterTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+
+		this.axisLabels = new String[3];
+		axisLabels[0] = "X";
+		axisLabels[1] = "Y";
+		axisLabels[2] = "Z";
 
 		this.coordinates = new ArrayList<Coord3d>();
 		coordinates.add(new Coord3d(0, 0, 0));
@@ -103,7 +109,8 @@ public class PlotterTest {
 	@Test
 	public void saveDelaunayChartScreenshotFreeView() {
 		Plotter plotter = new Plotter(logger);
-		plotter.saveDelaunaySurface3DChart(outputFile, coordinates, null);
+		plotter.saveDelaunaySurface3DChart(outputFile, axisLabels, coordinates,
+				null, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -111,8 +118,8 @@ public class PlotterTest {
 	@Test
 	public void saveDelaunayChartScreenshotTopView() {
 		Plotter plotter = new Plotter(logger);
-		plotter.saveDelaunaySurface3DChart(outputFile, coordinates,
-				ViewPositionMode.TOP);
+		plotter.saveDelaunaySurface3DChart(outputFile, axisLabels, coordinates,
+				ViewPositionMode.TOP, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -120,8 +127,8 @@ public class PlotterTest {
 	@Test
 	public void saveDelaunayChartScreenshotProfileView() {
 		Plotter plotter = new Plotter(logger);
-		plotter.saveDelaunaySurface3DChart(outputFile, coordinates,
-				ViewPositionMode.PROFILE);
+		plotter.saveDelaunaySurface3DChart(outputFile, axisLabels, coordinates,
+				ViewPositionMode.PROFILE, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -129,8 +136,8 @@ public class PlotterTest {
 	@Test
 	public void saveDelaunayChartScreenshotFreeExplicitView() {
 		Plotter plotter = new Plotter(logger);
-		plotter.saveDelaunaySurface3DChart(outputFile, coordinates,
-				ViewPositionMode.FREE);
+		plotter.saveDelaunaySurface3DChart(outputFile, axisLabels, coordinates,
+				ViewPositionMode.FREE, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -149,7 +156,8 @@ public class PlotterTest {
 			Coord3d coord = new Coord3d(x, y, z);
 			coordinates.add(coord);
 		}
-		plotter.saveScatter3DChart(outputFile, coordinates, 2, null);
+		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2,
+				null, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -168,8 +176,8 @@ public class PlotterTest {
 			Coord3d coord = new Coord3d(x, y, z);
 			coordinates.add(coord);
 		}
-		plotter.saveScatter3DChart(outputFile, coordinates, 2,
-				ViewPositionMode.TOP);
+		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2,
+				ViewPositionMode.TOP, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -188,8 +196,8 @@ public class PlotterTest {
 			Coord3d coord = new Coord3d(x, y, z);
 			coordinates.add(coord);
 		}
-		plotter.saveScatter3DChart(outputFile, coordinates, 2,
-				ViewPositionMode.PROFILE);
+		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2,
+				ViewPositionMode.PROFILE, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -208,8 +216,8 @@ public class PlotterTest {
 			Coord3d coord = new Coord3d(x, y, z);
 			coordinates.add(coord);
 		}
-		plotter.saveScatter3DChart(outputFile, coordinates, 2,
-				ViewPositionMode.FREE);
+		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2,
+				ViewPositionMode.FREE, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -229,8 +237,8 @@ public class PlotterTest {
 			float height = r.nextFloat() - 0.5f;
 			cylinders.add(plotter.getCylinder(baseCenter, height, 0.1f));
 		}
-		plotter.saveCylinder3DChart(outputFile, cylinders,
-				ViewPositionMode.FREE);
+		plotter.saveCylinder3DChart(outputFile, axisLabels, cylinders,
+				ViewPositionMode.FREE, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}

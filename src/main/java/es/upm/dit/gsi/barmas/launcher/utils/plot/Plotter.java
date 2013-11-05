@@ -39,6 +39,7 @@ import org.jzy3d.plot3d.builder.Builder;
 import org.jzy3d.plot3d.primitives.Cylinder;
 import org.jzy3d.plot3d.primitives.Scatter;
 import org.jzy3d.plot3d.primitives.Shape;
+import org.jzy3d.plot3d.primitives.axes.layout.IAxeLayout;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
@@ -71,14 +72,19 @@ public class Plotter {
 	/**
 	 * 
 	 */
-	private void saveScreenshot(String outputFile, Chart chart, ViewPositionMode viewPosMode) {
+	public void saveScreenshot(String outputFile, Chart chart,
+			ViewPositionMode viewPosMode, Coord3d viewPoint) {
 		Rectangle window = new Rectangle(200, 200, 600, 600);
-	
+
 		FrameAWT frame = (FrameAWT) chart.getFactory().newFrame(chart, window,
 				"Chart Frame");
-	
+
 		if (viewPosMode != null) {
 			chart.setViewMode(viewPosMode);
+		}
+
+		if (viewPoint != null) {
+			chart.setViewPoint(viewPoint);
 		}
 		try {
 			File output = new File(outputFile);
@@ -99,21 +105,27 @@ public class Plotter {
 	}
 
 	public void saveDelaunaySurface3DChart(String outputFile,
-			List<Coord3d> coordinates, ViewPositionMode viewPosMode) {
+			String[] axisLabels, List<Coord3d> coordinates,
+			ViewPositionMode viewPosMode, Coord3d viewPoint) {
 		Chart chart = this.getDelaunayChart(coordinates);
-		this.saveScreenshot(outputFile, chart, viewPosMode);
+		this.setAxisLabels(chart, axisLabels[0], axisLabels[1], axisLabels[2]);
+		this.saveScreenshot(outputFile, chart, viewPosMode, viewPoint);
 	}
 
-	public void saveScatter3DChart(String outputFile,
-			List<Coord3d> coordinates, float width, ViewPositionMode viewPosMode) {
+	public void saveScatter3DChart(String outputFile, String[] axisLabels,
+			List<Coord3d> coordinates, float width,
+			ViewPositionMode viewPosMode, Coord3d viewPoint) {
 		Chart chart = this.getScatterChart(coordinates, width);
-		this.saveScreenshot(outputFile, chart, viewPosMode);	
+		this.setAxisLabels(chart, axisLabels[0], axisLabels[1], axisLabels[2]);
+		this.saveScreenshot(outputFile, chart, viewPosMode, viewPoint);
 	}
 
-	public void saveCylinder3DChart(String outputFile,
-			List<Cylinder> cylinders, ViewPositionMode viewPosMode) {
+	public void saveCylinder3DChart(String outputFile, String[] axisLabels,
+			List<Cylinder> cylinders, ViewPositionMode viewPosMode,
+			Coord3d viewPoint) {
 		Chart chart = this.getCylinder3DChart(cylinders);
-		this.saveScreenshot(outputFile, chart, viewPosMode);	
+		this.setAxisLabels(chart, axisLabels[0], axisLabels[1], axisLabels[2]);
+		this.saveScreenshot(outputFile, chart, viewPosMode, viewPoint);
 	}
 
 	/**
@@ -129,7 +141,7 @@ public class Plotter {
 	public void openScatterChart(List<Coord3d> coordinates, float width) {
 		ChartLauncher.openChart(this.getScatterChart(coordinates, width));
 	}
-	
+
 	public void openCylinderChart(List<Cylinder> cylinders) {
 		ChartLauncher.openChart(this.getCylinder3DChart(cylinders));
 	}
@@ -211,14 +223,21 @@ public class Plotter {
 	 */
 	public Cylinder getCylinder(Coord3d baseCenter, float height, float radius) {
 		Cylinder cylinder = new Cylinder();
-		cylinder.setData(baseCenter, height, radius, 20, 0,
-				new Color(1, 1, 1, 0.75f));
+		cylinder.setData(baseCenter, height, radius, 20, 0, new Color(height,
+				height, height, 0.75f));
 
 		cylinder.setFaceDisplayed(true);
-		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), cylinder
-				.getBounds().getZmin(), cylinder.getBounds().getZmax(),
-				new Color(1, 1, 1, 0.75f)));
+		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(),
+				new Color(height, height, height)));
 
 		return cylinder;
+	}
+
+	public void setAxisLabels(Chart chart, String xLabel, String yLabel,
+			String zLabel) {
+		IAxeLayout layout = chart.getAxeLayout();
+		layout.setXAxeLabel(xLabel);
+		layout.setYAxeLabel(yLabel);
+		layout.setZAxeLabel(zLabel);
 	}
 }

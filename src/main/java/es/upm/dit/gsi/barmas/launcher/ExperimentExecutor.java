@@ -235,6 +235,26 @@ public class ExperimentExecutor {
 			}
 		}
 		
+		while (!threads.isEmpty()) {
+			List<Thread> threads2Remove = new ArrayList<Thread>();
+			for (Thread thread : threads) {
+				if (!thread.isAlive()) {
+					threads2Remove.add(thread);
+					finishedExperiments++;
+					logger.info("Finished experiment! -> Pending experiments for this batch: "
+							+ (experimentsQuantity - finishedExperiments));
+				}
+			}
+			if (!threads2Remove.isEmpty()) {
+				for (Thread t : threads2Remove) {
+					threads.remove(t);
+				}
+				threads2Remove.clear();
+				logger.info("Number of simulations executing right now: "
+						+ threads.size());
+			}
+		}
+		
 		logger.info("Finishing experiments batch with " + finishedExperiments + " experiments executed.");
 	}
 

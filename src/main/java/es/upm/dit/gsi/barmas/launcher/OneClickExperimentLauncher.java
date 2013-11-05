@@ -60,50 +60,52 @@ public class OneClickExperimentLauncher {
 	 * 
 	 */
 	private void click() {
-		
-//		// ***********************
-//		// MUSHROOM SIMULACION BATCH
-//		// ***********************
-//		simulationID = "MUSHROOM";
-//		dataset = "src/main/resources/dataset/agaricus-lepiota.csv";
-//		experimentFolder = "mushroom-simulation";
-//		numberOfAgents = 20;
-//		testRatio = 0.05;
-//		centralApproach = true;
-//		summaryFile = experimentFolder + "/" + experimentFolder
-//				+ "-summary.csv";
-//		seed = 0;
-//		maxThreads = 4;
-//		iterations = 1;
-//		classificationTarget = "mushroomPoisonous";
-//		delta = 0.6;
-//
-//		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
-//				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-//				maxThreads, iterations, classificationTarget, delta);
-//		// ***********************
 
-		 // ***********************
-		 // SOLAR FLARE SIMULACION BATCH
-		 // ***********************
-		 simulationID = "SOLARFLARE";
-		 dataset = "src/main/resources/dataset/solarflare-global.csv";
-		 experimentFolder = "solarflare-simulation";
-		 numberOfAgents = 5;
-		 testRatio = 0.4;
-		 centralApproach = true;
-		 summaryFile = experimentFolder + "/" + experimentFolder
-		 + "-summary.csv";
-		 seed = 0;
-		 maxThreads = 4;
-		 iterations = 3;
-		 classificationTarget = "SolarFlareType";
-		 delta = 0.6;
-		
-		 this.launchFullBatchFor(simulationID, dataset, experimentFolder,
-		 numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-		 maxThreads, iterations, classificationTarget, delta);
-		 // ***********************
+		// // ***********************
+		// // MUSHROOM SIMULACION BATCH
+		// // ***********************
+		// simulationID = "MUSHROOM";
+		// dataset = "src/main/resources/dataset/agaricus-lepiota.csv";
+		// experimentFolder = "mushroom-simulation";
+		// numberOfAgents = 20;
+		// testRatio = 0.05;
+		// centralApproach = true;
+		// summaryFile = experimentFolder + "/" + experimentFolder
+		// + "-summary.csv";
+		// seed = 0;
+		// maxThreads = 4;
+		// iterations = 1;
+		// classificationTarget = "mushroomPoisonous";
+		// delta = 0.6;
+		//
+		// this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+		// numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+		// maxThreads, iterations, classificationTarget, delta);
+		// // ***********************
+
+		// ***********************
+		// SOLAR FLARE SIMULACION BATCH
+		// ***********************
+		simulationID = "SOLARFLARE";
+		dataset = "src/main/resources/dataset/solarflare-global.csv";
+		experimentFolder = "solarflare-simulation";
+		numberOfAgents = 5;
+		testRatio = 0.4;
+		centralApproach = true;
+		summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		seed = 0;
+		maxThreads = 4;
+		iterations = 1;
+		classificationTarget = "SolarFlareType";
+		delta = 0.4;
+
+		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+				maxThreads, iterations, classificationTarget, delta,
+				SimulationConfiguration.DEBUGGING_MODE);
+
+		// ***********************
 
 		// // ***********************
 		// // KOWLANCZ02
@@ -154,12 +156,13 @@ public class OneClickExperimentLauncher {
 		// maxThreads, iterations, classificationTarget, delta);
 		// // ***********************
 
+		logger.info("All experiments have been executed. Finishing execution of simulations.");
 	}
 
 	public void launchValidationBatchFor(String simulationID, String dataset,
 			String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads,
-			int iterations, String classificationTarget, double delta) {
+			int iterations, String classificationTarget, double delta, int mode) {
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
 
@@ -176,8 +179,7 @@ public class OneClickExperimentLauncher {
 
 				// VALIDATORS
 				List<Runnable> validators = executor.getValidatorsBatch(
-						simulationID, agentsNumber, summaryFile, seed,
-						SimulationConfiguration.SIMULATION_MODE,
+						simulationID, agentsNumber, summaryFile, seed, mode,
 						experimentFolder + "/input/iteration-" + i,
 						experimentFolder + "/output/iteration-" + i,
 						experimentFolder + "/input/iteration-" + i
@@ -188,9 +190,6 @@ public class OneClickExperimentLauncher {
 						+ simulationID);
 				logger.info("---> Starting validations executions...");
 				executor.executeValidators(validators, maxThreads, logger);
-				// First all individuals validators are executed and then no
-				// conflicts
-				// for BN concurrent learning can occur
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -201,7 +200,7 @@ public class OneClickExperimentLauncher {
 	public void launchExperimentBatchFor(String simulationID, String dataset,
 			String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads,
-			int iterations, String classificationTarget, double delta) {
+			int iterations, String classificationTarget, double delta, int mode) {
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
 		try {
@@ -217,8 +216,7 @@ public class OneClickExperimentLauncher {
 
 				// EXPERIMENTS
 				List<Runnable> experiments = executor.getExperimentBatch(
-						simulationID, agentsNumber, summaryFile, seed,
-						SimulationConfiguration.SIMULATION_MODE,
+						simulationID, agentsNumber, summaryFile, seed, mode,
 						experimentFolder + "/input/iteration-" + i,
 						experimentFolder + "/output/iteration-" + i,
 						experimentFolder + "/input/iteration-" + i
@@ -239,7 +237,7 @@ public class OneClickExperimentLauncher {
 	public void launchFullBatchFor(String simulationID, String dataset,
 			String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads,
-			int iterations, String classificationTarget, double delta) {
+			int iterations, String classificationTarget, double delta, int mode) {
 
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
@@ -257,8 +255,7 @@ public class OneClickExperimentLauncher {
 
 				// VALIDATORS
 				List<Runnable> validators = executor.getValidatorsBatch(
-						simulationID, agentsNumber, summaryFile, seed,
-						SimulationConfiguration.SIMULATION_MODE,
+						simulationID, agentsNumber, summaryFile, seed, mode,
 						experimentFolder + "/input/iteration-" + i,
 						experimentFolder + "/output/iteration-" + i,
 						experimentFolder + "/input/iteration-" + i
@@ -269,14 +266,10 @@ public class OneClickExperimentLauncher {
 						+ simulationID);
 				logger.info("---> Starting validations executions...");
 				executor.executeValidators(validators, maxThreads, logger);
-				// First all individuals validators are executed and then no
-				// conflicts
-				// for BN concurrent learning can occur
 
 				// EXPERIMENTS
 				List<Runnable> experiments = executor.getExperimentBatch(
-						simulationID, agentsNumber, summaryFile, seed,
-						SimulationConfiguration.SIMULATION_MODE,
+						simulationID, agentsNumber, summaryFile, seed, mode,
 						experimentFolder + "/input/iteration-" + i,
 						experimentFolder + "/output/iteration-" + i,
 						experimentFolder + "/input/iteration-" + i
