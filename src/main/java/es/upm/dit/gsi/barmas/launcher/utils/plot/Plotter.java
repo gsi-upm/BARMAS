@@ -39,8 +39,10 @@ import org.jzy3d.plot3d.builder.Builder;
 import org.jzy3d.plot3d.primitives.Cylinder;
 import org.jzy3d.plot3d.primitives.Scatter;
 import org.jzy3d.plot3d.primitives.Shape;
+import org.jzy3d.plot3d.primitives.axes.layout.AxeBoxLayout;
 import org.jzy3d.plot3d.primitives.axes.layout.IAxeLayout;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
+import org.jzy3d.plot3d.rendering.legends.colorbars.AWTColorbarLegend;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
 import com.jogamp.opengl.util.texture.TextureIO;
@@ -74,7 +76,7 @@ public class Plotter {
 	 */
 	public void saveScreenshot(String outputFile, Chart chart,
 			ViewPositionMode viewPosMode, Coord3d viewPoint) {
-		Rectangle window = new Rectangle(200, 200, 600, 600);
+		Rectangle window = new Rectangle(200, 200, 700, 600);
 
 		FrameAWT frame = (FrameAWT) chart.getFactory().newFrame(chart, window,
 				"Chart Frame");
@@ -160,6 +162,9 @@ public class Plotter {
 				new Color(1, 1, 1, 0.75f)));
 		surface.setFaceDisplayed(true);
 		surface.setWireframeDisplayed(true);
+		AWTColorbarLegend legend = new AWTColorbarLegend(surface,
+				new AxeBoxLayout());
+		surface.setLegend(legend);
 
 		// Create a chart
 		Chart chart = new Chart(this.factory, Quality.Nicest, "awt", Settings
