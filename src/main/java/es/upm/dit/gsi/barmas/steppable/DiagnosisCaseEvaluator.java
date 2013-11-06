@@ -80,6 +80,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 			CsvReader reader = new CsvReader(fr);
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
+			reader.close();
 			List<String> resultsHeaders = new ArrayList<String>();
 			resultsHeaders.add("caseID");
 			resultsHeaders.addAll(Arrays.asList(headers));

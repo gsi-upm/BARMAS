@@ -140,6 +140,7 @@ public class DiagnosisScenario extends Scenario {
 					testDataset)));
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
+			reader.close();			
 			DiagnosisCase diagnosis = new DiagnosisCase(ORIGINALDIAGNOSIS,
 					headers, this.getLogger());
 			diagnosis.setCurrentStatus(DiagnosisCase.READY, false);

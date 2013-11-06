@@ -167,6 +167,7 @@ public class ExperimentExecutor {
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
 			result = headers.length - 1;
+			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);

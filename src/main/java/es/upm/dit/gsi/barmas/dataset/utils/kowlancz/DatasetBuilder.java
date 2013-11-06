@@ -98,6 +98,7 @@ public class DatasetBuilder {
 		logger.info("Empty values counter for file " + file.getName() + ": "
 				+ (counter - valids) + " Total: " + counter + " Valids: "
 				+ valids);
+		reader.close();
 	}
 
 	/**
@@ -184,6 +185,8 @@ public class DatasetBuilder {
 
 			datasetFile.readHeaders();
 			String[] datasetHeaders = datasetFile.getHeaders();
+			
+			datasetFile.close();
 
 			File operationscsv = new File(path + scenario + "/operations.csv");
 			CsvReader operations = new CsvReader(new FileReader(operationscsv));
@@ -197,6 +200,8 @@ public class DatasetBuilder {
 				data.put(operations.get(0), row);
 			}
 
+			operations.close();
+			
 			File observationcsv = new File(path + scenario + "/observation.csv");
 			CsvReader observations = new CsvReader(new FileReader(
 					observationcsv));
@@ -213,6 +218,8 @@ public class DatasetBuilder {
 					row[column] = value;
 				}
 			}
+			
+			observations.close();
 
 			File beliefcsv = new File(path + scenario + "/belief.csv");
 			CsvReader beliefs = new CsvReader(new FileReader(beliefcsv));

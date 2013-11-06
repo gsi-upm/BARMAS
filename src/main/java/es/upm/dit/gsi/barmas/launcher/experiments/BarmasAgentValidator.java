@@ -136,6 +136,7 @@ public class BarmasAgentValidator implements Runnable {
 					testDataset)));
 			reader.readHeaders();
 			headers = reader.getHeaders();
+			reader.close();
 		} catch (IOException e) {
 			logger.severe("Impossible to read test dataset file.");
 			e.printStackTrace();

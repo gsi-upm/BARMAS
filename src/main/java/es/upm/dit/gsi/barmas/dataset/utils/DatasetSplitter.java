@@ -183,6 +183,7 @@ public class DatasetSplitter {
 				}
 			}
 
+			csvreader.close();
 			for (CsvWriter w : writers.values()) {
 				w.close();
 			}
@@ -259,6 +260,8 @@ public class DatasetSplitter {
 				}
 			}
 
+			reader.close();
+			
 			logger.fine("Number of Essentials: " + essentials.size());
 		} catch (Exception e) {
 			e.printStackTrace();

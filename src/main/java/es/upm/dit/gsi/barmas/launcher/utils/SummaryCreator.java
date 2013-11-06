@@ -140,6 +140,8 @@ public class SummaryCreator {
 
 				}
 			}
+			reader.close();
+			
 			// Write all types & TOTAL row
 			int[] total = new int[7];
 			for (Entry<String, HashMap<String, Integer>> entry : counters

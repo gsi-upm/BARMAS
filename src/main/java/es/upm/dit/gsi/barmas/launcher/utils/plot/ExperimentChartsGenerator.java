@@ -94,8 +94,9 @@ public class ExperimentChartsGenerator {
 						}
 					}
 				}
-
 			}
+			
+			reader.close();
 
 			for (int i = 0; i < itsNum; i++) {
 				this.saveValidationCylinderChartForIteration(summaryFile,
@@ -146,7 +147,8 @@ public class ExperimentChartsGenerator {
 					validationResults.add(row);
 				}
 			}
-
+			reader.close();
+			
 			// Write little info file
 			CsvWriter writer = new CsvWriter(new FileWriter(new File(
 					globalChartFolder + "/global-validations.csv")), ',');
@@ -273,6 +275,7 @@ public class ExperimentChartsGenerator {
 					experimentResultsRatios.add(row);
 				}
 			}
+			reader.close();
 
 			// Write little info file
 			CsvWriter writer = new CsvWriter(new FileWriter(new File(
@@ -401,6 +404,7 @@ public class ExperimentChartsGenerator {
 					validationResults.add(row);
 				}
 			}
+			reader.close();
 
 			// Write little info file
 			CsvWriter writer = new CsvWriter(new FileWriter(new File(
