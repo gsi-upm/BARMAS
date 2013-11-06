@@ -18,6 +18,8 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.test;
 
+import jason.asSemantics.Message;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -36,11 +38,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sim.engine.SimState;
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Score;
+import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.exception.UnknowkNodeStateException;
@@ -99,6 +104,10 @@ public class AgentArgumentativeCapabilityTest {
 	@Before
 	public void setUp() throws Exception {
 		agent = new MyArgumentativeAgent() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 851693142014780029L;
 			ProbabilisticNetwork bayes;
 
 			public String getBayesianNetworkFilePath() {
@@ -173,6 +182,45 @@ public class AgentArgumentativeCapabilityTest {
 			public Logger getLogger() {
 				return Logger.getLogger(AgentArgumentativeCapabilityTest.class
 						.getName());
+			}
+
+			@Override
+			public void updateTrustScores(DiagnosisCase diagnosisCase) {
+			}
+
+			@Override
+			public Score getTrustScore(String node, String state) {
+				return null;
+			}
+
+			@Override
+			public String getDatasetFile() {
+				return null;
+			}
+
+			@Override
+			public void putMessegaInInbox(Message message) {
+			}
+
+			@Override
+			public void checkMail() {
+			}
+
+			@Override
+			public void sendMsg(Message message) {
+			}
+
+			@Override
+			public String getID() {
+				return null;
+			}
+
+			@Override
+			public void step(SimState arg0) {
+			}
+
+			@Override
+			public void stop() {	
 			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);

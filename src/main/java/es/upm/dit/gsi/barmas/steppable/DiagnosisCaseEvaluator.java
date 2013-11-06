@@ -31,17 +31,18 @@ import sim.engine.Steppable;
 import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
+import es.upm.dit.gsi.barmas.agent.BarmasClassificatorAgent;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
 import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
+import es.upm.dit.gsi.shanks.agent.ShanksAgent;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.steppable.DiagnosisCaseEvaluator.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.steppable.DiagnosisCaseEvaluator.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -65,10 +66,14 @@ public class DiagnosisCaseEvaluator implements Steppable {
 	private String summaryPerClassFile;
 	private String classificationTarget;
 
-	public DiagnosisCaseEvaluator(String classificationTarget, String output, String originalTestCases) {
+	private boolean reputationMode;
+
+	public DiagnosisCaseEvaluator(String classificationTarget, String output,
+			String originalTestCases, boolean reputationMode) {
 		this.outputPath = output;
 		this.originalPath = originalTestCases;
 		this.classificationTarget = classificationTarget;
+		this.reputationMode = reputationMode;
 
 		// Output classification results file
 		// Writing csv headers
@@ -159,6 +164,16 @@ public class DiagnosisCaseEvaluator implements Steppable {
 		if (argConclusion.getStatus().get(DiagnosisCase.READY)
 				&& centralConclusion.getStatus().get(DiagnosisCase.READY)) {
 
+			// Update scores for all agents
+			if (reputationMode) {
+				for (ShanksAgent agent : sim.getAgents()) {
+					if (agent instanceof BarmasClassificatorAgent) {
+						((BarmasClassificatorAgent) agent)
+								.updateTrustScores(origDiagnosis);
+					}
+				}
+			}
+
 			String argClass = (String) argConclusion
 					.getProperty(classificationTarget);
 			String centralClass = (String) centralConclusion
@@ -210,12 +225,14 @@ public class DiagnosisCaseEvaluator implements Steppable {
 				} else {
 					data[5] = "0";
 				}
-				if (centralClass.equals(origClass) && argClass.equals(origClass)) {
+				if (centralClass.equals(origClass)
+						&& argClass.equals(origClass)) {
 					data[6] = "1";
 				} else {
 					data[6] = "0";
 				}
-				if (!centralClass.equals(origClass) && !argClass.equals(origClass)) {
+				if (!centralClass.equals(origClass)
+						&& !argClass.equals(origClass)) {
 					data[7] = "1";
 				} else {
 					data[7] = "0";

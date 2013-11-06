@@ -18,6 +18,8 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.learning.bayes.test;
 
+import jason.asSemantics.Message;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import sim.engine.SimState;
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.AgentBayesLearningCapability;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent;
@@ -90,6 +93,10 @@ public class AgentBayesLearningCapabilityTest {
 	public void setUp() throws Exception {
 		agent = new MyBayesLearningAgent() {
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -7998636265411599224L;
 			ProbabilisticNetwork bn;
 
 			@Override
@@ -120,6 +127,31 @@ public class AgentBayesLearningCapabilityTest {
 			@Override
 			public Logger getLogger() {
 				return logger;
+			}
+
+			@Override
+			public void putMessegaInInbox(Message message) {
+			}
+
+			@Override
+			public void checkMail() {
+			}
+
+			@Override
+			public void sendMsg(Message message) {
+			}
+
+			@Override
+			public String getID() {
+				return null;
+			}
+
+			@Override
+			public void step(SimState arg0) {
+			}
+
+			@Override
+			public void stop() {
 			}
 		};
 	}

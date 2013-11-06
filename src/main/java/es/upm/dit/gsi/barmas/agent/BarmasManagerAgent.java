@@ -40,6 +40,7 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeA
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
+import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Score;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
@@ -47,14 +48,11 @@ import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
-
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.agent.BarmasManagerAgent.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.agent.BarmasManagerAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -90,17 +88,21 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	private int mode;
 	private String classificationTarget;
 
+	private boolean reputationMode;
+
 	/**
 	 * Constructor
 	 * 
 	 * @param id
 	 * @param outputDir
 	 */
-	public BarmasManagerAgent(String id, String outputDir,
-			double threshold, Logger logger, int mode, String classificationTarget) {
+	public BarmasManagerAgent(String id, String outputDir, double threshold,
+			Logger logger, int mode, String classificationTarget,
+			boolean reputationMode) {
 		super(id, logger);
 		this.classificationTarget = classificationTarget;
 		this.mode = mode;
+		this.reputationMode = reputationMode;
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.argumentations = new ArrayList<Argumentation>();
 		this.pendingArguments = new ArrayList<Argument>();
@@ -193,7 +195,8 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * @param a
 	 * @param simulation
 	 */
-	private void updateDiagnosisCase(Argumentation a, ShanksSimulation simulation) {
+	private void updateDiagnosisCase(Argumentation a,
+			ShanksSimulation simulation) {
 		DiagnosisCase argDiagnosis = (DiagnosisCase) simulation.getScenario()
 				.getNetworkElement(DiagnosisScenario.ARGUMENTATIONCONCLUSION);
 		try {
@@ -569,8 +572,14 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void finishArgumenation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		AgentArgumentativeCapability.addConclusionHigherHypothesis(
-				argumentation, this.getLogger(), classificationTarget);
+		if (reputationMode) {
+			AgentArgumentativeCapability
+					.addConclusionReputationAndHigherHypothesis(argumentation,
+							this.getLogger(), classificationTarget);
+		} else {
+			AgentArgumentativeCapability.addConclusionHigherHypothesis(
+					argumentation, this.getLogger(), classificationTarget);
+		}
 		this.argumentation2File(this.getCurrentArgumentation());
 		argumentation.setFinished(true);
 		this.getLogger().info(
@@ -738,6 +747,39 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		} else {
 			return false;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #updateTrustScores(es.upm.dit.gsi.barmas.model.DiagnosisCase)
+	 */
+	@Override
+	public void updateTrustScores(DiagnosisCase diagnosisCase) {
+		// Nothing to do
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #getTrustScore(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Score getTrustScore(String node, String state) {
+		// Nothing to do
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent#getDatasetFile()
+	 */
+	@Override
+	public String getDatasetFile() {
+		return null;
 	}
 
 }

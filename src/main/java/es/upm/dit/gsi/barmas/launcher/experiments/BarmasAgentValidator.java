@@ -53,7 +53,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class BarmasAgentValidator implements Runnable {
+public class BarmasAgentValidator implements RunnableExperiment {
 
 	private String summaryFile;
 	private long seed;
@@ -155,16 +155,17 @@ public class BarmasAgentValidator implements Runnable {
 		agents.add(bayes);
 
 		// Argumentation AGENTS
+		boolean NOREPUTATION = false;
 		double NOASSUMPTIONS = 2; // impossible to generate assumptions with
 									// thresholds > 1
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
 				experimentOutputPath, NOASSUMPTIONS, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
-				classificationTarget);
+				classificationTarget, NOREPUTATION);
 		scenarioProperties.put("ManagerAgent", manager);
 		BarmasClassificatorAgent agent = new BarmasClassificatorAgent(agentID,
 				manager, classificationTarget, bnFile, datasetFile, sensors,
-				NOASSUMPTIONS, NOASSUMPTIONS, logger);
+				NOASSUMPTIONS, NOASSUMPTIONS, NOREPUTATION, logger);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
@@ -234,6 +235,18 @@ public class BarmasAgentValidator implements Runnable {
 		this.launchValidationAgent(simulationID, seed, summaryFile, mode,
 				agentID, bnFile, datasetFile, experimentOutputFolder,
 				testDataset, classificationTarget);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment#getSimualtionID
+	 * ()
+	 */
+	@Override
+	public String getSimualtionID() {
+		return this.simulationID;
 	}
 
 }

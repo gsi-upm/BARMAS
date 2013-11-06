@@ -73,7 +73,7 @@ public class SummaryCreator {
 			writer.flush();
 			if (!outputFile.exists()) {
 				writer2 = new CsvWriter(new FileWriter(outputFile), ',');
-				String[] headers = new String[15];
+				String[] headers = new String[16];
 				headers[0] = "SimulationID";
 				headers[1] = "Type";
 				headers[2] = "Cases";
@@ -88,7 +88,8 @@ public class SummaryCreator {
 				headers[11] = "Threshold";
 				headers[12] = "BeliefThreshold";
 				headers[13] = "LEPA";
-				headers[14] = "Iteration";
+				headers[14] = "TRUST";
+				headers[15] = "Iteration";
 				writer2.writeRecord(headers);
 			} else {
 				writer2 = new CsvWriter(new FileWriter(outputFile, true), ',');
@@ -219,8 +220,10 @@ public class SummaryCreator {
 					totalRatio2[12] = nameSplits[++i];
 				} else if (split.equals("LEPA")) {
 					totalRatio2[13] = nameSplits[++i];
-				} else if (split.equals("IT")) {
+				} else if (split.equals("TRUSTMODE")) {
 					totalRatio2[14] = nameSplits[++i];
+				} else if (split.equals("IT")) {
+					totalRatio2[15] = nameSplits[++i];
 				}
 			}
 

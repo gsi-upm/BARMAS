@@ -25,6 +25,7 @@ import com.csvreader.CsvReader;
 
 import es.upm.dit.gsi.barmas.launcher.experiments.BarmasAgentValidator;
 import es.upm.dit.gsi.barmas.launcher.experiments.BarmasExperiment;
+import es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment;
 import es.upm.dit.gsi.barmas.launcher.utils.ConsoleOutputDisabler;
 
 /**
@@ -77,84 +78,6 @@ public class ExperimentExecutor {
 
 	}
 
-	public List<Runnable> getValidatorsBatch(String simulationID,
-			int agentsNumber, String summaryFile, long seed, int mode,
-			String experimentDatasetPath, String experimentOutputFolder,
-			String testDataset, String classificationTarget, int iteration) {
-
-		List<Runnable> experiments = new ArrayList<Runnable>();
-
-		// Validators
-		for (int i = 0; i < agentsNumber; i++) {
-			String simulationPrefix = simulationID + "-Agent" + i + "-TH-" + 2.0
-					+ "-BTH-" + 2.0 + "-LEPA-" + 0 + "-IT-" + iteration;
-			BarmasAgentValidator expValidator = new BarmasAgentValidator(
-					simulationPrefix, summaryFile, seed, mode, "Agent" + i,
-					experimentDatasetPath + "/bayes/agent-" + i
-							+ "-dataset.net", experimentDatasetPath
-							+ "/dataset/agent-" + i + "-dataset.csv",
-					experimentOutputFolder, testDataset, classificationTarget);
-			experiments.add(expValidator);
-		}
-		String simulationPrefix = simulationID + "-BayesCentralAgent-TH-" + 2.0
-				+ "-BTH-" + 2.0 + "-LEPA-" + 0 + "-IT-" + iteration;
-		BarmasAgentValidator expValidator = new BarmasAgentValidator(
-				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
-				experimentDatasetPath + "/bayes/bayes-central-dataset.net", experimentDatasetPath
-						+ "/dataset/bayes-central-dataset.csv",
-				experimentOutputFolder, testDataset, classificationTarget);
-		experiments.add(expValidator);
-		
-		return experiments;
-	}
-
-	public List<Runnable> getExperimentBatch(String simulationID,
-			int agentsNumber, String summaryFile, long seed, int mode,
-			String experimentDatasetPath, String experimentOutputFolder,
-			String testDataset, String classificationTarget, double delta,
-			int iteration) {
-		List<Runnable> experiments = new ArrayList<Runnable>();
-
-		// Experiments
-		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
-
-		// + delta to ensure at least one execution without assumptions
-		double threshold = 1.0 + delta;
-		while (threshold > 0) {
-
-			double beliefThreshold = 1.0 + delta;
-			while (beliefThreshold > 0) {
-
-				int lostEvidencesPerAgent = 0;
-				while (lostEvidencesPerAgent <= numberOfEvidences
-						/ agentsNumber) {
-
-					int tint = (int) (threshold * 100);
-					double roundedt = ((double) tint) / 100;
-					int btint = (int) (beliefThreshold * 100);
-					double rounedbt = ((double) btint) / 100;
-					String simulationPrefix = simulationID + "-" + agentsNumber
-							+ "agents-TH-" + roundedt + "-BTH-" + rounedbt
-							+ "-LEPA-" + lostEvidencesPerAgent + "-IT-"
-							+ iteration;
-					BarmasExperiment exp = new BarmasExperiment(
-							simulationPrefix, summaryFile, seed, mode,
-							experimentDatasetPath, experimentOutputFolder,
-							testDataset, classificationTarget, agentsNumber,
-							lostEvidencesPerAgent, threshold, beliefThreshold);
-					experiments.add(exp);
-
-					lostEvidencesPerAgent++;
-				}
-
-				beliefThreshold = beliefThreshold - delta;
-			}
-
-			threshold = threshold - delta;
-		}
-		return experiments;
-	}
-
 	/**
 	 * @param testDataset
 	 * @return
@@ -180,14 +103,14 @@ public class ExperimentExecutor {
 	 * @param maxThreads
 	 * @param logger
 	 */
-	public void executeRunnables(List<Runnable> experiments, int maxThreads,
-			boolean concurrentManagement, Logger logger) {
+	public void executeRunnables(List<RunnableExperiment> experiments,
+			int maxThreads, boolean concurrentManagement, Logger logger) {
 
 		int startedExperiments = 0;
 		int finishedExperiments = 0;
 		int experimentsQuantity = experiments.size();
 		List<Thread> threads = new ArrayList<Thread>();
-		for (Runnable experiment : experiments) {
+		for (RunnableExperiment experiment : experiments) {
 			logger.info("Number of simulations executing right now: "
 					+ threads.size());
 			while (threads.size() >= maxThreads) {
@@ -215,6 +138,7 @@ public class ExperimentExecutor {
 			}
 
 			Thread t = new Thread(experiment);
+			t.setName(experiment.getSimualtionID());
 			threads.add(t);
 			t.start();
 			startedExperiments++;
@@ -235,14 +159,25 @@ public class ExperimentExecutor {
 				}
 			}
 		}
-		
+
 		while (!threads.isEmpty()) {
 			List<Thread> threads2Remove = new ArrayList<Thread>();
 			for (Thread thread : threads) {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
 				if (!thread.isAlive()) {
 					threads2Remove.add(thread);
 					finishedExperiments++;
 					logger.info("Finished experiment! -> Pending experiments for this batch: "
+							+ (experimentsQuantity - finishedExperiments));
+				} else {
+					logger.info("Execution in progress for simulation with ID: "
+							+ thread.getName());
+					logger.info("-> Pending experiments for this batch: "
 							+ (experimentsQuantity - finishedExperiments));
 				}
 			}
@@ -255,8 +190,9 @@ public class ExperimentExecutor {
 						+ threads.size());
 			}
 		}
-		
-		logger.info("Finishing experiments batch with " + finishedExperiments + " experiments executed.");
+
+		logger.info("Finishing experiments batch with " + finishedExperiments
+				+ " experiments executed.");
 	}
 
 	//
@@ -320,8 +256,8 @@ public class ExperimentExecutor {
 	 * @param maxThreads
 	 * @param logger
 	 */
-	public void executeExperiments(List<Runnable> experiments, int maxThreads,
-			Logger logger) {
+	public void executeExperiments(List<RunnableExperiment> experiments,
+			int maxThreads, Logger logger) {
 		this.executeRunnables(experiments, maxThreads, true, logger);
 	}
 
@@ -330,9 +266,133 @@ public class ExperimentExecutor {
 	 * @param maxThreads
 	 * @param logger
 	 */
-	public void executeValidators(List<Runnable> experiments, int maxThreads,
-			Logger logger) {
+	public void executeValidators(List<RunnableExperiment> experiments,
+			int maxThreads, Logger logger) {
 		this.executeRunnables(experiments, maxThreads, false, logger);
+	}
+
+	public List<RunnableExperiment> getValidatorsBatch(String simulationID,
+			int agentsNumber, String summaryFile, long seed, int mode,
+			String experimentDatasetPath, String experimentOutputFolder,
+			String testDataset, String classificationTarget, int iteration) {
+
+		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
+
+		// Validators
+		for (int i = 0; i < agentsNumber; i++) {
+			String simulationPrefix = simulationID + "-Agent" + i + "-TH-"
+					+ 2.0 + "-BTH-" + 2.0 + "-LEPA-" + 0 + "-IT-" + iteration
+					+ "-TRUSTMODE-OFF";
+			BarmasAgentValidator expValidator = new BarmasAgentValidator(
+					simulationPrefix, summaryFile, seed, mode, "Agent" + i,
+					experimentDatasetPath + "/bayes/agent-" + i
+							+ "-dataset.net", experimentDatasetPath
+							+ "/dataset/agent-" + i + "-dataset.csv",
+					experimentOutputFolder, testDataset, classificationTarget);
+			experiments.add(expValidator);
+		}
+		String simulationPrefix = simulationID + "-BayesCentralAgent-TH-" + 2.0
+				+ "-BTH-" + 2.0 + "-LEPA-" + 0 + "-IT-" + iteration
+				+ "-TRUSTMODE-OFF";
+		BarmasAgentValidator expValidator = new BarmasAgentValidator(
+				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
+				experimentDatasetPath + "/bayes/bayes-central-dataset.net",
+				experimentDatasetPath + "/dataset/bayes-central-dataset.csv",
+				experimentOutputFolder, testDataset, classificationTarget);
+		experiments.add(expValidator);
+
+		return experiments;
+	}
+
+	public List<RunnableExperiment> getExperimentBatch(String simulationID,
+			int agentsNumber, String summaryFile, long seed, int mode,
+			String experimentDatasetPath, String experimentOutputFolder,
+			String testDataset, String classificationTarget, double delta,
+			int iteration) {
+		List<RunnableExperiment> experiments = this.getExperimentBatch(
+				simulationID, agentsNumber, summaryFile, seed, mode,
+				experimentDatasetPath, experimentOutputFolder, testDataset,
+				classificationTarget, delta, iteration, true);
+		experiments.addAll(this.getExperimentBatch(simulationID, agentsNumber,
+				summaryFile, seed, mode, experimentDatasetPath,
+				experimentOutputFolder, testDataset, classificationTarget,
+				delta, iteration, false));
+		return experiments;
+	}
+
+	/**
+	 * @param simulationID
+	 * @param agentsNumber
+	 * @param summaryFile
+	 * @param seed
+	 * @param mode
+	 * @param string
+	 * @param string2
+	 * @param string3
+	 * @param classificationTarget
+	 * @param delta
+	 * @param i
+	 * @param reputationMode
+	 * @return
+	 */
+	public List<RunnableExperiment> getExperimentBatch(String simulationID,
+			int agentsNumber, String summaryFile, long seed, int mode,
+			String experimentDatasetPath, String experimentOutputFolder,
+			String testDataset, String classificationTarget, double delta,
+			int iteration, boolean reputationMode) {
+		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
+
+		// Experiments
+		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
+
+		boolean NOASSUMPTION_SIMULATION_CREATED = false;
+
+		// + delta to ensure at least one execution without assumptions
+		double threshold = 1.0;
+		while (threshold > 0) {
+
+			double beliefThreshold = 0.05;
+			while (beliefThreshold <= 1.0) {
+				int lostEvidencesPerAgent = 0;
+				if (NOASSUMPTION_SIMULATION_CREATED) {
+					lostEvidencesPerAgent = 1;
+				}
+				while (lostEvidencesPerAgent <= numberOfEvidences
+						/ agentsNumber) {
+					int tint = (int) (threshold * 100);
+					double roundedt = ((double) tint) / 100;
+					int btint = (int) (beliefThreshold * 100);
+					double rounedbt = ((double) btint) / 100;
+					String reputationModeString = "";
+					if (reputationMode) {
+						reputationModeString = "ON";
+					} else {
+						reputationModeString = "OFF";
+					}
+					String simulationPrefix = simulationID + "-" + agentsNumber
+							+ "agents-TH-" + roundedt + "-BTH-" + rounedbt
+							+ "-LEPA-" + lostEvidencesPerAgent + "-IT-"
+							+ iteration + "-TRUSTMODE-" + reputationModeString;
+					BarmasExperiment exp = new BarmasExperiment(
+							simulationPrefix, summaryFile, seed, mode,
+							experimentDatasetPath, experimentOutputFolder,
+							testDataset, classificationTarget, agentsNumber,
+							lostEvidencesPerAgent, threshold, beliefThreshold,
+							reputationMode);
+					experiments.add(exp);
+					if (lostEvidencesPerAgent == 0) {
+						NOASSUMPTION_SIMULATION_CREATED = true;
+					}
+
+					lostEvidencesPerAgent++;
+				}
+
+				beliefThreshold = beliefThreshold + delta;
+			}
+
+			threshold = threshold - delta;
+		}
+		return experiments;
 	}
 
 	// /**

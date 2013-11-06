@@ -53,7 +53,7 @@ import es.upm.dit.gsi.shanks.model.scenario.Scenario;
  * @version 0.1
  * 
  */
-public class BarmasExperiment implements Runnable {
+public class BarmasExperiment implements RunnableExperiment {
 
 	private String summaryFile;
 	private String experimentDatasetFolder;
@@ -67,6 +67,7 @@ public class BarmasExperiment implements Runnable {
 	private int lostEvidencesPerAgent;
 	private double threshold;
 	private double beliefThreshold;
+	private boolean reputationMode;
 
 	/**
 	 * Constructor
@@ -78,10 +79,11 @@ public class BarmasExperiment implements Runnable {
 			int mode, String experimentDatasetFolder,
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
-			int lostEvidencesPerAgent, double threshold, double beliefThreshold) {
+			int lostEvidencesPerAgent, double threshold, double beliefThreshold, boolean reputationMode) {
 		this.summaryFile = summaryFile;
 		this.agentsNumber = agentsNumber;
 		this.seed = seed;
+		this.reputationMode = reputationMode;
 		this.mode = mode;
 		this.experimentDatasetFolder = experimentDatasetFolder;
 		this.experimentOutputFolder = experimentOutputFolder;
@@ -137,7 +139,7 @@ public class BarmasExperiment implements Runnable {
 			String summaryFile, int mode, String experimentDatasetFolder,
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
-			int lostEvidencesPerAgent, double threshold, double beliefThreshold) {
+			int lostEvidencesPerAgent, double threshold, double beliefThreshold, boolean reputationMode) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
@@ -176,7 +178,9 @@ public class BarmasExperiment implements Runnable {
 		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET,
 				classificationTarget);
 		scenarioProperties.put(SimulationConfiguration.MODE, mode);
-
+		scenarioProperties.put(SimulationConfiguration.REPUTATIONMODE, Boolean.toString(reputationMode));
+		
+		
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
 		String[] headers = null;
@@ -214,7 +218,7 @@ public class BarmasExperiment implements Runnable {
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
 				experimentOutputPath, threshold, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
-				classificationTarget);
+				classificationTarget, reputationMode);
 		scenarioProperties.put("ManagerAgent", manager);
 
 		// Argumentation AGENTS
@@ -233,7 +237,7 @@ public class BarmasExperiment implements Runnable {
 					experimentDatasetFolder + "/bayes/agent-" + agentNum
 							+ "-dataset.net", experimentDatasetFolder
 							+ "/dataset/agent-" + agentNum + "-dataset.csv",
-					sensors, threshold, beliefThreshold, logger);
+					sensors, threshold, beliefThreshold, reputationMode, logger);
 			agents.add(agent);
 		}
 
@@ -276,7 +280,15 @@ public class BarmasExperiment implements Runnable {
 		this.launchExperiment(simulationID, seed, summaryFile, mode,
 				experimentDatasetFolder, experimentOutputFolder, testDataset,
 				classificationTarget, agentsNumber, lostEvidencesPerAgent,
-				threshold, beliefThreshold);
+				threshold, beliefThreshold, reputationMode);
+	}
+
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment#getSimualtionID()
+	 */
+	@Override
+	public String getSimualtionID() {
+		return this.simulationID;
 	}
 
 }

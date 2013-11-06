@@ -51,8 +51,9 @@ public class AgentBayesLearningCapability {
 	 * @param iterations
 	 * @param classificationTarget
 	 */
-	public synchronized static void learnBNWithBayesianSearch(BayesLearningAgent agent,
-			int iterations, String classificationTarget) {
+	public synchronized static void learnBNWithBayesianSearch(
+			BayesLearningAgent agent, int iterations,
+			String classificationTarget) {
 
 		String datasetFile = agent.getDatasetFile();
 		DataSet dataset = new DataSet();
@@ -75,9 +76,11 @@ public class AgentBayesLearningCapability {
 		}
 
 		AgentBayesLearningCapability.writeBNFile(betterBN, agent);
-		agent.getLogger()
-				.info("BN learnt in: " + agent.getBNOutputFile() + " from: "
-						+ datasetFile + " with accuracy " + max + " for node " + classificationTarget + " after " + iterations + " iterations.");
+		agent.getLogger().info(
+				"BN learnt in: " + agent.getBNOutputFile() + " from: "
+						+ datasetFile + " with accuracy " + max + " for node "
+						+ classificationTarget + " after " + iterations
+						+ " iterations.");
 		AgentBayesLearningCapability.testBNInUnbbayes(betterBN, agent);
 	}
 
@@ -135,7 +138,8 @@ public class AgentBayesLearningCapability {
 	 * @param bn
 	 * @param agent
 	 */
-	private synchronized static void testBNInUnbbayes(Network bn, BayesLearningAgent agent) {
+	private synchronized static void testBNInUnbbayes(Network bn,
+			BayesLearningAgent agent) {
 		try {
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent
 					.getBNOutputFile());
@@ -176,12 +180,10 @@ public class AgentBayesLearningCapability {
 						.getBNOutputFile());
 			} catch (Exception e1) {
 				if (e1.getMessage().contains("cicle")) {
-					agent.getLogger().fine(
-							"--> Cicle found. Trying again...");
+					agent.getLogger().fine("--> Cicle found. Trying again...");
 				} else {
 					agent.getLogger()
-							.fine(
-									"Learnt net is not compatible with Unbbayes. Trying again...");
+							.fine("Learnt net is not compatible with Unbbayes. Trying again...");
 				}
 			}
 		}
@@ -191,7 +193,8 @@ public class AgentBayesLearningCapability {
 	 * @param bn
 	 * @param agent
 	 */
-	private synchronized static void writeBNFile(Network bn, BayesLearningAgent agent) {
+	private synchronized static void writeBNFile(Network bn,
+			BayesLearningAgent agent) {
 		// Check if folder parent exists
 		File f = new File(agent.getBNOutputFile());
 		File parent = f.getParentFile();

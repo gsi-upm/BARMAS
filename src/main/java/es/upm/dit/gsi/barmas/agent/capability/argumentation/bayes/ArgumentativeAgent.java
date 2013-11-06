@@ -21,6 +21,9 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import es.upm.dit.gsi.barmas.model.DiagnosisCase;
+import es.upm.dit.gsi.shanks.agent.ShanksAgent;
+
 
 /**
  * Project: barmas File:
@@ -37,7 +40,7 @@ import java.util.logging.Logger;
  * @version 0.1
  * 
  */
-public interface ArgumentativeAgent {
+public interface ArgumentativeAgent extends ShanksAgent {
 
 	/**
 	 * @return the name of the
@@ -95,5 +98,14 @@ public interface ArgumentativeAgent {
 	 * @return
 	 */
 	public Logger getLogger();
+	
+	public void updateTrustScores(DiagnosisCase diagnosisCase);
+	
+	public Score getTrustScore(String node, String state);
+
+	/**
+	 * @return
+	 */
+	public String getDatasetFile();
 
 }

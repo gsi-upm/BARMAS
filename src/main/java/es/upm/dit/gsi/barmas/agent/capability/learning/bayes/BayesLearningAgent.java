@@ -20,6 +20,8 @@ package es.upm.dit.gsi.barmas.agent.capability.learning.bayes;
 
 import java.util.logging.Logger;
 
+import es.upm.dit.gsi.shanks.agent.ShanksAgent;
+
 /**
  * Project: barmas
  * File: es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent.java
@@ -35,7 +37,7 @@ import java.util.logging.Logger;
  * @version 0.1
  * 
  */
-public interface BayesLearningAgent {
+public interface BayesLearningAgent extends ShanksAgent {
 	
 	/**
 	 * @return

@@ -95,7 +95,7 @@ public class ExperimentChartsGenerator {
 					}
 				}
 			}
-			
+
 			reader.close();
 
 			for (int i = 0; i < itsNum; i++) {
@@ -148,7 +148,7 @@ public class ExperimentChartsGenerator {
 				}
 			}
 			reader.close();
-			
+
 			// Write little info file
 			CsvWriter writer = new CsvWriter(new FileWriter(new File(
 					globalChartFolder + "/global-validations.csv")), ',');
@@ -289,48 +289,100 @@ public class ExperimentChartsGenerator {
 
 			// Build cylinders and save cylinders charts
 			Plotter plotter = new Plotter(logger);
-			HashMap<Double, List<Coord3d>> bthConstantGlobalImpCoords = new HashMap<Double, List<Coord3d>>();
-			HashMap<Double, List<Coord3d>> thConstantGlobalImpCoords = new HashMap<Double, List<Coord3d>>();
-			HashMap<Integer, List<Coord3d>> lepaConstantGlobalImpCoords = new HashMap<Integer, List<Coord3d>>();
+			HashMap<Double, List<Coord3d>> bthConstantGlobalImpCoordsNoTrust = new HashMap<Double, List<Coord3d>>();
+			HashMap<Double, List<Coord3d>> thConstantGlobalImpCoordsNoTrust = new HashMap<Double, List<Coord3d>>();
+			HashMap<Integer, List<Coord3d>> lepaConstantGlobalImpCoordsNoTrust = new HashMap<Integer, List<Coord3d>>();
+			HashMap<Double, List<Coord3d>> bthConstantGlobalImpCoordsTrust = new HashMap<Double, List<Coord3d>>();
+			HashMap<Double, List<Coord3d>> thConstantGlobalImpCoordsTrust = new HashMap<Double, List<Coord3d>>();
+			HashMap<Integer, List<Coord3d>> lepaConstantGlobalImpCoordsTrust = new HashMap<Integer, List<Coord3d>>();
+
 			for (String[] row : experimentResultsRatios) {
 				String simulationID = row[0];
-				String[] splits = simulationID.split("-");
-				double threshold = -1;
-				double beliefThreshold = -1;
-				int lepa = -1;
-				double globalImprovementRatio = new Double(row[9]);
-				for (int i = 0; i < splits.length; i++) {
-					if (splits[i].equals("TH")) {
-						threshold = new Double(splits[++i]);
-						if (!thConstantGlobalImpCoords.containsKey(threshold)) {
-							thConstantGlobalImpCoords.put(threshold,
-									new ArrayList<Coord3d>());
-						}
-					} else if (splits[i].equals("BTH")) {
-						beliefThreshold = new Double(splits[++i]);
-						if (!bthConstantGlobalImpCoords
-								.containsKey(beliefThreshold)) {
-							bthConstantGlobalImpCoords.put(beliefThreshold,
-									new ArrayList<Coord3d>());
-						}
-					} else if (splits[i].equals("LEPA")) {
-						lepa = new Integer(splits[++i]);
-						if (!lepaConstantGlobalImpCoords.containsKey(lepa)) {
-							lepaConstantGlobalImpCoords.put(lepa,
-									new ArrayList<Coord3d>());
+				if (simulationID.contains("-TRUSTMODE-OFF-")) {
+					String[] splits = simulationID.split("-");
+					double threshold = -1;
+					double beliefThreshold = -1;
+					int lepa = -1;
+					double globalImprovementRatio = new Double(row[9]);
+					for (int i = 0; i < splits.length; i++) {
+						if (splits[i].equals("TH")) {
+							threshold = new Double(splits[++i]);
+							if (!thConstantGlobalImpCoordsNoTrust
+									.containsKey(threshold)) {
+								thConstantGlobalImpCoordsNoTrust.put(threshold,
+										new ArrayList<Coord3d>());
+							}
+						} else if (splits[i].equals("BTH")) {
+							beliefThreshold = new Double(splits[++i]);
+							if (!bthConstantGlobalImpCoordsNoTrust
+									.containsKey(beliefThreshold)) {
+								bthConstantGlobalImpCoordsNoTrust.put(
+										beliefThreshold,
+										new ArrayList<Coord3d>());
+							}
+						} else if (splits[i].equals("LEPA")) {
+							lepa = new Integer(splits[++i]);
+							if (!lepaConstantGlobalImpCoordsNoTrust
+									.containsKey(lepa)) {
+								lepaConstantGlobalImpCoordsNoTrust.put(lepa,
+										new ArrayList<Coord3d>());
+							}
 						}
 					}
-				}
 
-				Coord3d point = null;
-				point = new Coord3d(beliefThreshold, lepa,
-						globalImprovementRatio);
-				thConstantGlobalImpCoords.get(threshold).add(point);
-				point = new Coord3d(threshold, lepa, globalImprovementRatio);
-				bthConstantGlobalImpCoords.get(beliefThreshold).add(point);
-				point = new Coord3d(threshold, beliefThreshold,
-						globalImprovementRatio);
-				lepaConstantGlobalImpCoords.get(lepa).add(point);
+					Coord3d point = null;
+					point = new Coord3d(beliefThreshold, lepa,
+							globalImprovementRatio);
+					thConstantGlobalImpCoordsNoTrust.get(threshold).add(point);
+					point = new Coord3d(threshold, lepa, globalImprovementRatio);
+					bthConstantGlobalImpCoordsNoTrust.get(beliefThreshold).add(
+							point);
+					point = new Coord3d(threshold, beliefThreshold,
+							globalImprovementRatio);
+					lepaConstantGlobalImpCoordsNoTrust.get(lepa).add(point);
+				} else {
+					String[] splits = simulationID.split("-");
+					double threshold = -1;
+					double beliefThreshold = -1;
+					int lepa = -1;
+					double globalImprovementRatio = new Double(row[9]);
+					for (int i = 0; i < splits.length; i++) {
+						if (splits[i].equals("TH")) {
+							threshold = new Double(splits[++i]);
+							if (!thConstantGlobalImpCoordsTrust
+									.containsKey(threshold)) {
+								thConstantGlobalImpCoordsTrust.put(threshold,
+										new ArrayList<Coord3d>());
+							}
+						} else if (splits[i].equals("BTH")) {
+							beliefThreshold = new Double(splits[++i]);
+							if (!bthConstantGlobalImpCoordsTrust
+									.containsKey(beliefThreshold)) {
+								bthConstantGlobalImpCoordsTrust.put(
+										beliefThreshold,
+										new ArrayList<Coord3d>());
+							}
+						} else if (splits[i].equals("LEPA")) {
+							lepa = new Integer(splits[++i]);
+							if (!lepaConstantGlobalImpCoordsTrust
+									.containsKey(lepa)) {
+								lepaConstantGlobalImpCoordsTrust.put(lepa,
+										new ArrayList<Coord3d>());
+							}
+						}
+					}
+
+					Coord3d point = null;
+					point = new Coord3d(beliefThreshold, lepa,
+							globalImprovementRatio);
+					thConstantGlobalImpCoordsTrust.get(threshold).add(point);
+					point = new Coord3d(threshold, lepa, globalImprovementRatio);
+					bthConstantGlobalImpCoordsTrust.get(beliefThreshold).add(
+							point);
+					point = new Coord3d(threshold, beliefThreshold,
+							globalImprovementRatio);
+					lepaConstantGlobalImpCoordsTrust.get(lepa).add(point);
+				}
 			}
 
 			logger.info("Generating success chart for iteration " + iteration);
@@ -339,30 +391,54 @@ public class ExperimentChartsGenerator {
 			axisLabels[0] = "Threshold";
 			axisLabels[1] = "LEPA";
 			axisLabels[2] = "Ratio";
-			for (Entry<Double, List<Coord3d>> entry : bthConstantGlobalImpCoords
+			for (Entry<Double, List<Coord3d>> entry : bthConstantGlobalImpCoordsNoTrust
 					.entrySet()) {
 				plotter.getDelaunayChart(entry.getValue());
 				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-BTH-" + entry.getKey() + ".png",
+						+ "/globalImprovement-BTH-" + entry.getKey() + "-TRUSTMODE-OFF.png",
+						axisLabels, entry.getValue(), ViewPositionMode.FREE,
+						null);
+			}
+			for (Entry<Double, List<Coord3d>> entry : bthConstantGlobalImpCoordsTrust
+					.entrySet()) {
+				plotter.getDelaunayChart(entry.getValue());
+				plotter.saveDelaunaySurface3DChart(iterationChartFolder
+						+ "/globalImprovement-BTH-" + entry.getKey() + "-TRUSTMODE-ON.png",
 						axisLabels, entry.getValue(), ViewPositionMode.FREE,
 						null);
 			}
 
 			axisLabels[0] = "BeliefThreshold";
-			for (Entry<Double, List<Coord3d>> entry : thConstantGlobalImpCoords
+			for (Entry<Double, List<Coord3d>> entry : thConstantGlobalImpCoordsNoTrust
 					.entrySet()) {
 				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-TH-" + entry.getKey() + ".png",
+						+ "/globalImprovement-TH-" + entry.getKey() + "-TRUSTMODE-OFF.png",
+						axisLabels, entry.getValue(), ViewPositionMode.FREE,
+						null);
+			}
+
+			axisLabels[0] = "BeliefThreshold";
+			for (Entry<Double, List<Coord3d>> entry : thConstantGlobalImpCoordsTrust
+					.entrySet()) {
+				plotter.saveDelaunaySurface3DChart(iterationChartFolder
+						+ "/globalImprovement-TH-" + entry.getKey() + "-TRUSTMODE-ON.png",
 						axisLabels, entry.getValue(), ViewPositionMode.FREE,
 						null);
 			}
 
 			axisLabels[0] = "Threshold";
 			axisLabels[1] = "BeliefThreshold";
-			for (Entry<Integer, List<Coord3d>> entry : lepaConstantGlobalImpCoords
+			for (Entry<Integer, List<Coord3d>> entry : lepaConstantGlobalImpCoordsNoTrust
 					.entrySet()) {
 				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-LEPA-" + entry.getKey() + ".png",
+						+ "/globalImprovement-LEPA-" + entry.getKey() + "-TRUSTMODE-OFF.png",
+						axisLabels, entry.getValue(), ViewPositionMode.FREE,
+						null);
+			}
+			for (Entry<Integer, List<Coord3d>> entry : lepaConstantGlobalImpCoordsTrust
+					.entrySet()) {
+				plotter.saveDelaunaySurface3DChart(iterationChartFolder
+						+ "/globalImprovement-LEPA-" + entry.getKey() + "-TRUSTMODE-ON.png",
 						axisLabels, entry.getValue(), ViewPositionMode.FREE,
 						null);
 			}

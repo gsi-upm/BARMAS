@@ -32,12 +32,11 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -86,15 +85,19 @@ public class DiagnosisSimulation extends ShanksSimulation {
 		}
 		schedule.scheduleRepeating(Schedule.EPOCH, 3, manager, 1);
 		Steppable generator = new DiagnosisCaseGenerator(this.getScenario()
-				.getProperties().getProperty(SimulationConfiguration.TESTDATASET));
+				.getProperties()
+				.getProperty(SimulationConfiguration.TESTDATASET));
 		schedule.scheduleRepeating(Schedule.EPOCH, 6, generator, 1);
+		boolean repMode = new Boolean(this.getScenario().getProperties()
+				.getProperty(SimulationConfiguration.REPUTATIONMODE));
 		Steppable evaluator = new DiagnosisCaseEvaluator(this.getScenario()
 				.getProperties()
 				.getProperty(SimulationConfiguration.CLASSIFICATIONTARGET),
 				this.getScenario().getProperties()
 						.getProperty(SimulationConfiguration.EXPOUTPUT), this
 						.getScenario().getProperties()
-						.getProperty(SimulationConfiguration.TESTDATASET));
+						.getProperty(SimulationConfiguration.TESTDATASET),
+				repMode);
 		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 1);
 	}
 

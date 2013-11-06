@@ -91,7 +91,7 @@ public class DatasetSplitter {
 	 */
 	public void splitDataset(double ratio, int agents,
 			String originalDatasetPath, String outputDir, boolean central,
-			String scenario, Logger logger) throws Exception {
+			String scenario, Logger logger) {
 
 		File dir = new File(outputDir);
 		if (!dir.exists() || !dir.isDirectory()) {
@@ -192,7 +192,7 @@ public class DatasetSplitter {
 			logger.severe("Exception while splitting dataset. ->");
 			logger.severe(e.getMessage());
 			e.printStackTrace();
-			throw e;
+			System.exit(1);
 		}
 
 		logger.finer("<-- splitDataset()");

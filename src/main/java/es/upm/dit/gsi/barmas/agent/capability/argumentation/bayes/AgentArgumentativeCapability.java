@@ -27,6 +27,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import smile.Network;
+import smile.learning.DataMatch;
+import smile.learning.DataSet;
+import smile.learning.Validator;
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import unbbayes.prs.bn.ProbabilisticNode;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
@@ -439,68 +443,6 @@ public class AgentArgumentativeCapability {
 	}
 
 	/**
-	 * Resolution conflicts method
-	 * 
-	 * @param argumentation
-	 * @param logger
-	 */
-	public static void addConclusionHigherHypothesis(Argumentation argumentation, Logger logger, String classificationTarget) {
-
-		logger.fine("Getting the higher hypothesis...");
-		logger.finest("Evaluating possible conclusions...");
-		List<Argument> allArguments = new ArrayList<Argument>();
-		allArguments.addAll(argumentation.getArguments());
-		List<Integer> attackTypes = new ArrayList<Integer>();
-		attackTypes.add(UNDERCUT);
-		attackTypes.add(DIRECTUNDERCUT);
-		attackTypes.add(CANONICALUNDERCUT);
-		attackTypes.add(DEFEATER);
-		attackTypes.add(DIRECTDEFEATER);
-		List<Argument> possibleConclusions = AgentArgumentativeCapability
-				.getUnattackedArguments(allArguments, argumentation,
-						attackTypes);
-
-		int maxEvidences = 0;
-		for (Argument arg : argumentation.getArguments()) {
-			int evCardinal = arg.getGivens().size();
-			if (evCardinal > maxEvidences) {
-				maxEvidences = evCardinal;
-			}
-		}
-		// Pick possible arguments
-		String hyp = "";
-		double max = 0;
-		Argument argumentConclusion = null;
-		for (Argument arg : possibleConclusions) {
-			if (arg.getGivens().size() == maxEvidences) {
-				for (Proposal p : arg.getProposals()) {
-					if (p.getNode()
-							.equals(classificationTarget)
-							&& p.getMaxValue() > max) {// TODO check this
-						max = p.getMaxValue();
-						hyp = p.getMaxState();
-						argumentConclusion = arg;
-					}
-				}
-			}
-		}
-
-		if (argumentConclusion != null) {
-
-			logger.fine("Argumentation Manager --> Higher hypothesis found: "
-					+ hyp + " - " + max + " from "
-					+ argumentConclusion.getProponent().getProponentName()
-					+ " - ArgumentID: " + argumentConclusion.getId());
-
-			argumentation.getConclusions().add(argumentConclusion);
-
-		} else {
-			logger.warning("No conclusion found for argumentation: "
-					+ argumentation.getId());
-		}
-	}
-
-	/**
 	 * @param p
 	 * @param q
 	 * @return normalised euclidean distance between both probability
@@ -650,4 +592,190 @@ public class AgentArgumentativeCapability {
 		return newMap;
 	}
 
+	/**
+	 * Resolution conflicts method
+	 * 
+	 * @param argumentation
+	 * @param logger
+	 */
+	public static void addConclusionHigherHypothesis(
+			Argumentation argumentation, Logger logger,
+			String classificationTarget) {
+
+		logger.fine("Getting the higher hypothesis...");
+		logger.finest("Evaluating possible conclusions...");
+		List<Argument> allArguments = new ArrayList<Argument>();
+		allArguments.addAll(argumentation.getArguments());
+		List<Integer> attackTypes = new ArrayList<Integer>();
+		attackTypes.add(UNDERCUT);
+		attackTypes.add(DIRECTUNDERCUT);
+		attackTypes.add(CANONICALUNDERCUT);
+		attackTypes.add(DEFEATER);
+		attackTypes.add(DIRECTDEFEATER);
+		List<Argument> possibleConclusions = AgentArgumentativeCapability
+				.getUnattackedArguments(allArguments, argumentation,
+						attackTypes);
+
+		int maxEvidences = 0;
+		for (Argument arg : argumentation.getArguments()) {
+			int evCardinal = arg.getGivens().size();
+			if (evCardinal > maxEvidences) {
+				maxEvidences = evCardinal;
+			}
+		}
+		// Pick possible arguments
+		String hyp = "";
+		double max = 0;
+		Argument argumentConclusion = null;
+		for (Argument arg : possibleConclusions) {
+			if (arg.getGivens().size() == maxEvidences) {
+				for (Proposal p : arg.getProposals()) {
+					if (p.getNode().equals(classificationTarget)
+							&& p.getMaxValue() > max) {// TODO check this
+						max = p.getMaxValue();
+						hyp = p.getMaxState();
+						argumentConclusion = arg;
+					}
+				}
+			}
+		}
+
+		if (argumentConclusion != null) {
+
+			logger.fine("Argumentation Manager --> Higher hypothesis found: "
+					+ hyp + " - " + max + " from "
+					+ argumentConclusion.getProponent().getProponentName()
+					+ " - ArgumentID: " + argumentConclusion.getId());
+
+			argumentation.getConclusions().add(argumentConclusion);
+
+		} else {
+			logger.warning("No conclusion found for argumentation: "
+					+ argumentation.getId());
+		}
+	}
+
+	/**
+	 * @param argumentation
+	 * @param logger
+	 * @param classificationTarget
+	 */
+	public static void addConclusionReputationAndHigherHypothesis(
+			Argumentation argumentation, Logger logger,
+			String classificationTarget) {
+		logger.fine("Getting the higher hypothesis...");
+		logger.finest("Evaluating possible conclusions...");
+		List<Argument> allArguments = new ArrayList<Argument>();
+		allArguments.addAll(argumentation.getArguments());
+		List<Integer> attackTypes = new ArrayList<Integer>();
+		attackTypes.add(UNDERCUT);
+		attackTypes.add(DIRECTUNDERCUT);
+		attackTypes.add(CANONICALUNDERCUT);
+		attackTypes.add(DEFEATER);
+		attackTypes.add(DIRECTDEFEATER);
+		List<Argument> possibleConclusions = AgentArgumentativeCapability
+				.getUnattackedArguments(allArguments, argumentation,
+						attackTypes);
+
+		int maxEvidences = 0;
+		for (Argument arg : argumentation.getArguments()) {
+			int evCardinal = arg.getGivens().size();
+			if (evCardinal > maxEvidences) {
+				maxEvidences = evCardinal;
+			}
+		}
+		// Pick possible arguments
+		String hyp = "";
+		double max = 0;
+		double maxScore = 0;
+		Argument argumentConclusion = null;
+		for (Argument arg : possibleConclusions) {
+			if (arg.getGivens().size() == maxEvidences) {
+				for (Proposal p : arg.getProposals()) {
+					if (p.getNode().equals(classificationTarget)) {
+						double score = arg.getProponent()
+								.getTrustScore(p.getNode(), p.getMaxState())
+								.getRatio();
+						if (score >= maxScore) {
+							if (p.getMaxValue() > max) {// TODO check this
+								maxScore = score;
+								max = p.getMaxValue();
+								hyp = p.getMaxState();
+								argumentConclusion = arg;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (argumentConclusion != null) {
+
+			logger.fine("Argumentation Manager --> Higher hypothesis found: "
+					+ hyp + " - " + max + " from "
+					+ argumentConclusion.getProponent().getProponentName()
+					+ " - ArgumentID: " + argumentConclusion.getId());
+
+			argumentation.getConclusions().add(argumentConclusion);
+
+		} else {
+			logger.warning("No conclusion found for argumentation: "
+					+ argumentation.getId());
+		}
+	}
+
+	/**
+	 * @param agent
+	 * @param bnFile
+	 */
+	public synchronized static void updateScoresBasedOnBackgroundKnowledge(
+			ArgumentativeAgent agent, String bnFile) {
+		String datasetFile = agent.getDatasetFile();
+		DataSet dataset = new DataSet();
+		dataset.readFile(datasetFile);
+
+		Network bn = new Network();
+		bn.readFile(bnFile);
+
+		DataMatch[] matching = dataset.matchNetwork(bn);
+		Validator validator = new Validator(bn, dataset, matching);
+		for (String node : bn.getAllNodeIds()) {
+			validator.addClassNode(node);
+		}
+		validator.test();
+
+		for (String node : bn.getAllNodeIds()) {
+			String[] states = bn.getOutcomeIds(node);
+			int[][] confusionMatrix = validator.getConfusionMatrix(node);
+			double[] accuracies = new double[states.length];
+			int[] totalCasesInDatasetPerState = new int[states.length];
+			int[] successCasesInDatasetPerState = new int[states.length];
+			for (int i = 0; i < states.length; i++) {
+				accuracies[i] = validator.getAccuracy(node, states[i]);
+				int totalCasesForThisState = 0;
+				int succesCasesForThisState = 0;
+				for (int j = 0; j < states.length; j++) {
+					totalCasesForThisState = totalCasesForThisState
+							+ confusionMatrix[i][j];
+					if (i == j) {
+						succesCasesForThisState = confusionMatrix[i][j];
+					}
+				}
+				totalCasesInDatasetPerState[i] = totalCasesForThisState;
+				successCasesInDatasetPerState[i] = succesCasesForThisState;
+			}
+
+			agent.getLogger().fine("Score updated for agent: " + agent.getID());
+			for (int i = 0; i < states.length; i++) {
+				Score score = agent.getTrustScore(node, states[i]);
+				score.setSuccessCount(successCasesInDatasetPerState[i]);
+				score.setTotalCount(totalCasesInDatasetPerState[i]);
+				agent.getLogger().fine(
+						"Score for belief: " + node + "-" + states[i]
+								+ "-> Success: " + score.getSuccessCount()
+								+ " Total: " + score.getTotalCount()
+								+ " Ratio: " + score.getRatio());
+			}
+		}
+	}
 }
