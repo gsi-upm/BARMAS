@@ -52,10 +52,12 @@ public class SummaryCreator {
 		// Calculate comparative data
 		CsvWriter writer = null;
 		CsvWriter writer2 = null;
+		int columnsWriter = 9;
+		int columnsWriter2 = 16;
 		try {
 			if (!outputDetailedFile.exists()) {
 				writer = new CsvWriter(new FileWriter(outputDetailedFile), ',');
-				String[] headers = new String[9];
+				String[] headers = new String[columnsWriter];
 				headers[0] = "SimulationID";
 				headers[1] = "Type";
 				headers[2] = "Cases";
@@ -74,7 +76,7 @@ public class SummaryCreator {
 			writer.flush();
 			if (!outputFile.exists()) {
 				writer2 = new CsvWriter(new FileWriter(outputFile), ',');
-				String[] headers = new String[16];
+				String[] headers = new String[columnsWriter2];
 				headers[0] = "SimulationID";
 				headers[1] = "Type";
 				headers[2] = "Cases";
@@ -148,7 +150,7 @@ public class SummaryCreator {
 			int[] total = new int[7];
 			for (Entry<String, HashMap<String, Integer>> entry : counters
 					.entrySet()) {
-				String[] data = new String[9];
+				String[] data = new String[columnsWriter];
 				data[0] = simulationName;
 				data[1] = entry.getKey();
 				HashMap<String, Integer> summaries = entry.getValue();
@@ -178,7 +180,7 @@ public class SummaryCreator {
 				total[5] = total[5] + summaries.get("BothOK");
 				total[6] = total[6] + summaries.get("BothWrong");
 			}
-			String[] totalData = new String[9];
+			String[] totalData = new String[columnsWriter];
 			totalData[0] = simulationName;
 			totalData[1] = "TOTAL";
 			for (int i = 0; i < total.length; i++) {
@@ -193,8 +195,8 @@ public class SummaryCreator {
 			}
 			logger.info(info);
 
-			String[] totalRatio = new String[9];
-			String[] totalRatio2 = new String[15];
+			String[] totalRatio = new String[columnsWriter];
+			String[] totalRatio2 = new String[columnsWriter2];
 			totalRatio[0] = simulationName;
 			totalRatio[1] = "RATIO-TOTAL";
 			totalRatio2[0] = simulationName;
