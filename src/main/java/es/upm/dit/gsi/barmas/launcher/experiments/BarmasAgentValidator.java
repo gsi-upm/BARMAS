@@ -127,6 +127,7 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET,
 				classificationTarget);
 		scenarioProperties.put(SimulationConfiguration.MODE, mode);
+		scenarioProperties.put(SimulationConfiguration.REPUTATIONMODE, Boolean.toString(false));
 
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
