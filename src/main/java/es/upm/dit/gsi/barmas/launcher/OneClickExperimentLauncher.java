@@ -90,7 +90,7 @@ public class OneClickExperimentLauncher {
 		simulationID = "SOLARFLARE";
 		dataset = "src/main/resources/dataset/solarflare-global.csv";
 		experimentFolder = "solarflare-simulation";
-		numberOfAgents = 5;
+		numberOfAgents = 2;
 		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
@@ -99,18 +99,18 @@ public class OneClickExperimentLauncher {
 		maxThreads = 4;
 		iterations = 1;
 		classificationTarget = "SolarFlareType";
-		delta = 0.3;
+		delta = 0.5;
 
-		// this.launchFullBatchFor(simulationID, dataset, experimentFolder,
-		// numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-		// maxThreads, iterations, classificationTarget, delta,
-		// SimulationConfiguration.DEBUGGING_MODE);
+		 this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+		 numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+		 maxThreads, iterations, classificationTarget, delta,
+		 SimulationConfiguration.SIMULATION_MODE);
 
-		boolean reputationMode = true;
-		this.launchExperimentBatchFor(simulationID, dataset, experimentFolder,
-				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-				maxThreads, iterations, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, reputationMode);
+//		boolean reputationMode = true;
+//		this.launchExperimentBatchFor(simulationID, dataset, experimentFolder,
+//				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+//				maxThreads, iterations, classificationTarget, delta,
+//				SimulationConfiguration.SIMULATION_MODE, reputationMode);
 
 		// ***********************
 
@@ -404,7 +404,7 @@ public class OneClickExperimentLauncher {
 						classificationTarget, i);
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
-						+ simulationID);
+						+ simulationID + " for iteration "+ i);
 				logger.info("---> Starting validations executions...");
 				executor.executeValidators(validators, maxThreads, logger);
 
@@ -418,7 +418,7 @@ public class OneClickExperimentLauncher {
 						classificationTarget, delta, i);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
-						+ simulationID);
+						+ simulationID + " for iteration "+ i);
 				logger.info("---> Starting experiments executions...");
 				executor.executeExperiments(experiments, maxThreads, logger);
 			}

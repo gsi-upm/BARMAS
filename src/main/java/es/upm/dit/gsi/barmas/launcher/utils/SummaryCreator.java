@@ -67,7 +67,8 @@ public class SummaryCreator {
 				headers[8] = "BothWrong";
 				writer.writeRecord(headers);
 			} else {
-				writer = new CsvWriter(new FileWriter(outputDetailedFile, true), ',');
+				writer = new CsvWriter(
+						new FileWriter(outputDetailedFile, true), ',');
 			}
 
 			writer.flush();
@@ -88,7 +89,7 @@ public class SummaryCreator {
 				headers[11] = "Threshold";
 				headers[12] = "BeliefThreshold";
 				headers[13] = "LEPA";
-				headers[14] = "TRUST";
+				headers[14] = "TRUSTMODE";
 				headers[15] = "Iteration";
 				writer2.writeRecord(headers);
 			} else {
@@ -142,7 +143,7 @@ public class SummaryCreator {
 				}
 			}
 			reader.close();
-			
+
 			// Write all types & TOTAL row
 			int[] total = new int[7];
 			for (Entry<String, HashMap<String, Integer>> entry : counters
@@ -212,7 +213,7 @@ public class SummaryCreator {
 			totalRatio2[10] = Double.toString(totalBothOK + totalBothWrong);
 
 			String[] nameSplits = simulationName.split("-");
-			for (int i = 0; i<nameSplits.length;i++) {
+			for (int i = 0; i < nameSplits.length; i++) {
 				String split = nameSplits[i];
 				if (split.equals("TH")) {
 					totalRatio2[11] = nameSplits[++i];

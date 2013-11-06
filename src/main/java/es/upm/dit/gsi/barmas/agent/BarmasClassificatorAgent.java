@@ -326,21 +326,21 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 						// different strong belief in that node.
 						Proposal auxp = new Proposal(p.getNode(), ownBelief);
 						double maxDiff = p.getMaxValue() - auxp.getMaxValue();
-						boolean moreReputation;
+						boolean otherIsBetter = false;
 						if (reputationMode) {
-							moreReputation = arg
+							otherIsBetter = arg
 									.getProponent()
 									.getTrustScore(p.getNode(), p.getMaxState())
 									.getRatio() >= this.getTrustScore(
 									auxp.getNode(), auxp.getMaxState())
 									.getRatio();
+							otherIsBetter = otherIsBetter
+									&& maxDiff > beliefThreshold;
 						} else {
-							moreReputation = true;
+							otherIsBetter = maxDiff > beliefThreshold;
 						}
 						if (this.areDistributionsFarEnough(receivedBelief,
-								ownBelief)
-								&& moreReputation
-								&& maxDiff >= beliefThreshold) {
+								ownBelief) && otherIsBetter) {
 							try {
 								if (!this.updatedBeliefs.containsKey(p
 										.getNode())) {
@@ -538,19 +538,21 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 							ownBelief)) {
 						Proposal auxp = new Proposal(assum.getNode(), ownBelief);
 
-						boolean moreReputation;
+						boolean myBeliefIsBetter;
 						if (reputationMode) {
-							moreReputation = this.getTrustScore(auxp.getNode(),
-									auxp.getMaxState()).getRatio() >= arg
+							myBeliefIsBetter = this.getTrustScore(
+									auxp.getNode(), auxp.getMaxState())
+									.getRatio() >= arg
 									.getProponent()
 									.getTrustScore(assum.getNode(),
 											assum.getMaxState()).getRatio();
+							myBeliefIsBetter = myBeliefIsBetter
+									&& (auxp.getMaxValue()
+											- assum.getMaxValue() > this.beliefThreshold);
 						} else {
-							moreReputation = true;
+							myBeliefIsBetter = (auxp.getMaxValue()
+									- assum.getMaxValue() > this.beliefThreshold);
 						}
-						boolean myBeliefIsBetter = (auxp.getMaxValue()
-								- assum.getMaxValue() > this.beliefThreshold)
-								&& moreReputation;
 
 						if (myBeliefIsBetter) { // TODO this is only for
 												// non-eficcient approach
@@ -1022,7 +1024,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					.entrySet()) {
 				HashMap<String, Float> belief = hyps.get(property.getKey());
 				String state = (String) property.getValue();
-				this.checkBeliefAndUpdateScores(property.getKey(), state, belief);
+				this.checkBeliefAndUpdateScores(property.getKey(), state,
+						belief);
 			}
 		} catch (ShanksException e) {
 			this.getLogger().severe(

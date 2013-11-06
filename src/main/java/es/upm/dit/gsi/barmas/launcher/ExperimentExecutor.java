@@ -121,7 +121,9 @@ public class ExperimentExecutor {
 						if (!thread.isAlive()) {
 							threads2Remove.add(thread);
 							finishedExperiments++;
-							logger.info("Finished experiment! -> Pending experiments for this batch: "
+							logger.info("Finished experiment! -> "
+									+ thread.getName());
+							logger.info("--> Pending experiments for this batch: "
 									+ (experimentsQuantity - finishedExperiments));
 						}
 					}
@@ -143,7 +145,8 @@ public class ExperimentExecutor {
 			t.start();
 			startedExperiments++;
 			logger.info("Starting experiment number: " + startedExperiments
-					+ " --> Pending experiments for this batch: "
+					+ " -> SimulationID: " + t.getName());
+			logger.info("--> Pending experiments for this batch: "
 					+ (experimentsQuantity - finishedExperiments));
 			if (concurrentManagement) {
 				try {
@@ -172,12 +175,13 @@ public class ExperimentExecutor {
 				if (!thread.isAlive()) {
 					threads2Remove.add(thread);
 					finishedExperiments++;
-					logger.info("Finished experiment! -> Pending experiments for this batch: "
+					logger.info("Finished experiment! -> " + thread.getName());
+					logger.info("--> Pending experiments for this batch: "
 							+ (experimentsQuantity - finishedExperiments));
 				} else {
 					logger.info("Execution in progress for simulation with ID: "
 							+ thread.getName());
-					logger.info("-> Pending experiments for this batch: "
+					logger.info("--> Pending experiments for this batch: "
 							+ (experimentsQuantity - finishedExperiments));
 				}
 			}
@@ -281,8 +285,8 @@ public class ExperimentExecutor {
 		// Validators
 		for (int i = 0; i < agentsNumber; i++) {
 			String simulationPrefix = simulationID + "-Agent" + i + "-TH-"
-					+ 2.0 + "-BTH-" + 2.0 + "-LEPA-" + 0 + "-IT-" + iteration
-					+ "-TRUSTMODE-OFF";
+					+ 2.0 + "-BTH-" + 2.0 + "-LEPA-" + 0 + "-TRUSTMODE-OFF"
+					+ "-IT-" + iteration;
 			BarmasAgentValidator expValidator = new BarmasAgentValidator(
 					simulationPrefix, summaryFile, seed, mode, "Agent" + i,
 					experimentDatasetPath + "/bayes/agent-" + i
@@ -292,8 +296,8 @@ public class ExperimentExecutor {
 			experiments.add(expValidator);
 		}
 		String simulationPrefix = simulationID + "-BayesCentralAgent-TH-" + 2.0
-				+ "-BTH-" + 2.0 + "-LEPA-" + 0 + "-IT-" + iteration
-				+ "-TRUSTMODE-OFF";
+				+ "-BTH-" + 2.0 + "-LEPA-" + 0 + "-TRUSTMODE-OFF" + "-IT-"
+				+ iteration;
 		BarmasAgentValidator expValidator = new BarmasAgentValidator(
 				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
 				experimentDatasetPath + "/bayes/bayes-central-dataset.net",
@@ -326,12 +330,12 @@ public class ExperimentExecutor {
 	 * @param summaryFile
 	 * @param seed
 	 * @param mode
-	 * @param string
-	 * @param string2
-	 * @param string3
+	 * @param experimentDatasetPath
+	 * @param experimentOutputFolder
+	 * @param testDataset
 	 * @param classificationTarget
 	 * @param delta
-	 * @param i
+	 * @param iteration
 	 * @param reputationMode
 	 * @return
 	 */
@@ -371,8 +375,8 @@ public class ExperimentExecutor {
 					}
 					String simulationPrefix = simulationID + "-" + agentsNumber
 							+ "agents-TH-" + roundedt + "-BTH-" + rounedbt
-							+ "-LEPA-" + lostEvidencesPerAgent + "-IT-"
-							+ iteration + "-TRUSTMODE-" + reputationModeString;
+							+ "-LEPA-" + lostEvidencesPerAgent + "-TRUSTMODE-"
+							+ reputationModeString + "-IT-" + iteration;
 					BarmasExperiment exp = new BarmasExperiment(
 							simulationPrefix, summaryFile, seed, mode,
 							experimentDatasetPath, experimentOutputFolder,
