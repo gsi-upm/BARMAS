@@ -151,6 +151,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 				}
 			}
 		}
+
+		// THIS BLOCK IS ONLY FOR REPUTATION MODE
 		if (reputationMode) {
 			logger.info("Reputation mode ON in Agent: " + this.getID());
 			this.scores = new HashMap<String, HashMap<String, Score>>();
@@ -175,11 +177,12 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 				e.printStackTrace();
 				System.exit(1);
 			}
+			// Update scores based on background knowledge
+			AgentArgumentativeCapability
+					.updateScoresBasedOnBackgroundKnowledge(this,
+							this.getBayesianNetworkFilePath());
 		}
-
-		// Update scores based on background knowledge
-		AgentArgumentativeCapability.updateScoresBasedOnBackgroundKnowledge(
-				this, this.getBayesianNetworkFilePath());
+		// END OF REPUTATION BLOCK
 
 		this.goToIdle();
 
