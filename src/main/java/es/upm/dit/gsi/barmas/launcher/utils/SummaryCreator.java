@@ -91,7 +91,7 @@ public class SummaryCreator {
 				headers[11] = "DifferenceProbDistThreshold";
 				headers[12] = "BeliefThreshold";
 				headers[13] = "LEPA";
-				headers[14] = "FScoreThreshold";
+				headers[14] = "TrustThreshold";
 				headers[15] = "Iteration";
 				writer2.writeRecord(headers);
 			} else {
@@ -223,7 +223,7 @@ public class SummaryCreator {
 					totalRatio2[12] = nameSplits[++i];
 				} else if (split.equals("LEPA")) {
 					totalRatio2[13] = nameSplits[++i];
-				} else if (split.equals("FSTH")) {
+				} else if (split.equals("TTH")) {
 					totalRatio2[14] = nameSplits[++i];
 				} else if (split.equals("IT")) {
 					totalRatio2[15] = nameSplits[++i];

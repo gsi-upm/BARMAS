@@ -188,7 +188,7 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			@Override
-			public double getFScore(String node, String state) {
+			public double getTrustScore(String node, String state) {
 				return 0;
 			}
 

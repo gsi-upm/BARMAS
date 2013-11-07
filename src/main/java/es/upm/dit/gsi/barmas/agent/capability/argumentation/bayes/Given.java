@@ -84,8 +84,8 @@ public class Given extends AbstractGiven {
 	/**
 	 * @return
 	 */
-	public double getFScoreValue() {
-		return this.source.getFScore(this.getNode(), this.getValue());
+	public double getTrustScoreValue() {
+		return this.source.getTrustScore(this.getNode(), this.getValue());
 	}
 
 }

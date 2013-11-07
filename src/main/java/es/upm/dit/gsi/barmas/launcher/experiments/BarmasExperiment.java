@@ -67,7 +67,7 @@ public class BarmasExperiment implements RunnableExperiment {
 	private int lostEvidencesPerAgent;
 	private double diffThreshold;
 	private double beliefThreshold;
-	private double fscoreThreshold;
+	private double trustThreshold;
 
 	private Logger logger;
 
@@ -82,11 +82,11 @@ public class BarmasExperiment implements RunnableExperiment {
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
 			int lostEvidencesPerAgent, double diffThreshold,
-			double beliefThreshold, double fscoreThreshold) {
+			double beliefThreshold, double trustThreshold) {
 		this.summaryFile = summaryFile;
 		this.agentsNumber = agentsNumber;
 		this.seed = seed;
-		this.fscoreThreshold = fscoreThreshold;
+		this.trustThreshold = trustThreshold;
 		this.mode = mode;
 		this.experimentDatasetFolder = experimentDatasetFolder;
 		this.experimentOutputFolder = experimentOutputFolder;
@@ -131,6 +131,7 @@ public class BarmasExperiment implements RunnableExperiment {
 			fw.write("Difference between Prob. Distribution Threshold: "
 					+ diffThreshold + "\n");
 			fw.write("Belief Threshold: " + beliefThreshold + "\n");
+			fw.write("Trust Threshold: " + trustThreshold + "\n");
 			fw.close();
 
 		} catch (Exception e) {
@@ -144,7 +145,7 @@ public class BarmasExperiment implements RunnableExperiment {
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
 			int lostEvidencesPerAgent, double diffThreshold,
-			double beliefThreshold, double fscoreThreshold) {
+			double beliefThreshold, double trustThreshold) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
@@ -184,7 +185,7 @@ public class BarmasExperiment implements RunnableExperiment {
 				classificationTarget);
 		scenarioProperties.put(SimulationConfiguration.MODE, mode);
 		scenarioProperties.put(SimulationConfiguration.REPUTATIONMODE,
-				Boolean.toString(fscoreThreshold <= 1));
+				Boolean.toString(trustThreshold <= 1));
 
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
@@ -223,7 +224,7 @@ public class BarmasExperiment implements RunnableExperiment {
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
 				experimentOutputPath, diffThreshold, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
-				classificationTarget, fscoreThreshold);
+				classificationTarget, trustThreshold);
 		scenarioProperties.put("ManagerAgent", manager);
 
 		// Argumentation AGENTS
@@ -242,7 +243,7 @@ public class BarmasExperiment implements RunnableExperiment {
 					experimentDatasetFolder + "/bayes/agent-" + agentNum
 							+ "-dataset.net", experimentDatasetFolder
 							+ "/dataset/agent-" + agentNum + "-dataset.csv",
-					sensors, diffThreshold, beliefThreshold, fscoreThreshold,
+					sensors, diffThreshold, beliefThreshold, trustThreshold,
 					logger);
 			agents.add(agent);
 		}
@@ -288,7 +289,7 @@ public class BarmasExperiment implements RunnableExperiment {
 					experimentDatasetFolder, experimentOutputFolder,
 					testDataset, classificationTarget, agentsNumber,
 					lostEvidencesPerAgent, diffThreshold, beliefThreshold,
-					fscoreThreshold);
+					trustThreshold);
 		} catch (Exception e) {
 			logger.severe("Experiment finished unexpectedly...");
 			logger.severe(e.getMessage());

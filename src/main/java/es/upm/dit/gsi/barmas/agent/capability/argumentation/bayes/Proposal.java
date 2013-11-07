@@ -164,8 +164,8 @@ public class Proposal extends AbstractProposal {
 	/**
 	 * @return
 	 */
-	public double getFScoreValue() {
-		return this.source.getFScore(this.getNode(), this.getMaxState());
+	public double getTrustScoreValue() {
+		return this.source.getTrustScore(this.getNode(), this.getMaxState());
 	}
 
 }

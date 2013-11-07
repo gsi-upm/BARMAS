@@ -148,8 +148,8 @@ public class Assumption extends AbstractAssumption {
 	/**
 	 * @return
 	 */
-	public double getFScore() {
-		return this.source.getFScore(this.getNode(), this.getMaxState());
+	public double getTrustScoreValue() {
+		return this.source.getTrustScore(this.getNode(), this.getMaxState());
 	}
 
 }

@@ -684,11 +684,11 @@ public class AgentArgumentativeCapability {
 	 * @param argumentation
 	 * @param logger
 	 * @param classificationTarget
-	 * @param fscoreThreshold
+	 * @param trustThreshold
 	 */
 	public static void addConclusionReputationAndHigherHypothesis(
 			Argumentation argumentation, Logger logger,
-			String classificationTarget, double fscoreThreshold) {
+			String classificationTarget, double trustThreshold) {
 		logger.fine("Getting the higher hypothesis...");
 		logger.finest("Evaluating possible conclusions...");
 		List<Integer> attackTypes = new ArrayList<Integer>();
@@ -700,7 +700,7 @@ public class AgentArgumentativeCapability {
 		List<Argument> possibleConclusions = AgentArgumentativeCapability
 				.getUnattackedArguments(argumentation, attackTypes);
 		// TODO no tendrían que evaluarse los defeated, porque con el
-		// fscore/trust puede que no se haya aceptado
+		// trust puede que no se haya aceptado
 		// RESPUESTA: con el trust esto se podría ignorar, puesto que al final
 		// el agente con más reputación va a mandar
 
@@ -729,7 +729,7 @@ public class AgentArgumentativeCapability {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)) {
-						double score = p.getFScoreValue();
+						double score = p.getTrustScoreValue();
 						if (score >= maxScore) {
 							if (p.getMaxValue() > max) {
 								maxScore = score;
@@ -749,7 +749,7 @@ public class AgentArgumentativeCapability {
 			for (Argument arg : possibleConclusions) {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)) {
-						double score = p.getFScoreValue();
+						double score = p.getTrustScoreValue();
 						if (score < maxScore) {
 							argsToRemove.add(arg);
 						}

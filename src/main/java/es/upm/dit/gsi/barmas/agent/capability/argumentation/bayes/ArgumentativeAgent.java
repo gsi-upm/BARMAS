@@ -102,7 +102,7 @@ public interface ArgumentativeAgent extends ShanksAgent {
 	
 	public void updateFScoreStore(DiagnosisCase diagnosisCase);
 	
-	public double getFScore(String node, String state);
+	public double getTrustScore(String node, String state);
 
 	/**
 	 * @return

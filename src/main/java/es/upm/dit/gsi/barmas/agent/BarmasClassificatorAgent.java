@@ -94,7 +94,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 
 	private double diffThreshold;
 	private double beliefThreshold;
-	private double fscoreThreshold;
+	private double trustThreshold;
 	private String classificationTarget;
 	private String datasetFile;
 
@@ -117,14 +117,14 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	public BarmasClassificatorAgent(String id, ArgumentativeAgent manager,
 			String classificationTarget, String bnFile, String datasetFile,
 			List<String> sensors, double diffThreshold, double beliefThreshold,
-			double fscoreThreshold, Logger logger) {
+			double trustThreshold, Logger logger) {
 		super(id, logger);
 		this.bnFile = bnFile;
 		this.sensors = sensors;
 		this.diffThreshold = diffThreshold;
 		this.beliefThreshold = beliefThreshold;
-		this.fscoreThreshold = fscoreThreshold;
-		this.reputationMode = (fscoreThreshold <= 1);
+		this.trustThreshold = trustThreshold;
+		this.reputationMode = (trustThreshold <= 1);
 		this.datasetFile = datasetFile;
 		this.classificationTarget = classificationTarget;
 		this.newEvidences = false;
@@ -155,6 +155,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 				}
 			}
 		}
+
+		// TODO review the code of the agent
 
 		// THIS BLOCK IS ONLY FOR REPUTATION MODE
 		if (reputationMode) {
@@ -318,9 +320,9 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 								.areDistributionsFarEnough(receivedBelief,
 										ownBelief);
 						if (reputationMode) {
-							moreTrust = p.getFScoreValue()
-									- this.getFScoreValueForCurrentBelief(p
-											.getNode()) >= this.fscoreThreshold;
+							moreTrust = p.getTrustScoreValue()
+									- this.getTrustScoreValueForCurrentBelief(p
+											.getNode()) >= this.trustThreshold;
 							otherIsBetter = moreTrust
 									&& (maxDiff > this.beliefThreshold);
 						} else {
@@ -345,7 +347,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 									if (reputationMode) {
 										this.getLogger().fine(
 												"New belief with a trust strength equals to: "
-														+ p.getFScoreValue());
+														+ p.getTrustScoreValue());
 									}
 								} else {
 									if (reputationMode) {
@@ -353,11 +355,11 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 										// some new beliefs can be received with
 										// more strength/trust
 										double oldFScoreValue = this
-												.getFScoreValueForCurrentBelief(p
+												.getTrustScoreValueForCurrentBelief(p
 														.getNode());
 										double newFScoreValue = p
-												.getFScoreValue();
-										if (newFScoreValue - oldFScoreValue >= this.fscoreThreshold) {
+												.getTrustScoreValue();
+										if (newFScoreValue - oldFScoreValue >= this.trustThreshold) {
 											ShanksAgentBayesianReasoningCapability
 													.addSoftEvidence(
 															this.getBayesianNetwork(),
@@ -556,8 +558,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					boolean enoughDistance = this.areDistributionsFarEnough(
 							receivedBelief, ownBelief);
 					if (reputationMode) {
-						moreTrust = this.getFScoreValueForCurrentBelief(assum
-								.getNode()) - assum.getFScore() >= this.fscoreThreshold;
+						moreTrust = this.getTrustScoreValueForCurrentBelief(assum
+								.getNode()) - assum.getTrustScoreValue() >= this.trustThreshold;
 						myBeliefIsBetter = moreTrust
 								&& (maxDiff > this.beliefThreshold);
 					} else {
@@ -1103,7 +1105,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * @param variable
 	 * @return
 	 */
-	public double getFScoreValueForCurrentBelief(String variable) {
+	public double getTrustScoreValueForCurrentBelief(String variable) {
 		HashMap<String, Float> hyps;
 		try {
 			hyps = ShanksAgentBayesianReasoningCapability
@@ -1117,7 +1119,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 				}
 			}
 			ArgumentativeAgent source = this.getSourceOfData(variable);
-			return source.getFScore(variable, stateMax);
+			return source.getTrustScore(variable, stateMax);
 
 		} catch (ShanksException e) {
 			this.getLogger().severe(
@@ -1132,10 +1134,11 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * 
 	 * @see
 	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
-	 * #getFScore(java.lang.String, java.lang.String)
+	 * #getTrustScore(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public double getFScore(String node, String state) {
-		return this.scores.getFScore(node, state);
+	public double getTrustScore(String node, String state) {
+		// return this.scores.getFScore(node, state);
+		return this.scores.getAccuracy(node, state);
 	}
 }

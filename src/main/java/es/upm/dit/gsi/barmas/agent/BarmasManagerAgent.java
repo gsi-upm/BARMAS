@@ -78,7 +78,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	private String argumentationDir;
 
 	private double diffThreshold;
-	private double fscoreThreshold;
+	private double trustThreshold;
 
 	// STATES
 	private boolean IDLE;
@@ -99,12 +99,12 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	public BarmasManagerAgent(String id, String outputDir,
 			double diffThreshold, Logger logger, int mode,
-			String classificationTarget, double fscoreThreshold) {
+			String classificationTarget, double trustThreshold) {
 		super(id, logger);
 		this.classificationTarget = classificationTarget;
 		this.mode = mode;
-		this.fscoreThreshold = fscoreThreshold;
-		this.reputationMode = (fscoreThreshold <= 1);
+		this.trustThreshold = trustThreshold;
+		this.reputationMode = (trustThreshold <= 1);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.pendingArguments = new ArrayList<Argument>();
 		this.outputDir = outputDir;
@@ -546,7 +546,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 			AgentArgumentativeCapability
 					.addConclusionReputationAndHigherHypothesis(argumentation,
 							this.getLogger(), classificationTarget,
-							fscoreThreshold);
+							trustThreshold);
 		} else {
 			AgentArgumentativeCapability.addConclusionHigherHypothesis(
 					argumentation, this.getLogger(), classificationTarget);
@@ -741,7 +741,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * #getTrustScore(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public double getFScore(String node, String state) {
+	public double getTrustScore(String node, String state) {
 		// Nothing to do
 		return 0;
 	}
