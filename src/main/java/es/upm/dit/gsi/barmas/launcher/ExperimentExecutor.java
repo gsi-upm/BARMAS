@@ -19,14 +19,18 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.csvreader.CsvReader;
 
+import es.upm.dit.gsi.barmas.dataset.utils.DatasetSplitter;
 import es.upm.dit.gsi.barmas.launcher.experiments.BarmasAgentValidator;
 import es.upm.dit.gsi.barmas.launcher.experiments.BarmasExperiment;
 import es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment;
+import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
 import es.upm.dit.gsi.barmas.launcher.utils.ConsoleOutputDisabler;
+import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
  * Project: barmas File: es.upm.dit.gsi.barmas.launcher.ExperimentExecutor.java
@@ -51,51 +55,84 @@ public class ExperimentExecutor {
 		// Because unbbayes print a lot of things in console...
 		ConsoleOutputDisabler.disableConsoleOutput();
 
-		// String summaryFile = "test/global-summary.csv";
-		// long seed = 0;
-		// int mode = SimulationConfiguration.DEBUGGING_MODE;
-		// // int mode = SimulationConfiguration.SIMULATION_MODE;
-		// List<Runnable> experiments = new ArrayList<Runnable>();
+		ExperimentExecutor executor = new ExperimentExecutor();
 
-		// **************************
-		// SOLAR FLARE EXPERIMENTS
-		// **************************
-		// ExperimentExecutor.addSolarFlareExperiments(experiments, mode, seed,
-		// summaryFile);
-		// ****************************************
+		String simulationID = "SOLARFLARE";
+		String dataset = "src/main/resources/dataset/solarflare-global.csv";
+		String experimentFolder = "solarflare-simulation";
+		int numberOfAgents = 6;
+		double testRatio = 0.4;
 
-		// **************************
-		// KOWLANCZ EXPERIMENTS
-		// **************************
-		// ExperimentExecutor.addKowlanCZExperiments(experiments, mode, seed,
-		// summaryFile);
-		// ****************************************
-
-		// Lauch experiments
-		// int maxThreads = new Integer(args[0]);
-		// ExperimentExecutor executor = new ExperimentExecutor();
-		// executor.executeExperiments(experiments, maxThreads);
+		String summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		long seed = 0;
+		String classificationTarget = "SolarFlareType";
+		int mode = SimulationConfiguration.DEBUGGING_MODE;
+		double threshold = 0.15;
+		double beliefThreshold = 0.05;
+		boolean reputationMode = true;
+		int lepa = 2;
+		
+		executor.executeExperiment(simulationID, threshold, beliefThreshold,
+				reputationMode, numberOfAgents, lepa, summaryFile,
+				classificationTarget, seed, mode, testRatio, dataset,
+				experimentFolder);
 
 	}
 
 	/**
-	 * @param testDataset
-	 * @return
+	 * @param simulationID
+	 * @param threshold
+	 * @param beliefThreshold
+	 * @param reputationMode
+	 * @param agentsNumber
+	 * @param lostEvidencesPerAgent
+	 * @param summaryFile
+	 * @param classificationTarget
+	 * @param seed
+	 * @param mode
+	 * @param ratio
+	 * @param originalDataset
+	 * @param experimentFolder
 	 */
-	private int getNumberOfEvidences(String testDataset) {
-		int result = 0;
-		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					testDataset)));
-			reader.readHeaders();
-			String[] headers = reader.getHeaders();
-			result = headers.length - 1;
-			reader.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
+	public void executeExperiment(String simulationID, double threshold,
+			double beliefThreshold, boolean reputationMode, int agentsNumber,
+			int lostEvidencesPerAgent, String summaryFile,
+			String classificationTarget, long seed, int mode, double ratio,
+			String originalDataset, String experimentFolder) {
+
+		Logger logger = Logger.getLogger(ExperimentExecutor.class
+				.getSimpleName());
+
+		LogConfigurator.log2File(logger, "IndependentExperiment", Level.ALL,
+				Level.INFO, experimentFolder);
+
+		DatasetSplitter splitter = new DatasetSplitter();
+		splitter.splitDataset(ratio, agentsNumber, originalDataset,
+				experimentFolder + "/input/dataset", true, simulationID, logger);
+
+		int tint = (int) (threshold * 100);
+		double roundedt = ((double) tint) / 100;
+		int btint = (int) (beliefThreshold * 100);
+		double rounedbt = ((double) btint) / 100;
+		String reputationModeString = "";
+		if (reputationMode) {
+			reputationModeString = "ON";
+		} else {
+			reputationModeString = "OFF";
 		}
-		return result;
+		String simulationPrefix = simulationID + "-" + agentsNumber
+				+ "agents-TH-" + roundedt + "-BTH-" + rounedbt + "-LEPA-"
+				+ lostEvidencesPerAgent + "-TRUSTMODE-" + reputationModeString;
+		BarmasExperiment exp = new BarmasExperiment(simulationPrefix,
+				summaryFile, seed, mode, experimentFolder + "/input",
+				experimentFolder + "/output", experimentFolder
+						+ "/input/dataset/test-dataset.csv",
+				classificationTarget, agentsNumber, lostEvidencesPerAgent,
+				threshold, beliefThreshold, reputationMode);
+		List<RunnableExperiment> exps = new ArrayList<RunnableExperiment>();
+		exps.add(exp);
+		this.executeRunnables(exps, 1, true, logger);
 	}
 
 	/**
@@ -197,62 +234,6 @@ public class ExperimentExecutor {
 		logger.info("Finishing experiments batch with " + finishedExperiments
 				+ " experiments executed.");
 	}
-
-	//
-	// /**
-	// * @param experiments
-	// * @param mode
-	// * @param seed
-	// * @param summaryFile
-	// */
-	// private static void addSolarFlareExperiments(List<Runnable> experiments,
-	// int mode, long seed, String summaryFile) {
-	// Experiment1 exp1 = new Experiment1(summaryFile, seed, mode, true);
-	// experiments.add(exp1);
-	//
-	// Experiment3 exp3 = new Experiment3(summaryFile, seed, mode, true);
-	// experiments.add(exp3);
-	// Experiment3A exp3a = new Experiment3A(summaryFile, seed, mode, true);
-	// experiments.add(exp3a);
-	// Experiment3B exp3b = new Experiment3B(summaryFile, seed, mode, true);
-	// experiments.add(exp3b);
-	// Experiment3C exp3c = new Experiment3C(summaryFile, seed, mode, true);
-	// experiments.add(exp3c);
-	//
-	// double threshold = 1;
-	// double beliefThreshold = 1;
-	// boolean validated = false;
-	// // double delta = 0.05;
-	// double delta = 0.2;
-	//
-	// // double threshold = 0.2;
-	// // double beliefThreshold = 0.1;
-	// // boolean validated = true;
-	//
-	// while (threshold > 0.01) {
-	// while (beliefThreshold > 0.01) {
-	// // Experiment2 exp2 = new Experiment2(summaryFile, seed,
-	// // threshold, beliefThreshold, mode, !validated);
-	// // experiments.add(exp2);
-	// Experiment4 exp4 = new Experiment4(summaryFile, seed,
-	// threshold, beliefThreshold, mode, !validated);
-	// experiments.add(exp4);
-	// Experiment4A exp4a = new Experiment4A(summaryFile, seed,
-	// threshold, beliefThreshold, mode, !validated);
-	// experiments.add(exp4a);
-	// Experiment4B exp4b = new Experiment4B(summaryFile, seed,
-	// threshold, beliefThreshold, mode, !validated);
-	// experiments.add(exp4b);
-	// Experiment4C exp4c = new Experiment4C(summaryFile, seed,
-	// threshold, beliefThreshold, mode, !validated);
-	// experiments.add(exp4c);
-	// validated = true;
-	// beliefThreshold = beliefThreshold - delta;
-	// }
-	// beliefThreshold = 1;
-	// threshold = threshold - delta;
-	// }
-	// }
 
 	/**
 	 * @param experiments
@@ -398,54 +379,24 @@ public class ExperimentExecutor {
 		return experiments;
 	}
 
-	// /**
-	// * @param experiments
-	// * @param mode
-	// * @param seed
-	// * @param summaryFile
-	// */
-	// private static void addKowlanCZExperiments(List<Runnable> experiments,
-	// int mode, long seed, String summaryFile) {
-	//
-	// String experimentDatasetPath = "src/main/resources/kowlancz-CZ02/exp1";
-	// String experimentOutputFolder = "test/kowlancz2-output";
-	// String testDataset = experimentDatasetPath
-	// + "/dataset/test-dataset.csv";
-	// String classificationTarget = "Diagnosis";
-	// int agentsNumber = 4;
-	// int lostEvidencesPerAgent = 0;
-	// String simulationID = "KOWLANCZ02-" + agentsNumber + "agents";
-	// double NOASSUMPTIONS = 2;
-	// BarmasExperiment expargbasic = new BarmasExperiment(simulationID,
-	// summaryFile, seed, mode, experimentDatasetPath,
-	// experimentOutputFolder, testDataset, classificationTarget,
-	// agentsNumber, lostEvidencesPerAgent, NOASSUMPTIONS,
-	// NOASSUMPTIONS);
-	// // experiments.add(expargbasic);
-	//
-	// agentsNumber = 3;
-	// for (int i = 0; i < agentsNumber; i++) {
-	// simulationID = "KOWLANCZ02-Agent" + i;
-	// BarmasAgentValidator expValidator = new BarmasAgentValidator(
-	// simulationID, summaryFile, seed, mode, "Agent" + i,
-	// experimentDatasetPath + "/bayes/agent-" + i
-	// + "-dataset.net", experimentDatasetPath
-	// + "/dataset/agent-" + i + "-dataset.csv",
-	// experimentOutputFolder, testDataset, classificationTarget);
-	// // experiments.add(expValidator);
-	// }
-	//
-	// experimentDatasetPath = "src/main/resources/kowlancz-CZ02/exp3-solar";
-	// testDataset = experimentDatasetPath + "/dataset/test-dataset.csv";
-	// classificationTarget = "SolarFlareType";
-	// agentsNumber = 2;
-	// simulationID = "solarflare-" + agentsNumber + "agents";
-	// expargbasic = new BarmasExperiment(simulationID, summaryFile, seed,
-	// mode, experimentDatasetPath, experimentOutputFolder,
-	// testDataset, classificationTarget, agentsNumber,
-	// lostEvidencesPerAgent, NOASSUMPTIONS, NOASSUMPTIONS);
-	// experiments.add(expargbasic);
-	//
-	// }
+	/**
+	 * @param testDataset
+	 * @return
+	 */
+	private int getNumberOfEvidences(String testDataset) {
+		int result = 0;
+		try {
+			CsvReader reader = new CsvReader(new FileReader(new File(
+					testDataset)));
+			reader.readHeaders();
+			String[] headers = reader.getHeaders();
+			result = headers.length - 1;
+			reader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return result;
+	}
 
 }
