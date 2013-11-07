@@ -166,7 +166,7 @@ public class ExperimentExecutor {
 			List<Thread> threads2Remove = new ArrayList<Thread>();
 			for (Thread thread : threads) {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(60000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					System.exit(1);
