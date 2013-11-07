@@ -123,8 +123,6 @@ public class ExperimentExecutor {
 							finishedExperiments++;
 							logger.info("Finished experiment! -> "
 									+ thread.getName());
-							logger.info("--> Pending experiments for this batch: "
-									+ (experimentsQuantity - finishedExperiments));
 						}
 					}
 					if (!threads2Remove.isEmpty()) {
@@ -132,6 +130,7 @@ public class ExperimentExecutor {
 							threads.remove(t);
 						}
 						threads2Remove.clear();
+						System.gc();
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -353,7 +352,7 @@ public class ExperimentExecutor {
 
 		// + delta to ensure at least one execution without assumptions
 		double threshold = 1.0;
-		while (threshold > 0) {
+		while (threshold >= 0.05) {
 
 			double beliefThreshold = 0.05;
 			while (beliefThreshold <= 1.0) {

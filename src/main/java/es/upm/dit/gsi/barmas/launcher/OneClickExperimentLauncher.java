@@ -101,7 +101,7 @@ public class OneClickExperimentLauncher {
 		maxThreads = 8;
 		iterations = 1;
 		classificationTarget = "SolarFlareType";
-		delta = 0.1;
+		delta = 0.4;
 
 		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
 				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
