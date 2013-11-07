@@ -44,6 +44,7 @@ public class OneClickExperimentLauncher {
 	private int iterations;
 	private String classificationTarget;
 	private double delta;
+	private long initTime;
 
 	/**
 	 * @param args
@@ -55,6 +56,7 @@ public class OneClickExperimentLauncher {
 
 	public OneClickExperimentLauncher() {
 		ConsoleOutputDisabler.disableConsoleOutput();
+		this.initTime = System.currentTimeMillis();
 	}
 
 	/**
@@ -101,16 +103,17 @@ public class OneClickExperimentLauncher {
 		classificationTarget = "SolarFlareType";
 		delta = 0.1;
 
-		 this.launchFullBatchFor(simulationID, dataset, experimentFolder,
-		 numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-		 maxThreads, iterations, classificationTarget, delta,
-		 SimulationConfiguration.SIMULATION_MODE);
+		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
+				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+				maxThreads, iterations, classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE);
 
-//		boolean reputationMode = true;
-//		this.launchExperimentBatchFor(simulationID, dataset, experimentFolder,
-//				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-//				maxThreads, iterations, classificationTarget, delta,
-//				SimulationConfiguration.SIMULATION_MODE, reputationMode);
+		// boolean reputationMode = true;
+		// this.launchExperimentBatchFor(simulationID, dataset,
+		// experimentFolder,
+		// numberOfAgents, testRatio, centralApproach, summaryFile, seed,
+		// maxThreads, iterations, classificationTarget, delta,
+		// SimulationConfiguration.SIMULATION_MODE, reputationMode);
 
 		// ***********************
 
@@ -259,7 +262,15 @@ public class OneClickExperimentLauncher {
 		// maxThreads, iterations, classificationTarget, delta);
 		// // ***********************
 
-		logger.info("All experiments have been executed. Finishing execution of simulations.");
+		long finishTime = System.currentTimeMillis();
+		long interval = finishTime - initTime;
+		long intervalSecs = interval / 1000;
+		long intervalMins = intervalSecs / 60;
+		long intervalHours = intervalMins / 60;
+		logger.info("All experiments have been executed in " + intervalHours
+				+ " hours, " + (intervalMins % 60) + " minutes, "
+				+ (intervalSecs % 60) + " seconds and " + (interval % 1000)
+				+ " miliseconds. Finishing execution of simulations.");
 	}
 
 	public void launchExperimentBatchFor(String simulationID, String dataset,
@@ -281,13 +292,14 @@ public class OneClickExperimentLauncher {
 				ExperimentExecutor executor = new ExperimentExecutor();
 
 				// EXPERIMENTS
-				List<RunnableExperiment> experiments = executor.getExperimentBatch(
-						simulationID, agentsNumber, summaryFile, seed, mode,
-						experimentFolder + "/input/iteration-" + i,
-						experimentFolder + "/output/iteration-" + i,
-						experimentFolder + "/input/iteration-" + i
-								+ "/dataset/test-dataset.csv",
-						classificationTarget, delta, i, trustMode);
+				List<RunnableExperiment> experiments = executor
+						.getExperimentBatch(simulationID, agentsNumber,
+								summaryFile, seed, mode, experimentFolder
+										+ "/input/iteration-" + i,
+								experimentFolder + "/output/iteration-" + i,
+								experimentFolder + "/input/iteration-" + i
+										+ "/dataset/test-dataset.csv",
+								classificationTarget, delta, i, trustMode);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID);
@@ -319,13 +331,14 @@ public class OneClickExperimentLauncher {
 				ExperimentExecutor executor = new ExperimentExecutor();
 
 				// VALIDATORS
-				List<RunnableExperiment> validators = executor.getValidatorsBatch(
-						simulationID, agentsNumber, summaryFile, seed, mode,
-						experimentFolder + "/input/iteration-" + i,
-						experimentFolder + "/output/iteration-" + i,
-						experimentFolder + "/input/iteration-" + i
-								+ "/dataset/test-dataset.csv",
-						classificationTarget, i);
+				List<RunnableExperiment> validators = executor
+						.getValidatorsBatch(simulationID, agentsNumber,
+								summaryFile, seed, mode, experimentFolder
+										+ "/input/iteration-" + i,
+								experimentFolder + "/output/iteration-" + i,
+								experimentFolder + "/input/iteration-" + i
+										+ "/dataset/test-dataset.csv",
+								classificationTarget, i);
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID);
@@ -356,13 +369,14 @@ public class OneClickExperimentLauncher {
 				ExperimentExecutor executor = new ExperimentExecutor();
 
 				// EXPERIMENTS
-				List<RunnableExperiment> experiments = executor.getExperimentBatch(
-						simulationID, agentsNumber, summaryFile, seed, mode,
-						experimentFolder + "/input/iteration-" + i,
-						experimentFolder + "/output/iteration-" + i,
-						experimentFolder + "/input/iteration-" + i
-								+ "/dataset/test-dataset.csv",
-						classificationTarget, delta, i);
+				List<RunnableExperiment> experiments = executor
+						.getExperimentBatch(simulationID, agentsNumber,
+								summaryFile, seed, mode, experimentFolder
+										+ "/input/iteration-" + i,
+								experimentFolder + "/output/iteration-" + i,
+								experimentFolder + "/input/iteration-" + i
+										+ "/dataset/test-dataset.csv",
+								classificationTarget, delta, i);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID);
@@ -395,30 +409,32 @@ public class OneClickExperimentLauncher {
 				ExperimentExecutor executor = new ExperimentExecutor();
 
 				// VALIDATORS
-				List<RunnableExperiment> validators = executor.getValidatorsBatch(
-						simulationID, agentsNumber, summaryFile, seed, mode,
-						experimentFolder + "/input/iteration-" + i,
-						experimentFolder + "/output/iteration-" + i,
-						experimentFolder + "/input/iteration-" + i
-								+ "/dataset/test-dataset.csv",
-						classificationTarget, i);
+				List<RunnableExperiment> validators = executor
+						.getValidatorsBatch(simulationID, agentsNumber,
+								summaryFile, seed, mode, experimentFolder
+										+ "/input/iteration-" + i,
+								experimentFolder + "/output/iteration-" + i,
+								experimentFolder + "/input/iteration-" + i
+										+ "/dataset/test-dataset.csv",
+								classificationTarget, i);
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
-						+ simulationID + " for iteration "+ i);
+						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting validations executions...");
 				executor.executeValidators(validators, maxThreads, logger);
 
 				// EXPERIMENTS
-				List<RunnableExperiment> experiments = executor.getExperimentBatch(
-						simulationID, agentsNumber, summaryFile, seed, mode,
-						experimentFolder + "/input/iteration-" + i,
-						experimentFolder + "/output/iteration-" + i,
-						experimentFolder + "/input/iteration-" + i
-								+ "/dataset/test-dataset.csv",
-						classificationTarget, delta, i);
+				List<RunnableExperiment> experiments = executor
+						.getExperimentBatch(simulationID, agentsNumber,
+								summaryFile, seed, mode, experimentFolder
+										+ "/input/iteration-" + i,
+								experimentFolder + "/output/iteration-" + i,
+								experimentFolder + "/input/iteration-" + i
+										+ "/dataset/test-dataset.csv",
+								classificationTarget, delta, i);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
-						+ simulationID + " for iteration "+ i);
+						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting experiments executions...");
 				executor.executeExperiments(experiments, maxThreads, logger);
 			}
