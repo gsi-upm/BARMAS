@@ -40,7 +40,6 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeA
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Score;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
@@ -78,7 +77,8 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	private String outputDir;
 	private String argumentationDir;
 
-	private double threshold;
+	private double diffThreshold;
+	private double fscoreThreshold;
 
 	// STATES
 	private boolean IDLE;
@@ -97,17 +97,18 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * @param id
 	 * @param outputDir
 	 */
-	public BarmasManagerAgent(String id, String outputDir, double threshold,
-			Logger logger, int mode, String classificationTarget,
-			boolean reputationMode) {
+	public BarmasManagerAgent(String id, String outputDir,
+			double diffThreshold, Logger logger, int mode,
+			String classificationTarget, double fscoreThreshold) {
 		super(id, logger);
 		this.classificationTarget = classificationTarget;
 		this.mode = mode;
-		this.reputationMode = reputationMode;
+		this.fscoreThreshold = fscoreThreshold;
+		this.reputationMode = (fscoreThreshold <= 1);
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
 		this.pendingArguments = new ArrayList<Argument>();
 		this.outputDir = outputDir;
-		this.threshold = threshold;
+		this.diffThreshold = diffThreshold;
 		this.argumentationCounter = 0;
 
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
@@ -181,6 +182,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 			this.argumentation = new Argumentation(argumentationCounter);
 			this.getLogger().finer(
 					"Creating new argumentation - ID: " + argumentationCounter);
+			argumentationCounter++;
 		}
 
 		for (Argument arg : pendingArguments) {
@@ -540,13 +542,11 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void finishArgumenation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		if (reputationMode) { // TODO contemplar el caso de que se ataque un
-								// argumento y luego no se acepte, por lo tanto
-								// esa hyp debería ser válida para contemplarla
-								// como posible conclusion
+		if (reputationMode) {
 			AgentArgumentativeCapability
 					.addConclusionReputationAndHigherHypothesis(argumentation,
-							this.getLogger(), classificationTarget);
+							this.getLogger(), classificationTarget,
+							fscoreThreshold);
 		} else {
 			AgentArgumentativeCapability.addConclusionHigherHypothesis(
 					argumentation, this.getLogger(), classificationTarget);
@@ -714,7 +714,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	public boolean areDistributionsFarEnough(Map<String, Double> a,
 			Map<String, Double> b) {
 		if (AgentArgumentativeCapability.getNormalisedHellingerDistance(
-				(HashMap<String, Double>) a, (HashMap<String, Double>) b) >= threshold) {
+				(HashMap<String, Double>) a, (HashMap<String, Double>) b) >= diffThreshold) {
 			return true;
 		} else {
 			return false;
@@ -729,7 +729,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * #updateTrustScores(es.upm.dit.gsi.barmas.model.DiagnosisCase)
 	 */
 	@Override
-	public void updateTrustScores(DiagnosisCase diagnosisCase) {
+	public void updateFScoreStore(DiagnosisCase diagnosisCase) {
 		// Nothing to do
 	}
 
@@ -741,9 +741,9 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * #getTrustScore(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Score getTrustScore(String node, String state) {
+	public double getFScore(String node, String state) {
 		// Nothing to do
-		return null;
+		return 0;
 	}
 
 	/*
@@ -755,6 +755,47 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	@Override
 	public String getDatasetFile() {
+		// Nothing to do
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #getSourceOfData()
+	 */
+	@Override
+	public HashMap<String, ArgumentativeAgent> getSourceOfData() {
+		// Nothing to do
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #updateSourceOfData(java.lang.String,
+	 * es.upm.dit.gsi.barmas.agent.capability
+	 * .argumentation.bayes.ArgumentativeAgent)
+	 */
+	@Override
+	public void updateSourceOfData(String variable, ArgumentativeAgent source) {
+		// Nothing to do
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #getSourceOfData(java.lang.String)
+	 */
+	@Override
+	public ArgumentativeAgent getSourceOfData(String variable) {
+		// Nothing to do
 		return null;
 	}
 

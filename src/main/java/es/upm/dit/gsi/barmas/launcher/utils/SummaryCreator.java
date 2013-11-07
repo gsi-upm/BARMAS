@@ -88,10 +88,10 @@ public class SummaryCreator {
 				headers[8] = "BothWrong";
 				headers[9] = "GlobalImprovementWithArgumentation";
 				headers[10] = "Draw";
-				headers[11] = "Threshold";
+				headers[11] = "DifferenceProbDistThreshold";
 				headers[12] = "BeliefThreshold";
 				headers[13] = "LEPA";
-				headers[14] = "TRUSTMODE";
+				headers[14] = "FScoreThreshold";
 				headers[15] = "Iteration";
 				writer2.writeRecord(headers);
 			} else {
@@ -217,13 +217,13 @@ public class SummaryCreator {
 			String[] nameSplits = simulationName.split("-");
 			for (int i = 0; i < nameSplits.length; i++) {
 				String split = nameSplits[i];
-				if (split.equals("TH")) {
+				if (split.equals("DTH")) {
 					totalRatio2[11] = nameSplits[++i];
 				} else if (split.equals("BTH")) {
 					totalRatio2[12] = nameSplits[++i];
 				} else if (split.equals("LEPA")) {
 					totalRatio2[13] = nameSplits[++i];
-				} else if (split.equals("TRUSTMODE")) {
+				} else if (split.equals("FSTH")) {
 					totalRatio2[14] = nameSplits[++i];
 				} else if (split.equals("IT")) {
 					totalRatio2[15] = nameSplits[++i];

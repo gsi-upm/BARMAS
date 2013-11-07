@@ -169,7 +169,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 				for (ShanksAgent agent : sim.getAgents()) {
 					if (agent instanceof BarmasClassificatorAgent) {
 						((BarmasClassificatorAgent) agent)
-								.updateTrustScores(origDiagnosis);
+								.updateFScoreStore(origDiagnosis);
 					}
 				}
 			}

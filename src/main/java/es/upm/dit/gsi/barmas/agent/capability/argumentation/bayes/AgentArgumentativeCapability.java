@@ -78,10 +78,16 @@ public class AgentArgumentativeCapability {
 		Argument arg = new Argument(proponent, step, timestamp);
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			Given given = new Given(entry.getKey(), entry.getValue());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry
+					.getKey());
+			given.setSource(source);
 			arg.addGiven(given);
 		}
 		Proposal proposal = new Proposal(node);
 		proposal.addValueWithConfidence(value, conf);
+		ArgumentativeAgent source = proponent.getSourceOfData(proposal
+				.getNode());
+		proposal.setSource(source);
 		arg.addProposal(proposal);
 
 		return arg;
@@ -105,6 +111,9 @@ public class AgentArgumentativeCapability {
 
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			Given given = new Given(entry.getKey(), entry.getValue());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry
+					.getKey());
+			given.setSource(source);
 			arg.addGiven(given);
 		}
 
@@ -112,12 +121,18 @@ public class AgentArgumentativeCapability {
 				.entrySet()) {
 			Assumption assumption = new Assumption(entry.getKey(),
 					entry.getValue());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry
+					.getKey());
+			assumption.setSource(source);
 			arg.addAssumption(assumption);
 		}
 
 		for (Entry<String, HashMap<String, Double>> entry : proposals
 				.entrySet()) {
 			Proposal proposal = new Proposal(entry.getKey(), entry.getValue());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry
+					.getKey());
+			proposal.setSource(source);
 			arg.addProposal(proposal);
 		}
 
@@ -279,6 +294,19 @@ public class AgentArgumentativeCapability {
 							argumentation, attackType);
 		}
 		return unattackedArgs;
+	}
+
+	/**
+	 * @param argumentation
+	 * @param attackTypes
+	 * @return
+	 */
+	public static List<Argument> getUnattackedArguments(
+			Argumentation argumentation, List<Integer> attackTypes) {
+		List<Argument> arguments = new ArrayList<Argument>();
+		arguments.addAll(argumentation.getArguments());
+		return AgentArgumentativeCapability.getUnattackedArguments(arguments,
+				argumentation, attackTypes);
 	}
 
 	/**
@@ -604,8 +632,6 @@ public class AgentArgumentativeCapability {
 
 		logger.fine("Getting the higher hypothesis...");
 		logger.finest("Evaluating possible conclusions...");
-		List<Argument> allArguments = new ArrayList<Argument>();
-		allArguments.addAll(argumentation.getArguments());
 		List<Integer> attackTypes = new ArrayList<Integer>();
 		attackTypes.add(UNDERCUT);
 		attackTypes.add(DIRECTUNDERCUT);
@@ -613,8 +639,7 @@ public class AgentArgumentativeCapability {
 		attackTypes.add(DEFEATER);
 		attackTypes.add(DIRECTDEFEATER);
 		List<Argument> possibleConclusions = AgentArgumentativeCapability
-				.getUnattackedArguments(allArguments, argumentation,
-						attackTypes);
+				.getUnattackedArguments(argumentation, attackTypes);
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -631,7 +656,7 @@ public class AgentArgumentativeCapability {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)
-							&& p.getMaxValue() > max) {// TODO check this
+							&& p.getMaxValue() > max) {
 						max = p.getMaxValue();
 						hyp = p.getMaxState();
 						argumentConclusion = arg;
@@ -659,23 +684,34 @@ public class AgentArgumentativeCapability {
 	 * @param argumentation
 	 * @param logger
 	 * @param classificationTarget
+	 * @param fscoreThreshold
 	 */
 	public static void addConclusionReputationAndHigherHypothesis(
 			Argumentation argumentation, Logger logger,
-			String classificationTarget) {
+			String classificationTarget, double fscoreThreshold) {
 		logger.fine("Getting the higher hypothesis...");
 		logger.finest("Evaluating possible conclusions...");
-		List<Argument> allArguments = new ArrayList<Argument>();
-		allArguments.addAll(argumentation.getArguments());
 		List<Integer> attackTypes = new ArrayList<Integer>();
 		attackTypes.add(UNDERCUT);
 		attackTypes.add(DIRECTUNDERCUT);
 		attackTypes.add(CANONICALUNDERCUT);
-		attackTypes.add(DEFEATER);
-		attackTypes.add(DIRECTDEFEATER);
+//		attackTypes.add(DEFEATER);
+//		attackTypes.add(DIRECTDEFEATER);
 		List<Argument> possibleConclusions = AgentArgumentativeCapability
-				.getUnattackedArguments(allArguments, argumentation,
-						attackTypes);
+				.getUnattackedArguments(argumentation, attackTypes);
+		// TODO no tendrían que evaluarse los defeated, porque con el
+		// fscore/trust puede que no se haya aceptado
+		// RESPUESTA: con el trust esto se podría ignorar, puesto que al final
+		// el agente con más reputación va a mandar
+
+		// if (possibleConclusions.isEmpty()) {
+		// attackTypes = new ArrayList<Integer>();
+		// attackTypes.add(UNDERCUT);
+		// attackTypes.add(DIRECTUNDERCUT);
+		// attackTypes.add(CANONICALUNDERCUT);
+		// possibleConclusions = AgentArgumentativeCapability
+		// .getUnattackedArguments(argumentation, attackTypes);
+		// }
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -693,12 +729,40 @@ public class AgentArgumentativeCapability {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)) {
-						double score = arg.getProponent()
-								.getTrustScore(p.getNode(), p.getMaxState())
-								.getRatio();
+						double score = p.getFScoreValue();
 						if (score >= maxScore) {
-							if (p.getMaxValue() > max) {// TODO check this
+							if (p.getMaxValue() > max) {
 								maxScore = score;
+								max = p.getMaxValue();
+								hyp = p.getMaxState();
+								argumentConclusion = arg;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (argumentConclusion == null) {
+
+			List<Argument> argsToRemove = new ArrayList<Argument>();
+			for (Argument arg : possibleConclusions) {
+				for (Proposal p : arg.getProposals()) {
+					if (p.getNode().equals(classificationTarget)) {
+						double score = p.getFScoreValue();
+						if (score < maxScore) {
+							argsToRemove.add(arg);
+						}
+					}
+				}
+			}
+			possibleConclusions.removeAll(argsToRemove);
+
+			for (Argument arg : possibleConclusions) {
+				if (arg.getGivens().size() == maxEvidences) {
+					for (Proposal p : arg.getProposals()) {
+						if (p.getNode().equals(classificationTarget)) {
+							if (p.getMaxValue() > max) {
 								max = p.getMaxValue();
 								hyp = p.getMaxState();
 								argumentConclusion = arg;
@@ -728,7 +792,7 @@ public class AgentArgumentativeCapability {
 	 * @param agent
 	 * @param bnFile
 	 */
-	public synchronized static void updateScoresBasedOnBackgroundKnowledge(
+	public synchronized static FScoreStore getFScoreStoreBasedOnBackgroundKnowledge(
 			ArgumentativeAgent agent, String bnFile) {
 		String datasetFile = agent.getDatasetFile();
 		DataSet dataset = new DataSet();
@@ -744,38 +808,16 @@ public class AgentArgumentativeCapability {
 		}
 		validator.test();
 
+		FScoreStore scores = new FScoreStore();
 		for (String node : bn.getAllNodeIds()) {
-			String[] states = bn.getOutcomeIds(node);
+			scores.addNode(node);
+			int statesCount = bn.getOutcomeCount(node);
+			for (int i = 0; i < statesCount; i++) {
+				scores.addState(node, bn.getOutcomeId(bn.getNode(node), i), i);
+			}
 			int[][] confusionMatrix = validator.getConfusionMatrix(node);
-			double[] accuracies = new double[states.length];
-			int[] totalCasesInDatasetPerState = new int[states.length];
-			int[] successCasesInDatasetPerState = new int[states.length];
-			for (int i = 0; i < states.length; i++) {
-				accuracies[i] = validator.getAccuracy(node, states[i]);
-				int totalCasesForThisState = 0;
-				int succesCasesForThisState = 0;
-				for (int j = 0; j < states.length; j++) {
-					totalCasesForThisState = totalCasesForThisState
-							+ confusionMatrix[i][j];
-					if (i == j) {
-						succesCasesForThisState = confusionMatrix[i][j];
-					}
-				}
-				totalCasesInDatasetPerState[i] = totalCasesForThisState;
-				successCasesInDatasetPerState[i] = succesCasesForThisState;
-			}
-
-			agent.getLogger().fine("Score updated for agent: " + agent.getID());
-			for (int i = 0; i < states.length; i++) {
-				Score score = agent.getTrustScore(node, states[i]);
-				score.setSuccessCount(successCasesInDatasetPerState[i]);
-				score.setTotalCount(totalCasesInDatasetPerState[i]);
-				agent.getLogger().fine(
-						"Score for belief: " + node + "-" + states[i]
-								+ "-> Success: " + score.getSuccessCount()
-								+ " Total: " + score.getTotalCount()
-								+ " Ratio: " + score.getRatio());
-			}
+			scores.addMatrix(node, confusionMatrix);
 		}
+		return scores;
 	}
 }

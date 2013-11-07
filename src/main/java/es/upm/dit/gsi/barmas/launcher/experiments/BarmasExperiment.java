@@ -65,9 +65,11 @@ public class BarmasExperiment implements RunnableExperiment {
 	private String simulationID;
 	private int agentsNumber;
 	private int lostEvidencesPerAgent;
-	private double threshold;
+	private double diffThreshold;
 	private double beliefThreshold;
-	private boolean reputationMode;
+	private double fscoreThreshold;
+
+	private Logger logger;
 
 	/**
 	 * Constructor
@@ -79,11 +81,12 @@ public class BarmasExperiment implements RunnableExperiment {
 			int mode, String experimentDatasetFolder,
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
-			int lostEvidencesPerAgent, double threshold, double beliefThreshold, boolean reputationMode) {
+			int lostEvidencesPerAgent, double diffThreshold,
+			double beliefThreshold, double fscoreThreshold) {
 		this.summaryFile = summaryFile;
 		this.agentsNumber = agentsNumber;
 		this.seed = seed;
-		this.reputationMode = reputationMode;
+		this.fscoreThreshold = fscoreThreshold;
 		this.mode = mode;
 		this.experimentDatasetFolder = experimentDatasetFolder;
 		this.experimentOutputFolder = experimentOutputFolder;
@@ -95,7 +98,7 @@ public class BarmasExperiment implements RunnableExperiment {
 		this.classificationTarget = classificationTarget;
 		this.simulationID = simulationID;
 		this.lostEvidencesPerAgent = lostEvidencesPerAgent;
-		this.threshold = threshold;
+		this.diffThreshold = diffThreshold;
 		this.beliefThreshold = beliefThreshold;
 	}
 
@@ -125,7 +128,8 @@ public class BarmasExperiment implements RunnableExperiment {
 			fw.write("Classification Target: " + classificationTarget + "\n");
 			fw.write("Lost evidences per agent: " + lostEvidencesPerAgent
 					+ "\n");
-			fw.write("Threshold: " + threshold + "\n");
+			fw.write("Difference between Prob. Distribution Threshold: "
+					+ diffThreshold + "\n");
 			fw.write("Belief Threshold: " + beliefThreshold + "\n");
 			fw.close();
 
@@ -139,7 +143,8 @@ public class BarmasExperiment implements RunnableExperiment {
 			String summaryFile, int mode, String experimentDatasetFolder,
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
-			int lostEvidencesPerAgent, double threshold, double beliefThreshold, boolean reputationMode) {
+			int lostEvidencesPerAgent, double diffThreshold,
+			double beliefThreshold, double fscoreThreshold) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
@@ -152,16 +157,16 @@ public class BarmasExperiment implements RunnableExperiment {
 		}
 
 		// Logging properties
-		Logger logger = Logger.getLogger(simulationName);
+		this.logger = Logger.getLogger(simulationName);
 		Level fileHandlerLevel = Level.ALL;
 		Level consoleHandlerLevel = Level.WARNING;
-		if (mode==SimulationConfiguration.DEBUGGING_MODE) {
+		if (mode == SimulationConfiguration.DEBUGGING_MODE) {
 			consoleHandlerLevel = Level.FINE;
 		}
 		String experimentOutputPath = experimentOutputFolder + File.separator
 				+ simulationName;
-		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel, consoleHandlerLevel,
-				experimentOutputPath);
+		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel,
+				consoleHandlerLevel, experimentOutputPath);
 
 		logger.info("Creating simulation info file...");
 		this.createSimulationInfoFile(experimentOutputPath);
@@ -178,9 +183,9 @@ public class BarmasExperiment implements RunnableExperiment {
 		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET,
 				classificationTarget);
 		scenarioProperties.put(SimulationConfiguration.MODE, mode);
-		scenarioProperties.put(SimulationConfiguration.REPUTATIONMODE, Boolean.toString(reputationMode));
-		
-		
+		scenarioProperties.put(SimulationConfiguration.REPUTATIONMODE,
+				Boolean.toString(fscoreThreshold <= 1));
+
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
 		String[] headers = null;
@@ -216,9 +221,9 @@ public class BarmasExperiment implements RunnableExperiment {
 
 		// Argumentation Manager AGENTS
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
-				experimentOutputPath, threshold, logger,
+				experimentOutputPath, diffThreshold, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
-				classificationTarget, reputationMode);
+				classificationTarget, fscoreThreshold);
 		scenarioProperties.put("ManagerAgent", manager);
 
 		// Argumentation AGENTS
@@ -237,7 +242,8 @@ public class BarmasExperiment implements RunnableExperiment {
 					experimentDatasetFolder + "/bayes/agent-" + agentNum
 							+ "-dataset.net", experimentDatasetFolder
 							+ "/dataset/agent-" + agentNum + "-dataset.csv",
-					sensors, threshold, beliefThreshold, reputationMode, logger);
+					sensors, diffThreshold, beliefThreshold, fscoreThreshold,
+					logger);
 			agents.add(agent);
 		}
 
@@ -277,14 +283,25 @@ public class BarmasExperiment implements RunnableExperiment {
 	 */
 	@Override
 	public void run() {
-		this.launchExperiment(simulationID, seed, summaryFile, mode,
-				experimentDatasetFolder, experimentOutputFolder, testDataset,
-				classificationTarget, agentsNumber, lostEvidencesPerAgent,
-				threshold, beliefThreshold, reputationMode);
+		try {
+			this.launchExperiment(simulationID, seed, summaryFile, mode,
+					experimentDatasetFolder, experimentOutputFolder,
+					testDataset, classificationTarget, agentsNumber,
+					lostEvidencesPerAgent, diffThreshold, beliefThreshold,
+					fscoreThreshold);
+		} catch (Exception e) {
+			logger.severe("Experiment finished unexpectedly...");
+			logger.severe(e.getMessage());
+			System.exit(1);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment#getSimualtionID()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment#getSimualtionID
+	 * ()
 	 */
 	@Override
 	public String getSimualtionID() {

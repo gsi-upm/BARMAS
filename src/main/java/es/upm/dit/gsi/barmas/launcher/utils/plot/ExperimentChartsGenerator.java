@@ -300,16 +300,16 @@ public class ExperimentChartsGenerator {
 				String simulationID = row[0];
 				if (simulationID.contains("-TRUSTMODE-OFF-")) {
 					String[] splits = simulationID.split("-");
-					double threshold = -1;
+					double diffThreshold = -1;
 					double beliefThreshold = -1;
 					int lepa = -1;
 					double globalImprovementRatio = new Double(row[9]);
 					for (int i = 0; i < splits.length; i++) {
-						if (splits[i].equals("TH")) {
-							threshold = new Double(splits[++i]);
+						if (splits[i].equals("DTH")) {
+							diffThreshold = new Double(splits[++i]);
 							if (!thConstantGlobalImpCoordsNoTrust
-									.containsKey(threshold)) {
-								thConstantGlobalImpCoordsNoTrust.put(threshold,
+									.containsKey(diffThreshold)) {
+								thConstantGlobalImpCoordsNoTrust.put(diffThreshold,
 										new ArrayList<Coord3d>());
 							}
 						} else if (splits[i].equals("BTH")) {
@@ -333,25 +333,25 @@ public class ExperimentChartsGenerator {
 					Coord3d point = null;
 					point = new Coord3d(beliefThreshold, lepa,
 							globalImprovementRatio);
-					thConstantGlobalImpCoordsNoTrust.get(threshold).add(point);
-					point = new Coord3d(threshold, lepa, globalImprovementRatio);
+					thConstantGlobalImpCoordsNoTrust.get(diffThreshold).add(point);
+					point = new Coord3d(diffThreshold, lepa, globalImprovementRatio);
 					bthConstantGlobalImpCoordsNoTrust.get(beliefThreshold).add(
 							point);
-					point = new Coord3d(threshold, beliefThreshold,
+					point = new Coord3d(diffThreshold, beliefThreshold,
 							globalImprovementRatio);
 					lepaConstantGlobalImpCoordsNoTrust.get(lepa).add(point);
 				} else {
 					String[] splits = simulationID.split("-");
-					double threshold = -1;
+					double diffThreshold = -1;
 					double beliefThreshold = -1;
 					int lepa = -1;
 					double globalImprovementRatio = new Double(row[9]);
 					for (int i = 0; i < splits.length; i++) {
-						if (splits[i].equals("TH")) {
-							threshold = new Double(splits[++i]);
+						if (splits[i].equals("DTH")) {
+							diffThreshold = new Double(splits[++i]);
 							if (!thConstantGlobalImpCoordsTrust
-									.containsKey(threshold)) {
-								thConstantGlobalImpCoordsTrust.put(threshold,
+									.containsKey(diffThreshold)) {
+								thConstantGlobalImpCoordsTrust.put(diffThreshold,
 										new ArrayList<Coord3d>());
 							}
 						} else if (splits[i].equals("BTH")) {
@@ -375,11 +375,11 @@ public class ExperimentChartsGenerator {
 					Coord3d point = null;
 					point = new Coord3d(beliefThreshold, lepa,
 							globalImprovementRatio);
-					thConstantGlobalImpCoordsTrust.get(threshold).add(point);
-					point = new Coord3d(threshold, lepa, globalImprovementRatio);
+					thConstantGlobalImpCoordsTrust.get(diffThreshold).add(point);
+					point = new Coord3d(diffThreshold, lepa, globalImprovementRatio);
 					bthConstantGlobalImpCoordsTrust.get(beliefThreshold).add(
 							point);
-					point = new Coord3d(threshold, beliefThreshold,
+					point = new Coord3d(diffThreshold, beliefThreshold,
 							globalImprovementRatio);
 					lepaConstantGlobalImpCoordsTrust.get(lepa).add(point);
 				}
@@ -388,7 +388,7 @@ public class ExperimentChartsGenerator {
 			logger.info("Generating success chart for iteration " + iteration);
 
 			String[] axisLabels = new String[3];
-			axisLabels[0] = "Threshold";
+			axisLabels[0] = "DiffProbDistThreshold";
 			axisLabels[1] = "LEPA";
 			axisLabels[2] = "Ratio";
 			for (Entry<Double, List<Coord3d>> entry : bthConstantGlobalImpCoordsNoTrust
@@ -412,7 +412,7 @@ public class ExperimentChartsGenerator {
 			for (Entry<Double, List<Coord3d>> entry : thConstantGlobalImpCoordsNoTrust
 					.entrySet()) {
 				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-TH-" + entry.getKey() + "-TRUSTMODE-OFF.png",
+						+ "/globalImprovement-DTH-" + entry.getKey() + "-TRUSTMODE-OFF.png",
 						axisLabels, entry.getValue(), ViewPositionMode.FREE,
 						null);
 			}
@@ -421,12 +421,12 @@ public class ExperimentChartsGenerator {
 			for (Entry<Double, List<Coord3d>> entry : thConstantGlobalImpCoordsTrust
 					.entrySet()) {
 				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-TH-" + entry.getKey() + "-TRUSTMODE-ON.png",
+						+ "/globalImprovement-DTH-" + entry.getKey() + "-TRUSTMODE-ON.png",
 						axisLabels, entry.getValue(), ViewPositionMode.FREE,
 						null);
 			}
 
-			axisLabels[0] = "Threshold";
+			axisLabels[0] = "DiffProbDistThreshold";
 			axisLabels[1] = "BeliefThreshold";
 			for (Entry<Integer, List<Coord3d>> entry : lepaConstantGlobalImpCoordsNoTrust
 					.entrySet()) {

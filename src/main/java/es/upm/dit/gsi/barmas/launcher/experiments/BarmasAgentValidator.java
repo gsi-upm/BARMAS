@@ -65,6 +65,8 @@ public class BarmasAgentValidator implements RunnableExperiment {
 	private String testDataset;
 	private String classificationTarget;
 	private String simulationID;
+	
+	private Logger logger;
 
 	/**
 	 * Constructor
@@ -103,7 +105,7 @@ public class BarmasAgentValidator implements RunnableExperiment {
 					+ System.currentTimeMillis();
 		}
 		// Logging properties
-		Logger logger = Logger.getLogger(simulationName);
+		this.logger = Logger.getLogger(simulationName);
 		Level fileHandlerLevel = Level.ALL;
 		Level consoleHandlerLevel = Level.WARNING;
 		if (mode == SimulationConfiguration.DEBUGGING_MODE) {
@@ -127,7 +129,6 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET,
 				classificationTarget);
 		scenarioProperties.put(SimulationConfiguration.MODE, mode);
-		scenarioProperties.put(SimulationConfiguration.REPUTATIONMODE, Boolean.toString(false));
 
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
@@ -156,9 +157,9 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		boolean NOREPUTATION = false;
+		double NOREPUTATION = 2;
 		double NOASSUMPTIONS = 2; // impossible to generate assumptions with
-									// thresholds > 1
+									// diffThreshold > 1
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
 				experimentOutputPath, NOASSUMPTIONS, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
@@ -233,9 +234,15 @@ public class BarmasAgentValidator implements RunnableExperiment {
 	 */
 	@Override
 	public void run() {
+		try {
 		this.launchValidationAgent(simulationID, seed, summaryFile, mode,
 				agentID, bnFile, datasetFile, experimentOutputFolder,
 				testDataset, classificationTarget);
+		} catch (Exception e) {
+			logger.severe("Experiment finished unexpectedly...");
+			logger.severe(e.getMessage());
+			System.exit(1);
+		}
 	}
 
 	/*

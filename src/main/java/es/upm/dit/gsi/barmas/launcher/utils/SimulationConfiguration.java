@@ -36,12 +36,11 @@ public class SimulationConfiguration {
 	public static final int DEBUGGING_MODE = 0;
 	public static final int SIMULATION_MODE = 1;
 	
-	public static final String REPUTATIONMODE = "reputationMode";
-	
 	public final static String EXPDATA = "expDataPath";
 	public final static String EXPOUTPUT = "expOutputPath";
 	
 	public final static String CLASSIFICATIONTARGET = "classificationTarget";
 	public final static String TESTDATASET = "testDataset";
+	public static final String REPUTATIONMODE = "reputationMode";
 
 }

@@ -44,7 +44,6 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumenta
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Score;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
@@ -185,12 +184,12 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			@Override
-			public void updateTrustScores(DiagnosisCase diagnosisCase) {
+			public void updateFScoreStore(DiagnosisCase diagnosisCase) {
 			}
 
 			@Override
-			public Score getTrustScore(String node, String state) {
-				return null;
+			public double getFScore(String node, String state) {
+				return 0;
 			}
 
 			@Override
@@ -220,7 +219,22 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			@Override
-			public void stop() {	
+			public void stop() {
+			}
+
+			@Override
+			public HashMap<String, ArgumentativeAgent> getSourceOfData() {
+				return new HashMap<String, ArgumentativeAgent>();
+			}
+
+			@Override
+			public void updateSourceOfData(String variable,
+					ArgumentativeAgent source) {
+			}
+
+			@Override
+			public ArgumentativeAgent getSourceOfData(String variable) {
+				return agent;
 			}
 		};
 		ShanksAgentBayesianReasoningCapability.loadNetwork(agent);

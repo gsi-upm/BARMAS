@@ -39,6 +39,8 @@ public class Given extends AbstractGiven {
 
 	private String node;
 	private String value;
+	
+	private ArgumentativeAgent source;
 
 	/**
 	 * Constructor
@@ -63,6 +65,27 @@ public class Given extends AbstractGiven {
 	@Override
 	public String getValue() {
 		return this.value;
+	}
+
+	/**
+	 * @return the source
+	 */
+	public ArgumentativeAgent getSource() {
+		return source;
+	}
+
+	/**
+	 * @param source the source to set
+	 */
+	public void setSource(ArgumentativeAgent source) {
+		this.source = source;
+	}
+
+	/**
+	 * @return
+	 */
+	public double getFScoreValue() {
+		return this.source.getFScore(this.getNode(), this.getValue());
 	}
 
 }

@@ -28,9 +28,8 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractProposal;
 /**
  * Project: barmas File: es.upm.dit.gsi.barmas.model.Proposal.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -43,6 +42,8 @@ public class Proposal extends AbstractProposal {
 
 	private String node;
 	private Map<String, Double> beliefs;
+
+	private ArgumentativeAgent source;
 
 	/**
 	 * Constructor
@@ -143,6 +144,28 @@ public class Proposal extends AbstractProposal {
 	 */
 	public double getMaxValue() {
 		return this.beliefs.get(this.getMaxState());
+	}
+
+	/**
+	 * @return the source
+	 */
+	public ArgumentativeAgent getSource() {
+		return source;
+	}
+
+	/**
+	 * @param source
+	 *            the source to set
+	 */
+	public void setSource(ArgumentativeAgent source) {
+		this.source = source;
+	}
+
+	/**
+	 * @return
+	 */
+	public double getFScoreValue() {
+		return this.source.getFScore(this.getNode(), this.getMaxState());
 	}
 
 }

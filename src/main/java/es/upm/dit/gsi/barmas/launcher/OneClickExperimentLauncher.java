@@ -299,7 +299,7 @@ public class OneClickExperimentLauncher {
 								experimentFolder + "/output/iteration-" + i,
 								experimentFolder + "/input/iteration-" + i
 										+ "/dataset/test-dataset.csv",
-								classificationTarget, delta, i, trustMode);
+								classificationTarget, delta, i);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID);

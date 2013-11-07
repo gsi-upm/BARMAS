@@ -68,21 +68,21 @@ public class ExperimentExecutor {
 		long seed = 0;
 		String classificationTarget = "SolarFlareType";
 		int mode = SimulationConfiguration.DEBUGGING_MODE;
-		double threshold = 0.15;
-		double beliefThreshold = 0.05;
-		boolean reputationMode = true;
+		double diffThreshold = 0.2;
+		double beliefThreshold = 0.1;
+		double fscoreThreshold = 0.1;
 		int lepa = 2;
-		
-		executor.executeExperiment(simulationID, threshold, beliefThreshold,
-				reputationMode, numberOfAgents, lepa, summaryFile,
-				classificationTarget, seed, mode, testRatio, dataset,
-				experimentFolder);
+
+		executor.executeExperiment(simulationID, diffThreshold,
+				beliefThreshold, fscoreThreshold, numberOfAgents, lepa,
+				summaryFile, classificationTarget, seed, mode, testRatio,
+				dataset, experimentFolder);
 
 	}
 
 	/**
 	 * @param simulationID
-	 * @param threshold
+	 * @param diffThreshold
 	 * @param beliefThreshold
 	 * @param reputationMode
 	 * @param agentsNumber
@@ -95,8 +95,8 @@ public class ExperimentExecutor {
 	 * @param originalDataset
 	 * @param experimentFolder
 	 */
-	public void executeExperiment(String simulationID, double threshold,
-			double beliefThreshold, boolean reputationMode, int agentsNumber,
+	public void executeExperiment(String simulationID, double diffThreshold,
+			double beliefThreshold, double fscoreThreshold, int agentsNumber,
 			int lostEvidencesPerAgent, String summaryFile,
 			String classificationTarget, long seed, int mode, double ratio,
 			String originalDataset, String experimentFolder) {
@@ -111,25 +111,21 @@ public class ExperimentExecutor {
 		splitter.splitDataset(ratio, agentsNumber, originalDataset,
 				experimentFolder + "/input/dataset", true, simulationID, logger);
 
-		int tint = (int) (threshold * 100);
+		int tint = (int) (diffThreshold * 100);
 		double roundedt = ((double) tint) / 100;
 		int btint = (int) (beliefThreshold * 100);
 		double rounedbt = ((double) btint) / 100;
-		String reputationModeString = "";
-		if (reputationMode) {
-			reputationModeString = "ON";
-		} else {
-			reputationModeString = "OFF";
-		}
+		int fsint = (int) (fscoreThreshold * 100);
+		double roundedfs = ((double) fsint) / 100;
 		String simulationPrefix = simulationID + "-" + agentsNumber
-				+ "agents-TH-" + roundedt + "-BTH-" + rounedbt + "-LEPA-"
-				+ lostEvidencesPerAgent + "-TRUSTMODE-" + reputationModeString;
+				+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt + "-LEPA-"
+				+ lostEvidencesPerAgent + "-FSTH-" + roundedfs + "-IT-ISOLATED";
 		BarmasExperiment exp = new BarmasExperiment(simulationPrefix,
 				summaryFile, seed, mode, experimentFolder + "/input",
 				experimentFolder + "/output", experimentFolder
 						+ "/input/dataset/test-dataset.csv",
 				classificationTarget, agentsNumber, lostEvidencesPerAgent,
-				threshold, beliefThreshold, reputationMode);
+				diffThreshold, beliefThreshold, fscoreThreshold);
 		List<RunnableExperiment> exps = new ArrayList<RunnableExperiment>();
 		exps.add(exp);
 		this.executeRunnables(exps, 1, true, logger);
@@ -264,7 +260,7 @@ public class ExperimentExecutor {
 
 		// Validators
 		for (int i = 0; i < agentsNumber; i++) {
-			String simulationPrefix = simulationID + "-Agent" + i + "-TH-"
+			String simulationPrefix = simulationID + "-Agent" + i + "-DTH-"
 					+ 2.0 + "-BTH-" + 2.0 + "-LEPA-" + 0 + "-TRUSTMODE-OFF"
 					+ "-IT-" + iteration;
 			BarmasAgentValidator expValidator = new BarmasAgentValidator(
@@ -275,9 +271,9 @@ public class ExperimentExecutor {
 					experimentOutputFolder, testDataset, classificationTarget);
 			experiments.add(expValidator);
 		}
-		String simulationPrefix = simulationID + "-BayesCentralAgent-TH-" + 2.0
-				+ "-BTH-" + 2.0 + "-LEPA-" + 0 + "-TRUSTMODE-OFF" + "-IT-"
-				+ iteration;
+		String simulationPrefix = simulationID + "-BayesCentralAgent-DTH-"
+				+ 2.0 + "-BTH-" + 2.0 + "-LEPA-" + 0 + "-TRUSTMODE-OFF"
+				+ "-IT-" + iteration;
 		BarmasAgentValidator expValidator = new BarmasAgentValidator(
 				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
 				experimentDatasetPath + "/bayes/bayes-central-dataset.net",
@@ -285,22 +281,6 @@ public class ExperimentExecutor {
 				experimentOutputFolder, testDataset, classificationTarget);
 		experiments.add(expValidator);
 
-		return experiments;
-	}
-
-	public List<RunnableExperiment> getExperimentBatch(String simulationID,
-			int agentsNumber, String summaryFile, long seed, int mode,
-			String experimentDatasetPath, String experimentOutputFolder,
-			String testDataset, String classificationTarget, double delta,
-			int iteration) {
-		List<RunnableExperiment> experiments = this.getExperimentBatch(
-				simulationID, agentsNumber, summaryFile, seed, mode,
-				experimentDatasetPath, experimentOutputFolder, testDataset,
-				classificationTarget, delta, iteration, true);
-		experiments.addAll(this.getExperimentBatch(simulationID, agentsNumber,
-				summaryFile, seed, mode, experimentDatasetPath,
-				experimentOutputFolder, testDataset, classificationTarget,
-				delta, iteration, false));
 		return experiments;
 	}
 
@@ -323,7 +303,7 @@ public class ExperimentExecutor {
 			int agentsNumber, String summaryFile, long seed, int mode,
 			String experimentDatasetPath, String experimentOutputFolder,
 			String testDataset, String classificationTarget, double delta,
-			int iteration, boolean reputationMode) {
+			int iteration) {
 		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
 
 		// Experiments
@@ -332,49 +312,48 @@ public class ExperimentExecutor {
 		boolean NOASSUMPTION_SIMULATION_CREATED = false;
 
 		// + delta to ensure at least one execution without assumptions
-		double threshold = 1.0;
-		while (threshold >= 0.05) {
-
+		double diffThreshold = 1.0;
+		while (diffThreshold >= 0.05) {
 			double beliefThreshold = 0.05;
 			while (beliefThreshold <= 1.0) {
-				int lostEvidencesPerAgent = 0;
-				if (NOASSUMPTION_SIMULATION_CREATED) {
-					lostEvidencesPerAgent = 1;
-				}
-				while (lostEvidencesPerAgent <= numberOfEvidences
-						/ agentsNumber) {
-					int tint = (int) (threshold * 100);
-					double roundedt = ((double) tint) / 100;
-					int btint = (int) (beliefThreshold * 100);
-					double rounedbt = ((double) btint) / 100;
-					String reputationModeString = "";
-					if (reputationMode) {
-						reputationModeString = "ON";
-					} else {
-						reputationModeString = "OFF";
+				double fscoreThreshold = 1.0;
+				while (fscoreThreshold >= 0.05) {
+					int lostEvidencesPerAgent = 0;
+					if (NOASSUMPTION_SIMULATION_CREATED) {
+						lostEvidencesPerAgent = 1;
 					}
-					String simulationPrefix = simulationID + "-" + agentsNumber
-							+ "agents-TH-" + roundedt + "-BTH-" + rounedbt
-							+ "-LEPA-" + lostEvidencesPerAgent + "-TRUSTMODE-"
-							+ reputationModeString + "-IT-" + iteration;
-					BarmasExperiment exp = new BarmasExperiment(
-							simulationPrefix, summaryFile, seed, mode,
-							experimentDatasetPath, experimentOutputFolder,
-							testDataset, classificationTarget, agentsNumber,
-							lostEvidencesPerAgent, threshold, beliefThreshold,
-							reputationMode);
-					experiments.add(exp);
-					if (lostEvidencesPerAgent == 0) {
-						NOASSUMPTION_SIMULATION_CREATED = true;
+					while (lostEvidencesPerAgent <= numberOfEvidences
+							/ agentsNumber) {
+						int tint = (int) (diffThreshold * 100);
+						double roundedt = ((double) tint) / 100;
+						int btint = (int) (beliefThreshold * 100);
+						double rounedbt = ((double) btint) / 100;
+						int fsint = (int) (fscoreThreshold * 100);
+						double roundedfs = ((double) fsint) / 100;
+						String simulationPrefix = simulationID + "-"
+								+ agentsNumber + "agents-DTH-" + roundedt
+								+ "-BTH-" + rounedbt + "-LEPA-"
+								+ lostEvidencesPerAgent + "-TRUSTMODE-"
+								+ roundedfs + "-IT-" + iteration;
+						BarmasExperiment exp = new BarmasExperiment(
+								simulationPrefix, summaryFile, seed, mode,
+								experimentDatasetPath, experimentOutputFolder,
+								testDataset, classificationTarget,
+								agentsNumber, lostEvidencesPerAgent,
+								diffThreshold, beliefThreshold, fscoreThreshold);
+						experiments.add(exp);
+						if (lostEvidencesPerAgent == 0) {
+							NOASSUMPTION_SIMULATION_CREATED = true;
+						}
+
+						lostEvidencesPerAgent++;
 					}
-
-					lostEvidencesPerAgent++;
+					fscoreThreshold = fscoreThreshold - delta;
 				}
-
 				beliefThreshold = beliefThreshold + delta;
 			}
 
-			threshold = threshold - delta;
+			diffThreshold = diffThreshold - delta;
 		}
 		return experiments;
 	}

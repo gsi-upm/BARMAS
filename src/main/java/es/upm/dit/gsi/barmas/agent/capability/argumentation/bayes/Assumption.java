@@ -45,6 +45,8 @@ public class Assumption extends AbstractAssumption {
 	private String node;
 	private Map<String, Double> beliefs;
 
+	private ArgumentativeAgent source;
+	
 	/**
 	 * Constructor
 	 *
@@ -127,6 +129,27 @@ public class Assumption extends AbstractAssumption {
 	 */
 	public double getMaxValue() {
 		return this.beliefs.get(this.getMaxState());
+	}
+
+	/**
+	 * @return the source
+	 */
+	public ArgumentativeAgent getSource() {
+		return source;
+	}
+
+	/**
+	 * @param source the source to set
+	 */
+	public void setSource(ArgumentativeAgent source) {
+		this.source = source;
+	}
+
+	/**
+	 * @return
+	 */
+	public double getFScore() {
+		return this.source.getFScore(this.getNode(), this.getMaxState());
 	}
 
 }

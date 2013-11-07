@@ -18,6 +18,7 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -99,13 +100,30 @@ public interface ArgumentativeAgent extends ShanksAgent {
 	 */
 	public Logger getLogger();
 	
-	public void updateTrustScores(DiagnosisCase diagnosisCase);
+	public void updateFScoreStore(DiagnosisCase diagnosisCase);
 	
-	public Score getTrustScore(String node, String state);
+	public double getFScore(String node, String state);
 
 	/**
 	 * @return
 	 */
 	public String getDatasetFile();
+	
+	/**
+	 * @return
+	 */
+	public HashMap<String, ArgumentativeAgent> getSourceOfData();
+	
+	/**
+	 * @param variable
+	 * @return
+	 */
+	public ArgumentativeAgent getSourceOfData(String variable);
+	
+	/**
+	 * @param variable
+	 * @param source
+	 */
+	public void updateSourceOfData(String variable, ArgumentativeAgent source);
 
 }
