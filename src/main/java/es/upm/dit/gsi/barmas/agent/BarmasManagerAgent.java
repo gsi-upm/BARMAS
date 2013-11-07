@@ -572,7 +572,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void finishArgumenation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		if (reputationMode) {
+		if (reputationMode) { // TODO contemplar el caso de que se ataque un argumento y luego no se acepte, por lo tanto esa hyp debería ser válida para contemplarla como posible conclusion
 			AgentArgumentativeCapability
 					.addConclusionReputationAndHigherHypothesis(argumentation,
 							this.getLogger(), classificationTarget);
