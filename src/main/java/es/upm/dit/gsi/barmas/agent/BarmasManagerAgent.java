@@ -70,7 +70,8 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	private static final long serialVersionUID = -4553845190556382890L;
 
 	private List<ArgumentativeAgent> suscribers;
-	private List<Argumentation> argumentations;
+	private Argumentation argumentation;
+	private int argumentationCounter;
 
 	private List<Argument> pendingArguments;
 
@@ -104,10 +105,10 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		this.mode = mode;
 		this.reputationMode = reputationMode;
 		this.suscribers = new ArrayList<ArgumentativeAgent>();
-		this.argumentations = new ArrayList<Argumentation>();
 		this.pendingArguments = new ArrayList<Argument>();
 		this.outputDir = outputDir;
 		this.threshold = threshold;
+		this.argumentationCounter = 0;
 
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
 			this.argumentationDir = this.outputDir + File.separator
@@ -177,12 +178,9 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	private void processPendingArguments() {
 
 		if (this.getCurrentArgumentation() == null) {
-			Argumentation argumentation = new Argumentation(
-					this.argumentations.size());
+			this.argumentation = new Argumentation(argumentationCounter);
 			this.getLogger().finer(
-					"Creating new argumentation - ID: "
-							+ this.argumentations.size());
-			this.argumentations.add(argumentation);
+					"Creating new argumentation - ID: " + argumentationCounter);
 		}
 
 		for (Argument arg : pendingArguments) {
@@ -467,27 +465,12 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * ArgumentationManagerAgent#getCurrentArgumentation()
 	 */
 	public Argumentation getCurrentArgumentation() {
-		int last = this.argumentations.size();
-		if (last > 0) {
-			Argumentation arg = this.argumentations.get(last - 1);
-			if (!arg.isFinished()) {
-				return arg;
-			} else {
-				return null;
-			}
+		Argumentation arg = this.argumentation;
+		if (arg != null && !arg.isFinished()) {
+			return arg;
 		} else {
 			return null;
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.
-	 * ArgumentationManagerAgent#getArgumentations()
-	 */
-	public List<Argumentation> getArgumentations() {
-		return this.argumentations;
 	}
 
 	/**
@@ -496,21 +479,6 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	private void registerNewArgument(Argument arg) {
 		Argumentation argumentation = this.getCurrentArgumentation();
 		argumentation.addArgument((Argument) arg.clone(), this);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.manager.
-	 * ArgumentationManagerAgent#getArgumentation(int)
-	 */
-	public Argumentation getArgumentation(int id) {
-		for (Argumentation arg : this.argumentations) {
-			if (arg.getId() == id) {
-				return arg;
-			}
-		}
-		return null;
 	}
 
 	/*
@@ -572,7 +540,10 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	public void finishArgumenation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
-		if (reputationMode) { // TODO contemplar el caso de que se ataque un argumento y luego no se acepte, por lo tanto esa hyp debería ser válida para contemplarla como posible conclusion
+		if (reputationMode) { // TODO contemplar el caso de que se ataque un
+								// argumento y luego no se acepte, por lo tanto
+								// esa hyp debería ser válida para contemplarla
+								// como posible conclusion
 			AgentArgumentativeCapability
 					.addConclusionReputationAndHigherHypothesis(argumentation,
 							this.getLogger(), classificationTarget);
@@ -582,6 +553,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		}
 		this.argumentation2File(this.getCurrentArgumentation());
 		argumentation.setFinished(true);
+		this.argumentation = null;
 		this.getLogger().info(
 				"Argumentation Manager: Finishing argumentation...");
 		for (ArgumentativeAgent s : this.suscribers) {
@@ -774,8 +746,12 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent#getDatasetFile()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent
+	 * #getDatasetFile()
 	 */
 	@Override
 	public String getDatasetFile() {
