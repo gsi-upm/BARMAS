@@ -92,16 +92,16 @@ public class OneClickExperimentLauncher {
 		simulationID = "SOLARFLARE";
 		dataset = "src/main/resources/dataset/solarflare-global.csv";
 		experimentFolder = "solarflare-simulation";
-		numberOfAgents = 4;
+		numberOfAgents = 6;
 		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		seed = 0;
 		maxThreads = 8;
-		iterations = 1;
+		iterations = 2;
 		classificationTarget = "SolarFlareType";
-		delta = 0.4;
+		delta = 0.2;
 
 		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
 				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
