@@ -98,10 +98,10 @@ public class OneClickExperimentLauncher {
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		seed = 0;
-		maxThreads = 8;
+		maxThreads = Runtime.getRuntime().availableProcessors();
 		iterations = 2;
 		classificationTarget = "SolarFlareType";
-		delta = 0.2;
+		delta = 0.1;
 
 		this.launchFullBatchFor(simulationID, dataset, experimentFolder,
 				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
@@ -435,8 +435,8 @@ public class OneClickExperimentLauncher {
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				logger.info("---> Starting experiments executions...");
-				executor.executeExperiments(experiments, maxThreads, logger);
+				 logger.info("---> Starting experiments executions...");
+				 executor.executeExperiments(experiments, maxThreads, logger);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

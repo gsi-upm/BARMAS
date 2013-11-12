@@ -34,11 +34,11 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption;
-import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.FScoreStore;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Given;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.AgentBayesLearningCapability;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent;
+import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.ValidationMetricsStore;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
 import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
@@ -85,10 +85,12 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	private Argumentation argumentation;
 
 	private HashMap<Integer, Argument> mySentArguments;
+	private List<Argument> attackedByMeArguments;
+	private List<Argument> acceptedByMeArguments;
 
 	private HashMap<String, HashMap<String, Double>> updatedBeliefs;
 	private HashMap<String, ArgumentativeAgent> sourceOfData;
-	private List<Assumption> assumptionsToImprove;
+	private HashMap<Assumption, Argument> assumptionsToImprove;
 	private boolean newEvidences;
 	private boolean newBeliefs;
 
@@ -99,7 +101,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	private String datasetFile;
 
 	private boolean reputationMode;
-	private FScoreStore scores;
+	private ValidationMetricsStore scores;
 
 	// STATES
 	private boolean IDLE;
@@ -133,10 +135,12 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		this.pendingArguments = new ArrayList<Argument>();
 		this.evidences = new HashMap<String, String>();
 		this.mySentArguments = new HashMap<Integer, Argument>();
+		this.attackedByMeArguments = new ArrayList<Argument>();
+		this.acceptedByMeArguments = new ArrayList<Argument>();
 		this.argumentationGroup = new ArrayList<ArgumentativeAgent>();
 		this.updatedBeliefs = new HashMap<String, HashMap<String, Double>>();
 		this.sourceOfData = new HashMap<String, ArgumentativeAgent>();
-		this.assumptionsToImprove = new ArrayList<Assumption>();
+		this.assumptionsToImprove = new HashMap<Assumption, Argument>();
 		while (this.bn == null) {
 			try {
 				ShanksAgentBayesianReasoningCapability.loadNetwork(this);
@@ -293,11 +297,12 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			attackTypes.add(AgentArgumentativeCapability.UNDERCUT);
 			attackTypes.add(AgentArgumentativeCapability.DIRECTUNDERCUT);
 			attackTypes.add(AgentArgumentativeCapability.CANONICALUNDERCUT);
-			attackTypes.add(AgentArgumentativeCapability.DEFEATER);
-			attackTypes.add(AgentArgumentativeCapability.DIRECTDEFEATER);
+			// attackTypes.add(AgentArgumentativeCapability.DEFEATER);
+			// attackTypes.add(AgentArgumentativeCapability.DIRECTDEFEATER);
 			List<Argument> unattacked = AgentArgumentativeCapability
 					.getUnattackedArguments(args, this.argumentation,
 							attackTypes);
+			unattacked.removeAll(this.acceptedByMeArguments);
 			for (Argument arg : unattacked) {
 				// check the proposals that are not the classification class
 				for (Proposal p : arg.getProposals()) {
@@ -338,15 +343,16 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 													p.getNode(), receivedBelief);
 									this.updatedBeliefs.put(p.getNode(),
 											receivedBelief);
-									this.sourceOfData.put(p.getNode(),
+									this.acceptedByMeArguments.add(arg);
+									this.updateSourceOfData(p.getNode(),
 											p.getSource());
 									this.getLogger().fine(
 											"Belief " + p.getNode()
 													+ " updated for agent: "
 													+ this.getID());
 									if (reputationMode) {
-										this.getLogger().fine(
-												"New belief with a trust strength equals to: "
+										this.getLogger()
+												.fine("New belief with a trust strength equals to: "
 														+ p.getTrustScoreValue());
 									}
 								} else {
@@ -368,8 +374,9 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 											this.updatedBeliefs
 													.put(p.getNode(),
 															receivedBelief);
-											this.sourceOfData.put(p.getNode(),
-													p.getSource());
+											this.acceptedByMeArguments.add(arg);
+											this.updateSourceOfData(
+													p.getNode(), p.getSource());
 											this.getLogger().fine(
 													"Beliefs updated for agent: "
 															+ this.getID());
@@ -457,15 +464,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					}
 				} else {
 					this.evidences.put(given.getNode(), given.getValue());
-					this.sourceOfData.put(given.getNode(), given.getSource());
+					this.updateSourceOfData(given.getNode(), given.getSource());
 					this.newEvidences = true;
-					this.getLogger().finer(
-							"Agent: " + this.getID()
-									+ " -> Adding evidence received from "
-									+ arg.getProponent().getProponentName()
-									+ " Evidence: " + given.getNode() + " - "
-									+ given.getValue());
-
 				}
 			}
 		}
@@ -487,9 +487,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 						+ this.evidences.size());
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			try {
-				this.getLogger().finer(
-						"Agent: " + this.getID() + " adding evidence: "
-								+ entry.getKey() + " - " + entry.getValue());
 				ShanksAgentBayesianReasoningCapability.addEvidence(this,
 						entry.getKey(), entry.getValue());
 			} catch (Exception e) {
@@ -535,10 +532,11 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		attackTypes.add(AgentArgumentativeCapability.UNDERCUT);
 		attackTypes.add(AgentArgumentativeCapability.DIRECTUNDERCUT);
 		attackTypes.add(AgentArgumentativeCapability.CANONICALUNDERCUT);
-		attackTypes.add(AgentArgumentativeCapability.DEFEATER);
-		attackTypes.add(AgentArgumentativeCapability.DIRECTDEFEATER);
+		// attackTypes.add(AgentArgumentativeCapability.DEFEATER);
+		// attackTypes.add(AgentArgumentativeCapability.DIRECTDEFEATER);
 		List<Argument> unattacked = AgentArgumentativeCapability
 				.getUnattackedArguments(this.argumentation, attackTypes);
+		unattacked.removeAll(this.attackedByMeArguments);
 		for (Argument arg : unattacked) {
 			for (Assumption assum : arg.getAssumptions()) {
 				try {
@@ -547,9 +545,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					HashMap<String, Double> ownBelief = AgentArgumentativeCapability
 							.convertToDoubleValues(ownHypotheses.get(assum
 									.getNode()));
-					this.getLogger().fine(
-							"Looking for assumptions to improve -> Distance for belief: "
-									+ assum.getNode());
 					Proposal auxp = new Proposal(assum.getNode(), ownBelief);
 
 					double maxDiff = auxp.getMaxValue() - assum.getMaxValue();
@@ -558,8 +553,10 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					boolean enoughDistance = this.areDistributionsFarEnough(
 							receivedBelief, ownBelief);
 					if (reputationMode) {
-						moreTrust = this.getTrustScoreValueForCurrentBelief(assum
-								.getNode()) - assum.getTrustScoreValue() >= this.trustThreshold;
+						moreTrust = this
+								.getTrustScoreValueForCurrentBelief(assum
+										.getNode())
+								- assum.getTrustScoreValue() >= this.trustThreshold;
 						myBeliefIsBetter = moreTrust
 								&& (maxDiff > this.beliefThreshold);
 					} else {
@@ -568,7 +565,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 
 					if (enoughDistance && myBeliefIsBetter
 							&& this.getSourceOfData(assum.getNode()) == this) {
-						this.assumptionsToImprove.add(assum);
+						this.assumptionsToImprove.put(assum, arg);
 					}
 				} catch (Exception e) {
 					this.getLogger().warning(
@@ -586,12 +583,13 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	/**
 	 * @param assumptionsToImprove
 	 */
-	private void sendCounterArgument(List<Assumption> assumptionsToImprove,
+	private void sendCounterArgument(
+			HashMap<Assumption, Argument> assumptionsToImprove,
 			ShanksSimulation sim) {
 		this.addEvidencesToBN();
 		HashMap<String, HashMap<String, Float>> ownHypotheses = this
 				.getAllMyHypotheses();
-		for (Assumption assum : assumptionsToImprove) {
+		for (Assumption assum : assumptionsToImprove.keySet()) {
 			// Get proposal
 			HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
 			HashMap<String, Float> hyps = ownHypotheses.get(assum.getNode());
@@ -626,7 +624,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					proposals, assumptions, evidences, sim.schedule.getSteps(),
 					System.currentTimeMillis());
 			this.sendArgument(arg);
-
+			this.attackedByMeArguments.add(assumptionsToImprove.get(assum));
 		}
 
 	}
@@ -665,8 +663,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 				proposals, assumptions, evidences, sim.schedule.getSteps(),
 				System.currentTimeMillis());
 		this.sendArgument(arg);
-
-		this.getLogger().fine("Argument sent by agent: " + this.getID());
 	}
 
 	/**
@@ -721,7 +717,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 				String value = (String) orig.getProperty(sensor);
 				evidences.remove(sensor);
 				evidences.put(sensor, value);
-				this.sourceOfData.put(sensor, this);
+				this.updateSourceOfData(sensor, this);
 			}
 		}
 		return newEvent;
@@ -1018,7 +1014,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	@Override
 	public void updateFScoreStore(DiagnosisCase diagnosisCase) {
 		try {
-			this.getLogger().fine(
+			this.getLogger().finest(
 					"Updating scores for agent: " + this.getID()
 							+ " after diagnosis case id: "
 							+ diagnosisCase.getCaseID());
@@ -1138,7 +1134,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	@Override
 	public double getTrustScore(String node, String state) {
-		// return this.scores.getFScore(node, state);
-		return this.scores.getAccuracy(node, state);
+		return this.scores.getMCC(node, state);
 	}
 }

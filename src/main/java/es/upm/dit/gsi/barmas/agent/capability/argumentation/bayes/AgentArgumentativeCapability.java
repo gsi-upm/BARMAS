@@ -33,6 +33,7 @@ import smile.learning.DataSet;
 import smile.learning.Validator;
 import unbbayes.prs.bn.ProbabilisticNetwork;
 import unbbayes.prs.bn.ProbabilisticNode;
+import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.ValidationMetricsStore;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -629,17 +630,17 @@ public class AgentArgumentativeCapability {
 	public static void addConclusionHigherHypothesis(
 			Argumentation argumentation, Logger logger,
 			String classificationTarget) {
-
-		logger.fine("Getting the higher hypothesis...");
 		logger.finest("Evaluating possible conclusions...");
 		List<Integer> attackTypes = new ArrayList<Integer>();
 		attackTypes.add(UNDERCUT);
 		attackTypes.add(DIRECTUNDERCUT);
 		attackTypes.add(CANONICALUNDERCUT);
-		attackTypes.add(DEFEATER);
-		attackTypes.add(DIRECTDEFEATER);
 		List<Argument> possibleConclusions = AgentArgumentativeCapability
 				.getUnattackedArguments(argumentation, attackTypes);
+
+		possibleConclusions = AgentArgumentativeCapability
+				.getLastValidConclusionsArguments(possibleConclusions,
+						classificationTarget);
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -689,29 +690,17 @@ public class AgentArgumentativeCapability {
 	public static void addConclusionReputationAndHigherHypothesis(
 			Argumentation argumentation, Logger logger,
 			String classificationTarget, double trustThreshold) {
-		logger.fine("Getting the higher hypothesis...");
 		logger.finest("Evaluating possible conclusions...");
 		List<Integer> attackTypes = new ArrayList<Integer>();
 		attackTypes.add(UNDERCUT);
 		attackTypes.add(DIRECTUNDERCUT);
 		attackTypes.add(CANONICALUNDERCUT);
-//		attackTypes.add(DEFEATER);
-//		attackTypes.add(DIRECTDEFEATER);
 		List<Argument> possibleConclusions = AgentArgumentativeCapability
 				.getUnattackedArguments(argumentation, attackTypes);
-		// TODO no tendrían que evaluarse los defeated, porque con el
-		// trust puede que no se haya aceptado
-		// RESPUESTA: con el trust esto se podría ignorar, puesto que al final
-		// el agente con más reputación va a mandar
 
-		// if (possibleConclusions.isEmpty()) {
-		// attackTypes = new ArrayList<Integer>();
-		// attackTypes.add(UNDERCUT);
-		// attackTypes.add(DIRECTUNDERCUT);
-		// attackTypes.add(CANONICALUNDERCUT);
-		// possibleConclusions = AgentArgumentativeCapability
-		// .getUnattackedArguments(argumentation, attackTypes);
-		// }
+		possibleConclusions = AgentArgumentativeCapability
+				.getLastValidConclusionsArguments(possibleConclusions,
+						classificationTarget);
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -722,48 +711,18 @@ public class AgentArgumentativeCapability {
 		}
 		// Pick possible arguments
 		String hyp = "";
-		double max = 0;
-		double maxScore = 0;
+		double maxBelief = -2;
+		double maxTrustScore = -2;
 		Argument argumentConclusion = null;
 		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)) {
 						double score = p.getTrustScoreValue();
-						if (score >= maxScore) {
-							if (p.getMaxValue() > max) {
-								maxScore = score;
-								max = p.getMaxValue();
-								hyp = p.getMaxState();
-								argumentConclusion = arg;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if (argumentConclusion == null) {
-
-			List<Argument> argsToRemove = new ArrayList<Argument>();
-			for (Argument arg : possibleConclusions) {
-				for (Proposal p : arg.getProposals()) {
-					if (p.getNode().equals(classificationTarget)) {
-						double score = p.getTrustScoreValue();
-						if (score < maxScore) {
-							argsToRemove.add(arg);
-						}
-					}
-				}
-			}
-			possibleConclusions.removeAll(argsToRemove);
-
-			for (Argument arg : possibleConclusions) {
-				if (arg.getGivens().size() == maxEvidences) {
-					for (Proposal p : arg.getProposals()) {
-						if (p.getNode().equals(classificationTarget)) {
-							if (p.getMaxValue() > max) {
-								max = p.getMaxValue();
+						if (score > maxTrustScore) {
+							if (p.getMaxValue() > maxBelief) {
+								maxTrustScore = score;
+								maxBelief = p.getMaxValue();
 								hyp = p.getMaxState();
 								argumentConclusion = arg;
 							}
@@ -775,24 +734,57 @@ public class AgentArgumentativeCapability {
 
 		if (argumentConclusion != null) {
 
-			logger.fine("Argumentation Manager --> Higher hypothesis found: "
-					+ hyp + " - " + max + " from "
+			logger.fine("Argumentation Manager --> Conclusion found: " + hyp
+					+ " - " + maxBelief + " with TrustScore: " + maxTrustScore
+					+ " from "
 					+ argumentConclusion.getProponent().getProponentName()
 					+ " - ArgumentID: " + argumentConclusion.getId());
 
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
-			logger.warning("No conclusion found for argumentation: "
+			logger.severe("No conclusion found for argumentation: "
 					+ argumentation.getId());
+			System.exit(1);
 		}
+	}
+
+	/**
+	 * @param possibleConclusions
+	 * @return
+	 */
+	private static List<Argument> getLastValidConclusionsArguments(
+			List<Argument> possibleConclusions, String classificationTarget) {
+		HashMap<String, Argument> lastArguments = new HashMap<String, Argument>();
+		for (Argument arg : possibleConclusions) {
+			for (Proposal p : arg.getProposals()) {
+				if (p.getNode().equals(classificationTarget)) {
+					if (!lastArguments.keySet()
+							.contains(arg.getProponentName())) {
+						lastArguments.put(arg.getProponentName(), arg);
+					} else {
+						int prevId = lastArguments.get(arg.getProponentName())
+								.getId();
+						int actualId = arg.getId();
+						if (actualId > prevId) {
+							lastArguments.put(arg.getProponentName(), arg);
+						}
+					}
+				}
+			}
+
+		}
+
+		List<Argument> aux = new ArrayList<Argument>();
+		aux.addAll(lastArguments.values());
+		return aux;
 	}
 
 	/**
 	 * @param agent
 	 * @param bnFile
 	 */
-	public synchronized static FScoreStore getFScoreStoreBasedOnBackgroundKnowledge(
+	public synchronized static ValidationMetricsStore getFScoreStoreBasedOnBackgroundKnowledge(
 			ArgumentativeAgent agent, String bnFile) {
 		String datasetFile = agent.getDatasetFile();
 		DataSet dataset = new DataSet();
@@ -808,7 +800,7 @@ public class AgentArgumentativeCapability {
 		}
 		validator.test();
 
-		FScoreStore scores = new FScoreStore();
+		ValidationMetricsStore scores = new ValidationMetricsStore();
 		for (String node : bn.getAllNodeIds()) {
 			scores.addNode(node);
 			int statesCount = bn.getOutcomeCount(node);

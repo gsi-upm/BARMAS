@@ -1,9 +1,10 @@
 /**
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.Score.java
  */
-package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
+package es.upm.dit.gsi.barmas.agent.capability.learning.bayes;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Project: barmas File:
@@ -19,13 +20,13 @@ import java.util.HashMap;
  * @version 0.1
  * 
  */
-public class FScoreStore {
+public class ValidationMetricsStore {
 
 	private HashMap<String, HashMap<String, Integer>> states;
 	private HashMap<String, int[][]> matrices; // matrix[i] realValures
 												// matrix[X][j] classifiedValue
 
-	public FScoreStore() {
+	public ValidationMetricsStore() {
 		this.states = new HashMap<String, HashMap<String, Integer>>();
 		this.matrices = new HashMap<String, int[][]>();
 	}
@@ -55,8 +56,54 @@ public class FScoreStore {
 		// Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).info(
 		// "Row for real cases: " + i + ": -> " + output);
 		// }
-		// // **********************
+		// **********************
 		this.matrices.put(node, matrix);
+
+	}
+
+	public String getState(String node, int pos) {
+		for (Entry<String, Integer> entry : states.get(node).entrySet()) {
+			if (pos == entry.getValue()) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param node
+	 * @param state
+	 * @return Matthews Correlation Coefficient
+	 */
+	public double getMCC(String node, String state) {
+		double tp = this.getTruePositive(node, state);
+		double tn = this.getTrueNegative(node, state);
+		double fp = this.getFalsePositive(node, state);
+		double fn = this.getFalseNegative(node, state);
+
+		 //*********
+		 // Calculate MCC with classic formula
+		 double aux = (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn);
+		 if (aux == 0) {
+		 return 0;
+		 }
+		 double mcc = ((tp * tn) - (fp * fn)) / Math.sqrt(aux);
+		 // *********
+
+		// // *********
+		// // Calculate MCC with other formula
+		// double n = tn + tp + fn + fp;
+		// double s = (tp + fn) / n;
+		// double p = (tp + fp) / n;
+		//
+		// double aux = p * s * (1 - s) * (1 - p);
+		// if (aux == 0) {
+		// return 0;
+		// }
+		// double mcc = ((tp / n) - (s * p)) / Math.sqrt(aux);
+		// // *********
+
+		return mcc;
 	}
 
 	public double getFScore(String node, String state) {
@@ -78,6 +125,10 @@ public class FScoreStore {
 		return tp / (tp + fp);
 	}
 
+	public double getPositivePredictiveValue(String node, String state) {
+		return this.getPrecision(node, state);
+	}
+
 	public double getRecall(String node, String state) {
 		double tp = this.getTruePositive(node, state);
 		double fn = this.getFalseNegative(node, state);
@@ -87,6 +138,35 @@ public class FScoreStore {
 		return tp / (tp + fn);
 	}
 
+	public double getSensitivity(String node, String state) {
+		return this.getRecall(node, state);
+	}
+
+	public double getTruePositiveRate(String node, String state) {
+		return this.getRecall(node, state);
+	}
+
+	public double getHitRate(String node, String state) {
+		return this.getRecall(node, state);
+	}
+
+	public double getFalsePositiveRate(String node, String state) {
+		double fp = this.getFalsePositive(node, state);
+		double tn = this.getTrueNegative(node, state);
+		if (tn == 0 && fp == 0) {
+			return 0;
+		}
+		return fp / (fp + tn);
+	}
+
+	public double getFalseAlarmRate(String node, String state) {
+		return this.getFalsePositiveRate(node, state);
+	}
+
+	public double getFallOut(String node, String state) {
+		return this.getFalsePositiveRate(node, state);
+	}
+
 	public double getSpecifity(String node, String state) {
 		double tn = this.getTrueNegative(node, state);
 		double fp = this.getFalsePositive(node, state);
@@ -94,6 +174,28 @@ public class FScoreStore {
 			return 0;
 		}
 		return tn / (tn + fp);
+	}
+
+	public double getTrueNegativeRate(String node, String state) {
+		return this.getSpecifity(node, state);
+	}
+
+	public double getNegativePredictiveValue(String node, String state) {
+		double tn = this.getTrueNegative(node, state);
+		double fn = this.getFalseNegative(node, state);
+		if (tn == 0 && fn == 0) {
+			return 0;
+		}
+		return tn / (tn + fn);
+	}
+
+	public double getFalseDiscoveryRate(String node, String state) {
+		double fp = this.getFalsePositive(node, state);
+		double tp = this.getTruePositive(node, state);
+		if (tp == 0 && fp == 0) {
+			return 0;
+		}
+		return fp / (fp + tp);
 	}
 
 	public double getAccuracy(String node, String state) {

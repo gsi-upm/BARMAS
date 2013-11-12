@@ -75,7 +75,8 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 		while (this.bn == null) {
 			try {
 				ShanksAgentBayesianReasoningCapability.loadNetwork(this);
-				logger.info("Bayesian network loaded successfully by agent " + this.getID());
+				logger.info("Bayesian network loaded successfully by agent "
+						+ this.getID());
 			} catch (Exception e) {
 				try {
 					AgentBayesLearningCapability.learnBNWithBayesianSearch(
@@ -162,14 +163,10 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 			try {
 				for (Entry<String, String> entry : evidences.entrySet()) {
 					try {
-						sim.getLogger().finer(
-								"Agent: " + this.getID() + " adding evidence: "
-										+ entry.getKey() + " - "
-										+ entry.getValue());
 						ShanksAgentBayesianReasoningCapability.addEvidence(
 								this, entry.getKey(), entry.getValue());
 					} catch (Exception e) {
-						sim.getLogger().fine(
+						sim.getLogger().warning(
 								"Agent: " + this.getID()
 										+ " -> Unknown state for node: "
 										+ entry.getKey() + " -> State: "

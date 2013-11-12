@@ -62,8 +62,8 @@ public class AgentBayesLearningCapability {
 		HashMap<Network, Double> results = new HashMap<Network, Double>();
 		for (int i = 0; i < iterations; i++) {
 			Network bn = AgentBayesLearningCapability.learnBN(dataset);
-			double validation = AgentBayesLearningCapability.validateBN(bn,
-					dataset, classificationTarget, agent);
+			double validation = AgentBayesLearningCapability.validateBNWithMCC(
+					bn, dataset, agent);
 			results.put(bn, validation);
 		}
 		double max = 0;
@@ -75,13 +75,80 @@ public class AgentBayesLearningCapability {
 			}
 		}
 
-		AgentBayesLearningCapability.writeBNFile(betterBN, agent);
-		agent.getLogger().info(
-				"BN learnt in: " + agent.getBNOutputFile() + " from: "
-						+ datasetFile + " with accuracy " + max + " for node "
-						+ classificationTarget + " after " + iterations
-						+ " iterations.");
-		AgentBayesLearningCapability.testBNInUnbbayes(betterBN, agent);
+		if (betterBN == null) {
+			agent.getLogger()
+					.info("All learnt BNs has MCC equals to zero for all states... They are almost constant results for all variables.");
+
+			agent.getLogger().info("Trying with accuracy as validation metric");
+			results = new HashMap<Network, Double>();
+			for (int i = 0; i < iterations; i++) {
+				Network bn = AgentBayesLearningCapability.learnBN(dataset);
+				double validation = AgentBayesLearningCapability.validateBN(bn,
+						dataset, classificationTarget, agent);
+				results.put(bn, validation);
+			}
+			for (Entry<Network, Double> entry : results.entrySet()) {
+				if (entry.getValue() > max) {
+					max = entry.getValue();
+					betterBN = entry.getKey();
+				}
+			}
+
+			AgentBayesLearningCapability.writeBNFile(betterBN, agent);
+			agent.getLogger().info(
+					"BN learnt in: " + agent.getBNOutputFile() + " from: "
+							+ datasetFile + " with accuracy " + max
+							+ " for node " + classificationTarget + " after "
+							+ iterations + " iterations.");
+			AgentBayesLearningCapability.testBNInUnbbayes(betterBN, agent);
+		} else {
+
+			AgentBayesLearningCapability.writeBNFile(betterBN, agent);
+			agent.getLogger().info(
+					"BN learnt in: " + agent.getBNOutputFile() + " from: "
+							+ datasetFile + " with average MCC " + max
+							+ " for node " + classificationTarget + " after "
+							+ iterations + " iterations.");
+			AgentBayesLearningCapability.testBNInUnbbayes(betterBN, agent);
+		}
+	}
+
+	/**
+	 * @param bn
+	 * @param dataset
+	 * @param agent
+	 * @return
+	 */
+	private static double validateBNWithMCC(Network bn, DataSet dataset,
+			BayesLearningAgent agent) {
+		String datasetFile = agent.getDatasetFile();
+		dataset.readFile(datasetFile);
+
+		DataMatch[] matching = dataset.matchNetwork(bn);
+		Validator validator = new Validator(bn, dataset, matching);
+		for (String node : bn.getAllNodeIds()) {
+			validator.addClassNode(node);
+		}
+		validator.test();
+
+		ValidationMetricsStore scores = new ValidationMetricsStore();
+		double avgMCC = 0;
+		for (String node : bn.getAllNodeIds()) {
+			scores.addNode(node);
+			int statesCount = bn.getOutcomeCount(node);
+			for (int i = 0; i < statesCount; i++) {
+				scores.addState(node, bn.getOutcomeId(bn.getNode(node), i), i);
+			}
+			int[][] confusionMatrix = validator.getConfusionMatrix(node);
+			scores.addMatrix(node, confusionMatrix);
+
+			for (int i = 0; i < statesCount; i++) {
+				avgMCC = (avgMCC + scores
+						.getMCC(node, scores.getState(node, i))) / (i + 1);
+			}
+		}
+		return avgMCC;
+
 	}
 
 	/**
@@ -92,45 +159,34 @@ public class AgentBayesLearningCapability {
 	 */
 	private synchronized static double validateBN(Network bn, DataSet dataset,
 			String classificationTarget, BayesLearningAgent agent) {
+		String datasetFile = agent.getDatasetFile();
+		dataset.readFile(datasetFile);
+
 		DataMatch[] matching = dataset.matchNetwork(bn);
 		Validator validator = new Validator(bn, dataset, matching);
-		validator.addClassNode(classificationTarget);
+		for (String node : bn.getAllNodeIds()) {
+			validator.addClassNode(node);
+		}
 		validator.test();
-		String[] states = bn.getOutcomeIds(classificationTarget);
-		int[][] confusionMatrix = validator
-				.getConfusionMatrix(classificationTarget);
-		double[] accuracies = new double[states.length];
-		int[] totalCasesInDatasetPerState = new int[states.length];
-		int[] successCasesInDatasetPerState = new int[states.length];
-		double globalAccuracy = 0;
-		for (int i = 0; i < states.length; i++) {
-			accuracies[i] = validator.getAccuracy(classificationTarget,
-					states[i]);
-			int totalCasesForThisState = 0;
-			int succesCasesForThisState = 0;
-			for (int j = 0; j < states.length; j++) {
-				totalCasesForThisState = totalCasesForThisState
-						+ confusionMatrix[i][j];
-				if (i == j) {
-					succesCasesForThisState = confusionMatrix[i][j];
-				}
+
+		ValidationMetricsStore scores = new ValidationMetricsStore();
+		double avgAccuracy = 0;
+		for (String node : bn.getAllNodeIds()) {
+			scores.addNode(node);
+			int statesCount = bn.getOutcomeCount(node);
+			for (int i = 0; i < statesCount; i++) {
+				scores.addState(node, bn.getOutcomeId(bn.getNode(node), i), i);
 			}
-			totalCasesInDatasetPerState[i] = totalCasesForThisState;
-			successCasesInDatasetPerState[i] = succesCasesForThisState;
-		}
+			int[][] confusionMatrix = validator.getConfusionMatrix(node);
+			scores.addMatrix(node, confusionMatrix);
 
-		int successTotal = 0;
-		int totalCases = 0;
-		for (int i = 0; i < states.length; i++) {
-			totalCases = totalCases + totalCasesInDatasetPerState[i];
-			successTotal = successTotal + successCasesInDatasetPerState[i];
+			for (int i = 0; i < statesCount; i++) {
+				avgAccuracy = (avgAccuracy + scores.getAccuracy(node,
+						scores.getState(node, i)))
+						/ (i + 1);
+			}
 		}
-		globalAccuracy = (double) successTotal / (double) totalCases;
-		agent.getLogger().finest(
-				"BN accuracy for node: " + classificationTarget + " equals to "
-						+ globalAccuracy);
-
-		return globalAccuracy;
+		return avgAccuracy;
 
 	}
 
