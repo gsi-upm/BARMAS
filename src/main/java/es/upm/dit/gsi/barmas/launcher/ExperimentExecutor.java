@@ -262,7 +262,7 @@ public class ExperimentExecutor {
 		// Validators
 		for (int i = 0; i < agentsNumber; i++) {
 			String simulationPrefix = simulationID + "-Agent" + i + "-DTH-"
-					+ 2.0 + "-BTH-" + 2.0 + "-LEPA-" + 0 + "-TTH-" + 2.0
+					+ 20.0 + "-BTH-" + 20.0 + "-LEPA-" + 0 + "-TTH-" + 20.0
 					+ "-IT-" + iteration;
 			BarmasAgentValidator expValidator = new BarmasAgentValidator(
 					simulationPrefix, summaryFile, seed, mode, "Agent" + i,
@@ -273,8 +273,8 @@ public class ExperimentExecutor {
 			experiments.add(expValidator);
 		}
 		String simulationPrefix = simulationID + "-BayesCentralAgent-DTH-"
-				+ 2.0 + "-BTH-" + 2.0 + "-LEPA-" + 0 + "-TTH-" + 2.0 + "-IT-"
-				+ iteration;
+				+ 20.0 + "-BTH-" + 20.0 + "-LEPA-" + 0 + "-TTH-" + 20.0
+				+ "-IT-" + iteration;
 		BarmasAgentValidator expValidator = new BarmasAgentValidator(
 				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
 				experimentDatasetPath + "/bayes/bayes-central-dataset.net",
@@ -310,9 +310,9 @@ public class ExperimentExecutor {
 		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
 
 		// No assumptions - no trust
-		double diffThreshold = 2.0;
-		double beliefThreshold = 2.0;
-		double trustThreshold = 2.0;
+		double diffThreshold = 20.0;
+		double beliefThreshold = 20.0;
+		double trustThreshold = 20.0;
 		int lostEvidencesPerAgent = 0;
 		int tint = (int) (diffThreshold * 100);
 		double roundedt = ((double) tint) / 100;
@@ -365,7 +365,6 @@ public class ExperimentExecutor {
 				}
 				beliefThreshold = beliefThreshold + delta;
 			}
-
 			diffThreshold = diffThreshold - delta;
 		}
 
@@ -437,10 +436,10 @@ public class ExperimentExecutor {
 		// Experiments
 		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
 
-		// No assumptions - no trust
-		double diffThreshold = 2.0;
-		double beliefThreshold = 2.0;
-		double trustThreshold = 2.0;
+		// No Assumptions - No trust
+		double diffThreshold = 20.0;
+		double beliefThreshold = 20.0;
+		double trustThreshold = 20.0;
 		int lostEvidencesPerAgent = 0;
 		int tint = (int) (diffThreshold * 100);
 		double roundedt = ((double) tint) / 100;
@@ -459,7 +458,9 @@ public class ExperimentExecutor {
 				beliefThreshold, trustThreshold);
 		experiments.add(exp);
 
-		// No assumptions but with trust
+		// No assumptions - Trust
+		diffThreshold = 20.0;
+		beliefThreshold = 20.0;
 		trustThreshold = minTrustThreshold;
 		while (trustThreshold <= maxTrustThreshold) {
 			lostEvidencesPerAgent = 0;
@@ -486,14 +487,49 @@ public class ExperimentExecutor {
 			trustThreshold = trustThreshold + delta;
 		}
 
-		// + delta to ensure at least one execution without assumptions
+		// Assumptions and No Trust
+		trustThreshold = 20.0;
+		diffThreshold = maxDistanceThreshold;
+		while (diffThreshold >= minDistanceThreshold) {
+			beliefThreshold = minBeliefThreshold;
+			while (beliefThreshold <= maxBeliefThreshold) {
+				lostEvidencesPerAgent = 1;
+				while (lostEvidencesPerAgent <= numberOfEvidences
+						/ agentsNumber) {
+					tint = (int) (diffThreshold * 100);
+					roundedt = ((double) tint) / 100;
+					btint = (int) (beliefThreshold * 100);
+					rounedbt = ((double) btint) / 100;
+					fsint = (int) (trustThreshold * 100);
+					roundedfs = ((double) fsint) / 100;
+					simulationPrefix = simulationID + "-" + agentsNumber
+							+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
+							+ "-LEPA-" + lostEvidencesPerAgent + "-TTH-"
+							+ roundedfs + "-IT-" + iteration;
+					exp = new BarmasExperiment(simulationPrefix, summaryFile,
+							seed, mode, experimentDatasetPath,
+							experimentOutputFolder, testDataset,
+							classificationTarget, agentsNumber,
+							lostEvidencesPerAgent, diffThreshold,
+							beliefThreshold, trustThreshold);
+					experiments.add(exp);
+
+					lostEvidencesPerAgent++;
+				}
+				beliefThreshold = beliefThreshold + delta;
+			}
+
+			diffThreshold = diffThreshold - delta;
+		}
+
+		// Assumptions and Trust
 		diffThreshold = maxDistanceThreshold;
 		while (diffThreshold >= minDistanceThreshold) {
 			beliefThreshold = minBeliefThreshold;
 			while (beliefThreshold <= maxBeliefThreshold) {
 				trustThreshold = minTrustThreshold;
 				while (trustThreshold <= maxTrustThreshold) {
-					lostEvidencesPerAgent = 0;
+					lostEvidencesPerAgent = 1;
 					while (lostEvidencesPerAgent <= numberOfEvidences
 							/ agentsNumber) {
 						tint = (int) (diffThreshold * 100);
