@@ -159,10 +159,11 @@ public class BarmasExperiment implements RunnableExperiment {
 
 		// Logging properties
 		this.logger = Logger.getLogger(simulationName);
-		Level fileHandlerLevel = Level.ALL;
+		Level fileHandlerLevel = Level.WARNING;
 		Level consoleHandlerLevel = Level.WARNING;
 		if (mode == SimulationConfiguration.DEBUGGING_MODE) {
-			consoleHandlerLevel = Level.FINE;
+			consoleHandlerLevel = Level.INFO;
+			fileHandlerLevel = Level.ALL;
 		}
 		String experimentOutputPath = experimentOutputFolder + File.separator
 				+ simulationName;
@@ -198,6 +199,7 @@ public class BarmasExperiment implements RunnableExperiment {
 			reader.close();
 		} catch (IOException e) {
 			logger.severe("Impossible to read test dataset file.");
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

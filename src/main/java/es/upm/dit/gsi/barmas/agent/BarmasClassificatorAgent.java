@@ -382,9 +382,11 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 															+ this.getID());
 										}
 									} else {
-										this.getLogger().warning(
+										this.getLogger().info(
 												"Duplicated belief in the same reasoning cycle for agent: "
-														+ this.getID());
+														+ this.getID()
+														+ " Belief: "
+														+ p.getNode());
 									}
 								}
 							} catch (ShanksException e) {
@@ -444,6 +446,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 										+ arg.getProponent().getProponentName()
 										+ " Evidence: " + given.getNode()
 										+ " - " + given.getValue());
+						System.exit(1);
 					}
 				}
 				if (evidences.keySet().contains(given.getNode())) {
@@ -461,6 +464,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 										+ arg.getProponent().getProponentName()
 										+ " Evidence: " + given.getNode()
 										+ " - " + given.getValue());
+						System.exit(1);
 					}
 				} else {
 					this.evidences.put(given.getNode(), given.getValue());

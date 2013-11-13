@@ -55,6 +55,7 @@ public class LogConfigurator {
 				boolean made = f.mkdirs();
 				if (!made) {
 					logger.warning("Impossible to create log directory");
+					System.exit(1);
 				}
 			}
 			logger.setUseParentHandlers(false);

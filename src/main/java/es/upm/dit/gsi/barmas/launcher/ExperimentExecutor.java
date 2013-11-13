@@ -297,10 +297,9 @@ public class ExperimentExecutor {
 	 * @param classificationTarget
 	 * @param delta
 	 * @param iteration
-	 * @param reputationMode
 	 * @return
 	 */
-	public List<RunnableExperiment> getExperimentBatch(String simulationID,
+	public List<RunnableExperiment> getExperimentFullBatch(String simulationID,
 			int agentsNumber, String summaryFile, long seed, int mode,
 			String experimentDatasetPath, String experimentOutputFolder,
 			String testDataset, String classificationTarget, double delta,
@@ -310,47 +309,8 @@ public class ExperimentExecutor {
 		// Experiments
 		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
 
-		// + delta to ensure at least one execution without assumptions
-		double diffThreshold = 1.0;
-		while (diffThreshold >= 0.01) {
-			double beliefThreshold = 0.05;
-			while (beliefThreshold <= 1.0) {
-				double trustThreshold = 0;
-				while (trustThreshold <= 1.0) {
-					int lostEvidencesPerAgent = 0;
-					while (lostEvidencesPerAgent <= numberOfEvidences
-							/ agentsNumber) {
-						int tint = (int) (diffThreshold * 100);
-						double roundedt = ((double) tint) / 100;
-						int btint = (int) (beliefThreshold * 100);
-						double rounedbt = ((double) btint) / 100;
-						int fsint = (int) (trustThreshold * 100);
-						double roundedfs = ((double) fsint) / 100;
-						String simulationPrefix = simulationID + "-"
-								+ agentsNumber + "agents-DTH-" + roundedt
-								+ "-BTH-" + rounedbt + "-LEPA-"
-								+ lostEvidencesPerAgent + "-TTH-" + roundedfs
-								+ "-IT-" + iteration;
-						BarmasExperiment exp = new BarmasExperiment(
-								simulationPrefix, summaryFile, seed, mode,
-								experimentDatasetPath, experimentOutputFolder,
-								testDataset, classificationTarget,
-								agentsNumber, lostEvidencesPerAgent,
-								diffThreshold, beliefThreshold, trustThreshold);
-						experiments.add(exp);
-
-						lostEvidencesPerAgent++;
-					}
-					trustThreshold = trustThreshold + delta;
-				}
-				beliefThreshold = beliefThreshold + delta;
-			}
-
-			diffThreshold = diffThreshold - delta;
-		}
-
 		// No assumptions - no trust
-		diffThreshold = 2.0;
+		double diffThreshold = 2.0;
 		double beliefThreshold = 2.0;
 		double trustThreshold = 2.0;
 		int lostEvidencesPerAgent = 0;
@@ -370,6 +330,199 @@ public class ExperimentExecutor {
 				agentsNumber, lostEvidencesPerAgent, diffThreshold,
 				beliefThreshold, trustThreshold);
 		experiments.add(exp);
+
+		// + delta to ensure at least one execution without assumptions
+		diffThreshold = 1.0;
+		while (diffThreshold >= 0.01) {
+			beliefThreshold = 0.05;
+			while (beliefThreshold <= 1.0) {
+				trustThreshold = 0;
+				while (trustThreshold <= 1.0) {
+					lostEvidencesPerAgent = 0;
+					while (lostEvidencesPerAgent <= numberOfEvidences
+							/ agentsNumber) {
+						tint = (int) (diffThreshold * 100);
+						roundedt = ((double) tint) / 100;
+						btint = (int) (beliefThreshold * 100);
+						rounedbt = ((double) btint) / 100;
+						fsint = (int) (trustThreshold * 100);
+						roundedfs = ((double) fsint) / 100;
+						simulationPrefix = simulationID + "-" + agentsNumber
+								+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
+								+ "-LEPA-" + lostEvidencesPerAgent + "-TTH-"
+								+ roundedfs + "-IT-" + iteration;
+						exp = new BarmasExperiment(simulationPrefix,
+								summaryFile, seed, mode, experimentDatasetPath,
+								experimentOutputFolder, testDataset,
+								classificationTarget, agentsNumber,
+								lostEvidencesPerAgent, diffThreshold,
+								beliefThreshold, trustThreshold);
+						experiments.add(exp);
+
+						lostEvidencesPerAgent++;
+					}
+					trustThreshold = trustThreshold + delta;
+				}
+				beliefThreshold = beliefThreshold + delta;
+			}
+
+			diffThreshold = diffThreshold - delta;
+		}
+
+		return experiments;
+	}
+
+	/**
+	 * @param simulationID
+	 * @param agentsNumber
+	 * @param summaryFile
+	 * @param seed
+	 * @param mode
+	 * @param experimentDatasetPath
+	 * @param experimentOutputFolder
+	 * @param testDataset
+	 * @param classificationTarget
+	 * @param delta
+	 * @param iteration
+	 * @param maxDistanceThreshold
+	 * @param maxBeliefThreshold
+	 * @param maxTrustThreshold
+	 * @return
+	 */
+	public List<RunnableExperiment> getExperimentSmartBatchWithMinZero(
+			String simulationID, int agentsNumber, String summaryFile,
+			long seed, int mode, String experimentDatasetPath,
+			String experimentOutputFolder, String testDataset,
+			String classificationTarget, double delta, int iteration,
+			double maxDistanceThreshold, double maxBeliefThreshold,
+			double maxTrustThreshold) {
+		return this.getExperimentSmartBatch(simulationID, agentsNumber,
+				summaryFile, seed, mode, experimentDatasetPath,
+				experimentOutputFolder, testDataset, classificationTarget,
+				delta, iteration, maxDistanceThreshold, 0, maxBeliefThreshold,
+				0.01, maxTrustThreshold, 0);
+
+	}
+
+	/**
+	 * @param simulationID
+	 * @param agentsNumber
+	 * @param summaryFile
+	 * @param seed
+	 * @param mode
+	 * @param experimentDatasetPath
+	 * @param experimentOutputFolder
+	 * @param testDataset
+	 * @param classificationTarget
+	 * @param delta
+	 * @param iteration
+	 * @param maxDistanceThreshold
+	 * @param minDistanceThreshold
+	 * @param maxBeliefThreshold
+	 * @param minBeliefThreshold
+	 * @param maxTrustThreshold
+	 * @param minTrustThreshold
+	 * @return
+	 */
+	public List<RunnableExperiment> getExperimentSmartBatch(
+			String simulationID, int agentsNumber, String summaryFile,
+			long seed, int mode, String experimentDatasetPath,
+			String experimentOutputFolder, String testDataset,
+			String classificationTarget, double delta, int iteration,
+			double maxDistanceThreshold, double minDistanceThreshold,
+			double maxBeliefThreshold, double minBeliefThreshold,
+			double maxTrustThreshold, double minTrustThreshold) {
+		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
+
+		// Experiments
+		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
+
+		// No assumptions - no trust
+		double diffThreshold = 2.0;
+		double beliefThreshold = 2.0;
+		double trustThreshold = 2.0;
+		int lostEvidencesPerAgent = 0;
+		int tint = (int) (diffThreshold * 100);
+		double roundedt = ((double) tint) / 100;
+		int btint = (int) (beliefThreshold * 100);
+		double rounedbt = ((double) btint) / 100;
+		int fsint = (int) (trustThreshold * 100);
+		double roundedfs = ((double) fsint) / 100;
+		String simulationPrefix = simulationID + "-" + agentsNumber
+				+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt + "-LEPA-"
+				+ lostEvidencesPerAgent + "-TTH-" + roundedfs + "-IT-"
+				+ iteration;
+		BarmasExperiment exp = new BarmasExperiment(simulationPrefix,
+				summaryFile, seed, mode, experimentDatasetPath,
+				experimentOutputFolder, testDataset, classificationTarget,
+				agentsNumber, lostEvidencesPerAgent, diffThreshold,
+				beliefThreshold, trustThreshold);
+		experiments.add(exp);
+
+		// No assumptions but with trust
+		trustThreshold = minTrustThreshold;
+		while (trustThreshold <= maxTrustThreshold) {
+			lostEvidencesPerAgent = 0;
+			while (lostEvidencesPerAgent <= numberOfEvidences / agentsNumber) {
+				tint = (int) (diffThreshold * 100);
+				roundedt = ((double) tint) / 100;
+				btint = (int) (beliefThreshold * 100);
+				rounedbt = ((double) btint) / 100;
+				fsint = (int) (trustThreshold * 100);
+				roundedfs = ((double) fsint) / 100;
+				simulationPrefix = simulationID + "-" + agentsNumber
+						+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
+						+ "-LEPA-" + lostEvidencesPerAgent + "-TTH-"
+						+ roundedfs + "-IT-" + iteration;
+				exp = new BarmasExperiment(simulationPrefix, summaryFile, seed,
+						mode, experimentDatasetPath, experimentOutputFolder,
+						testDataset, classificationTarget, agentsNumber,
+						lostEvidencesPerAgent, diffThreshold, beliefThreshold,
+						trustThreshold);
+				experiments.add(exp);
+
+				lostEvidencesPerAgent++;
+			}
+			trustThreshold = trustThreshold + delta;
+		}
+
+		// + delta to ensure at least one execution without assumptions
+		diffThreshold = maxDistanceThreshold;
+		while (diffThreshold >= minDistanceThreshold) {
+			beliefThreshold = minBeliefThreshold;
+			while (beliefThreshold <= maxBeliefThreshold) {
+				trustThreshold = minTrustThreshold;
+				while (trustThreshold <= maxTrustThreshold) {
+					lostEvidencesPerAgent = 0;
+					while (lostEvidencesPerAgent <= numberOfEvidences
+							/ agentsNumber) {
+						tint = (int) (diffThreshold * 100);
+						roundedt = ((double) tint) / 100;
+						btint = (int) (beliefThreshold * 100);
+						rounedbt = ((double) btint) / 100;
+						fsint = (int) (trustThreshold * 100);
+						roundedfs = ((double) fsint) / 100;
+						simulationPrefix = simulationID + "-" + agentsNumber
+								+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
+								+ "-LEPA-" + lostEvidencesPerAgent + "-TTH-"
+								+ roundedfs + "-IT-" + iteration;
+						exp = new BarmasExperiment(simulationPrefix,
+								summaryFile, seed, mode, experimentDatasetPath,
+								experimentOutputFolder, testDataset,
+								classificationTarget, agentsNumber,
+								lostEvidencesPerAgent, diffThreshold,
+								beliefThreshold, trustThreshold);
+						experiments.add(exp);
+
+						lostEvidencesPerAgent++;
+					}
+					trustThreshold = trustThreshold + delta;
+				}
+				beliefThreshold = beliefThreshold + delta;
+			}
+
+			diffThreshold = diffThreshold - delta;
+		}
 
 		return experiments;
 	}

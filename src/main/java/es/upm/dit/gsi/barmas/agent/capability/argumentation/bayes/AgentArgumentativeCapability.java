@@ -358,8 +358,20 @@ public class AgentArgumentativeCapability {
 					if (agiven.getNode().equals(bgiven.getNode())) {
 						if (!agiven.getValue().equals(bgiven.getValue())) {
 							agent.getLogger().severe(
-									"Incoherent evidence in arguments");
-							return -1; // This has no sense!!
+									"Incoherent evidence in arguments!");
+							agent.getLogger().severe(
+									"For evidence: "
+											+ agiven.getNode()
+											+ " - "
+											+ agiven.getSource()
+													.getProponentName()
+											+ " says "
+											+ agiven.getValue()
+											+ " and "
+											+ bgiven.getSource()
+													.getProponentName()
+											+ " says " + bgiven.getValue());
+							System.exit(1); // This has no sense!!
 						}
 					}
 				}
@@ -651,7 +663,7 @@ public class AgentArgumentativeCapability {
 		}
 		// Pick possible arguments
 		String hyp = "";
-		double max = 0;
+		double max = -2;
 		Argument argumentConclusion = null;
 		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
@@ -676,8 +688,9 @@ public class AgentArgumentativeCapability {
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
-			logger.warning("No conclusion found for argumentation: "
-					+ argumentation.getId());
+			logger.severe("No conclusion found with higher hypothesis technique for argumentation: "
+					+ argumentation.getId() + " MaxBelief: " + max);
+			System.exit(1);
 		}
 	}
 
@@ -714,12 +727,27 @@ public class AgentArgumentativeCapability {
 		double maxBelief = -2;
 		double maxTrustScore = -2;
 		Argument argumentConclusion = null;
+		// Find higher trust score
 		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)) {
 						double score = p.getTrustScoreValue();
 						if (score > maxTrustScore) {
+							maxTrustScore = score;
+						}
+					}
+				}
+			}
+		}
+		// Find conclusions in the range of trust score threshold
+		for (Argument arg : possibleConclusions) {
+			if (arg.getGivens().size() == maxEvidences) {
+				for (Proposal p : arg.getProposals()) {
+					if (p.getNode().equals(classificationTarget)) {
+						double score = p.getTrustScoreValue();
+						double distance = Math.abs(maxTrustScore - score);
+						if (distance <= trustThreshold) {
 							if (p.getMaxValue() > maxBelief) {
 								maxTrustScore = score;
 								maxBelief = p.getMaxValue();
@@ -743,8 +771,10 @@ public class AgentArgumentativeCapability {
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
-			logger.severe("No conclusion found for argumentation: "
-					+ argumentation.getId());
+			logger.severe("No conclusion found with reputation and higher hyp for argumentation: "
+					+ argumentation.getId()
+					+ " MaxTrustScore: "
+					+ maxTrustScore + " MaxBelief: " + maxBelief);
 			System.exit(1);
 		}
 	}

@@ -121,6 +121,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 				boolean made = f.mkdir();
 				if (!made) {
 					logger.warning("Impossible to create argumentation directory");
+					System.exit(1);
 				}
 			}
 		}
@@ -243,6 +244,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 					this.getLogger().warning(
 							"Impossible to create argumentation directory. -> Argumentation: "
 									+ currentArgumentation.getId());
+					System.exit(1);
 				}
 			}
 		}
