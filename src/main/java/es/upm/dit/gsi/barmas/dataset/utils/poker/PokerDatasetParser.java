@@ -52,30 +52,44 @@ public class PokerDatasetParser {
 	 * @param outputFile
 	 */
 	private void parse(String origninalFile, String outputFile) {
-		
+
 		try {
 			CsvReader reader = new CsvReader(origninalFile);
 			CsvWriter writer = new CsvWriter(outputFile);
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
+			for (int i =0; i < headers.length;i++) {
+				if (headers[i].startsWith("S")) {
+					headers[i] = "Suit"+headers[i].substring(1);
+				} else if (headers[i].startsWith("C")) {
+					headers[i] = "Card"+headers[i].substring(1);
+				}
+			}
+			headers[headers.length - 1] = "PokerHand";
 			writer.writeRecord(headers);
-			
+
 			int counter = 0;
 			while (reader.readRecord()) {
 				String[] row = reader.getValues();
 				String[] outputRow = new String[row.length];
-				for (int i = 0; i<row.length; i++) {
-					outputRow[i] = this.getTranslation(row[i]);
+				for (int i = 0; i < row.length; i++) {
+					if (i == headers.length - 1) {
+						outputRow[i] = this.getHandTranslation(row[i]);
+					} else if (i % 2 == 0) {
+						outputRow[i] = this.getSuitTranslation(row[i]);
+					} else {
+						outputRow[i] = this.getCardTranslation(row[i]);
+					}
 				}
 				writer.writeRecord(outputRow);
 				counter++;
 			}
-			
+
 			writer.flush();
 			writer.close();
-			reader.close();	
+			reader.close();
 			logger.info("Poker dataset parsed. Written Rows: " + counter);
-			
+
 		} catch (FileNotFoundException e) {
 			logger.severe("Expection: " + e.getMessage());
 			System.exit(1);
@@ -86,7 +100,21 @@ public class PokerDatasetParser {
 
 	}
 
-	private String getTranslation(String original) {
+	private String getSuitTranslation(String original) {
+		if (original.equals("1")) {
+			return "Spades";
+		} else if (original.equals("2")) {
+			return "Hearts";
+		} else if (original.equals("3")) {
+			return "Diamonds";
+		} else if (original.equals("4")) {
+			return "Clubs";
+		} else {
+			return "Unknown";
+		}
+	}
+
+	private String getCardTranslation(String original) {
 		if (original.equals("1")) {
 			return "Ace";
 		} else if (original.equals("2")) {
@@ -111,6 +139,34 @@ public class PokerDatasetParser {
 			return "Queen";
 		} else if (original.equals("12")) {
 			return "King";
+		} else if (original.equals("13")) {
+			return "Joker";
+		} else {
+			return "Unknown";
+		}
+	}
+
+	private String getHandTranslation(String original) {
+		if (original.equals("0")) {
+			return "HighCard";
+		} else if (original.equals("1")) {
+			return "OnePair";
+		} else if (original.equals("2")) {
+			return "TwoPair";
+		} else if (original.equals("3")) {
+			return "ThreeOfAKind";
+		} else if (original.equals("4")) {
+			return "Straight";
+		} else if (original.equals("5")) {
+			return "Flush";
+		} else if (original.equals("6")) {
+			return "FullHouse";
+		} else if (original.equals("7")) {
+			return "FourOfAKind";
+		} else if (original.equals("8")) {
+			return "StraightFlush";
+		} else if (original.equals("9")) {
+			return "RoyalFlush";
 		} else {
 			return "Unknown";
 		}

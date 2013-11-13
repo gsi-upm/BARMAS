@@ -80,15 +80,15 @@ public class AgentBayesLearningCapability {
 					.info("All learnt BNs has MCC equals to zero for all states... They are almost constant results for all variables.");
 
 			agent.getLogger().info("Trying with accuracy as validation metric");
-			results = new HashMap<Network, Double>();
-			for (int i = 0; i < iterations; i++) {
-				Network bn = AgentBayesLearningCapability.learnBN(dataset);
+			for (Entry<Network, Double> result : results.entrySet()) {
+				Network bn = result.getKey();
 				double validation = AgentBayesLearningCapability.validateBN(bn,
 						dataset, classificationTarget, agent);
 				results.put(bn, validation);
 			}
+			max = -1;
 			for (Entry<Network, Double> entry : results.entrySet()) {
-				if (entry.getValue() > max) {
+				if (entry.getValue() > max || betterBN == null) {
 					max = entry.getValue();
 					betterBN = entry.getKey();
 				}
