@@ -158,8 +158,8 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		agents.add(bayes);
 
 		// Argumentation AGENTS
-		double NOREPUTATION = 2;
-		double NOASSUMPTIONS = 2; // impossible to generate assumptions with
+		double NOREPUTATION = 20;
+		double NOASSUMPTIONS = 20; // impossible to generate assumptions with
 									// diffThreshold > 1
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
 				experimentOutputPath, NOASSUMPTIONS, logger,
