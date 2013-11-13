@@ -160,8 +160,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			}
 		}
 
-		// TODO review the code of the agent
-
 		// THIS BLOCK IS ONLY FOR REPUTATION MODE
 		if (reputationMode) {
 			logger.info("Reputation mode ON in Agent: " + this.getID());
@@ -360,12 +358,13 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 										// This "if" is because in trust mode
 										// some new beliefs can be received with
 										// more strength/trust
-										double oldFScoreValue = this
+										double oldTrustScoreValue = this
 												.getTrustScoreValueForCurrentBelief(p
 														.getNode());
-										double newFScoreValue = p
+										double newTrustScoreValue = p
 												.getTrustScoreValue();
-										if (newFScoreValue - oldFScoreValue >= this.trustThreshold) {
+										if (newTrustScoreValue
+												- oldTrustScoreValue >= this.trustThreshold) {
 											ShanksAgentBayesianReasoningCapability
 													.addSoftEvidence(
 															this.getBayesianNetwork(),
@@ -382,11 +381,44 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 															+ this.getID());
 										}
 									} else {
-										this.getLogger().info(
-												"Duplicated belief in the same reasoning cycle for agent: "
-														+ this.getID()
-														+ " Belief: "
-														+ p.getNode());
+										HashMap<String, Double> previouslyUpdatedBelief = this.updatedBeliefs
+												.get(p.getNode());
+										enoughDistance = this
+												.areDistributionsFarEnough(
+														previouslyUpdatedBelief,
+														ownBelief);
+										double max = 0;
+										for (Entry<String, Double> e : previouslyUpdatedBelief
+												.entrySet()) {
+											if (e.getValue() > max) {
+												max = e.getValue();
+											}
+										}
+										maxDiff = p.getMaxValue() - max;
+										if (enoughDistance
+												&& maxDiff >= beliefThreshold) {
+											ShanksAgentBayesianReasoningCapability
+													.addSoftEvidence(
+															this.getBayesianNetwork(),
+															p.getNode(),
+															receivedBelief);
+											this.updatedBeliefs
+													.put(p.getNode(),
+															receivedBelief);
+											this.acceptedByMeArguments.add(arg);
+											this.updateSourceOfData(
+													p.getNode(), p.getSource());
+											this.getLogger()
+													.fine("Belief "
+															+ p.getNode()
+															+ " updated for agent: "
+															+ this.getID());
+											this.getLogger().fine(
+													"Improved belief in the same reasoning cycle for agent: "
+															+ this.getID()
+															+ " Belief: "
+															+ p.getNode());
+										}
 									}
 								}
 							} catch (ShanksException e) {
