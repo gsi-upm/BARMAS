@@ -74,19 +74,12 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 //		this.launchZooBatch();
-//
 //		this.launchNurseryBatch();
-//
 //		this.launchMarketingBatch();
-
-		this.launchSolarFlareBatch();
-
-//		this.launchKowlanCZBatch();
-//
+//		this.launchSolarFlareBatch();
+		this.launchKowlanCZBatch();
 //		this.launchMushroomBatch();
-//
 //		this.launchChessBatch();
-//
 //		this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
@@ -302,8 +295,8 @@ public class OneClickExperimentLauncher {
 		simulationID = "MARKETING";
 		dataset = "src/main/resources/dataset/marketing.csv";
 		experimentFolder = "marketing-simulation";
-		numberOfAgents = 3;
-		testRatio = 0.5;
+		numberOfAgents = 8;
+		testRatio = 0.2;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
