@@ -55,7 +55,7 @@ public class ExperimentChartsGenerator {
 		ExperimentChartsGenerator chartGenerator = new ExperimentChartsGenerator(
 				Logger.getLogger(ExperimentChartsGenerator.class
 						.getSimpleName()));
-		String experimentFolder = "solarflare-simulation";
+		String experimentFolder = "nursery-simulation";
 		String summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		chartGenerator.generateAndSaveAllChartsAndExit(summaryFile,
@@ -81,7 +81,7 @@ public class ExperimentChartsGenerator {
 		try {
 			reader = new CsvReader(new FileReader(new File(summaryFile)));
 			reader.readHeaders();
-
+//TODO create the matrix in the constructor or wherever to share the matrix with all methods
 			int itsNum = 0;
 			while (reader.readRecord()) {
 				String[] row = reader.getValues();
@@ -287,161 +287,301 @@ public class ExperimentChartsGenerator {
 			writer.flush();
 			writer.close();
 
-			// Build cylinders and save cylinders charts
-			Plotter plotter = new Plotter(logger);
-			HashMap<Double, List<Coord3d>> bthConstantGlobalImpCoordsNoTrust = new HashMap<Double, List<Coord3d>>();
-			HashMap<Double, List<Coord3d>> thConstantGlobalImpCoordsNoTrust = new HashMap<Double, List<Coord3d>>();
-			HashMap<Integer, List<Coord3d>> lepaConstantGlobalImpCoordsNoTrust = new HashMap<Integer, List<Coord3d>>();
-			HashMap<Double, List<Coord3d>> bthConstantGlobalImpCoordsTrust = new HashMap<Double, List<Coord3d>>();
-			HashMap<Double, List<Coord3d>> thConstantGlobalImpCoordsTrust = new HashMap<Double, List<Coord3d>>();
-			HashMap<Integer, List<Coord3d>> lepaConstantGlobalImpCoordsTrust = new HashMap<Integer, List<Coord3d>>();
+			logger.info("Getting parameters for The Matrix...");
+			List<String> lepaList = new ArrayList<String>();
+			List<String> tthList = new ArrayList<String>();
+			List<String> dthList = new ArrayList<String>();
+			List<String> bthList = new ArrayList<String>();
+			List<String> itList = new ArrayList<String>();
+			List<String> agentsList = new ArrayList<String>();
+			List<String> ratiosList = new ArrayList<String>();
 
 			for (String[] row : experimentResultsRatios) {
-				String simulationID = row[0];
-				if (simulationID.contains("-TRUSTMODE-OFF-")) {
-					String[] splits = simulationID.split("-");
-					double diffThreshold = -1;
-					double beliefThreshold = -1;
-					int lepa = -1;
-					double globalImprovementRatio = new Double(row[9]);
-					for (int i = 0; i < splits.length; i++) {
-						if (splits[i].equals("DTH")) {
-							diffThreshold = new Double(splits[++i]);
-							if (!thConstantGlobalImpCoordsNoTrust
-									.containsKey(diffThreshold)) {
-								thConstantGlobalImpCoordsNoTrust.put(diffThreshold,
-										new ArrayList<Coord3d>());
-							}
-						} else if (splits[i].equals("BTH")) {
-							beliefThreshold = new Double(splits[++i]);
-							if (!bthConstantGlobalImpCoordsNoTrust
-									.containsKey(beliefThreshold)) {
-								bthConstantGlobalImpCoordsNoTrust.put(
-										beliefThreshold,
-										new ArrayList<Coord3d>());
-							}
-						} else if (splits[i].equals("LEPA")) {
-							lepa = new Integer(splits[++i]);
-							if (!lepaConstantGlobalImpCoordsNoTrust
-									.containsKey(lepa)) {
-								lepaConstantGlobalImpCoordsNoTrust.put(lepa,
-										new ArrayList<Coord3d>());
+				this.checkAndAdd(lepaList, row[13]);
+				this.checkAndAdd(tthList, row[14]);
+				this.checkAndAdd(dthList, row[11]);
+				this.checkAndAdd(bthList, row[12]);
+				this.checkAndAdd(itList, row[15]);
+				this.checkAndAdd(agentsList, row[16]);
+				this.checkAndAdd(ratiosList, row[17]);
+			}
+
+			HashMap<String, Integer> lepas = this.getSortedMap(lepaList);
+			HashMap<String, Integer> tths = this.getSortedMap(tthList);
+			HashMap<String, Integer> dths = this.getSortedMap(dthList);
+			HashMap<String, Integer> bths = this.getSortedMap(bthList);
+			HashMap<String, Integer> agents = this.getSortedMap(agentsList);
+			HashMap<String, Integer> its = this.getSortedMap(itList);
+			HashMap<String, Integer> testRatios = this.getSortedMap(ratiosList);
+
+			logger.info("Creating The Matrix");
+			double[][][][][][][] theMatrix = new double[lepas.size()][tths
+					.size()][dths.size()][bths.size()][agents.size()][its
+					.size()][testRatios.size()];
+			logger.info("Filling The Matrix...");
+			for (String[] row : experimentResultsRatios) {
+				String globalImp = row[9];
+				double imp = Double.valueOf(globalImp);
+				int lepaPos = lepas.get(row[13]);
+				int tthPos = tths.get(row[14]);
+				int dthPos = dths.get(row[11]);
+				int bthPos = bths.get(row[12]);
+				int itPos = its.get(row[15]);
+				int agentsPos = agents.get(row[16]);
+				int testRatiosPos = testRatios.get(row[17]);
+				this.addToTheMatrix(theMatrix, lepaPos, tthPos, dthPos, bthPos,
+						agentsPos, itPos, testRatiosPos, imp);
+			}
+			reader.close();
+
+			logger.info("Painting...");
+			// Build cylinders and save cylinders charts
+			Plotter plotter = new Plotter(logger);
+
+			// LEPAvsTTH with the rest of variables constants
+			List<Coord3d> globalCoords = new ArrayList<Coord3d>();
+			for (int agent = 0; agent < agents.size(); agent++) {
+				int agentValue = (int) this.getValueForPosInTheMatrix(agents,
+						agent);
+				for (int dth = 0; dth < dths.size(); dth++) {
+					double dthValue = this.getValueForPosInTheMatrix(dths, dth);
+					for (int bth = 0; bth < bths.size(); bth++) {
+						double bthValue = this.getValueForPosInTheMatrix(bths,
+								bth);
+						for (int it = 0; it < its.size(); it++) {
+							int itValue = (int) this.getValueForPosInTheMatrix(
+									its, it);
+							for (int ratio = 0; ratio < testRatios.size(); ratio++) {
+								double ratioValue = this
+										.getValueForPosInTheMatrix(testRatios,
+												ratio);
+								List<Coord3d> coords = new ArrayList<Coord3d>();
+								for (int lepa = 0; lepa < lepas.size(); lepa++) {
+									double lepaValue = this
+											.getValueForPosInTheMatrix(lepas,
+													lepa);
+									for (int tth = 0; tth < tths.size(); tth++) {
+										double tthValue = this
+												.getValueForPosInTheMatrix(
+														tths, tth);
+										double imp = this.getImpFromTheMatrix(
+												theMatrix, lepa, tth, dth, bth,
+												agent, it, ratio);
+										if (dthValue == 20.0
+												|| bthValue == 20.0) {
+											if (dthValue == 20.0
+													&& bthValue == 20.0) {
+												Coord3d coord = new Coord3d(
+														lepaValue, tthValue,
+														imp);
+												coords.add(coord);
+												// globalCoords.add(coord);
+											}
+										} else if (tthValue != 20.0) {
+											Coord3d coord = new Coord3d(
+													lepaValue, tthValue, imp);
+											coords.add(coord);
+											globalCoords.add(coord);
+										}
+
+									}
+								}
+								// screenshot
+								if (dthValue == 20.0 || bthValue == 20.0) {
+									if ((dthValue == 20.0 && bthValue == 20.0)) {
+										String[] axisLabels = new String[3];
+										axisLabels[0] = "LEPA";
+										axisLabels[1] = "TTH";
+										axisLabels[2] = "ImprovementRatio";
+										plotter.saveDelaunaySurface3DChart(
+												iterationChartFolder
+														+ "/globalImprovement-LEPAvsTTH"
+														+ "-DTH-" + dthValue
+														+ "-BTH-" + bthValue
+														+ "-Agents-"
+														+ agentValue + "-IT-"
+														+ itValue
+														+ "-TestRatio-"
+														+ ratioValue + ".png",
+												axisLabels, coords,
+												ViewPositionMode.FREE, null);
+									}
+								} else {
+									String[] axisLabels = new String[3];
+									axisLabels[0] = "LEPA";
+									axisLabels[1] = "TTH";
+									axisLabels[2] = "ImprovementRatio";
+									plotter.saveDelaunaySurface3DChart(
+											iterationChartFolder
+													+ "/globalImprovement-LEPAvsTTH"
+													+ "-DTH-" + dthValue
+													+ "-BTH-" + bthValue
+													+ "-Agents-" + agentValue
+													+ "-IT-" + itValue
+													+ "-TestRatio-"
+													+ ratioValue + ".png",
+											axisLabels, coords,
+											ViewPositionMode.FREE, null);
+								}
 							}
 						}
 					}
-
-					Coord3d point = null;
-					point = new Coord3d(beliefThreshold, lepa,
-							globalImprovementRatio);
-					thConstantGlobalImpCoordsNoTrust.get(diffThreshold).add(point);
-					point = new Coord3d(diffThreshold, lepa, globalImprovementRatio);
-					bthConstantGlobalImpCoordsNoTrust.get(beliefThreshold).add(
-							point);
-					point = new Coord3d(diffThreshold, beliefThreshold,
-							globalImprovementRatio);
-					lepaConstantGlobalImpCoordsNoTrust.get(lepa).add(point);
-				} else {
-					String[] splits = simulationID.split("-");
-					double diffThreshold = -1;
-					double beliefThreshold = -1;
-					int lepa = -1;
-					double globalImprovementRatio = new Double(row[9]);
-					for (int i = 0; i < splits.length; i++) {
-						if (splits[i].equals("DTH")) {
-							diffThreshold = new Double(splits[++i]);
-							if (!thConstantGlobalImpCoordsTrust
-									.containsKey(diffThreshold)) {
-								thConstantGlobalImpCoordsTrust.put(diffThreshold,
-										new ArrayList<Coord3d>());
-							}
-						} else if (splits[i].equals("BTH")) {
-							beliefThreshold = new Double(splits[++i]);
-							if (!bthConstantGlobalImpCoordsTrust
-									.containsKey(beliefThreshold)) {
-								bthConstantGlobalImpCoordsTrust.put(
-										beliefThreshold,
-										new ArrayList<Coord3d>());
-							}
-						} else if (splits[i].equals("LEPA")) {
-							lepa = new Integer(splits[++i]);
-							if (!lepaConstantGlobalImpCoordsTrust
-									.containsKey(lepa)) {
-								lepaConstantGlobalImpCoordsTrust.put(lepa,
-										new ArrayList<Coord3d>());
-							}
-						}
-					}
-
-					Coord3d point = null;
-					point = new Coord3d(beliefThreshold, lepa,
-							globalImprovementRatio);
-					thConstantGlobalImpCoordsTrust.get(diffThreshold).add(point);
-					point = new Coord3d(diffThreshold, lepa, globalImprovementRatio);
-					bthConstantGlobalImpCoordsTrust.get(beliefThreshold).add(
-							point);
-					point = new Coord3d(diffThreshold, beliefThreshold,
-							globalImprovementRatio);
-					lepaConstantGlobalImpCoordsTrust.get(lepa).add(point);
 				}
 			}
-
-			logger.info("Generating success chart for iteration " + iteration);
-
 			String[] axisLabels = new String[3];
-			axisLabels[0] = "DiffProbDistThreshold";
-			axisLabels[1] = "LEPA";
-			axisLabels[2] = "Ratio";
-			for (Entry<Double, List<Coord3d>> entry : bthConstantGlobalImpCoordsNoTrust
-					.entrySet()) {
-				plotter.getDelaunayChart(entry.getValue());
-				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-BTH-" + entry.getKey() + "-TRUSTMODE-OFF.png",
-						axisLabels, entry.getValue(), ViewPositionMode.FREE,
-						null);
-			}
-			for (Entry<Double, List<Coord3d>> entry : bthConstantGlobalImpCoordsTrust
-					.entrySet()) {
-				plotter.getDelaunayChart(entry.getValue());
-				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-BTH-" + entry.getKey() + "-TRUSTMODE-ON.png",
-						axisLabels, entry.getValue(), ViewPositionMode.FREE,
-						null);
-			}
+			axisLabels[0] = "LEPA";
+			axisLabels[1] = "TTH";
+			axisLabels[2] = "ImprovementRatio";
+			plotter.saveScatter3DChart(iterationChartFolder
+					+ "/globalImprovement-LEPAvsTTH-Plotter.png", axisLabels,
+					globalCoords, 10, ViewPositionMode.FREE, null);
 
-			axisLabels[0] = "BeliefThreshold";
-			for (Entry<Double, List<Coord3d>> entry : thConstantGlobalImpCoordsNoTrust
-					.entrySet()) {
-				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-DTH-" + entry.getKey() + "-TRUSTMODE-OFF.png",
-						axisLabels, entry.getValue(), ViewPositionMode.FREE,
-						null);
-			}
+			
+			// LEPAvsDTH with the rest of variables constants
+			globalCoords = new ArrayList<Coord3d>();
+			double dthValue = 0;
+			for (int agent = 0; agent < agents.size(); agent++) {
+				int agentValue = (int) this.getValueForPosInTheMatrix(agents,
+						agent);
+				for (int tth = 0; tth < tths.size(); tth++) {
+					double tthValue = this.getValueForPosInTheMatrix(tths, tth);
+					for (int bth = 0; bth < bths.size(); bth++) {
+						double bthValue = this.getValueForPosInTheMatrix(bths,
+								bth);
+						for (int it = 0; it < its.size(); it++) {
+							int itValue = (int) this.getValueForPosInTheMatrix(
+									its, it);
+							for (int ratio = 0; ratio < testRatios.size(); ratio++) {
+								double ratioValue = this
+										.getValueForPosInTheMatrix(testRatios,
+												ratio);
+								List<Coord3d> coords = new ArrayList<Coord3d>();
+								for (int lepa = 0; lepa < lepas.size(); lepa++) {
+									double lepaValue = this
+											.getValueForPosInTheMatrix(lepas,
+													lepa);
+									for (int dth = 0; dth < dths.size(); dth++) {
+										dthValue = this
+												.getValueForPosInTheMatrix(
+														dths, dth);
+										double imp = this.getImpFromTheMatrix(
+												theMatrix, lepa, tth, dth, bth,
+												agent, it, ratio);
+										if (dthValue != 20.0
+												&& tthValue != 20.0
+												&& bthValue != 20.0) {
+											Coord3d coord = new Coord3d(
+													lepaValue, dthValue, imp);
+											coords.add(coord);
+											globalCoords.add(coord);
+										} else if (dthValue == 20.0
+												&& bthValue == 20.0
+												&& tthValue == 20.0) {
+											Coord3d coord = new Coord3d(
+													lepaValue, dthValue, imp);
+											coords.add(coord);
+											// globalCoords.add(coord);
+										}
 
-			axisLabels[0] = "BeliefThreshold";
-			for (Entry<Double, List<Coord3d>> entry : thConstantGlobalImpCoordsTrust
-					.entrySet()) {
-				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-DTH-" + entry.getKey() + "-TRUSTMODE-ON.png",
-						axisLabels, entry.getValue(), ViewPositionMode.FREE,
-						null);
+									}
+								}
+								// screenshot
+								if (tthValue != 20.0 && bthValue != 20.0) {
+									axisLabels = new String[3];
+									axisLabels[0] = "LEPA";
+									axisLabels[1] = "DTH";
+									axisLabels[2] = "ImprovementRatio";
+									plotter.saveDelaunaySurface3DChart(
+											iterationChartFolder
+													+ "/globalImprovement-LEPAvsDTH"
+													+ "-TTH-" + tthValue
+													+ "-BTH-" + bthValue
+													+ "-Agents-" + agentValue
+													+ "-IT-" + itValue
+													+ "-TestRatio-"
+													+ ratioValue + ".png",
+											axisLabels, coords,
+											ViewPositionMode.FREE, null);
+								}
+							}
+						}
+					}
+				}
 			}
+			axisLabels = new String[3];
+			axisLabels[0] = "LEPA";
+			axisLabels[1] = "DTH";
+			axisLabels[2] = "ImprovementRatio";
+			plotter.saveScatter3DChart(iterationChartFolder
+					+ "/globalImprovement-LEPAvsDTH-Plotter.png", axisLabels,
+					globalCoords, 10, ViewPositionMode.FREE, null);
 
-			axisLabels[0] = "DiffProbDistThreshold";
-			axisLabels[1] = "BeliefThreshold";
-			for (Entry<Integer, List<Coord3d>> entry : lepaConstantGlobalImpCoordsNoTrust
-					.entrySet()) {
-				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-LEPA-" + entry.getKey() + "-TRUSTMODE-OFF.png",
-						axisLabels, entry.getValue(), ViewPositionMode.FREE,
-						null);
-			}
-			for (Entry<Integer, List<Coord3d>> entry : lepaConstantGlobalImpCoordsTrust
-					.entrySet()) {
-				plotter.saveDelaunaySurface3DChart(iterationChartFolder
-						+ "/globalImprovement-LEPA-" + entry.getKey() + "-TRUSTMODE-ON.png",
-						axisLabels, entry.getValue(), ViewPositionMode.FREE,
-						null);
-			}
+			// // Build cylinders and save cylinders charts
+			// Plotter plotter = new Plotter(logger);
+			// logger.info("Generating success chart for iteration " +
+			// iteration);
+			//
+			// String[] axisLabels = new String[3];
+			// axisLabels[0] = "DiffProbDistThreshold";
+			// axisLabels[1] = "LEPA";
+			// axisLabels[2] = "Ratio";
+			// for (Entry<Double, List<Coord3d>> entry :
+			// bthConstantGlobalImpCoordsNoTrust
+			// .entrySet()) {
+			// plotter.getDelaunayChart(entry.getValue());
+			// plotter.saveDelaunaySurface3DChart(iterationChartFolder
+			// + "/globalImprovement-BTH-" + entry.getKey()
+			// + "-TRUSTMODE-OFF.png", axisLabels, entry.getValue(),
+			// ViewPositionMode.FREE, null);
+			// }
+			// for (Entry<Double, List<Coord3d>> entry :
+			// bthConstantGlobalImpCoordsTrust
+			// .entrySet()) {
+			// plotter.getDelaunayChart(entry.getValue());
+			// plotter.saveDelaunaySurface3DChart(iterationChartFolder
+			// + "/globalImprovement-BTH-" + entry.getKey()
+			// + "-TRUSTMODE-ON.png", axisLabels, entry.getValue(),
+			// ViewPositionMode.FREE, null);
+			// }
+			//
+			// axisLabels[0] = "BeliefThreshold";
+			// for (Entry<Double, List<Coord3d>> entry :
+			// thConstantGlobalImpCoordsNoTrust
+			// .entrySet()) {
+			// plotter.saveDelaunaySurface3DChart(iterationChartFolder
+			// + "/globalImprovement-DTH-" + entry.getKey()
+			// + "-TRUSTMODE-OFF.png", axisLabels, entry.getValue(),
+			// ViewPositionMode.FREE, null);
+			// }
+			//
+			// axisLabels[0] = "BeliefThreshold";
+			// for (Entry<Double, List<Coord3d>> entry :
+			// thConstantGlobalImpCoordsTrust
+			// .entrySet()) {
+			// plotter.saveDelaunaySurface3DChart(iterationChartFolder
+			// + "/globalImprovement-DTH-" + entry.getKey()
+			// + "-TRUSTMODE-ON.png", axisLabels, entry.getValue(),
+			// ViewPositionMode.FREE, null);
+			// }
+			//
+			// axisLabels[0] = "DiffProbDistThreshold";
+			// axisLabels[1] = "BeliefThreshold";
+			// for (Entry<Integer, List<Coord3d>> entry :
+			// lepaConstantGlobalImpCoordsNoTrust
+			// .entrySet()) {
+			// plotter.saveDelaunaySurface3DChart(iterationChartFolder
+			// + "/globalImprovement-LEPA-" + entry.getKey()
+			// + "-TRUSTMODE-OFF.png", axisLabels, entry.getValue(),
+			// ViewPositionMode.FREE, null);
+			// }
+			// for (Entry<Integer, List<Coord3d>> entry :
+			// lepaConstantGlobalImpCoordsTrust
+			// .entrySet()) {
+			// plotter.saveDelaunaySurface3DChart(iterationChartFolder
+			// + "/globalImprovement-LEPA-" + entry.getKey()
+			// + "-TRUSTMODE-ON.png", axisLabels, entry.getValue(),
+			// ViewPositionMode.FREE, null);
+			// }
 
 		} catch (FileNotFoundException e) {
 			logger.severe(e.getMessage());
@@ -451,6 +591,120 @@ public class ExperimentChartsGenerator {
 			System.exit(1);
 		}
 
+	}
+
+	/**
+	 * @param theMatrix
+	 * @param lepaPos
+	 * @param tthPos
+	 * @param dthPos
+	 * @param bthPos
+	 * @param agentsPos
+	 * @param itPos
+	 * @param testRatiosPos
+	 * @param imp
+	 */
+	private void addToTheMatrix(double[][][][][][][] theMatrix, int lepaPos,
+			int tthPos, int dthPos, int bthPos, int agentsPos, int itPos,
+			int testRatiosPos, double imp) {
+		theMatrix[lepaPos][tthPos][dthPos][bthPos][agentsPos][itPos][testRatiosPos] = imp;
+
+	}
+
+	/**
+	 * @param theMatrix
+	 * @param lepa
+	 * @param tth
+	 * @param dth
+	 * @param bth
+	 * @param agent
+	 * @param it
+	 * @param ratio
+	 * @return
+	 */
+	private double getImpFromTheMatrix(double[][][][][][][] theMatrix,
+			int lepa, int tth, int dth, int bth, int agent, int it, int ratio) {
+		return theMatrix[lepa][tth][dth][bth][agent][it][ratio];
+	}
+
+	/**
+	 * @param map
+	 * @param pos
+	 * @return
+	 */
+	private double getValueForPosInTheMatrix(HashMap<String, Integer> map,
+			int pos) {
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			if (pos == entry.getValue()) {
+				String key = entry.getKey();
+				double value = Double.valueOf(key);
+				return value;
+			}
+		}
+		return Double.MAX_VALUE;
+	}
+
+	/**
+	 * @param map
+	 * @param pos
+	 * @return
+	 */
+	private String getStringForPosInTheMatrix(HashMap<String, Integer> map,
+			int pos) {
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			if (pos == entry.getValue()) {
+				String key = entry.getKey();
+				return key;
+			}
+		}
+		return "";
+	}
+
+	/**
+	 * @param list
+	 */
+	private HashMap<String, Integer> getSortedMap(List<String> list) {
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+		List<String> values = new ArrayList<String>();
+		values.addAll(list);
+		String[] sortedList = new String[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			String minValue = this.getMinValue(values);
+			values.remove(minValue);
+			sortedList[i] = minValue;
+		}
+		for (int i = 0; i < sortedList.length; i++) {
+			map.put(sortedList[i], i);
+		}
+		return map;
+
+	}
+
+	/**
+	 * @param values
+	 * @return
+	 */
+	private String getMinValue(List<String> values) {
+		double min = Double.MAX_VALUE;
+		String minValue = "";
+		for (String value : values) {
+			double v = new Double(value);
+			if (v < min) {
+				min = v;
+				minValue = value;
+			}
+		}
+		return minValue;
+	}
+
+	/**
+	 * @param lepaList
+	 * @param value
+	 */
+	private void checkAndAdd(List<String> lepaList, String value) {
+		if (!lepaList.contains(value)) {
+			lepaList.add(value);
+		}
 	}
 
 	/**
@@ -528,7 +782,7 @@ public class ExperimentChartsGenerator {
 			String[] axisLabels = new String[3];
 			axisLabels[0] = "";
 			axisLabels[1] = "Agent Number";
-			axisLabels[2] = "Ratio";
+			axisLabels[2] = "SuccessRatio";
 			plotter.saveCylinder3DChart(iterationChartFolder
 					+ "/validations.png", axisLabels, cylinders,
 					ViewPositionMode.PROFILE, new Coord3d(0, 1, 0));
