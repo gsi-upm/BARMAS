@@ -73,21 +73,21 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		this.launchZooBatch();
-
-		this.launchNurseryBatch();
-
-		this.launchMarketingBatch();
+//		this.launchZooBatch();
+//
+//		this.launchNurseryBatch();
+//
+//		this.launchMarketingBatch();
 
 		this.launchSolarFlareBatch();
 
-		this.launchKowlanCZBatch();
-
-		this.launchMushroomBatch();
-
-		this.launchChessBatch();
-
-		this.launchPokerBatch();
+//		this.launchKowlanCZBatch();
+//
+//		this.launchMushroomBatch();
+//
+//		this.launchChessBatch();
+//
+//		this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
