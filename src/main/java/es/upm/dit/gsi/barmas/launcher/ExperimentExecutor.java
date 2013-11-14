@@ -178,6 +178,9 @@ public class ExperimentExecutor {
 			startedExperiments++;
 			logger.info("Starting experiment number: " + startedExperiments
 					+ " -> SimulationID: " + t.getName());
+			if (experiment instanceof BarmasAgentValidator) {
+				logger.info("Starting validator for isolated agent...");
+			}
 			logger.info("--> Pending experiments for this batch: "
 					+ (experimentsQuantity - finishedExperiments));
 			if (concurrentManagement) {
@@ -216,6 +219,7 @@ public class ExperimentExecutor {
 					threads.remove(t);
 				}
 				threads2Remove.clear();
+				System.gc();
 				logger.info("Number of simulations executing right now: "
 						+ threads.size());
 			} else {

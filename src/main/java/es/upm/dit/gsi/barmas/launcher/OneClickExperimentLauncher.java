@@ -3,6 +3,7 @@
  */
 package es.upm.dit.gsi.barmas.launcher;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,6 +73,114 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
+		this.launchZooBatch();
+
+		this.launchNurseryBatch();
+
+		this.launchMarketingBatch();
+
+		this.launchSolarFlareBatch();
+
+		this.launchKowlanCZBatch();
+
+		this.launchMushroomBatch();
+
+		this.launchChessBatch();
+
+		this.launchPokerBatch();
+
+		long finishTime = System.currentTimeMillis();
+		long interval = finishTime - initTime;
+		long intervalSecs = interval / 1000;
+		long intervalMins = intervalSecs / 60;
+		long intervalHours = intervalMins / 60;
+		logger.info("All experiments have been executed in " + intervalHours
+				+ " hours, " + (intervalMins % 60) + " minutes, "
+				+ (intervalSecs % 60) + " seconds and " + (interval % 1000)
+				+ " miliseconds. Finishing execution of simulations.");
+	}
+
+	/**
+	 * 
+	 */
+	private void launchPokerBatch() {
+
+		// ***********************
+		// POKER SIMULACION BATCH
+		// ***********************
+		simulationID = "POKER";
+		dataset = "src/main/resources/dataset/poker.csv";
+		experimentFolder = "poker-simulation";
+		numberOfAgents = 200;
+		testRatio = 0.1;
+		centralApproach = true;
+		summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		seed = 0;
+		iterations = 1;
+		classificationTarget = "PokerHand";
+		delta = 0.1;
+
+		maxDistanceThreshold = 0.5;
+		minDistanceThreshold = 0.1;
+		maxBeliefThreshold = 0.5;
+		minBeliefThreshold = 0.1;
+		maxTrustThreshold = 0.5;
+		minTrustThreshold = 0.1;
+
+		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+				experimentFolder, numberOfAgents, testRatio, centralApproach,
+				summaryFile, seed, maxThreads, iterations,
+				classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold);
+		// ***********************
+	}
+
+	/**
+	 * 
+	 */
+	private void launchChessBatch() {
+		// ***********************
+		// CHESS SIMULACION BATCH
+		// ***********************
+		simulationID = "CHESS";
+		dataset = "src/main/resources/dataset/kr-vs-k.csv";
+		experimentFolder = "chess-simulation";
+		numberOfAgents = 10;
+		testRatio = 0.5;
+		centralApproach = true;
+		summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		seed = 0;
+		iterations = 1;
+		classificationTarget = "Game";
+		delta = 0.1;
+
+		maxDistanceThreshold = 0.5;
+		minDistanceThreshold = 0.1;
+		maxBeliefThreshold = 0.5;
+		minBeliefThreshold = 0.1;
+		maxTrustThreshold = 0.5;
+		minTrustThreshold = 0.1;
+
+		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+				experimentFolder, numberOfAgents, testRatio, centralApproach,
+				summaryFile, seed, maxThreads, iterations,
+				classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold);
+
+		// ***********************
+	}
+
+	/**
+	 * 
+	 */
+	private void launchMushroomBatch() {
+
 		// ***********************
 		// MUSHROOM SIMULACION BATCH
 		// ***********************
@@ -103,167 +212,12 @@ public class OneClickExperimentLauncher {
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
 				maxTrustThreshold, minTrustThreshold);
 		// ***********************
+	}
 
-		 // ***********************
-		 // ZOO SIMULACION BATCH
-		 // ***********************
-		 simulationID = "ZOO";
-		 dataset = "src/main/resources/dataset/zoo.csv";
-		 experimentFolder = "zoo-simulation";
-		 numberOfAgents = 2;
-		 testRatio = 0.4;
-		 centralApproach = true;
-		 summaryFile = experimentFolder + "/" + experimentFolder
-		 + "-summary.csv";
-		 seed = 0;
-		 iterations = 1;
-		 classificationTarget = "AnimalType";
-		 delta = 0.1;
-		
-		 maxDistanceThreshold = 0.5;
-		 minDistanceThreshold = 0.1;
-		 maxBeliefThreshold = 0.5;
-		 minBeliefThreshold = 0.1;
-		 maxTrustThreshold = 0.5;
-		 minTrustThreshold = 0.1;
-		
-		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		 experimentFolder, numberOfAgents, testRatio, centralApproach,
-		 summaryFile, seed, maxThreads, iterations,
-		 classificationTarget, delta,
-		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		 maxTrustThreshold, minTrustThreshold);
-		 // ***********************
-
-		 // ***********************
-		 // SOLAR FLARE SIMULACION BATCH
-		 // ***********************
-		 simulationID = "SOLARFLARE";
-		 dataset = "src/main/resources/dataset/solarflare-global.csv";
-		 experimentFolder = "solarflare-simulation";
-		 numberOfAgents = 6;
-		 testRatio = 0.4;
-		 centralApproach = true;
-		 summaryFile = experimentFolder + "/" + experimentFolder
-		 + "-summary.csv";
-		 seed = 0;
-		 iterations = 1;
-		 classificationTarget = "SolarFlareType";
-		 delta = 0.1;
-		
-		 maxDistanceThreshold = 0.5;
-		 minDistanceThreshold = 0.1;
-		 maxBeliefThreshold = 0.5;
-		 minBeliefThreshold = 0.1;
-		 maxTrustThreshold = 0.5;
-		 minTrustThreshold = 0.1;
-		
-		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		 experimentFolder, numberOfAgents, testRatio, centralApproach,
-		 summaryFile, seed, maxThreads, iterations,
-		 classificationTarget, delta,
-		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		 maxTrustThreshold, minTrustThreshold);
-		 // ***********************
-
-		 // ***********************
-		 // NURSERY SIMULACION BATCH
-		 // ***********************
-		 simulationID = "NURSERY";
-		 dataset = "src/main/resources/dataset/nursery.csv";
-		 experimentFolder = "nursery-simulation";
-		 numberOfAgents = 3;
-		 testRatio = 0.3;
-		 centralApproach = true;
-		 summaryFile = experimentFolder + "/" + experimentFolder
-		 + "-summary.csv";
-		 seed = 0;
-		 iterations = 1;
-		 classificationTarget = "Classification";
-		 delta = 0.1;
-		
-		 maxDistanceThreshold = 0.5;
-		 minDistanceThreshold = 0.1;
-		 maxBeliefThreshold = 0.5;
-		 minBeliefThreshold = 0.1;
-		 maxTrustThreshold = 0.5;
-		 minTrustThreshold = 0.1;
-		
-		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		 experimentFolder, numberOfAgents, testRatio, centralApproach,
-		 summaryFile, seed, maxThreads, iterations,
-		 classificationTarget, delta,
-		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		 maxTrustThreshold, minTrustThreshold);
-		 // ***********************
-
-		 // ***********************
-		 // MARKETING SIMULACION BATCH
-		 // ***********************
-		 simulationID = "MARKETING";
-		 dataset = "src/main/resources/dataset/marketing.csv";
-		 experimentFolder = "marketing-simulation";
-		 numberOfAgents = 3;
-		 testRatio = 0.5;
-		 centralApproach = true;
-		 summaryFile = experimentFolder + "/" + experimentFolder
-		 + "-summary.csv";
-		 seed = 0;
-		 iterations = 1;
-		 classificationTarget = "Income";
-		 delta = 0.1;
-		
-		 maxDistanceThreshold = 0.5;
-		 minDistanceThreshold = 0.1;
-		 maxBeliefThreshold = 0.5;
-		 minBeliefThreshold = 0.1;
-		 maxTrustThreshold = 0.5;
-		 minTrustThreshold = 0.1;
-		
-		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		 experimentFolder, numberOfAgents, testRatio, centralApproach,
-		 summaryFile, seed, maxThreads, iterations,
-		 classificationTarget, delta,
-		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		 maxTrustThreshold, minTrustThreshold);
-		 // ***********************
-
-		 // ***********************
-		 // CHESS SIMULACION BATCH
-		 // ***********************
-		 simulationID = "CHESS";
-		 dataset = "src/main/resources/dataset/kr-vs-k.csv";
-		 experimentFolder = "chess-simulation";
-		 numberOfAgents = 10;
-		 testRatio = 0.5;
-		 centralApproach = true;
-		 summaryFile = experimentFolder + "/" + experimentFolder
-		 + "-summary.csv";
-		 seed = 0;
-		 iterations = 1;
-		 classificationTarget = "Game";
-		 delta = 0.1;
-		
-		 maxDistanceThreshold = 0.5;
-		 minDistanceThreshold = 0.1;
-		 maxBeliefThreshold = 0.5;
-		 minBeliefThreshold = 0.1;
-		 maxTrustThreshold = 0.5;
-		 minTrustThreshold = 0.1;
-		
-		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		 experimentFolder, numberOfAgents, testRatio, centralApproach,
-		 summaryFile, seed, maxThreads, iterations,
-		 classificationTarget, delta,
-		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		 maxTrustThreshold, minTrustThreshold);
-		
-		 // ***********************
+	/**
+	 * 
+	 */
+	private void launchKowlanCZBatch() {
 
 		// ***********************
 		// KOWLANCZ02
@@ -296,48 +250,160 @@ public class OneClickExperimentLauncher {
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
 				maxTrustThreshold, minTrustThreshold);
 		// ***********************
+	}
 
-		 // ***********************
-		 // POKER SIMULACION BATCH
-		 // ***********************
-		 simulationID = "POKER";
-		 dataset = "src/main/resources/dataset/poker.csv";
-		 experimentFolder = "poker-simulation";
-		 numberOfAgents = 200;
-		 testRatio = 0.1;
-		 centralApproach = true;
-		 summaryFile = experimentFolder + "/" + experimentFolder
-		 + "-summary.csv";
-		 seed = 0;
-		 iterations = 1;
-		 classificationTarget = "PokerHand";
-		 delta = 0.1;
-		
-		 maxDistanceThreshold = 0.5;
-		 minDistanceThreshold = 0.1;
-		 maxBeliefThreshold = 0.5;
-		 minBeliefThreshold = 0.1;
-		 maxTrustThreshold = 0.5;
-		 minTrustThreshold = 0.1;
-		
-		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		 experimentFolder, numberOfAgents, testRatio, centralApproach,
-		 summaryFile, seed, maxThreads, iterations,
-		 classificationTarget, delta,
-		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		 maxTrustThreshold, minTrustThreshold);
-		 // ***********************
+	/**
+	 * 
+	 */
+	private void launchSolarFlareBatch() {
 
-		long finishTime = System.currentTimeMillis();
-		long interval = finishTime - initTime;
-		long intervalSecs = interval / 1000;
-		long intervalMins = intervalSecs / 60;
-		long intervalHours = intervalMins / 60;
-		logger.info("All experiments have been executed in " + intervalHours
-				+ " hours, " + (intervalMins % 60) + " minutes, "
-				+ (intervalSecs % 60) + " seconds and " + (interval % 1000)
-				+ " miliseconds. Finishing execution of simulations.");
+		// ***********************
+		// SOLAR FLARE SIMULACION BATCH
+		// ***********************
+		simulationID = "SOLARFLARE";
+		dataset = "src/main/resources/dataset/solarflare-global.csv";
+		experimentFolder = "solarflare-simulation";
+		numberOfAgents = 6;
+		testRatio = 0.4;
+		centralApproach = true;
+		summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		seed = 0;
+		iterations = 1;
+		classificationTarget = "SolarFlareType";
+		delta = 0.1;
+
+		maxDistanceThreshold = 0.5;
+		minDistanceThreshold = 0.1;
+		maxBeliefThreshold = 0.5;
+		minBeliefThreshold = 0.1;
+		maxTrustThreshold = 0.5;
+		minTrustThreshold = 0.1;
+
+		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+				experimentFolder, numberOfAgents, testRatio, centralApproach,
+				summaryFile, seed, maxThreads, iterations,
+				classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold);
+		// ***********************
+
+	}
+
+	/**
+	 * 
+	 */
+	private void launchMarketingBatch() {
+
+		// ***********************
+		// MARKETING SIMULACION BATCH
+		// ***********************
+		simulationID = "MARKETING";
+		dataset = "src/main/resources/dataset/marketing.csv";
+		experimentFolder = "marketing-simulation";
+		numberOfAgents = 3;
+		testRatio = 0.5;
+		centralApproach = true;
+		summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		seed = 0;
+		iterations = 1;
+		classificationTarget = "Income";
+		delta = 0.1;
+
+		maxDistanceThreshold = 0.5;
+		minDistanceThreshold = 0.1;
+		maxBeliefThreshold = 0.5;
+		minBeliefThreshold = 0.1;
+		maxTrustThreshold = 0.5;
+		minTrustThreshold = 0.1;
+
+		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+				experimentFolder, numberOfAgents, testRatio, centralApproach,
+				summaryFile, seed, maxThreads, iterations,
+				classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold);
+		// ***********************
+
+	}
+
+	/**
+	 * 
+	 */
+	private void launchNurseryBatch() {
+
+		// ***********************
+		// NURSERY SIMULACION BATCH
+		// ***********************
+		simulationID = "NURSERY";
+		dataset = "src/main/resources/dataset/nursery.csv";
+		experimentFolder = "nursery-simulation";
+		numberOfAgents = 3;
+		testRatio = 0.3;
+		centralApproach = true;
+		summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		seed = 0;
+		iterations = 1;
+		classificationTarget = "Classification";
+		delta = 0.1;
+
+		maxDistanceThreshold = 0.5;
+		minDistanceThreshold = 0.1;
+		maxBeliefThreshold = 0.5;
+		minBeliefThreshold = 0.1;
+		maxTrustThreshold = 0.5;
+		minTrustThreshold = 0.1;
+
+		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+				experimentFolder, numberOfAgents, testRatio, centralApproach,
+				summaryFile, seed, maxThreads, iterations,
+				classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold);
+		// ***********************
+	}
+
+	/**
+	 * 
+	 */
+	private void launchZooBatch() {
+
+		// ***********************
+		// ZOO SIMULACION BATCH
+		// ***********************
+		simulationID = "ZOO";
+		dataset = "src/main/resources/dataset/zoo.csv";
+		experimentFolder = "zoo-simulation";
+		numberOfAgents = 2;
+		testRatio = 0.4;
+		centralApproach = true;
+		summaryFile = experimentFolder + "/" + experimentFolder
+				+ "-summary.csv";
+		seed = 0;
+		iterations = 1;
+		classificationTarget = "AnimalType";
+		delta = 0.1;
+
+		maxDistanceThreshold = 0.5;
+		minDistanceThreshold = 0.1;
+		maxBeliefThreshold = 0.5;
+		minBeliefThreshold = 0.1;
+		maxTrustThreshold = 0.5;
+		minTrustThreshold = 0.1;
+
+		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+				experimentFolder, numberOfAgents, testRatio, centralApproach,
+				summaryFile, seed, maxThreads, iterations,
+				classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold);
+		// ***********************
 	}
 
 	public void launchExperimentBatchFor(String simulationID, String dataset,
@@ -487,6 +553,7 @@ public class OneClickExperimentLauncher {
 
 		long initTime = System.currentTimeMillis();
 
+		List<RunnableExperiment> allExperiments = new ArrayList<RunnableExperiment>();
 		try {
 			for (int i = 0; i < iterations; i++) {
 				DatasetSplitter splitter = new DatasetSplitter();
@@ -511,7 +578,7 @@ public class OneClickExperimentLauncher {
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting validations executions...");
-				executor.executeValidators(validators, maxThreads, logger);
+				allExperiments.addAll(validators);
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -529,7 +596,8 @@ public class OneClickExperimentLauncher {
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting experiments executions...");
-				executor.executeExperiments(experiments, maxThreads, logger);
+				allExperiments.addAll(experiments);
+				executor.executeExperiments(allExperiments, maxThreads, logger);
 
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID,
@@ -552,6 +620,7 @@ public class OneClickExperimentLauncher {
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
 		long initTime = System.currentTimeMillis();
+		List<RunnableExperiment> allExperiments = new ArrayList<RunnableExperiment>();
 
 		try {
 			for (int i = 0; i < iterations; i++) {
@@ -577,7 +646,7 @@ public class OneClickExperimentLauncher {
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting validations executions...");
-				executor.executeValidators(validators, maxThreads, logger);
+				allExperiments.addAll(validators);
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -592,7 +661,8 @@ public class OneClickExperimentLauncher {
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting experiments executions...");
-				executor.executeExperiments(experiments, maxThreads, logger);
+				allExperiments.addAll(experiments);
+				executor.executeExperiments(allExperiments, maxThreads, logger);
 
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID,
