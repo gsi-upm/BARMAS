@@ -424,6 +424,7 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
+				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -469,6 +470,7 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
+				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
 				// VALIDATORS
 				List<RunnableExperiment> validators = executor
@@ -513,6 +515,7 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
+				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -564,6 +567,7 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
+				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
 				// VALIDATORS
 				List<RunnableExperiment> validators = executor
@@ -632,6 +636,7 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
+				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
 				// VALIDATORS
 				List<RunnableExperiment> validators = executor

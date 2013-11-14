@@ -67,7 +67,7 @@ public class ExperimentExecutor {
 				+ "-summary.csv";
 		long seed = 0;
 		String classificationTarget = "SolarFlareType";
-		int mode = SimulationConfiguration.DEBUGGING_MODE;
+		int mode = SimulationConfiguration.SIMULATION_MODE;
 		double diffThreshold = 0.2;
 		double beliefThreshold = 0.1;
 		double trustThreshold = 0;
@@ -111,6 +111,7 @@ public class ExperimentExecutor {
 		splitter.splitDataset(ratio, agentsNumber, originalDataset,
 				experimentFolder + "/input/dataset", true, simulationID, logger);
 
+		simulationID = simulationID + "-TESTRATIO-" + ratio;
 		int tint = (int) (diffThreshold * 100);
 		double roundedt = ((double) tint) / 100;
 		int btint = (int) (beliefThreshold * 100);
@@ -128,7 +129,7 @@ public class ExperimentExecutor {
 				diffThreshold, beliefThreshold, trustThreshold);
 		List<RunnableExperiment> exps = new ArrayList<RunnableExperiment>();
 		exps.add(exp);
-		this.executeRunnables(exps, 1, true, logger);
+		this.executeRunnables(exps, 1, logger);
 	}
 
 	/**
@@ -137,7 +138,7 @@ public class ExperimentExecutor {
 	 * @param logger
 	 */
 	public void executeRunnables(List<RunnableExperiment> experiments,
-			int maxThreads, boolean concurrentManagement, Logger logger) {
+			int maxThreads, Logger logger) {
 
 		int startedExperiments = 0;
 		int finishedExperiments = 0;
@@ -159,9 +160,7 @@ public class ExperimentExecutor {
 						}
 					}
 					if (!threads2Remove.isEmpty()) {
-						for (Thread t : threads2Remove) {
-							threads.remove(t);
-						}
+						threads.removeAll(threads2Remove);
 						threads2Remove.clear();
 						System.gc();
 					}
@@ -183,19 +182,6 @@ public class ExperimentExecutor {
 			}
 			logger.info("--> Pending experiments for this batch: "
 					+ (experimentsQuantity - finishedExperiments));
-			if (concurrentManagement) {
-				try {
-					Thread.sleep(5000);
-					// To avoid concurrent learning process
-					// The first experiment learns all BNs
-					// And the followings do not have to learn anything :)
-					concurrentManagement = false;
-					// This executes only once.
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-			}
 		}
 
 		while (!threads.isEmpty()) {
@@ -207,28 +193,22 @@ public class ExperimentExecutor {
 					logger.info("Finished experiment! -> " + thread.getName());
 					logger.info("--> Pending experiments for this batch: "
 							+ (experimentsQuantity - finishedExperiments));
-				} else {
-					logger.info("Execution in progress for simulation with ID: "
-							+ thread.getName());
-					logger.info("--> Pending experiments for this batch: "
-							+ (experimentsQuantity - finishedExperiments));
 				}
 			}
 			if (!threads2Remove.isEmpty()) {
-				for (Thread t : threads2Remove) {
-					threads.remove(t);
-				}
+				threads.removeAll(threads2Remove);
 				threads2Remove.clear();
 				System.gc();
 				logger.info("Number of simulations executing right now: "
 						+ threads.size());
-			} else {
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
+				logger.info("--> Pending experiments for this batch: "
+						+ (experimentsQuantity - finishedExperiments));
+			}
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				System.exit(1);
 			}
 		}
 
@@ -243,7 +223,7 @@ public class ExperimentExecutor {
 	 */
 	public void executeExperiments(List<RunnableExperiment> experiments,
 			int maxThreads, Logger logger) {
-		this.executeRunnables(experiments, maxThreads, true, logger);
+		this.executeRunnables(experiments, maxThreads, logger);
 	}
 
 	/**
@@ -253,7 +233,7 @@ public class ExperimentExecutor {
 	 */
 	public void executeValidators(List<RunnableExperiment> experiments,
 			int maxThreads, Logger logger) {
-		this.executeRunnables(experiments, maxThreads, false, logger);
+		this.executeRunnables(experiments, maxThreads, logger);
 	}
 
 	public List<RunnableExperiment> getValidatorsBatch(String simulationID,

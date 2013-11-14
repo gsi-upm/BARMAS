@@ -53,7 +53,7 @@ public class SummaryCreator {
 		CsvWriter writer = null;
 		CsvWriter writer2 = null;
 		int columnsWriter = 9;
-		int columnsWriter2 = 16;
+		int columnsWriter2 = 21;
 		try {
 			if (!outputDetailedFile.exists()) {
 				writer = new CsvWriter(new FileWriter(outputDetailedFile), ',');
@@ -93,6 +93,11 @@ public class SummaryCreator {
 				headers[13] = "LEPA";
 				headers[14] = "TrustThreshold";
 				headers[15] = "Iteration";
+				headers[16] = "ArgAgents";
+				headers[17] = "TestRatio";
+				headers[18] = "Seed";
+				headers[19] = "Timestamp";
+				headers[20] = "Dataset";
 				writer2.writeRecord(headers);
 			} else {
 				writer2 = new CsvWriter(new FileWriter(outputFile, true), ',');
@@ -217,7 +222,9 @@ public class SummaryCreator {
 			String[] nameSplits = simulationName.split("-");
 			for (int i = 0; i < nameSplits.length; i++) {
 				String split = nameSplits[i];
-				if (split.equals("DTH")) {
+				if (i == 1) {
+					totalRatio2[20] = nameSplits[i];
+				} else if (split.equals("DTH")) {
 					totalRatio2[11] = nameSplits[++i];
 				} else if (split.equals("BTH")) {
 					totalRatio2[12] = nameSplits[++i];
@@ -227,6 +234,16 @@ public class SummaryCreator {
 					totalRatio2[14] = nameSplits[++i];
 				} else if (split.equals("IT")) {
 					totalRatio2[15] = nameSplits[++i];
+				} else if (split.equals("TESTRATIO")) {
+					totalRatio2[17] = nameSplits[++i];
+				} else if (split.contains("agents")) {
+					totalRatio2[16] = split.replaceAll("agents", "");
+				} else if (split.contains("Agent")) {
+					totalRatio2[16] = "1";
+				} else if (split.equals("seed")) {
+					totalRatio2[18] = nameSplits[++i];
+				} else if (split.equals("timestamp")) {
+					totalRatio2[19] = nameSplits[++i];
 				}
 			}
 
