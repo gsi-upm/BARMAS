@@ -57,21 +57,21 @@ public class ExperimentExecutor {
 
 		ExperimentExecutor executor = new ExperimentExecutor();
 
-		String simulationID = "SOLARFLARE";
-		String dataset = "src/main/resources/dataset/solarflare-global.csv";
-		String experimentFolder = "solarflare-simulation";
-		int numberOfAgents = 6;
-		double testRatio = 0.4;
+		String simulationID = "MARKETING";
+		String dataset = "src/main/resources/dataset/marketing.csv";
+		String experimentFolder = "marketing-simulation";
+		int numberOfAgents = 3;
+		double testRatio = 0.5;
 
 		String summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		long seed = 0;
-		String classificationTarget = "SolarFlareType";
-		int mode = SimulationConfiguration.SIMULATION_MODE;
-		double diffThreshold = 0.2;
+		String classificationTarget = "Income";
+		int mode = SimulationConfiguration.DEBUGGING_MODE;
+		double diffThreshold = 0.4;
 		double beliefThreshold = 0.1;
-		double trustThreshold = 0;
-		int lepa = 2;
+		double trustThreshold = 20.0;
+		int lepa = 4;
 
 		executor.executeExperiment(simulationID, diffThreshold,
 				beliefThreshold, trustThreshold, numberOfAgents, lepa,

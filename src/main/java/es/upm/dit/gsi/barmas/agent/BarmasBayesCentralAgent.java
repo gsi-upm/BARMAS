@@ -87,6 +87,10 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 				}
 			}
 		}
+		this.getLogger().info("Sensors for " + this.getID());
+		for (String sensor : sensors) {
+			this.getLogger().info(sensor);
+		}
 	}
 
 	/*

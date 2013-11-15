@@ -218,9 +218,10 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 					}
 					argDiagnosis.changeProperty(node, state);
 					this.getLogger().info(
-							"Argumentative agents concludes that " + node
-									+ " - " + state + " with confidence: "
-									+ max);
+							"Argumentative agents conclude for Diagnosi Case ID: "
+									+ argDiagnosis.getCaseID() + " that "
+									+ node + " - " + state
+									+ " with confidence: " + max);
 				}
 			}
 			argDiagnosis.setCurrentStatus(DiagnosisCase.READY, true);

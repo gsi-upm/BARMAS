@@ -171,6 +171,11 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		}
 		// END OF REPUTATION BLOCK
 
+		this.getLogger().info("Sensors for " + this.getID());
+		for (String sensor : sensors) {
+			this.getLogger().info(sensor);
+		}
+		
 		this.goToIdle();
 
 		// Register in manager
@@ -277,7 +282,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		// Update evidences and add them to the BN
 		this.updateEvidences(this.pendingArguments);
 		// Update beliefs to add to the BN as soft-evidences
-		this.updatedBeliefs(this.pendingArguments);
+		this.updateBeliefs(this.pendingArguments);
 	}
 
 	/**
@@ -285,7 +290,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * 
 	 * @param args
 	 */
-	private void updatedBeliefs(List<Argument> args) {
+	private void updateBeliefs(List<Argument> args) {
 
 		if (this.getMyLastArgument() != null
 				&& this.getMyLastArgument().getGivens().size() == this.evidences
@@ -327,100 +332,31 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 									- this.getTrustScoreValueForCurrentBelief(p
 											.getNode()) >= this.trustThreshold;
 							otherIsBetter = moreTrust
-									&& (maxDiff > this.beliefThreshold);
+									&& (maxDiff >= this.beliefThreshold);
 						} else {
-							otherIsBetter = (maxDiff > this.beliefThreshold);
+							otherIsBetter = (maxDiff >= this.beliefThreshold);
 						}
 						if (enoughDistance && otherIsBetter) {
 							try {
-								if (!this.updatedBeliefs.containsKey(p
-										.getNode())) {
-									ShanksAgentBayesianReasoningCapability
-											.addSoftEvidence(
-													this.getBayesianNetwork(),
-													p.getNode(), receivedBelief);
-									this.updatedBeliefs.put(p.getNode(),
-											receivedBelief);
-									this.acceptedByMeArguments.add(arg);
-									this.updateSourceOfData(p.getNode(),
-											p.getSource());
+								ShanksAgentBayesianReasoningCapability
+										.addSoftEvidence(
+												this.getBayesianNetwork(),
+												p.getNode(), receivedBelief);
+								this.updatedBeliefs.put(p.getNode(),
+										receivedBelief);
+								this.acceptedByMeArguments.add(arg);
+								this.updateSourceOfData(p.getNode(),
+										p.getSource());
+								this.getLogger().fine(
+										"Belief " + p.getNode()
+												+ " updated for agent: "
+												+ this.getID());
+								if (reputationMode) {
 									this.getLogger().fine(
-											"Belief " + p.getNode()
-													+ " updated for agent: "
-													+ this.getID());
-									if (reputationMode) {
-										this.getLogger()
-												.fine("New belief with a trust strength equals to: "
-														+ p.getTrustScoreValue());
-									}
-								} else {
-									if (reputationMode) {
-										// This "if" is because in trust mode
-										// some new beliefs can be received with
-										// more strength/trust
-										double oldTrustScoreValue = this
-												.getTrustScoreValueForCurrentBelief(p
-														.getNode());
-										double newTrustScoreValue = p
-												.getTrustScoreValue();
-										if (newTrustScoreValue
-												- oldTrustScoreValue >= this.trustThreshold) {
-											ShanksAgentBayesianReasoningCapability
-													.addSoftEvidence(
-															this.getBayesianNetwork(),
-															p.getNode(),
-															receivedBelief);
-											this.updatedBeliefs
-													.put(p.getNode(),
-															receivedBelief);
-											this.acceptedByMeArguments.add(arg);
-											this.updateSourceOfData(
-													p.getNode(), p.getSource());
-											this.getLogger().fine(
-													"Beliefs updated for agent: "
-															+ this.getID());
-										}
-									} else {
-										HashMap<String, Double> previouslyUpdatedBelief = this.updatedBeliefs
-												.get(p.getNode());
-										enoughDistance = this
-												.areDistributionsFarEnough(
-														previouslyUpdatedBelief,
-														ownBelief);
-										double max = 0;
-										for (Entry<String, Double> e : previouslyUpdatedBelief
-												.entrySet()) {
-											if (e.getValue() > max) {
-												max = e.getValue();
-											}
-										}
-										maxDiff = p.getMaxValue() - max;
-										if (enoughDistance
-												&& maxDiff >= beliefThreshold) {
-											ShanksAgentBayesianReasoningCapability
-													.addSoftEvidence(
-															this.getBayesianNetwork(),
-															p.getNode(),
-															receivedBelief);
-											this.updatedBeliefs
-													.put(p.getNode(),
-															receivedBelief);
-											this.acceptedByMeArguments.add(arg);
-											this.updateSourceOfData(
-													p.getNode(), p.getSource());
-											this.getLogger()
-													.fine("Belief "
-															+ p.getNode()
-															+ " updated for agent: "
-															+ this.getID());
-											this.getLogger().fine(
-													"Improved belief in the same reasoning cycle for agent: "
-															+ this.getID()
-															+ " Belief: "
-															+ p.getNode());
-										}
-									}
+											"New belief with a trust strength equals to: "
+													+ p.getTrustScoreValue());
 								}
+								this.newBeliefs = true;
 							} catch (ShanksException e) {
 								this.getLogger()
 										.warning(
@@ -430,7 +366,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 								e.printStackTrace();
 								System.exit(1);
 							}
-							this.newBeliefs = true;
 						} else {
 							this.getLogger()
 									.fine(this.getID()
