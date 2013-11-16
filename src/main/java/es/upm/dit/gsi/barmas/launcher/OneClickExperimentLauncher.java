@@ -73,9 +73,9 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		this.launchZooBatch();
-		this.launchMarketingBatch();
-		this.launchNurseryBatch();
+//		this.launchZooBatch();
+//		this.launchMarketingBatch();
+//		this.launchNurseryBatch();
 		this.launchSolarFlareBatch();
 		this.launchKowlanCZBatch();
 		this.launchMushroomBatch();
