@@ -418,7 +418,7 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
-		maxLEBA = 20;
+		maxLEBA = 50;
 		minLEBA = 0;
 		maxArgumentationRounds = 1000;
 
