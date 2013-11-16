@@ -466,6 +466,7 @@ public class ExperimentExecutor {
 					lostEvidencesByAgents, diffThreshold, beliefThreshold,
 					trustThreshold, maxArgumentationRounds);
 			experiments.add(exp);
+			lostEvidencesByAgents++;
 		}
 
 		// No assumptions - Trust
