@@ -197,6 +197,9 @@ public class ExperimentExecutor {
 					logger.info("Finished experiment! -> " + thread.getName());
 					logger.info("--> Pending experiments for this batch: "
 							+ (experimentsQuantity - finishedExperiments));
+				} else {
+					logger.fine("Simulation in progress. SimluationID: "
+							+ thread.getName());
 				}
 			}
 			if (!threads2Remove.isEmpty()) {
@@ -209,7 +212,7 @@ public class ExperimentExecutor {
 						+ (experimentsQuantity - finishedExperiments));
 			}
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(60000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				System.exit(1);
