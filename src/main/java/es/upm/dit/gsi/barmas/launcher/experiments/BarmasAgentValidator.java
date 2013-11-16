@@ -65,7 +65,8 @@ public class BarmasAgentValidator implements RunnableExperiment {
 	private String testDataset;
 	private String classificationTarget;
 	private String simulationID;
-	
+	private int maxArgumentationRounds;
+
 	private Logger logger;
 
 	/**
@@ -88,12 +89,14 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		this.testDataset = testDataset;
 		this.simulationID = simulationID;
 		this.classificationTarget = classificationTarget;
+		this.maxArgumentationRounds = 10;
 	}
 
 	private void launchValidationAgent(String simulationID, long seed,
 			String summaryFile, int mode, String agentID, String bnFile,
 			String datasetFile, String experimentOutputFolder,
-			String testDataset, String classificationTarget) {
+			String testDataset, String classificationTarget,
+			int maxArgumentationRounds) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
@@ -164,7 +167,7 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
 				experimentOutputPath, NOASSUMPTIONS, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
-				classificationTarget, NOREPUTATION);
+				classificationTarget, NOREPUTATION, maxArgumentationRounds);
 		scenarioProperties.put("ManagerAgent", manager);
 		BarmasClassificatorAgent agent = new BarmasClassificatorAgent(agentID,
 				manager, classificationTarget, bnFile, datasetFile, sensors,
@@ -236,9 +239,9 @@ public class BarmasAgentValidator implements RunnableExperiment {
 	@Override
 	public void run() {
 		try {
-		this.launchValidationAgent(simulationID, seed, summaryFile, mode,
-				agentID, bnFile, datasetFile, experimentOutputFolder,
-				testDataset, classificationTarget);
+			this.launchValidationAgent(simulationID, seed, summaryFile, mode,
+					agentID, bnFile, datasetFile, experimentOutputFolder,
+					testDataset, classificationTarget, maxArgumentationRounds);
 		} catch (Exception e) {
 			logger.severe("Experiment finished unexpectedly...");
 			logger.severe(e.getMessage());

@@ -50,7 +50,7 @@ public class ExperimentChartsGenerator {
 	private String summaryFile;
 	private String outputChartFolder;
 
-	private HashMap<String, Integer> lepas;
+	private HashMap<String, Integer> lebas;
 	private HashMap<String, Integer> tths;
 	private HashMap<String, Integer> dths;
 	private HashMap<String, Integer> bths;
@@ -157,7 +157,7 @@ public class ExperimentChartsGenerator {
 			reader.close();
 
 			logger.info("Getting parameters for The Matrix...");
-			List<String> lepaList = new ArrayList<String>();
+			List<String> lebaList = new ArrayList<String>();
 			List<String> tthList = new ArrayList<String>();
 			List<String> dthList = new ArrayList<String>();
 			List<String> bthList = new ArrayList<String>();
@@ -166,7 +166,7 @@ public class ExperimentChartsGenerator {
 			List<String> ratiosList = new ArrayList<String>();
 
 			for (String[] row : experimentResultsRatios) {
-				this.checkAndAdd(lepaList, row[13]);
+				this.checkAndAdd(lebaList, row[13]);
 				this.checkAndAdd(tthList, row[14]);
 				this.checkAndAdd(dthList, row[11]);
 				this.checkAndAdd(bthList, row[12]);
@@ -175,7 +175,7 @@ public class ExperimentChartsGenerator {
 				this.checkAndAdd(ratiosList, row[17]);
 			}
 
-			this.lepas = this.getSortedMap(lepaList);
+			this.lebas = this.getSortedMap(lebaList);
 			this.tths = this.getSortedMap(tthList);
 			this.dths = this.getSortedMap(dthList);
 			this.bths = this.getSortedMap(bthList);
@@ -184,20 +184,20 @@ public class ExperimentChartsGenerator {
 			this.testRatios = this.getSortedMap(ratiosList);
 
 			logger.info("Creating The Matrix");
-			this.theMatrix = new double[lepas.size()][tths.size()][dths.size()][bths
+			this.theMatrix = new double[lebas.size()][tths.size()][dths.size()][bths
 					.size()][agents.size()][its.size()][testRatios.size()];
 			logger.info("Filling The Matrix...");
 			for (String[] row : experimentResultsRatios) {
 				String globalImp = row[9];
 				double imp = Double.valueOf(globalImp);
-				int lepaPos = lepas.get(row[13]);
+				int lebaPos = lebas.get(row[13]);
 				int tthPos = tths.get(row[14]);
 				int dthPos = dths.get(row[11]);
 				int bthPos = bths.get(row[12]);
 				int itPos = its.get(row[15]);
 				int agentsPos = agents.get(row[16]);
 				int testRatiosPos = testRatios.get(row[17]);
-				this.addToTheMatrix(theMatrix, lepaPos, tthPos, dthPos, bthPos,
+				this.addToTheMatrix(theMatrix, lebaPos, tthPos, dthPos, bthPos,
 						agentsPos, itPos, testRatiosPos, imp);
 			}
 			reader.close();
@@ -377,9 +377,9 @@ public class ExperimentChartsGenerator {
 			// Build cylinders and save cylinders charts
 			Plotter plotter = new Plotter(logger);
 
-			this.saveChartsLEPAvsTTH(plotter);
-			this.saveChartsLEPAvsDTH(plotter);
-			this.saveChartsLEPAvsBTH(plotter);
+			this.saveChartsLEBAvsTTH(plotter);
+			this.saveChartsLEBAvsDTH(plotter);
+			this.saveChartsLEBAvsBTH(plotter);
 			this.saveChartsTTHvsBTH(plotter);
 			this.saveChartsBTHvsDTH(plotter);
 			this.saveChartsTTHvsDTH(plotter);
@@ -405,8 +405,8 @@ public class ExperimentChartsGenerator {
 		for (int agent = 0; agent < agents.size(); agent++) {
 			int agentValue = (int) this
 					.getValueForPosInTheMatrix(agents, agent);
-			for (int lepa = 0; lepa < lepas.size(); lepa++) {
-				double lepaValue = this.getValueForPosInTheMatrix(lepas, lepa);
+			for (int leba = 0; leba < lebas.size(); leba++) {
+				double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 				for (int bth = 0; bth < bths.size(); bth++) {
 					bthValue = this.getValueForPosInTheMatrix(bths, bth);
 					for (int it = 0; it < its.size(); it++) {
@@ -425,7 +425,7 @@ public class ExperimentChartsGenerator {
 									dthValue = this.getValueForPosInTheMatrix(
 											dths, dth);
 									double imp = this.getImpFromTheMatrix(
-											theMatrix, lepa, tth, dth, bth,
+											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (dthValue == 20.0 || bthValue == 20.0) {
 										if (dthValue == 20.0
@@ -445,7 +445,7 @@ public class ExperimentChartsGenerator {
 								}
 							}
 							// screenshot
-							if (lepaValue != 0) {
+							if (lebaValue != 0) {
 								if (dthValue != 20.0 || bthValue != 20.0) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "TTH";
@@ -454,7 +454,7 @@ public class ExperimentChartsGenerator {
 									plotter.saveDelaunaySurface3DChart(
 											iterationChartFolder
 													+ "/globalImprovement-TTHvsDTH"
-													+ "-LEPA-" + lepa + "-BTH-"
+													+ "-LEBA-" + leba + "-BTH-"
 													+ bthValue + "-Agents-"
 													+ agentValue + "-IT-"
 													+ itValue + "-TestRatio-"
@@ -486,8 +486,8 @@ public class ExperimentChartsGenerator {
 		for (int agent = 0; agent < agents.size(); agent++) {
 			int agentValue = (int) this
 					.getValueForPosInTheMatrix(agents, agent);
-			for (int lepa = 0; lepa < lepas.size(); lepa++) {
-				double lepaValue = this.getValueForPosInTheMatrix(lepas, lepa);
+			for (int leba = 0; leba < lebas.size(); leba++) {
+				double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 				for (int tth = 0; tth < tths.size(); tth++) {
 					double tthValue = this.getValueForPosInTheMatrix(tths, tth);
 					for (int it = 0; it < its.size(); it++) {
@@ -507,7 +507,7 @@ public class ExperimentChartsGenerator {
 											.getValueForPosInTheMatrix(bths,
 													bth);
 									double imp = this.getImpFromTheMatrix(
-											theMatrix, lepa, tth, dth, bth,
+											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									Coord3d coord = new Coord3d(bthValue,
 											dthValue, imp);
@@ -517,7 +517,7 @@ public class ExperimentChartsGenerator {
 
 							}
 							// screenshot
-							if (lepaValue != 0) {
+							if (lebaValue != 0) {
 								String[] axisLabels = new String[3];
 								axisLabels[0] = "BTH";
 								axisLabels[1] = "DTH";
@@ -525,7 +525,7 @@ public class ExperimentChartsGenerator {
 								plotter.saveDelaunaySurface3DChart(
 										iterationChartFolder
 												+ "/globalImprovement-BTHvsDTH"
-												+ "-LEPA-" + lepa + "-TTH-"
+												+ "-LEBA-" + leba + "-TTH-"
 												+ tthValue + "-Agents-"
 												+ agentValue + "-IT-" + itValue
 												+ "-TestRatio-" + ratioValue
@@ -557,8 +557,8 @@ public class ExperimentChartsGenerator {
 		for (int agent = 0; agent < agents.size(); agent++) {
 			int agentValue = (int) this
 					.getValueForPosInTheMatrix(agents, agent);
-			for (int lepa = 0; lepa < lepas.size(); lepa++) {
-				double lepaValue = this.getValueForPosInTheMatrix(lepas, lepa);
+			for (int leba = 0; leba < lebas.size(); leba++) {
+				double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 				for (int dth = 0; dth < dths.size(); dth++) {
 					dthValue = this.getValueForPosInTheMatrix(dths, dth);
 					for (int it = 0; it < its.size(); it++) {
@@ -578,7 +578,7 @@ public class ExperimentChartsGenerator {
 									bthValue = this.getValueForPosInTheMatrix(
 											bths, bth);
 									double imp = this.getImpFromTheMatrix(
-											theMatrix, lepa, tth, dth, bth,
+											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (dthValue == 20.0 || bthValue == 20.0) {
 										if (dthValue == 20.0
@@ -598,7 +598,7 @@ public class ExperimentChartsGenerator {
 								}
 							}
 							// screenshot
-							if (lepaValue != 0) {
+							if (lebaValue != 0) {
 								if (dthValue != 20.0 || bthValue != 20.0) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "TTH";
@@ -607,7 +607,7 @@ public class ExperimentChartsGenerator {
 									plotter.saveDelaunaySurface3DChart(
 											iterationChartFolder
 													+ "/globalImprovement-TTHvsBTH"
-													+ "-LEPA-" + lepa + "-DTH-"
+													+ "-LEBA-" + leba + "-DTH-"
 													+ dthValue + "-Agents-"
 													+ agentValue + "-IT-"
 													+ itValue + "-TestRatio-"
@@ -633,7 +633,7 @@ public class ExperimentChartsGenerator {
 	/**
 	 * @param plotter
 	 */
-	private void saveChartsLEPAvsBTH(Plotter plotter) {
+	private void saveChartsLEBAvsBTH(Plotter plotter) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		double bthValue = 0;
@@ -653,26 +653,26 @@ public class ExperimentChartsGenerator {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
-							for (int lepa = 0; lepa < lepas.size(); lepa++) {
-								double lepaValue = this
-										.getValueForPosInTheMatrix(lepas, lepa);
+							for (int leba = 0; leba < lebas.size(); leba++) {
+								double lebaValue = this
+										.getValueForPosInTheMatrix(lebas, leba);
 
 								for (int bth = 0; bth < bths.size(); bth++) {
 									bthValue = this.getValueForPosInTheMatrix(
 											bths, bth);
 									double imp = this.getImpFromTheMatrix(
-											theMatrix, lepa, tth, dth, bth,
+											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (dthValue != 20.0 && tthValue != 20.0
 											&& bthValue != 20.0) {
-										Coord3d coord = new Coord3d(lepaValue,
+										Coord3d coord = new Coord3d(lebaValue,
 												bthValue, imp);
 										coords.add(coord);
 										globalCoords.add(coord);
 									} else if (dthValue == 20.0
 											&& bthValue == 20.0
 											&& tthValue == 20.0) {
-										Coord3d coord = new Coord3d(lepaValue,
+										Coord3d coord = new Coord3d(lebaValue,
 												bthValue, imp);
 										coords.add(coord);
 										// globalCoords.add(coord);
@@ -683,12 +683,12 @@ public class ExperimentChartsGenerator {
 							// screenshot
 							if (tthValue != 20.0 && dthValue != 20.0) {
 								String[] axisLabels = new String[3];
-								axisLabels[0] = "LEPA";
+								axisLabels[0] = "LEBA";
 								axisLabels[1] = "BTH";
 								axisLabels[2] = "ImprovementRatio";
 								plotter.saveDelaunaySurface3DChart(
 										iterationChartFolder
-												+ "/globalImprovement-LEPAvsDTH"
+												+ "/globalImprovement-LEBAvsDTH"
 												+ "-TTH-" + tthValue + "-DTH-"
 												+ dthValue + "-Agents-"
 												+ agentValue + "-IT-" + itValue
@@ -702,20 +702,20 @@ public class ExperimentChartsGenerator {
 			}
 		}
 		String[] axisLabels = new String[3];
-		axisLabels[0] = "LEPA";
+		axisLabels[0] = "LEBA";
 		axisLabels[1] = "BTH";
 		axisLabels[2] = "ImprovementRatio";
 		plotter.saveScatter3DChart(this.outputChartFolder
-				+ "/globalImprovement-LEPAvsBTH-Plotter.png", axisLabels,
+				+ "/globalImprovement-LEBAvsBTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
-	 * LEPAvsDTH with the rest of variables constants
+	 * LEBAvsDTH with the rest of variables constants
 	 * 
 	 * @param plotter
 	 */
-	private void saveChartsLEPAvsDTH(Plotter plotter) {
+	private void saveChartsLEBAvsDTH(Plotter plotter) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
@@ -734,25 +734,25 @@ public class ExperimentChartsGenerator {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
-							for (int lepa = 0; lepa < lepas.size(); lepa++) {
-								double lepaValue = this
-										.getValueForPosInTheMatrix(lepas, lepa);
+							for (int leba = 0; leba < lebas.size(); leba++) {
+								double lebaValue = this
+										.getValueForPosInTheMatrix(lebas, leba);
 								for (int dth = 0; dth < dths.size(); dth++) {
 									dthValue = this.getValueForPosInTheMatrix(
 											dths, dth);
 									double imp = this.getImpFromTheMatrix(
-											theMatrix, lepa, tth, dth, bth,
+											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (dthValue != 20.0 && tthValue != 20.0
 											&& bthValue != 20.0) {
-										Coord3d coord = new Coord3d(lepaValue,
+										Coord3d coord = new Coord3d(lebaValue,
 												dthValue, imp);
 										coords.add(coord);
 										globalCoords.add(coord);
 									} else if (dthValue == 20.0
 											&& bthValue == 20.0
 											&& tthValue == 20.0) {
-										Coord3d coord = new Coord3d(lepaValue,
+										Coord3d coord = new Coord3d(lebaValue,
 												dthValue, imp);
 										coords.add(coord);
 										// globalCoords.add(coord);
@@ -763,12 +763,12 @@ public class ExperimentChartsGenerator {
 							// screenshot
 							if (tthValue != 20.0 && bthValue != 20.0) {
 								String[] axisLabels = new String[3];
-								axisLabels[0] = "LEPA";
+								axisLabels[0] = "LEBA";
 								axisLabels[1] = "DTH";
 								axisLabels[2] = "ImprovementRatio";
 								plotter.saveDelaunaySurface3DChart(
 										iterationChartFolder
-												+ "/globalImprovement-LEPAvsDTH"
+												+ "/globalImprovement-LEBAvsDTH"
 												+ "-TTH-" + tthValue + "-BTH-"
 												+ bthValue + "-Agents-"
 												+ agentValue + "-IT-" + itValue
@@ -782,20 +782,20 @@ public class ExperimentChartsGenerator {
 			}
 		}
 		String[] axisLabels = new String[3];
-		axisLabels[0] = "LEPA";
+		axisLabels[0] = "LEBA";
 		axisLabels[1] = "DTH";
 		axisLabels[2] = "ImprovementRatio";
 		plotter.saveScatter3DChart(this.outputChartFolder
-				+ "/globalImprovement-LEPAvsDTH-Plotter.png", axisLabels,
+				+ "/globalImprovement-LEBAvsDTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
-	 * LEPAvsTTH with the rest of variables constants
+	 * LEBAvsTTH with the rest of variables constants
 	 * 
 	 * @param plotter
 	 */
-	private void saveChartsLEPAvsTTH(Plotter plotter) {
+	private void saveChartsLEBAvsTTH(Plotter plotter) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		for (int agent = 0; agent < agents.size(); agent++) {
 			int agentValue = (int) this
@@ -813,26 +813,26 @@ public class ExperimentChartsGenerator {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
-							for (int lepa = 0; lepa < lepas.size(); lepa++) {
-								double lepaValue = this
-										.getValueForPosInTheMatrix(lepas, lepa);
+							for (int leba = 0; leba < lebas.size(); leba++) {
+								double lebaValue = this
+										.getValueForPosInTheMatrix(lebas, leba);
 								for (int tth = 0; tth < tths.size(); tth++) {
 									double tthValue = this
 											.getValueForPosInTheMatrix(tths,
 													tth);
 									double imp = this.getImpFromTheMatrix(
-											theMatrix, lepa, tth, dth, bth,
+											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (dthValue == 20.0 || bthValue == 20.0) {
 										if (dthValue == 20.0
 												&& bthValue == 20.0) {
 											Coord3d coord = new Coord3d(
-													lepaValue, tthValue, imp);
+													lebaValue, tthValue, imp);
 											coords.add(coord);
 											// globalCoords.add(coord);
 										}
 									} else if (tthValue != 20.0) {
-										Coord3d coord = new Coord3d(lepaValue,
+										Coord3d coord = new Coord3d(lebaValue,
 												tthValue, imp);
 										coords.add(coord);
 										globalCoords.add(coord);
@@ -844,12 +844,12 @@ public class ExperimentChartsGenerator {
 							if (dthValue == 20.0 || bthValue == 20.0) {
 								if ((dthValue == 20.0 && bthValue == 20.0)) {
 									String[] axisLabels = new String[3];
-									axisLabels[0] = "LEPA";
+									axisLabels[0] = "LEBA";
 									axisLabels[1] = "TTH";
 									axisLabels[2] = "ImprovementRatio";
 									plotter.saveDelaunaySurface3DChart(
 											iterationChartFolder
-													+ "/globalImprovement-LEPAvsTTH"
+													+ "/globalImprovement-LEBAvsTTH"
 													+ "-DTH-" + dthValue
 													+ "-BTH-" + bthValue
 													+ "-Agents-" + agentValue
@@ -861,12 +861,12 @@ public class ExperimentChartsGenerator {
 								}
 							} else {
 								String[] axisLabels = new String[3];
-								axisLabels[0] = "LEPA";
+								axisLabels[0] = "LEBA";
 								axisLabels[1] = "TTH";
 								axisLabels[2] = "ImprovementRatio";
 								plotter.saveDelaunaySurface3DChart(
 										iterationChartFolder
-												+ "/globalImprovement-LEPAvsTTH"
+												+ "/globalImprovement-LEBAvsTTH"
 												+ "-DTH-" + dthValue + "-BTH-"
 												+ bthValue + "-Agents-"
 												+ agentValue + "-IT-" + itValue
@@ -880,17 +880,17 @@ public class ExperimentChartsGenerator {
 			}
 		}
 		String[] axisLabels = new String[3];
-		axisLabels[0] = "LEPA";
+		axisLabels[0] = "LEBA";
 		axisLabels[1] = "TTH";
 		axisLabels[2] = "ImprovementRatio";
 		plotter.saveScatter3DChart(this.outputChartFolder
-				+ "/globalImprovement-LEPAvsTTH-Plotter.png", axisLabels,
+				+ "/globalImprovement-LEBAvsTTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
 	 * @param theMatrix
-	 * @param lepaPos
+	 * @param lebaPos
 	 * @param tthPos
 	 * @param dthPos
 	 * @param bthPos
@@ -899,16 +899,16 @@ public class ExperimentChartsGenerator {
 	 * @param testRatiosPos
 	 * @param imp
 	 */
-	private void addToTheMatrix(double[][][][][][][] theMatrix, int lepaPos,
+	private void addToTheMatrix(double[][][][][][][] theMatrix, int lebaPos,
 			int tthPos, int dthPos, int bthPos, int agentsPos, int itPos,
 			int testRatiosPos, double imp) {
-		theMatrix[lepaPos][tthPos][dthPos][bthPos][agentsPos][itPos][testRatiosPos] = imp;
+		theMatrix[lebaPos][tthPos][dthPos][bthPos][agentsPos][itPos][testRatiosPos] = imp;
 
 	}
 
 	/**
 	 * @param theMatrix
-	 * @param lepa
+	 * @param leba
 	 * @param tth
 	 * @param dth
 	 * @param bth
@@ -918,8 +918,8 @@ public class ExperimentChartsGenerator {
 	 * @return
 	 */
 	private double getImpFromTheMatrix(double[][][][][][][] theMatrix,
-			int lepa, int tth, int dth, int bth, int agent, int it, int ratio) {
-		return theMatrix[lepa][tth][dth][bth][agent][it][ratio];
+			int leba, int tth, int dth, int bth, int agent, int it, int ratio) {
+		return theMatrix[leba][tth][dth][bth][agent][it][ratio];
 	}
 
 	/**
@@ -993,12 +993,12 @@ public class ExperimentChartsGenerator {
 	}
 
 	/**
-	 * @param lepaList
+	 * @param lebaList
 	 * @param value
 	 */
-	private void checkAndAdd(List<String> lepaList, String value) {
-		if (!lepaList.contains(value)) {
-			lepaList.add(value);
+	private void checkAndAdd(List<String> lebaList, String value) {
+		if (!lebaList.contains(value)) {
+			lebaList.add(value);
 		}
 	}
 

@@ -64,10 +64,11 @@ public class BarmasExperiment implements RunnableExperiment {
 	private String classificationTarget;
 	private String simulationID;
 	private int agentsNumber;
-	private int lostEvidencesPerAgent;
+	private int lostEvidencesByAgents;
 	private double diffThreshold;
 	private double beliefThreshold;
 	private double trustThreshold;
+	private int maxArgumentationRounds;
 
 	private Logger logger;
 
@@ -81,13 +82,15 @@ public class BarmasExperiment implements RunnableExperiment {
 			int mode, String experimentDatasetFolder,
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
-			int lostEvidencesPerAgent, double diffThreshold,
-			double beliefThreshold, double trustThreshold) {
+			int lostEvidencesByAgents, double diffThreshold,
+			double beliefThreshold, double trustThreshold,
+			int maxArgumentationRounds) {
 		this.summaryFile = summaryFile;
 		this.agentsNumber = agentsNumber;
 		this.seed = seed;
 		this.trustThreshold = trustThreshold;
 		this.mode = mode;
+		this.maxArgumentationRounds = maxArgumentationRounds;
 		this.experimentDatasetFolder = experimentDatasetFolder;
 		this.experimentOutputFolder = experimentOutputFolder;
 		File f = new File(experimentOutputFolder);
@@ -97,7 +100,7 @@ public class BarmasExperiment implements RunnableExperiment {
 		this.testDataset = testDataset;
 		this.classificationTarget = classificationTarget;
 		this.simulationID = simulationID;
-		this.lostEvidencesPerAgent = lostEvidencesPerAgent;
+		this.lostEvidencesByAgents = lostEvidencesByAgents;
 		this.diffThreshold = diffThreshold;
 		this.beliefThreshold = beliefThreshold;
 	}
@@ -126,12 +129,14 @@ public class BarmasExperiment implements RunnableExperiment {
 					+ "\n");
 			fw.write("Test dataset: " + testDataset + "\n");
 			fw.write("Classification Target: " + classificationTarget + "\n");
-			fw.write("Lost evidences per agent: " + lostEvidencesPerAgent
+			fw.write("Lost evidences by agents: " + lostEvidencesByAgents
 					+ "\n");
 			fw.write("Difference between Prob. Distribution Threshold: "
 					+ diffThreshold + "\n");
 			fw.write("Belief Threshold: " + beliefThreshold + "\n");
 			fw.write("Trust Threshold: " + trustThreshold + "\n");
+			fw.write("Max number of argumentation rounds: "
+					+ maxArgumentationRounds);
 			fw.close();
 
 		} catch (Exception e) {
@@ -144,8 +149,9 @@ public class BarmasExperiment implements RunnableExperiment {
 			String summaryFile, int mode, String experimentDatasetFolder,
 			String experimentOutputFolder, String testDataset,
 			String classificationTarget, int agentsNumber,
-			int lostEvidencesPerAgent, double diffThreshold,
-			double beliefThreshold, double trustThreshold) {
+			int lostEvidencesByAgents, double diffThreshold,
+			double beliefThreshold, double trustThreshold,
+			int maxArgumentationRounds) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
@@ -204,17 +210,25 @@ public class BarmasExperiment implements RunnableExperiment {
 			System.exit(1);
 		}
 
+		// Find lost evidences by agents
+		List<String> lostSensors = new ArrayList<String>();
+
+		lostSensors.add(classificationTarget);
+		for (int i = 0; i < headers.length; i++) {
+			if (lostSensors.size() >= lostEvidencesByAgents + 1) {
+				break;
+			} else if (!headers[i].equals(classificationTarget)) {
+				lostSensors.add(headers[i]);
+			}
+		}
+
 		// CENTRAL AGENT
 		List<String> sensors = new ArrayList<String>();
 
-		for (int i = 0; i < headers.length - 1; i++) {
+		for (int i = 0; i < headers.length; i++) {
 			sensors.add(headers[i]);
 		}
-		for (int i = 0; i <= agentsNumber * lostEvidencesPerAgent; i++) {
-			if (i < headers.length - 1) {
-				sensors.remove(headers[i]);
-			}
-		}
+		sensors.removeAll(lostSensors);
 		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent(
 				"BayesCentral", classificationTarget, experimentDatasetFolder
 						+ "/bayes/bayes-central-dataset.net",
@@ -226,20 +240,16 @@ public class BarmasExperiment implements RunnableExperiment {
 		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
 				experimentOutputPath, diffThreshold, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
-				classificationTarget, trustThreshold);
+				classificationTarget, trustThreshold, maxArgumentationRounds);
 		scenarioProperties.put("ManagerAgent", manager);
 
 		// Argumentation AGENTS
 		for (int agentNum = 0; agentNum < agentsNumber; agentNum++) {
 			sensors = new ArrayList<String>();
-			for (int i = 0; (i * agentsNumber) + agentNum < headers.length - 1; i++) {
+			for (int i = 0; (i * agentsNumber) + agentNum < headers.length; i++) {
 				sensors.add(headers[(i * agentsNumber) + agentNum]);
 			}
-			for (int i = 0; i < lostEvidencesPerAgent; i++) {
-				if (i < sensors.size()) {
-					sensors.remove(headers[(i * agentsNumber) + agentNum]);
-				}
-			}
+			sensors.removeAll(lostSensors);
 			BarmasClassificatorAgent agent = new BarmasClassificatorAgent(
 					"ArgAgent" + agentNum, manager, classificationTarget,
 					experimentDatasetFolder + "/bayes/agent-" + agentNum
@@ -290,8 +300,8 @@ public class BarmasExperiment implements RunnableExperiment {
 			this.launchExperiment(simulationID, seed, summaryFile, mode,
 					experimentDatasetFolder, experimentOutputFolder,
 					testDataset, classificationTarget, agentsNumber,
-					lostEvidencesPerAgent, diffThreshold, beliefThreshold,
-					trustThreshold);
+					lostEvidencesByAgents, diffThreshold, beliefThreshold,
+					trustThreshold, maxArgumentationRounds);
 		} catch (Exception e) {
 			logger.severe("Experiment finished unexpectedly...");
 			logger.severe(e.getMessage());

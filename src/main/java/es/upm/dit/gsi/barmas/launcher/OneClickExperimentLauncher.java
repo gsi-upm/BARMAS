@@ -53,6 +53,9 @@ public class OneClickExperimentLauncher {
 	private double minBeliefThreshold;
 	private double maxTrustThreshold;
 	private double minTrustThreshold;
+	private int maxLEBA;
+	private int minLEBA;
+	private int maxArgumentationRounds;
 
 	/**
 	 * @param args
@@ -73,9 +76,9 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-//		this.launchZooBatch();
-//		this.launchMarketingBatch();
-//		this.launchNurseryBatch();
+		this.launchZooBatch();
+		this.launchMarketingBatch();
+		this.launchNurseryBatch();
 		this.launchSolarFlareBatch();
 		this.launchKowlanCZBatch();
 		this.launchMushroomBatch();
@@ -120,6 +123,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 6;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -127,7 +133,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -157,6 +164,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 6;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -164,7 +174,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 
 		// ***********************
 	}
@@ -196,6 +207,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 8;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -203,7 +217,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -234,6 +249,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 9;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -241,7 +259,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -272,6 +291,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 8;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -279,7 +301,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 
 	}
@@ -311,6 +334,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 7;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -318,7 +344,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 
 	}
@@ -350,6 +377,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 8;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -357,7 +387,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -372,8 +403,8 @@ public class OneClickExperimentLauncher {
 		simulationID = "ZOO";
 		dataset = "src/main/resources/dataset/zoo.csv";
 		experimentFolder = "zoo-simulation";
-		numberOfAgents = 2;
-		testRatio = 0.4;
+		numberOfAgents = 4;
+		testRatio = 0.2;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
@@ -388,6 +419,9 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
+		maxLEBA = 20;
+		minLEBA = 0;
+		maxArgumentationRounds = 20;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -395,7 +429,8 @@ public class OneClickExperimentLauncher {
 				classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-				maxTrustThreshold, minTrustThreshold);
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -403,7 +438,7 @@ public class OneClickExperimentLauncher {
 			String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads,
 			int iterations, String classificationTarget, double delta,
-			int mode, boolean trustMode) {
+			int mode, boolean trustMode, int maxArgumentationRounds) {
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
 		long initTime = System.currentTimeMillis();
@@ -417,7 +452,8 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
-				simulationID = simulationID + "-TESTRATIO-" + ratio;
+				simulationID = simulationID + "-TESTRATIO-" + ratio
+						+ "-MAXARGSROUNDS-" + maxArgumentationRounds;
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -427,7 +463,8 @@ public class OneClickExperimentLauncher {
 								experimentFolder + "/output/iteration-" + i,
 								experimentFolder + "/input/iteration-" + i
 										+ "/dataset/test-dataset.csv",
-								classificationTarget, delta, i);
+								classificationTarget, delta, i,
+								maxArgumentationRounds);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID);
@@ -493,7 +530,8 @@ public class OneClickExperimentLauncher {
 	public void launchExperimentBatchFor(String simulationID, String dataset,
 			String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads,
-			int iterations, String classificationTarget, double delta, int mode) {
+			int iterations, String classificationTarget, double delta,
+			int mode, int maxArgumentationRounds) {
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
 		long initTime = System.currentTimeMillis();
@@ -508,7 +546,8 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
-				simulationID = simulationID + "-TESTRATIO-" + ratio;
+				simulationID = simulationID + "-TESTRATIO-" + ratio
+						+ "-MAXARGSROUNDS-" + maxArgumentationRounds;
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -518,7 +557,8 @@ public class OneClickExperimentLauncher {
 								experimentFolder + "/output/iteration-" + i,
 								experimentFolder + "/input/iteration-" + i
 										+ "/dataset/test-dataset.csv",
-								classificationTarget, delta, i);
+								classificationTarget, delta, i,
+								maxArgumentationRounds);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID);
@@ -542,7 +582,8 @@ public class OneClickExperimentLauncher {
 			double delta, int mode, double maxDistanceThreshold,
 			double minDistanceThreshold, double maxBeliefThreshold,
 			double minBeliefThreshold, double maxTrustThreshold,
-			double minTrustThreshold) {
+			double minTrustThreshold, int maxLEBA, int minLEBA,
+			int maxArgumentationRounds) {
 
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
@@ -560,7 +601,8 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
-				simulationID = simulationID + "-TESTRATIO-" + ratio;
+				simulationID = simulationID + "-TESTRATIO-" + ratio
+						+ "-MAXARGSROUNDS-" + maxArgumentationRounds;
 
 				// VALIDATORS
 				List<RunnableExperiment> validators = executor
@@ -588,7 +630,8 @@ public class OneClickExperimentLauncher {
 								classificationTarget, delta, i,
 								maxDistanceThreshold, minDistanceThreshold,
 								maxBeliefThreshold, minBeliefThreshold,
-								maxTrustThreshold, minTrustThreshold);
+								maxTrustThreshold, minTrustThreshold, maxLEBA,
+								minLEBA, maxArgumentationRounds);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
@@ -612,7 +655,8 @@ public class OneClickExperimentLauncher {
 	public void launchFullBatchFor(String simulationID, String dataset,
 			String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads,
-			int iterations, String classificationTarget, double delta, int mode) {
+			int iterations, String classificationTarget, double delta,
+			int mode, int maxArgumentationRounds) {
 
 		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
 				Level.ALL, Level.INFO, experimentFolder);
@@ -629,7 +673,8 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger);
 				ExperimentExecutor executor = new ExperimentExecutor();
-				simulationID = simulationID + "-TESTRATIO-" + ratio;
+				simulationID = simulationID + "-TESTRATIO-" + ratio
+						+ "-MAXARGSROUNDS-" + maxArgumentationRounds;
 
 				// VALIDATORS
 				List<RunnableExperiment> validators = executor
@@ -654,7 +699,8 @@ public class OneClickExperimentLauncher {
 								experimentFolder + "/output/iteration-" + i,
 								experimentFolder + "/input/iteration-" + i
 										+ "/dataset/test-dataset.csv",
-								classificationTarget, delta, i);
+								classificationTarget, delta, i,
+								maxArgumentationRounds);
 				logger.info(experiments.size()
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);

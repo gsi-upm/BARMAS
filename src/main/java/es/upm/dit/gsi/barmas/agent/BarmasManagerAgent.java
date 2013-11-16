@@ -91,6 +91,9 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 
 	private boolean reputationMode;
 
+	private int currentArgumentationrounds;
+	private int maxArgumentationRounds;
+
 	/**
 	 * Constructor
 	 * 
@@ -99,7 +102,8 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	public BarmasManagerAgent(String id, String outputDir,
 			double diffThreshold, Logger logger, int mode,
-			String classificationTarget, double trustThreshold) {
+			String classificationTarget, double trustThreshold,
+			int maxArgumentationRounds) {
 		super(id, logger);
 		this.classificationTarget = classificationTarget;
 		this.mode = mode;
@@ -110,6 +114,8 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		this.outputDir = outputDir;
 		this.diffThreshold = diffThreshold;
 		this.argumentationCounter = 0;
+		this.maxArgumentationRounds = maxArgumentationRounds;
+		this.currentArgumentationrounds = 0;
 
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
 			this.argumentationDir = this.outputDir + File.separator
@@ -161,8 +167,12 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 */
 	@Override
 	public void executeReasoningCycle(ShanksSimulation simulation) {
+		if (this.argumentation != null) {
+			this.currentArgumentationrounds++;
+		}
 
-		if (this.pendingArguments.size() > 0) {
+		if (this.pendingArguments.size() > 0
+				&& this.currentArgumentationrounds < this.maxArgumentationRounds) {
 			this.goToProcessing();
 			this.goToWaiting();
 		} else if (this.WAITING) {
@@ -184,11 +194,15 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 			this.getLogger().finer(
 					"Creating new argumentation - ID: " + argumentationCounter);
 			argumentationCounter++;
+			this.currentArgumentationrounds = 0;
 		}
 
 		for (Argument arg : pendingArguments) {
 			this.registerNewArgument(arg);
 		}
+
+		this.getLogger().info(
+				"Argumentation round: " + currentArgumentationrounds);
 
 	}
 
@@ -562,6 +576,19 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		for (ArgumentativeAgent s : this.suscribers) {
 			s.finishArgumenation();
 		}
+		if (this.currentArgumentationrounds >= this.maxArgumentationRounds) {
+			this.getLogger()
+					.warning(
+							"Finishing Argumentation in "
+									+ (currentArgumentationrounds)
+									+ " rounds. This argumentation was stopped because it was too long. Argumentation: "
+									+ this.argumentation.getId());
+		} else {
+			this.getLogger().info(
+					"Finishing Argumentation in "
+							+ (currentArgumentationrounds) + " rounds.");
+		}
+		this.currentArgumentationrounds = 0;
 	}
 
 	public void addArgumentationGroupMember(ArgumentativeAgent agent) {

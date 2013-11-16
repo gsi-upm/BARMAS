@@ -53,7 +53,7 @@ public class SummaryCreator {
 		CsvWriter writer = null;
 		CsvWriter writer2 = null;
 		int columnsWriter = 9;
-		int columnsWriter2 = 21;
+		int columnsWriter2 = 22;
 		try {
 			if (!outputDetailedFile.exists()) {
 				writer = new CsvWriter(new FileWriter(outputDetailedFile), ',');
@@ -90,7 +90,7 @@ public class SummaryCreator {
 				headers[10] = "Draw";
 				headers[11] = "DifferenceProbDistThreshold";
 				headers[12] = "BeliefThreshold";
-				headers[13] = "LEPA";
+				headers[13] = "LostEvidencesByAgents";
 				headers[14] = "TrustThreshold";
 				headers[15] = "Iteration";
 				headers[16] = "ArgAgents";
@@ -98,6 +98,7 @@ public class SummaryCreator {
 				headers[18] = "Seed";
 				headers[19] = "Timestamp";
 				headers[20] = "Dataset";
+				headers[21] = "MaxArgumentationRounds";
 				writer2.writeRecord(headers);
 			} else {
 				writer2 = new CsvWriter(new FileWriter(outputFile, true), ',');
@@ -228,7 +229,7 @@ public class SummaryCreator {
 					totalRatio2[11] = nameSplits[++i];
 				} else if (split.equals("BTH")) {
 					totalRatio2[12] = nameSplits[++i];
-				} else if (split.equals("LEPA")) {
+				} else if (split.equals("LEBA")) {
 					totalRatio2[13] = nameSplits[++i];
 				} else if (split.equals("TTH")) {
 					totalRatio2[14] = nameSplits[++i];
@@ -244,6 +245,8 @@ public class SummaryCreator {
 					totalRatio2[18] = nameSplits[++i];
 				} else if (split.equals("timestamp")) {
 					totalRatio2[19] = nameSplits[++i];
+				} else if (split.equals("MAXARGSROUNDS")) {
+					totalRatio2[21] = nameSplits[++i];
 				}
 			}
 
