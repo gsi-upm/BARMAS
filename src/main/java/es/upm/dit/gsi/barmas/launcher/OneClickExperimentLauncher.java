@@ -30,8 +30,7 @@ import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
  */
 public class OneClickExperimentLauncher {
 
-	private Logger logger = Logger.getLogger(OneClickExperimentLauncher.class
-			.getSimpleName());
+	private Logger logger;
 
 	private String simulationID;
 	private String dataset;
@@ -439,8 +438,10 @@ public class OneClickExperimentLauncher {
 			boolean central, String summaryFile, long seed, int maxThreads,
 			int iterations, String classificationTarget, double delta,
 			int mode, boolean trustMode, int maxArgumentationRounds) {
-		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
-				Level.ALL, Level.INFO, experimentFolder);
+		logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
+		LogConfigurator.log2File(logger, simulationID
+				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
+				experimentFolder);
 		long initTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < iterations; i++) {
@@ -470,6 +471,7 @@ public class OneClickExperimentLauncher {
 						+ simulationID);
 				logger.info("---> Starting experiments executions...");
 				executor.executeExperiments(experiments, maxThreads, logger);
+				logger.info("<--- Finishing experiments executions...");
 
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID, experiments.size(), initTime,
@@ -485,8 +487,10 @@ public class OneClickExperimentLauncher {
 			String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads,
 			int iterations, String classificationTarget, double delta, int mode) {
-		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
-				Level.ALL, Level.INFO, experimentFolder);
+		logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
+		LogConfigurator.log2File(logger, simulationID
+				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
+				experimentFolder);
 
 		long initTime = System.currentTimeMillis();
 
@@ -516,6 +520,7 @@ public class OneClickExperimentLauncher {
 						+ simulationID);
 				logger.info("---> Starting validations executions...");
 				executor.executeValidators(validators, maxThreads, logger);
+				logger.info("<--- Finishing validations executions...");
 
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID, validators.size(), initTime,
@@ -532,8 +537,10 @@ public class OneClickExperimentLauncher {
 			boolean central, String summaryFile, long seed, int maxThreads,
 			int iterations, String classificationTarget, double delta,
 			int mode, int maxArgumentationRounds) {
-		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
-				Level.ALL, Level.INFO, experimentFolder);
+		logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
+		LogConfigurator.log2File(logger, simulationID
+				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
+				experimentFolder);
 		long initTime = System.currentTimeMillis();
 
 		try {
@@ -564,6 +571,7 @@ public class OneClickExperimentLauncher {
 						+ simulationID);
 				logger.info("---> Starting experiments executions...");
 				executor.executeExperiments(experiments, maxThreads, logger);
+				logger.info("<--- Finishing experiments executions...");
 
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID, experiments.size(), initTime,
@@ -584,9 +592,10 @@ public class OneClickExperimentLauncher {
 			double minBeliefThreshold, double maxTrustThreshold,
 			double minTrustThreshold, int maxLEBA, int minLEBA,
 			int maxArgumentationRounds) {
-
-		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
-				Level.ALL, Level.INFO, experimentFolder);
+		logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
+		LogConfigurator.log2File(logger, simulationID
+				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
+				experimentFolder);
 
 		long initTime = System.currentTimeMillis();
 
@@ -616,7 +625,6 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				logger.info("---> Starting validations executions...");
 				allExperiments.addAll(validators);
 
 				// EXPERIMENTS
@@ -638,7 +646,7 @@ public class OneClickExperimentLauncher {
 				logger.info("---> Starting experiments executions...");
 				allExperiments.addAll(experiments);
 				executor.executeExperiments(allExperiments, maxThreads, logger);
-
+				logger.info("<--- Finishing experiments executions...");
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID,
 						validators.size() + experiments.size(), initTime,
@@ -658,8 +666,10 @@ public class OneClickExperimentLauncher {
 			int iterations, String classificationTarget, double delta,
 			int mode, int maxArgumentationRounds) {
 
-		LogConfigurator.log2File(logger, "OneClickExperimentLauncher",
-				Level.ALL, Level.INFO, experimentFolder);
+		logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
+		LogConfigurator.log2File(logger, simulationID
+				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
+				experimentFolder);
 		long initTime = System.currentTimeMillis();
 		List<RunnableExperiment> allExperiments = new ArrayList<RunnableExperiment>();
 
@@ -688,7 +698,6 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				logger.info("---> Starting validations executions...");
 				allExperiments.addAll(validators);
 
 				// EXPERIMENTS
@@ -707,6 +716,7 @@ public class OneClickExperimentLauncher {
 				logger.info("---> Starting experiments executions...");
 				allExperiments.addAll(experiments);
 				executor.executeExperiments(allExperiments, maxThreads, logger);
+				logger.info("<--- Finishing experiments executions...");
 
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID,
