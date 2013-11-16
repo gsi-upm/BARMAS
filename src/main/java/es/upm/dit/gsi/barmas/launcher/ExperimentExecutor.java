@@ -441,27 +441,32 @@ public class ExperimentExecutor {
 			numberOfEvidences = maxLEBA;
 		}
 
+		String simulationPrefix;
+		BarmasExperiment exp;
+
 		// No Assumptions - No trust
 		double diffThreshold = 20.0;
 		double beliefThreshold = 20.0;
 		double trustThreshold = 20.0;
-		int lostEvidencesByAgents = 0;
 		int tint = (int) (diffThreshold * 100);
 		double roundedt = ((double) tint) / 100;
 		int btint = (int) (beliefThreshold * 100);
 		double rounedbt = ((double) btint) / 100;
 		int fsint = (int) (trustThreshold * 100);
 		double roundedfs = ((double) fsint) / 100;
-		String simulationPrefix = simulationID + "-" + agentsNumber
-				+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt + "-LEBA-"
-				+ lostEvidencesByAgents + "-TTH-" + roundedfs + "-IT-"
-				+ iteration;
-		BarmasExperiment exp = new BarmasExperiment(simulationPrefix,
-				summaryFile, seed, mode, experimentDatasetPath,
-				experimentOutputFolder, testDataset, classificationTarget,
-				agentsNumber, lostEvidencesByAgents, diffThreshold,
-				beliefThreshold, trustThreshold, maxArgumentationRounds);
-		experiments.add(exp);
+		int lostEvidencesByAgents = minLEBA;
+		while (lostEvidencesByAgents <= numberOfEvidences) {
+			simulationPrefix = simulationID + "-" + agentsNumber
+					+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt + "-LEBA-"
+					+ lostEvidencesByAgents + "-TTH-" + roundedfs + "-IT-"
+					+ iteration;
+			exp = new BarmasExperiment(simulationPrefix, summaryFile, seed,
+					mode, experimentDatasetPath, experimentOutputFolder,
+					testDataset, classificationTarget, agentsNumber,
+					lostEvidencesByAgents, diffThreshold, beliefThreshold,
+					trustThreshold, maxArgumentationRounds);
+			experiments.add(exp);
+		}
 
 		// No assumptions - Trust
 		diffThreshold = 20.0;
@@ -538,7 +543,11 @@ public class ExperimentExecutor {
 			while (beliefThreshold <= maxBeliefThreshold) {
 				trustThreshold = minTrustThreshold;
 				while (trustThreshold <= maxTrustThreshold) {
-					lostEvidencesByAgents = 1;
+					if (minLEBA == 0) {
+						lostEvidencesByAgents = 1;
+					} else {
+						lostEvidencesByAgents = minLEBA;
+					}
 					while (lostEvidencesByAgents <= numberOfEvidences) {
 						tint = (int) (diffThreshold * 100);
 						roundedt = ((double) tint) / 100;

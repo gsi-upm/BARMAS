@@ -124,7 +124,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 6;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -165,7 +165,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 6;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -208,7 +208,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 8;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -250,7 +250,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 9;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -292,7 +292,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 8;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -335,7 +335,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 7;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -378,7 +378,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 8;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -402,8 +402,8 @@ public class OneClickExperimentLauncher {
 		simulationID = "ZOO";
 		dataset = "src/main/resources/dataset/zoo.csv";
 		experimentFolder = "zoo-simulation";
-		numberOfAgents = 4;
-		testRatio = 0.2;
+		numberOfAgents = 2;
+		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
@@ -420,7 +420,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 20;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 1000;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
