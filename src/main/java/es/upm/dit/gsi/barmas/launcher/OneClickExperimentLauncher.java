@@ -76,13 +76,13 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		this.launchZooBatch();
-		this.launchMarketingBatch();
-		this.launchNurseryBatch();
-		this.launchSolarFlareBatch();
-		this.launchKowlanCZBatch();
-		this.launchMushroomBatch();
-		this.launchChessBatch();
-		this.launchPokerBatch();
+		// this.launchMarketingBatch();
+		// this.launchNurseryBatch();
+		// this.launchSolarFlareBatch();
+		// this.launchKowlanCZBatch();
+		// this.launchMushroomBatch();
+		// this.launchChessBatch();
+		// this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -420,7 +420,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 50;
 		minLEBA = 0;
-		maxArgumentationRounds = 1000;
+		maxArgumentationRounds = Integer.MAX_VALUE;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,

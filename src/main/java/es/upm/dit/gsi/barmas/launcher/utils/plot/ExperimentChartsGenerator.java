@@ -186,6 +186,23 @@ public class ExperimentChartsGenerator {
 			logger.info("Creating The Matrix");
 			this.theMatrix = new double[lebas.size()][tths.size()][dths.size()][bths
 					.size()][agents.size()][its.size()][testRatios.size()];
+			for (int leba = 0; leba < lebas.size(); leba++)
+				for (int tth = 0; tth < tths.size(); tth++) {
+					for (int dth = 0; dth < dths.size(); dth++) {
+						for (int bth = 0; bth < bths.size(); bth++) {
+							for (int agent = 0; agent < agents.size(); agent++) {
+								for (int it = 0; it < its.size(); it++) {
+									for (int testRatio = 0; testRatio < testRatios
+											.size(); testRatio++) {
+										this.addToTheMatrix(theMatrix, leba,
+												tth, dth, bth, agent, it,
+												testRatio, Double.MIN_VALUE);
+									}
+								}
+							}
+						}
+					}
+				}
 			logger.info("Filling The Matrix...");
 			for (String[] row : experimentResultsRatios) {
 				String globalImp = row[9];
@@ -427,25 +444,31 @@ public class ExperimentChartsGenerator {
 									double imp = this.getImpFromTheMatrix(
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
-									if (dthValue == 20.0 || bthValue == 20.0) {
+									if (imp != Double.MIN_VALUE) {
 										if (dthValue == 20.0
-												&& bthValue == 20.0) {
+												|| bthValue == 20.0) {
+											if (dthValue == 20.0
+													&& bthValue == 20.0) {
+												Coord3d coord = new Coord3d(
+														tthValue, dthValue, imp);
+												coords.add(coord);
+												// globalCoords.add(coord);
+											}
+										} else if (tthValue != 20.0) {
 											Coord3d coord = new Coord3d(
 													tthValue, dthValue, imp);
 											coords.add(coord);
-											// globalCoords.add(coord);
+											globalCoords.add(coord);
 										}
-									} else if (tthValue != 20.0) {
-										Coord3d coord = new Coord3d(tthValue,
-												dthValue, imp);
-										coords.add(coord);
-										globalCoords.add(coord);
 									}
 
 								}
 							}
 							// screenshot
-							if (lebaValue != 0) {
+							if (lebaValue != 0) { // TODO esto no debería estar
+													// creo, pero necesito datos
+													// de un batch completo para
+													// comprobarlo
 								if (dthValue != 20.0 || bthValue != 20.0) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "TTH";
@@ -509,15 +532,20 @@ public class ExperimentChartsGenerator {
 									double imp = this.getImpFromTheMatrix(
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
-									Coord3d coord = new Coord3d(bthValue,
-											dthValue, imp);
-									coords.add(coord);
-									globalCoords.add(coord);
+									if (imp != Double.MIN_VALUE) {
+										Coord3d coord = new Coord3d(bthValue,
+												dthValue, imp);
+										coords.add(coord);
+										globalCoords.add(coord);
+									}
 								}
 
 							}
 							// screenshot
-							if (lebaValue != 0) {
+							if (lebaValue != 0) { // TODO esto no debería estar
+													// creo, pero necesito datos
+													// de un batch completo para
+													// comprobarlo
 								String[] axisLabels = new String[3];
 								axisLabels[0] = "BTH";
 								axisLabels[1] = "DTH";
@@ -580,25 +608,31 @@ public class ExperimentChartsGenerator {
 									double imp = this.getImpFromTheMatrix(
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
-									if (dthValue == 20.0 || bthValue == 20.0) {
+									if (imp != Double.MIN_VALUE) {
 										if (dthValue == 20.0
-												&& bthValue == 20.0) {
+												|| bthValue == 20.0) {
+											if (dthValue == 20.0
+													&& bthValue == 20.0) {
+												Coord3d coord = new Coord3d(
+														tthValue, bthValue, imp);
+												coords.add(coord);
+												// globalCoords.add(coord);
+											}
+										} else if (tthValue != 20.0) {
 											Coord3d coord = new Coord3d(
 													tthValue, bthValue, imp);
 											coords.add(coord);
-											// globalCoords.add(coord);
+											globalCoords.add(coord);
 										}
-									} else if (tthValue != 20.0) {
-										Coord3d coord = new Coord3d(tthValue,
-												bthValue, imp);
-										coords.add(coord);
-										globalCoords.add(coord);
 									}
 
 								}
 							}
 							// screenshot
-							if (lebaValue != 0) {
+							if (lebaValue != 0) { // TODO esto no debería estar
+													// creo, pero necesito datos
+													// de un batch completo para
+													// comprobarlo
 								if (dthValue != 20.0 || bthValue != 20.0) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "TTH";
@@ -663,21 +697,23 @@ public class ExperimentChartsGenerator {
 									double imp = this.getImpFromTheMatrix(
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
-									if (dthValue != 20.0 && tthValue != 20.0
-											&& bthValue != 20.0) {
-										Coord3d coord = new Coord3d(lebaValue,
-												bthValue, imp);
-										coords.add(coord);
-										globalCoords.add(coord);
-									} else if (dthValue == 20.0
-											&& bthValue == 20.0
-											&& tthValue == 20.0) {
-										Coord3d coord = new Coord3d(lebaValue,
-												bthValue, imp);
-										coords.add(coord);
-										// globalCoords.add(coord);
+									if (imp != Double.MIN_VALUE) {
+										if (dthValue != 20.0
+												&& tthValue != 20.0
+												&& bthValue != 20.0) {
+											Coord3d coord = new Coord3d(
+													lebaValue, bthValue, imp);
+											coords.add(coord);
+											globalCoords.add(coord);
+										} else if (dthValue == 20.0
+												&& bthValue == 20.0
+												&& tthValue == 20.0) {
+											Coord3d coord = new Coord3d(
+													lebaValue, bthValue, imp);
+											coords.add(coord);
+											// globalCoords.add(coord);
+										}
 									}
-
 								}
 							}
 							// screenshot
@@ -743,21 +779,23 @@ public class ExperimentChartsGenerator {
 									double imp = this.getImpFromTheMatrix(
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
-									if (dthValue != 20.0 && tthValue != 20.0
-											&& bthValue != 20.0) {
-										Coord3d coord = new Coord3d(lebaValue,
-												dthValue, imp);
-										coords.add(coord);
-										globalCoords.add(coord);
-									} else if (dthValue == 20.0
-											&& bthValue == 20.0
-											&& tthValue == 20.0) {
-										Coord3d coord = new Coord3d(lebaValue,
-												dthValue, imp);
-										coords.add(coord);
-										// globalCoords.add(coord);
+									if (imp != Double.MIN_VALUE) {
+										if (dthValue != 20.0
+												&& tthValue != 20.0
+												&& bthValue != 20.0) {
+											Coord3d coord = new Coord3d(
+													lebaValue, dthValue, imp);
+											coords.add(coord);
+											globalCoords.add(coord);
+										} else if (dthValue == 20.0
+												&& bthValue == 20.0
+												&& tthValue == 20.0) {
+											Coord3d coord = new Coord3d(
+													lebaValue, dthValue, imp);
+											coords.add(coord);
+											// globalCoords.add(coord);
+										}
 									}
-
 								}
 							}
 							// screenshot
@@ -823,21 +861,24 @@ public class ExperimentChartsGenerator {
 									double imp = this.getImpFromTheMatrix(
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
-									if (dthValue == 20.0 || bthValue == 20.0) {
+									if (imp != Double.MIN_VALUE) {
 										if (dthValue == 20.0
-												&& bthValue == 20.0) {
+												|| bthValue == 20.0) {
+											if (dthValue == 20.0
+													&& bthValue == 20.0) {
+												Coord3d coord = new Coord3d(
+														lebaValue, tthValue,
+														imp);
+												coords.add(coord);
+												// globalCoords.add(coord);
+											}
+										} else if (tthValue != 20.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, tthValue, imp);
 											coords.add(coord);
-											// globalCoords.add(coord);
+											globalCoords.add(coord);
 										}
-									} else if (tthValue != 20.0) {
-										Coord3d coord = new Coord3d(lebaValue,
-												tthValue, imp);
-										coords.add(coord);
-										globalCoords.add(coord);
 									}
-
 								}
 							}
 							// screenshot
