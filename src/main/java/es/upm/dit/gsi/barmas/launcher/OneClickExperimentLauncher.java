@@ -76,13 +76,13 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		this.launchZooBatch();
-		// this.launchMarketingBatch();
-		// this.launchNurseryBatch();
-		// this.launchSolarFlareBatch();
-		// this.launchKowlanCZBatch();
-		// this.launchMushroomBatch();
-		// this.launchChessBatch();
-		// this.launchPokerBatch();
+		this.launchMarketingBatch();
+		this.launchNurseryBatch();
+		this.launchSolarFlareBatch();
+		this.launchKowlanCZBatch();
+		this.launchMushroomBatch();
+		this.launchChessBatch();
+		this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -208,7 +208,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 8;
 		minLEBA = 0;
-		maxArgumentationRounds = 1000;
+		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -250,7 +250,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 9;
 		minLEBA = 0;
-		maxArgumentationRounds = 1000;
+		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -292,7 +292,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 8;
 		minLEBA = 0;
-		maxArgumentationRounds = 1000;
+		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -335,7 +335,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 7;
 		minLEBA = 0;
-		maxArgumentationRounds = 1000;
+		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -378,7 +378,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 8;
 		minLEBA = 0;
-		maxArgumentationRounds = 1000;
+		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -420,7 +420,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 50;
 		minLEBA = 0;
-		maxArgumentationRounds = Integer.MAX_VALUE;
+		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
