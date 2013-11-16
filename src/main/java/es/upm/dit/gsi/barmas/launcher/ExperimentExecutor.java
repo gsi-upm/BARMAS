@@ -188,6 +188,14 @@ public class ExperimentExecutor {
 					+ (experimentsQuantity - finishedExperiments));
 		}
 
+		logger.info("There are "
+				+ threads.size()
+				+ " in progress right now. They are the last simulations for this batch.");
+		for (Thread thread : threads) {
+			logger.info("Simulation in progress. SimluationID: "
+					+ thread.getName());
+		}
+
 		while (!threads.isEmpty()) {
 			List<Thread> threads2Remove = new ArrayList<Thread>();
 			for (Thread thread : threads) {
@@ -197,19 +205,19 @@ public class ExperimentExecutor {
 					logger.info("Finished experiment! -> " + thread.getName());
 					logger.info("--> Pending experiments for this batch: "
 							+ (experimentsQuantity - finishedExperiments));
-				} else {
-					logger.fine("Simulation in progress. SimluationID: "
-							+ thread.getName());
 				}
 			}
 			if (!threads2Remove.isEmpty()) {
 				threads.removeAll(threads2Remove);
 				threads2Remove.clear();
 				System.gc();
-				logger.info("Number of simulations executing right now: "
-						+ threads.size());
-				logger.info("--> Pending experiments for this batch: "
-						+ (experimentsQuantity - finishedExperiments));
+				logger.info("There are "
+						+ threads.size()
+						+ " in progress right now. They are the last simulations for this batch.");
+				for (Thread thread : threads) {
+					logger.info("Simulation in progress. SimluationID: "
+							+ thread.getName());
+				}
 			}
 			try {
 				Thread.sleep(60000);
