@@ -29,7 +29,6 @@ import es.upm.dit.gsi.barmas.launcher.experiments.BarmasAgentValidator;
 import es.upm.dit.gsi.barmas.launcher.experiments.BarmasExperiment;
 import es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment;
 import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
-import es.upm.dit.gsi.barmas.launcher.utils.ConsoleOutputDisabler;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
@@ -51,9 +50,6 @@ public class ExperimentExecutor {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		// Because unbbayes print a lot of things in console...
-		ConsoleOutputDisabler.disableConsoleOutput();
 
 		ExperimentExecutor executor = new ExperimentExecutor();
 

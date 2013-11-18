@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import unbbayes.prs.bn.ProbabilisticNetwork;
+import smile.Network;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.AgentBayesLearningCapability;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
@@ -28,8 +28,8 @@ import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
 import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.BayesianReasonerShanksAgent;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
@@ -55,7 +55,7 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 	private static final long serialVersionUID = -6542107693613585524L;
 	private String bnFile;
 	private String datasetFile;
-	private ProbabilisticNetwork bn;
+	private Network bn;
 	private List<String> sensors;
 	private String classificationTarget;
 
@@ -108,18 +108,14 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 	 * @see es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.
 	 * BayesianReasonerShanksAgent#getBayesianNetwork()
 	 */
-	public ProbabilisticNetwork getBayesianNetwork() {
+	public Network getBayesianNetwork() {
 		return this.bn;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.
-	 * BayesianReasonerShanksAgent
-	 * #setBayesianNetwork(unbbayes.prs.bn.ProbabilisticNetwork)
+	/* (non-Javadoc)
+	 * @see es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.BayesianReasonerShanksAgent#setBayesianNetwork(smile.Network)
 	 */
-	public void setBayesianNetwork(ProbabilisticNetwork bn) {
+	public void setBayesianNetwork(Network bn) {
 		this.bn = bn;
 	}
 

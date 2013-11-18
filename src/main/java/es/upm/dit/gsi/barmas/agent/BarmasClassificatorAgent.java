@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import unbbayes.prs.bn.ProbabilisticNetwork;
+import smile.Network;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argumentation;
@@ -44,8 +44,8 @@ import es.upm.dit.gsi.barmas.model.scenario.DiagnosisScenario;
 import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
 import es.upm.dit.gsi.shanks.ShanksSimulation;
 import es.upm.dit.gsi.shanks.agent.SimpleShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.BayesianReasonerShanksAgent;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
@@ -72,7 +72,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 
 	private ArgumentativeAgent manager;
 	private String bnFile;
-	private ProbabilisticNetwork bn;
+	private Network bn;
 	private List<String> sensors;
 
 	private List<ArgumentativeAgent> argumentationGroup;
@@ -175,7 +175,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		for (String sensor : sensors) {
 			this.getLogger().info(sensor);
 		}
-		
+
 		this.goToIdle();
 
 		// Register in manager
@@ -456,19 +456,15 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		this.getLogger().finer(
 				"Agent: " + this.getID() + " -> Number of evidences: "
 						+ this.evidences.size());
-		for (Entry<String, String> entry : evidences.entrySet()) {
-			try {
-				ShanksAgentBayesianReasoningCapability.addEvidence(this,
-						entry.getKey(), entry.getValue());
-			} catch (Exception e) {
-				this.getLogger().fine(
-						"Agent: " + this.getID()
-								+ " -> Unknown state for node: "
-								+ entry.getKey() + " -> State: "
-								+ entry.getValue());
-				System.exit(1);
-			}
-
+		try {
+			ShanksAgentBayesianReasoningCapability.addEvidences(this,
+					this.evidences);
+		} catch (Exception e) {
+			this.getLogger().fine(
+					"Agent: " + this.getID()
+							+ " -> Problems updating evidences: "
+							+ e.getMessage());
+			System.exit(1);
 		}
 	}
 
@@ -732,11 +728,11 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		return ag.getID();
 	}
 
-	public ProbabilisticNetwork getBayesianNetwork() {
+	public Network getBayesianNetwork() {
 		return this.bn;
 	}
 
-	public void setBayesianNetwork(ProbabilisticNetwork bn) {
+	public void setBayesianNetwork(Network bn) {
 		this.bn = bn;
 	}
 

@@ -31,11 +31,9 @@ import smile.Network;
 import smile.learning.DataMatch;
 import smile.learning.DataSet;
 import smile.learning.Validator;
-import unbbayes.prs.bn.ProbabilisticNetwork;
-import unbbayes.prs.bn.ProbabilisticNode;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.ValidationMetricsStore;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.BayesianReasonerShanksAgent;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
@@ -149,7 +147,7 @@ public class AgentArgumentativeCapability {
 	 * @throws ShanksException
 	 */
 	public static Set<Argument> createArguments(ArgumentativeAgent proponent,
-			ProbabilisticNetwork bn, long step, long timestamp)
+			Network bn, long step, long timestamp)
 			throws ShanksException {
 		Set<Argument> args = new HashSet<Argument>();
 		HashMap<String, String> evidences = (HashMap<String, String>) ShanksAgentBayesianReasoningCapability
@@ -157,9 +155,9 @@ public class AgentArgumentativeCapability {
 		HashMap<String, HashMap<String, Float>> hypotheses = ShanksAgentBayesianReasoningCapability
 				.getAllHypotheses(bn);
 		for (Entry<String, HashMap<String, Float>> hyp : hypotheses.entrySet()) {
-			ProbabilisticNode node = (ProbabilisticNode) bn.getNode(hyp
+			int node = bn.getNode(hyp
 					.getKey());
-			if (!node.hasEvidence()) {
+			if (!bn.isEvidence(node)) {
 				HashMap<String, Float> states = hyp.getValue();
 				for (Entry<String, Float> state : states.entrySet()) {
 					Argument arg = AgentArgumentativeCapability.createArgument(
@@ -193,7 +191,7 @@ public class AgentArgumentativeCapability {
 	 * @param bn
 	 * @throws ShanksException
 	 */
-	public static void updateBeliefs(Set<Argument> args, ProbabilisticNetwork bn)
+	public static void updateBeliefs(Set<Argument> args, Network bn)
 			throws ShanksException {
 		HashMap<String, HashMap<String, Double>> beliefs = new HashMap<String, HashMap<String, Double>>();
 		for (Argument arg : args) {
@@ -226,7 +224,7 @@ public class AgentArgumentativeCapability {
 	 */
 	public static void updateBeliefs(Set<Argument> args,
 			BayesianReasonerShanksAgent agent) throws ShanksException {
-		ProbabilisticNetwork bn = agent.getBayesianNetwork();
+		Network bn = agent.getBayesianNetwork();
 		AgentArgumentativeCapability.updateBeliefs(args, bn);
 	}
 

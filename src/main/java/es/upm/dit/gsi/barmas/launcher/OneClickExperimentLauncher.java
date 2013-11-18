@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import es.upm.dit.gsi.barmas.dataset.utils.DatasetSplitter;
 import es.upm.dit.gsi.barmas.launcher.experiments.RunnableExperiment;
 import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
-import es.upm.dit.gsi.barmas.launcher.utils.ConsoleOutputDisabler;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 
 /**
@@ -65,7 +64,6 @@ public class OneClickExperimentLauncher {
 	}
 
 	public OneClickExperimentLauncher() {
-		ConsoleOutputDisabler.disableConsoleOutput();
 		this.initTime = System.currentTimeMillis();
 		maxThreads = Runtime.getRuntime().availableProcessors();
 	}

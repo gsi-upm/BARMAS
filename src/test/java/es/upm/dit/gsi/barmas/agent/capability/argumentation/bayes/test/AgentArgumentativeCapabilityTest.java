@@ -39,14 +39,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sim.engine.SimState;
-import unbbayes.prs.bn.ProbabilisticNetwork;
+import smile.Network;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.AgentArgumentativeCapability;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Argument;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Proposal;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.BayesianReasonerShanksAgent;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.ShanksAgentBayesianReasoningCapability;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.exception.UnknowkNodeStateException;
 import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.exception.UnknownNodeException;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
@@ -107,17 +107,17 @@ public class AgentArgumentativeCapabilityTest {
 			 * 
 			 */
 			private static final long serialVersionUID = 851693142014780029L;
-			ProbabilisticNetwork bayes;
+			Network bayes;
 
 			public String getBayesianNetworkFilePath() {
 				return "src/test/resources/alarm.net";
 			}
 
-			public ProbabilisticNetwork getBayesianNetwork() {
+			public Network getBayesianNetwork() {
 				return bayes;
 			}
 
-			public void setBayesianNetwork(ProbabilisticNetwork bn) {
+			public void setBayesianNetwork(Network bn) {
 				bayes = bn;
 			}
 

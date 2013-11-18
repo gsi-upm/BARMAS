@@ -36,11 +36,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sim.engine.SimState;
-import unbbayes.prs.bn.ProbabilisticNetwork;
+import smile.Network;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.AgentBayesLearningCapability;
 import es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.BayesianReasonerShanksAgent;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.BayesianReasonerShanksAgent;
+import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.ShanksAgentBayesianReasoningCapability;
 
 /**
  * Project: barmas File:
@@ -97,7 +97,7 @@ public class AgentBayesLearningCapabilityTest {
 			 * 
 			 */
 			private static final long serialVersionUID = -7998636265411599224L;
-			ProbabilisticNetwork bn;
+			Network bn;
 
 			@Override
 			public String getDatasetFile() {
@@ -110,12 +110,12 @@ public class AgentBayesLearningCapabilityTest {
 			}
 
 			@Override
-			public ProbabilisticNetwork getBayesianNetwork() {
+			public Network getBayesianNetwork() {
 				return bn;
 			}
 
 			@Override
-			public void setBayesianNetwork(ProbabilisticNetwork bn) {
+			public void setBayesianNetwork(Network bn) {
 				this.bn = bn;
 			}
 

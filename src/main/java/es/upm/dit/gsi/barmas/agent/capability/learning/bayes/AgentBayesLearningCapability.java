@@ -27,8 +27,6 @@ import smile.learning.BayesianSearch;
 import smile.learning.DataMatch;
 import smile.learning.DataSet;
 import smile.learning.Validator;
-import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.ShanksAgentBayesianReasoningCapability;
-import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
  * Project: barmas File: es.upm.dit.gsi.barmas.agent.capability.learning.bayes.
@@ -100,16 +98,13 @@ public class AgentBayesLearningCapability {
 							+ datasetFile + " with accuracy " + max
 							+ " for node " + classificationTarget + " after "
 							+ iterations + " iterations.");
-			AgentBayesLearningCapability.testBNInUnbbayes(betterBN, agent);
 		} else {
-
 			AgentBayesLearningCapability.writeBNFile(betterBN, agent);
 			agent.getLogger().info(
 					"BN learnt in: " + agent.getBNOutputFile() + " from: "
 							+ datasetFile + " with average MCC " + max
 							+ " for node " + classificationTarget + " after "
 							+ iterations + " iterations.");
-			AgentBayesLearningCapability.testBNInUnbbayes(betterBN, agent);
 		}
 	}
 
@@ -188,61 +183,6 @@ public class AgentBayesLearningCapability {
 		}
 		return avgAccuracy;
 
-	}
-
-	/**
-	 * @param bn
-	 * @param agent
-	 */
-	private synchronized static void testBNInUnbbayes(Network bn,
-			BayesLearningAgent agent) {
-		try {
-			ShanksAgentBayesianReasoningCapability.loadNetwork(agent
-					.getBNOutputFile());
-			agent.getLogger().info(
-					"BN learnt in: " + agent.getBNOutputFile() + " from: "
-							+ agent.getDatasetFile()
-							+ " is compatible with Unbbayes.");
-		} catch (ShanksException e) {
-			agent.getLogger().fine(
-					"BN is disconnected. Looking for disconnected nodes.");
-			// If there is an exception, the net is disconnected.
-			// So, new connections (arcs) are created.
-			int[] allNodes = bn.getAllNodes();
-			for (int node : allNodes) {
-				int[] parents = bn.getParents(node);
-				int[] children = bn.getChildren(node);
-				if (parents.length == 0 && children.length == 0) {
-					agent.getLogger().fine(
-							"Disconnected Node Found: " + bn.getNodeId(node));
-					if (node == allNodes[0]) {
-						bn.addArc(allNodes[1], node);
-					} else {
-						bn.addArc(allNodes[0], node);
-					}
-					agent.getLogger().fine(
-							"Node " + bn.getNodeId(node)
-									+ " is already connected in "
-									+ agent.getBNOutputFile());
-				}
-			}
-			bn.writeFile(agent.getBNOutputFile());
-			File checkFile = new File(agent.getBNOutputFile());
-			while (!checkFile.exists()) {
-				// Wait a bit...
-			}
-			try {
-				ShanksAgentBayesianReasoningCapability.loadNetwork(agent
-						.getBNOutputFile());
-			} catch (Exception e1) {
-				if (e1.getMessage().contains("cicle")) {
-					agent.getLogger().fine("--> Cicle found. Trying again...");
-				} else {
-					agent.getLogger()
-							.fine("Learnt net is not compatible with Unbbayes. Trying again...");
-				}
-			}
-		}
 	}
 
 	/**
