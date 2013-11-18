@@ -73,11 +73,11 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		this.launchZooBatch();
+		// this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		// this.launchKowlanCZBatch();
+		this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -246,7 +246,7 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
-		maxLEBA = 9;
+		maxLEBA = 10;
 		minLEBA = 0;
 		maxArgumentationRounds = 200;
 
