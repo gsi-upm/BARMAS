@@ -419,7 +419,6 @@ public class OneClickExperimentLauncher {
 		maxLEBA = 50;
 		minLEBA = 0;
 		maxArgumentationRounds = 200;
-		maxThreads = 1;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
