@@ -3,7 +3,6 @@
  */
 package es.upm.dit.gsi.barmas.launcher;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +64,23 @@ public class OneClickExperimentLauncher {
 
 	public OneClickExperimentLauncher() {
 		this.initTime = System.currentTimeMillis();
-		maxThreads = Runtime.getRuntime().availableProcessors() * 25;
+		int cores = Runtime.getRuntime().availableProcessors();
+
+		logger.info("Executing experiments in " + cores + " cores.");
+		switch (cores) {
+		case 8:
+			// Shannon
+			maxThreads = cores * 50;
+			break;
+		case 4:
+			// Mystra
+			maxThreads = cores * 20;
+			break;
+		default:
+			// Other
+			maxThreads = cores * 10;
+			break;
+		}
 	}
 
 	/**
@@ -597,7 +612,6 @@ public class OneClickExperimentLauncher {
 
 		long initTime = System.currentTimeMillis();
 
-		List<RunnableExperiment> allExperiments = new ArrayList<RunnableExperiment>();
 		try {
 			for (int i = 0; i < iterations; i++) {
 				DatasetSplitter splitter = new DatasetSplitter();
@@ -623,7 +637,7 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				allExperiments.addAll(validators);
+				executor.executeValidators(validators, maxThreads, logger);
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -642,8 +656,7 @@ public class OneClickExperimentLauncher {
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting experiments executions...");
-				allExperiments.addAll(experiments);
-				executor.executeExperiments(allExperiments, maxThreads, logger);
+				executor.executeExperiments(experiments, maxThreads, logger);
 				logger.info("<--- Finishing experiments executions...");
 				long finishTime = System.currentTimeMillis();
 				this.logTime(simulationID,
@@ -669,7 +682,6 @@ public class OneClickExperimentLauncher {
 				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
 				experimentFolder);
 		long initTime = System.currentTimeMillis();
-		List<RunnableExperiment> allExperiments = new ArrayList<RunnableExperiment>();
 
 		try {
 			for (int i = 0; i < iterations; i++) {
@@ -696,7 +708,7 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				allExperiments.addAll(validators);
+				executor.executeValidators(validators, maxThreads, logger);
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -712,8 +724,7 @@ public class OneClickExperimentLauncher {
 						+ " experiments are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
 				logger.info("---> Starting experiments executions...");
-				allExperiments.addAll(experiments);
-				executor.executeExperiments(allExperiments, maxThreads, logger);
+				executor.executeExperiments(experiments, maxThreads, logger);
 				logger.info("<--- Finishing experiments executions...");
 
 				long finishTime = System.currentTimeMillis();
