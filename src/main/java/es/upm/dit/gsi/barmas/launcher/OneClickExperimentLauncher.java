@@ -70,7 +70,7 @@ public class OneClickExperimentLauncher {
 		switch (this.cores) {
 		case 8:
 			// Shannon
-			maxThreads = cores * 50;
+			maxThreads = cores * 30;
 			break;
 		case 4:
 			// Mystra
