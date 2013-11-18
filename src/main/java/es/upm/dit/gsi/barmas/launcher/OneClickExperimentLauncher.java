@@ -65,7 +65,7 @@ public class OneClickExperimentLauncher {
 
 	public OneClickExperimentLauncher() {
 		this.initTime = System.currentTimeMillis();
-		maxThreads = Runtime.getRuntime().availableProcessors();
+		maxThreads = Runtime.getRuntime().availableProcessors() * 25;
 	}
 
 	/**
