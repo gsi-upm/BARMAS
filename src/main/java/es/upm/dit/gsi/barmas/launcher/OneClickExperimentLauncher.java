@@ -39,6 +39,7 @@ public class OneClickExperimentLauncher {
 	private String summaryFile;
 	private long seed;
 	private int maxThreads;
+	private int cores;
 	private int iterations;
 	private String classificationTarget;
 	private double delta;
@@ -64,10 +65,9 @@ public class OneClickExperimentLauncher {
 
 	public OneClickExperimentLauncher() {
 		this.initTime = System.currentTimeMillis();
-		int cores = Runtime.getRuntime().availableProcessors();
+		this.cores = Runtime.getRuntime().availableProcessors();
 
-		logger.info("Executing experiments in " + cores + " cores.");
-		switch (cores) {
+		switch (this.cores) {
 		case 8:
 			// Shannon
 			maxThreads = cores * 50;
@@ -455,6 +455,7 @@ public class OneClickExperimentLauncher {
 		LogConfigurator.log2File(logger, simulationID
 				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
 				experimentFolder);
+		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
 		try {
 			for (int i = 0; i < iterations; i++) {
@@ -505,6 +506,7 @@ public class OneClickExperimentLauncher {
 				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
 				experimentFolder);
 
+		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
 
 		try {
@@ -554,6 +556,7 @@ public class OneClickExperimentLauncher {
 		LogConfigurator.log2File(logger, simulationID
 				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
 				experimentFolder);
+		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
 
 		try {
@@ -610,6 +613,7 @@ public class OneClickExperimentLauncher {
 				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
 				experimentFolder);
 
+		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
 
 		try {
@@ -682,6 +686,7 @@ public class OneClickExperimentLauncher {
 				+ "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
 				experimentFolder);
 		long initTime = System.currentTimeMillis();
+		logger.info("Executing experiments in " + cores + " cores.");
 
 		try {
 			for (int i = 0; i < iterations; i++) {
