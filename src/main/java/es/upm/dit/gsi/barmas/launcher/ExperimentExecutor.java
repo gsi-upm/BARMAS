@@ -215,11 +215,13 @@ public class ExperimentExecutor {
 							+ thread.getName());
 				}
 			}
-			try {
-				Thread.sleep(60000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				System.exit(1);
+			if (!threads.isEmpty()) {
+				try {
+					Thread.sleep(60000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
 			}
 		}
 
