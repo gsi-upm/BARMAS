@@ -186,7 +186,7 @@ public class ExperimentExecutor {
 
 		logger.info("There are "
 				+ threads.size()
-				+ " in progress right now. They are the last simulations for this batch.");
+				+ " simulations in progress right now. They are the last simulations for this batch.");
 		for (Thread thread : threads) {
 			logger.info("Simulation in progress. SimluationID: "
 					+ thread.getName());
