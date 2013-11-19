@@ -181,7 +181,7 @@ public class ExperimentExecutor {
 				logger.info("Starting validator for isolated agent...");
 			}
 			long pendingExps = (experimentsQuantity - finishedExperiments);
-			long percentage = (pendingExps / experimentsQuantity) * 100;
+			double percentage = (((double) pendingExps) / ((double) experimentsQuantity)) * 100;
 			logger.info("--> Pending experiments for this batch: "
 					+ pendingExps + " => Pending " + percentage
 					+ "% of all of the batch experiments");
