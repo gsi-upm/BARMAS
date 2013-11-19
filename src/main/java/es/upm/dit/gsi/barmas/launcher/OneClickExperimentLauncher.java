@@ -83,7 +83,7 @@ public class OneClickExperimentLauncher {
 			break;
 		}
 
-		this.maxLearningThreads = this.maxThreads;
+		this.maxLearningThreads = 1;
 	}
 
 	/**
