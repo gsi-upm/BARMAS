@@ -180,8 +180,10 @@ public class ExperimentExecutor {
 			if (experiment instanceof BarmasAgentValidator) {
 				logger.info("Starting validator for isolated agent...");
 			}
+			long pendingExps = (experimentsQuantity - finishedExperiments);
+			long percentage = (pendingExps / experimentsQuantity) * 100;
 			logger.info("--> Pending experiments for this batch: "
-					+ (experimentsQuantity - finishedExperiments));
+					+ pendingExps + " => Pending " + percentage + "% of all of the batch experiments");
 		}
 
 		logger.info("There are "
