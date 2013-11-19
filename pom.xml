@@ -79,7 +79,7 @@
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.launcher.OneClickExperimentLauncher</mainClass>
 					<arguments>
-						<!-- <argument></argument> -->
+						<argument>-XX:-UseLoopPredicate</argument>
 					</arguments>
 				</configuration>
 			</plugin>
