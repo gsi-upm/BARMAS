@@ -67,7 +67,7 @@ public class OneClickExperimentLauncher {
 	public OneClickExperimentLauncher() {
 		this.initTime = System.currentTimeMillis();
 		this.cores = Runtime.getRuntime().availableProcessors();
-		this.maxLearningThreads = this.cores;
+		this.maxLearningThreads = 5;
 
 		switch (this.cores) {
 		case 8:
@@ -95,9 +95,9 @@ public class OneClickExperimentLauncher {
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
-		// this.launchMushroomBatch();
-		// this.launchChessBatch();
-		// this.launchPokerBatch();
+		this.launchMushroomBatch();
+		this.launchChessBatch();
+		this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
