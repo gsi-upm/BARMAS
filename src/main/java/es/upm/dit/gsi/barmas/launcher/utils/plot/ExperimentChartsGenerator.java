@@ -445,16 +445,16 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue == 20.0
-												|| bthValue == 20.0) {
-											if (dthValue == 20.0
-													&& bthValue == 20.0) {
+										if (dthValue == 2.0
+												|| bthValue == 2.0) {
+											if (dthValue == 2.0
+													&& bthValue == 2.0) {
 												Coord3d coord = new Coord3d(
 														tthValue, dthValue, imp);
 												coords.add(coord);
 												// globalCoords.add(coord);
 											}
-										} else if (tthValue != 20.0) {
+										} else if (tthValue != 2.0) {
 											Coord3d coord = new Coord3d(
 													tthValue, dthValue, imp);
 											coords.add(coord);
@@ -469,7 +469,7 @@ public class ExperimentChartsGenerator {
 													// creo, pero necesito datos
 													// de un batch completo para
 													// comprobarlo
-								if (dthValue != 20.0 || bthValue != 20.0) {
+								if (dthValue != 2.0 || bthValue != 2.0) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "TTH";
 									axisLabels[1] = "DTH";
@@ -546,7 +546,7 @@ public class ExperimentChartsGenerator {
 													// creo, pero necesito datos
 													// de un batch completo para
 													// comprobarlo
-								if (dthValue != 20.0) {
+								if (dthValue != 2.0) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "BTH";
 									axisLabels[1] = "DTH";
@@ -612,16 +612,16 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue == 20.0
-												|| bthValue == 20.0) {
-											if (dthValue == 20.0
-													&& bthValue == 20.0) {
+										if (dthValue == 2.0
+												|| bthValue == 2.0) {
+											if (dthValue == 2.0
+													&& bthValue == 2.0) {
 												Coord3d coord = new Coord3d(
 														tthValue, bthValue, imp);
 												coords.add(coord);
 												// globalCoords.add(coord);
 											}
-										} else if (tthValue != 20.0) {
+										} else if (tthValue != 2.0) {
 											Coord3d coord = new Coord3d(
 													tthValue, bthValue, imp);
 											coords.add(coord);
@@ -636,7 +636,7 @@ public class ExperimentChartsGenerator {
 													// creo, pero necesito datos
 													// de un batch completo para
 													// comprobarlo
-								if (dthValue != 20.0 || bthValue != 20.0) {
+								if (dthValue != 2.0 || bthValue != 2.0) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "TTH";
 									axisLabels[1] = "BTH";
@@ -701,16 +701,16 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue != 20.0
-												&& tthValue != 20.0
-												&& bthValue != 20.0) {
+										if (dthValue != 2.0
+												&& tthValue != 2.0
+												&& bthValue != 2.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, bthValue, imp);
 											coords.add(coord);
 											globalCoords.add(coord);
-										} else if (dthValue == 20.0
-												&& bthValue == 20.0
-												&& tthValue == 20.0) {
+										} else if (dthValue == 2.0
+												&& bthValue == 2.0
+												&& tthValue == 2.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, bthValue, imp);
 											coords.add(coord);
@@ -720,7 +720,7 @@ public class ExperimentChartsGenerator {
 								}
 							}
 							// screenshot
-							if (tthValue != 20.0 && dthValue != 20.0) {
+							if (tthValue != 2.0 && dthValue != 2.0) {
 								String[] axisLabels = new String[3];
 								axisLabels[0] = "LEBA";
 								axisLabels[1] = "BTH";
@@ -783,16 +783,16 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue != 20.0
-												&& tthValue != 20.0
-												&& bthValue != 20.0) {
+										if (dthValue != 2.0
+												&& tthValue != 2.0
+												&& bthValue != 2.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, dthValue, imp);
 											coords.add(coord);
 											globalCoords.add(coord);
-										} else if (dthValue == 20.0
-												&& bthValue == 20.0
-												&& tthValue == 20.0) {
+										} else if (dthValue == 2.0
+												&& bthValue == 2.0
+												&& tthValue == 2.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, dthValue, imp);
 											coords.add(coord);
@@ -802,7 +802,7 @@ public class ExperimentChartsGenerator {
 								}
 							}
 							// screenshot
-							if (tthValue != 20.0 && bthValue != 20.0) {
+							if (tthValue != 2.0 && bthValue != 2.0) {
 								String[] axisLabels = new String[3];
 								axisLabels[0] = "LEBA";
 								axisLabels[1] = "DTH";
@@ -865,17 +865,17 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue == 20.0
-												|| bthValue == 20.0) {
-											if (dthValue == 20.0
-													&& bthValue == 20.0) {
+										if (dthValue == 2.0
+												|| bthValue == 2.0) {
+											if (dthValue == 2.0
+													&& bthValue == 2.0) {
 												Coord3d coord = new Coord3d(
 														lebaValue, tthValue,
 														imp);
 												coords.add(coord);
 												// globalCoords.add(coord);
 											}
-										} else if (tthValue != 20.0) {
+										} else if (tthValue != 2.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, tthValue, imp);
 											coords.add(coord);
@@ -885,8 +885,8 @@ public class ExperimentChartsGenerator {
 								}
 							}
 							// screenshot
-							if (dthValue == 20.0 || bthValue == 20.0) {
-								if ((dthValue == 20.0 && bthValue == 20.0)) {
+							if (dthValue == 2.0 || bthValue == 2.0) {
+								if ((dthValue == 2.0 && bthValue == 2.0)) {
 									String[] axisLabels = new String[3];
 									axisLabels[0] = "LEBA";
 									axisLabels[1] = "TTH";

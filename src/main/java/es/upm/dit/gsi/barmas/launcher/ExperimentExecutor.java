@@ -66,7 +66,7 @@ public class ExperimentExecutor {
 		int mode = SimulationConfiguration.DEBUGGING_MODE;
 		double diffThreshold = 0.1;
 		double beliefThreshold = 0.1;
-		double trustThreshold = 20.0;
+		double trustThreshold = 2.0;
 		int leba = 1;
 		int maxArgumentationRounds = 20;
 
@@ -259,7 +259,7 @@ public class ExperimentExecutor {
 		// Validators
 		for (int i = 0; i < agentsNumber; i++) {
 			String simulationPrefix = simulationID + "-Agent" + i + "-DTH-"
-					+ 20.0 + "-BTH-" + 20.0 + "-LEBA-" + 0 + "-TTH-" + 20.0
+					+ 2.0 + "-BTH-" + 2.0 + "-LEBA-" + 0 + "-TTH-" + 2.0
 					+ "-IT-" + iteration;
 			BarmasAgentValidator expValidator = new BarmasAgentValidator(
 					simulationPrefix, summaryFile, seed, mode, "Agent" + i,
@@ -270,7 +270,7 @@ public class ExperimentExecutor {
 			experiments.add(expValidator);
 		}
 		String simulationPrefix = simulationID + "-BayesCentralAgent-DTH-"
-				+ 20.0 + "-BTH-" + 20.0 + "-LEBA-" + 0 + "-TTH-" + 20.0
+				+ 2.0 + "-BTH-" + 2.0 + "-LEBA-" + 0 + "-TTH-" + 2.0
 				+ "-IT-" + iteration;
 		BarmasAgentValidator expValidator = new BarmasAgentValidator(
 				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
@@ -307,9 +307,9 @@ public class ExperimentExecutor {
 		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
 
 		// No assumptions - no trust
-		double diffThreshold = 20.0;
-		double beliefThreshold = 20.0;
-		double trustThreshold = 20.0;
+		double diffThreshold = 2.0;
+		double beliefThreshold = 2.0;
+		double trustThreshold = 2.0;
 		int lostEvidencesByAgents = 0;
 		int tint = (int) (diffThreshold * 100);
 		double roundedt = ((double) tint) / 100;
@@ -443,9 +443,9 @@ public class ExperimentExecutor {
 		BarmasExperiment exp;
 
 		// No Assumptions - No trust
-		double diffThreshold = 20.0;
-		double beliefThreshold = 20.0;
-		double trustThreshold = 20.0;
+		double diffThreshold = 2.0;
+		double beliefThreshold = 2.0;
+		double trustThreshold = 2.0;
 		int tint = (int) (diffThreshold * 100);
 		double roundedt = ((double) tint) / 100;
 		int btint = (int) (beliefThreshold * 100);
@@ -468,8 +468,8 @@ public class ExperimentExecutor {
 		}
 
 		// No assumptions - Only Trust
-		diffThreshold = 20.0;
-		beliefThreshold = 20.0;
+		diffThreshold = 2.0;
+		beliefThreshold = 2.0;
 		trustThreshold = minTrustThreshold;
 		while (trustThreshold <= maxTrustThreshold) {
 			lostEvidencesByAgents = minLEBA;
@@ -497,7 +497,7 @@ public class ExperimentExecutor {
 		}
 
 		// Assumptions and No Trust
-		trustThreshold = 20.0;
+		trustThreshold = 2.0;
 		diffThreshold = maxDistanceThreshold;
 		while (diffThreshold >= minDistanceThreshold) {
 			beliefThreshold = minBeliefThreshold;
