@@ -111,12 +111,12 @@ public class ExperimentExecutor {
 
 		simulationID = simulationID + "-TESTRATIO-" + ratio + "-MAXARGSROUNDS-"
 				+ maxArgumentationRounds;
-		int tint = (int) (diffThreshold * 1000);
-		double roundedt = ((double) tint) / 1000;
-		int btint = (int) (beliefThreshold * 1000);
-		double rounedbt = ((double) btint) / 1000;
-		int fsint = (int) (trustThreshold * 1000);
-		double roundedfs = ((double) fsint) / 1000;
+		int tint = (int) (diffThreshold * 100);
+		double roundedt = ((double) tint) / 100;
+		int btint = (int) (beliefThreshold * 100);
+		double rounedbt = ((double) btint) / 100;
+		int fsint = (int) (trustThreshold * 100);
+		double roundedfs = ((double) fsint) / 100;
 		String simulationPrefix = simulationID + "-" + agentsNumber
 				+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt + "-LEBA-"
 				+ lostEvidencesByAgents + "-TTH-" + roundedfs + "-IT-ISOLATED";
@@ -311,12 +311,12 @@ public class ExperimentExecutor {
 		double beliefThreshold = 20.0;
 		double trustThreshold = 20.0;
 		int lostEvidencesByAgents = 0;
-		int tint = (int) (diffThreshold * 1000);
-		double roundedt = ((double) tint) / 1000;
-		int btint = (int) (beliefThreshold * 1000);
-		double rounedbt = ((double) btint) / 1000;
-		int fsint = (int) (trustThreshold * 1000);
-		double roundedfs = ((double) fsint) / 1000;
+		int tint = (int) (diffThreshold * 100);
+		double roundedt = ((double) tint) / 100;
+		int btint = (int) (beliefThreshold * 100);
+		double rounedbt = ((double) btint) / 100;
+		int fsint = (int) (trustThreshold * 100);
+		double roundedfs = ((double) fsint) / 100;
 		String simulationPrefix = simulationID + "-" + agentsNumber
 				+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt + "-LEBA-"
 				+ lostEvidencesByAgents + "-TTH-" + roundedfs + "-IT-"
@@ -337,12 +337,12 @@ public class ExperimentExecutor {
 				while (trustThreshold <= 1.0) {
 					lostEvidencesByAgents = 0;
 					while (lostEvidencesByAgents <= numberOfEvidences) {
-						tint = (int) (diffThreshold * 1000);
-						roundedt = ((double) tint) / 1000;
-						btint = (int) (beliefThreshold * 1000);
-						rounedbt = ((double) btint) / 1000;
-						fsint = (int) (trustThreshold * 1000);
-						roundedfs = ((double) fsint) / 1000;
+						tint = (int) (diffThreshold * 100);
+						roundedt = ((double) tint) / 100;
+						btint = (int) (beliefThreshold * 100);
+						rounedbt = ((double) btint) / 100;
+						fsint = (int) (trustThreshold * 100);
+						roundedfs = ((double) fsint) / 100;
 						simulationPrefix = simulationID + "-" + agentsNumber
 								+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
 								+ "-LEBA-" + lostEvidencesByAgents + "-TTH-"
@@ -446,12 +446,12 @@ public class ExperimentExecutor {
 		double diffThreshold = 20.0;
 		double beliefThreshold = 20.0;
 		double trustThreshold = 20.0;
-		int tint = (int) (diffThreshold * 1000);
-		double roundedt = ((double) tint) / 1000;
-		int btint = (int) (beliefThreshold * 1000);
-		double rounedbt = ((double) btint) / 1000;
-		int fsint = (int) (trustThreshold * 1000);
-		double roundedfs = ((double) fsint) / 1000;
+		int tint = (int) (diffThreshold * 100);
+		double roundedt = ((double) tint) / 100;
+		int btint = (int) (beliefThreshold * 100);
+		double rounedbt = ((double) btint) / 100;
+		int fsint = (int) (trustThreshold * 100);
+		double roundedfs = ((double) fsint) / 100;
 		int lostEvidencesByAgents = minLEBA;
 		while (lostEvidencesByAgents <= numberOfEvidences) {
 			simulationPrefix = simulationID + "-" + agentsNumber
@@ -467,19 +467,19 @@ public class ExperimentExecutor {
 			lostEvidencesByAgents++;
 		}
 
-		// No assumptions - Trust
+		// No assumptions - Only Trust
 		diffThreshold = 20.0;
 		beliefThreshold = 20.0;
 		trustThreshold = minTrustThreshold;
 		while (trustThreshold <= maxTrustThreshold) {
 			lostEvidencesByAgents = minLEBA;
 			while (lostEvidencesByAgents <= numberOfEvidences) {
-				tint = (int) (diffThreshold * 1000);
-				roundedt = ((double) tint) / 1000;
-				btint = (int) (beliefThreshold * 1000);
-				rounedbt = ((double) btint) / 1000;
-				fsint = (int) (trustThreshold * 1000);
-				roundedfs = ((double) fsint) / 1000;
+				tint = (int) (diffThreshold * 100);
+				roundedt = ((double) tint) / 100;
+				btint = (int) (beliefThreshold * 100);
+				rounedbt = ((double) btint) / 100;
+				fsint = (int) (trustThreshold * 100);
+				roundedfs = ((double) fsint) / 100;
 				simulationPrefix = simulationID + "-" + agentsNumber
 						+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
 						+ "-LEBA-" + lostEvidencesByAgents + "-TTH-"
@@ -508,12 +508,12 @@ public class ExperimentExecutor {
 					lostEvidencesByAgents = minLEBA;
 				}
 				while (lostEvidencesByAgents <= numberOfEvidences) {
-					tint = (int) (diffThreshold * 1000);
-					roundedt = ((double) tint) / 1000;
-					btint = (int) (beliefThreshold * 1000);
-					rounedbt = ((double) btint) / 1000;
-					fsint = (int) (trustThreshold * 1000);
-					roundedfs = ((double) fsint) / 1000;
+					tint = (int) (diffThreshold * 100);
+					roundedt = ((double) tint) / 100;
+					btint = (int) (beliefThreshold * 100);
+					rounedbt = ((double) btint) / 100;
+					fsint = (int) (trustThreshold * 100);
+					roundedfs = ((double) fsint) / 100;
 					simulationPrefix = simulationID + "-" + agentsNumber
 							+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
 							+ "-LEBA-" + lostEvidencesByAgents + "-TTH-"
@@ -548,12 +548,12 @@ public class ExperimentExecutor {
 						lostEvidencesByAgents = minLEBA;
 					}
 					while (lostEvidencesByAgents <= numberOfEvidences) {
-						tint = (int) (diffThreshold * 1000);
-						roundedt = ((double) tint) / 1000;
-						btint = (int) (beliefThreshold * 1000);
-						rounedbt = ((double) btint) / 1000;
-						fsint = (int) (trustThreshold * 1000);
-						roundedfs = ((double) fsint) / 1000;
+						tint = (int) (diffThreshold * 100);
+						roundedt = ((double) tint) / 100;
+						btint = (int) (beliefThreshold * 100);
+						rounedbt = ((double) btint) / 100;
+						fsint = (int) (trustThreshold * 100);
+						roundedfs = ((double) fsint) / 100;
 						simulationPrefix = simulationID + "-" + agentsNumber
 								+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
 								+ "-LEBA-" + lostEvidencesByAgents + "-TTH-"

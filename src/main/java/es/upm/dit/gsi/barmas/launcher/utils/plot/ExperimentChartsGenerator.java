@@ -65,7 +65,7 @@ public class ExperimentChartsGenerator {
 	 */
 	public static void main(String[] args) {
 
-		String experimentFolder = "zoo-simulation";
+		String experimentFolder = "kowlancz02-simulation";
 		String file = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		ExperimentChartsGenerator chartGenerator = new ExperimentChartsGenerator(
@@ -546,19 +546,22 @@ public class ExperimentChartsGenerator {
 													// creo, pero necesito datos
 													// de un batch completo para
 													// comprobarlo
-								String[] axisLabels = new String[3];
-								axisLabels[0] = "BTH";
-								axisLabels[1] = "DTH";
-								axisLabels[2] = "ImprovementRatio";
-								plotter.saveDelaunaySurface3DChart(
-										iterationChartFolder
-												+ "/globalImprovement-BTHvsDTH"
-												+ "-LEBA-" + leba + "-TTH-"
-												+ tthValue + "-Agents-"
-												+ agentValue + "-IT-" + itValue
-												+ "-TestRatio-" + ratioValue
-												+ ".png", axisLabels, coords,
-										ViewPositionMode.FREE, null);
+								if (dthValue != 20.0) {
+									String[] axisLabels = new String[3];
+									axisLabels[0] = "BTH";
+									axisLabels[1] = "DTH";
+									axisLabels[2] = "ImprovementRatio";
+									plotter.saveDelaunaySurface3DChart(
+											iterationChartFolder
+													+ "/globalImprovement-BTHvsDTH"
+													+ "-LEBA-" + leba + "-TTH-"
+													+ tthValue + "-Agents-"
+													+ agentValue + "-IT-"
+													+ itValue + "-TestRatio-"
+													+ ratioValue + ".png",
+											axisLabels, coords,
+											ViewPositionMode.FREE, null);
+								}
 							}
 						}
 					}
