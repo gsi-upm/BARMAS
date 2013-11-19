@@ -49,9 +49,8 @@ public class AgentBayesLearningCapability {
 	 * @param iterations
 	 * @param classificationTarget
 	 */
-	public synchronized static void learnBNWithBayesianSearch(
-			BayesLearningAgent agent, int iterations,
-			String classificationTarget) {
+	public static void learnBNWithBayesianSearch(BayesLearningAgent agent,
+			int iterations, String classificationTarget) {
 
 		String datasetFile = agent.getDatasetFile();
 		DataSet dataset = new DataSet();
@@ -152,7 +151,7 @@ public class AgentBayesLearningCapability {
 	 * @param classificationTarget
 	 * @return
 	 */
-	private synchronized static double validateBN(Network bn, DataSet dataset,
+	private static double validateBN(Network bn, DataSet dataset,
 			String classificationTarget, BayesLearningAgent agent) {
 		String datasetFile = agent.getDatasetFile();
 		dataset.readFile(datasetFile);
@@ -189,8 +188,7 @@ public class AgentBayesLearningCapability {
 	 * @param bn
 	 * @param agent
 	 */
-	private synchronized static void writeBNFile(Network bn,
-			BayesLearningAgent agent) {
+	private static void writeBNFile(Network bn, BayesLearningAgent agent) {
 		// Check if folder parent exists
 		File f = new File(agent.getBNOutputFile());
 		File parent = f.getParentFile();
@@ -210,7 +208,7 @@ public class AgentBayesLearningCapability {
 	 * @param dataset
 	 * @return
 	 */
-	private synchronized static Network learnBN(DataSet dataset) {
+	private static Network learnBN(DataSet dataset) {
 		// Learning algorithm configuration
 		BayesianSearch bs = new BayesianSearch();
 		bs.setRandSeed(0);
