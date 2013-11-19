@@ -44,10 +44,6 @@ import smile.learning.Validator;
  */
 public class AgentBayesLearningCapability {
 
-	private static Object o = new Object();
-	private static Object o2 = new Object();
-	private static Object o3 = new Object();
-
 	/**
 	 * @param agent
 	 * @param iterations
@@ -127,9 +123,7 @@ public class AgentBayesLearningCapability {
 		for (String node : bn.getAllNodeIds()) {
 			validator.addClassNode(node);
 		}
-		synchronized (o3) {
-			validator.test();
-		}
+		validator.test();
 
 		ValidationMetricsStore scores = new ValidationMetricsStore();
 		double avgMCC = 0;
@@ -167,9 +161,7 @@ public class AgentBayesLearningCapability {
 		for (String node : bn.getAllNodeIds()) {
 			validator.addClassNode(node);
 		}
-		synchronized (o2) {
-			validator.test();	
-		}
+		validator.test();
 
 		ValidationMetricsStore scores = new ValidationMetricsStore();
 		double avgAccuracy = 0;
@@ -229,11 +221,7 @@ public class AgentBayesLearningCapability {
 		bs.setMaxSearchTime(0);
 
 		// Algorithm execution
-		Network net = null;
-		synchronized (o) {
-			net = bs.learn(dataset);
-		}
-
+		Network net = bs.learn(dataset);
 		return net;
 	}
 
