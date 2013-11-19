@@ -39,7 +39,6 @@ public class OneClickExperimentLauncher {
 	private String summaryFile;
 	private long seed;
 	private int maxThreads;
-	private int maxLearningThreads;
 	private int cores;
 	private int iterations;
 	private String classificationTarget;
@@ -82,8 +81,6 @@ public class OneClickExperimentLauncher {
 			maxThreads = cores * 10;
 			break;
 		}
-
-		this.maxLearningThreads = this.maxThreads;
 	}
 
 	/**
@@ -142,18 +139,14 @@ public class OneClickExperimentLauncher {
 		minLEBA = 0;
 		maxArgumentationRounds = 1000;
 
-		// this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		// experimentFolder, numberOfAgents, testRatio, centralApproach,
-		// summaryFile, seed, maxThreads, iterations,
-		// classificationTarget, delta,
-		// SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		// minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		// maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
-		// maxArgumentationRounds);
-		this.launchValidationBatchFor(simulationID, dataset, experimentFolder,
-				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-				maxThreads, iterations, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE);
+		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+		 experimentFolder, numberOfAgents, testRatio, centralApproach,
+		 summaryFile, seed, maxThreads, iterations,
+		 classificationTarget, delta,
+		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+		 maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+		 maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -187,19 +180,14 @@ public class OneClickExperimentLauncher {
 		minLEBA = 0;
 		maxArgumentationRounds = 1000;
 
-		// this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		// experimentFolder, numberOfAgents, testRatio, centralApproach,
-		// summaryFile, seed, maxThreads, iterations,
-		// classificationTarget, delta,
-		// SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		// minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		// maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
-		// maxArgumentationRounds);
-
-		this.launchValidationBatchFor(simulationID, dataset, experimentFolder,
-				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-				maxThreads, iterations, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE);
+		 this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+		 experimentFolder, numberOfAgents, testRatio, centralApproach,
+		 summaryFile, seed, maxThreads, iterations,
+		 classificationTarget, delta,
+		 SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+		 minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+		 maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+		 maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -234,18 +222,14 @@ public class OneClickExperimentLauncher {
 		minLEBA = 0;
 		maxArgumentationRounds = 200;
 
-		// this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-		// experimentFolder, numberOfAgents, testRatio, centralApproach,
-		// summaryFile, seed, maxThreads, iterations,
-		// classificationTarget, delta,
-		// SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		// minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		// maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
-		// maxArgumentationRounds);
-		this.launchValidationBatchFor(simulationID, dataset, experimentFolder,
-				numberOfAgents, testRatio, centralApproach, summaryFile, seed,
-				maxThreads, iterations, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE);
+		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
+				experimentFolder, numberOfAgents, testRatio, centralApproach,
+				summaryFile, seed, maxThreads, iterations,
+				classificationTarget, delta,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
 		// ***********************
 	}
 
@@ -656,8 +640,7 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				executor.executeValidators(validators, maxLearningThreads,
-						logger);
+				executor.executeValidators(validators, maxThreads, logger);
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -729,8 +712,7 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				executor.executeValidators(validators, maxLearningThreads,
-						logger);
+				executor.executeValidators(validators, maxThreads, logger);
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
 						.getExperimentFullBatch(simulationID, agentsNumber,
