@@ -79,8 +79,8 @@
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.launcher.OneClickExperimentLauncher</mainClass>
 					<arguments>
-						<argument>-Xmx12096m</argument>
-						<argument>-XX:MaxPermSize=12096m</argument>
+						<argument>-Xmx4096m</argument>
+						<argument>-XX:MaxPermSize=512m</argument>
 						<argument>-XX:-UseLoopPredicate</argument>
 					</arguments>
 				</configuration>
