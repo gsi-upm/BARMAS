@@ -79,7 +79,7 @@
 				<configuration>
 					<mainClass>es.upm.dit.gsi.barmas.launcher.OneClickExperimentLauncher</mainClass>
 					<arguments>
-						<argument>-Xmx10g</argument>
+						<argument>-Xmx6g</argument>
 						<argument>-XX:-UseLoopPredicate</argument>
 						<argument>-XX:-UseCompressedOops</argument>
 					</arguments>
