@@ -80,7 +80,6 @@
 					<mainClass>es.upm.dit.gsi.barmas.launcher.OneClickExperimentLauncher</mainClass>
 					<arguments>
 						<argument>-Xmx4096m</argument>
-						<argument>-XX:MaxPermSize=512m</argument>
 						<argument>-XX:-UseLoopPredicate</argument>
 						<argument>-XX:-UseCompressedOops</argument>
 					</arguments>
