@@ -188,7 +188,8 @@ public class AgentBayesLearningCapability {
 	 * @param bn
 	 * @param agent
 	 */
-	private static void writeBNFile(Network bn, BayesLearningAgent agent) {
+	private synchronized static void writeBNFile(Network bn,
+			BayesLearningAgent agent) {
 		// Check if folder parent exists
 		File f = new File(agent.getBNOutputFile());
 		File parent = f.getParentFile();
