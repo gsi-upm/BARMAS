@@ -209,7 +209,7 @@ public class AgentBayesLearningCapability {
 	 * @param dataset
 	 * @return
 	 */
-	private synchronized static Network learnBN(DataSet dataset) {
+	private static Network learnBN(DataSet dataset) {
 		// Learning algorithm configuration
 		BayesianSearch bs = new BayesianSearch();
 		bs.setRandSeed(0);
