@@ -95,9 +95,9 @@ public class OneClickExperimentLauncher {
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
-		this.launchMushroomBatch();
-		this.launchChessBatch();
-		this.launchPokerBatch();
+		// this.launchMushroomBatch();
+		// this.launchChessBatch();
+		// this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
