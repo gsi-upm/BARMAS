@@ -79,8 +79,9 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 						+ this.getID());
 			} catch (Exception e) {
 				try {
+					int learningIterations = 3;
 					AgentBayesLearningCapability.learnBNWithBayesianSearch(
-							this, 10, classificationTarget);
+							this, learningIterations, classificationTarget);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					System.exit(1);
@@ -112,8 +113,11 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 		return this.bn;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.BayesianReasonerShanksAgent#setBayesianNetwork(smile.Network)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.
+	 * BayesianReasonerShanksAgent#setBayesianNetwork(smile.Network)
 	 */
 	public void setBayesianNetwork(Network bn) {
 		this.bn = bn;

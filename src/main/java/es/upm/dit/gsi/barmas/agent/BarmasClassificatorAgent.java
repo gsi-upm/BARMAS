@@ -148,8 +148,9 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 						+ this.getID());
 			} catch (Exception e) {
 				try {
+					int learningIterations = 3;
 					AgentBayesLearningCapability.learnBNWithBayesianSearch(
-							this, 10, classificationTarget);
+							this, learningIterations, classificationTarget);
 				} catch (Exception ex) {
 					this.getLogger().severe(
 							"Problem learning BN. Exception: "
