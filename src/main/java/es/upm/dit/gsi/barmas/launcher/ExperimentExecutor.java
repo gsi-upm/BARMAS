@@ -183,16 +183,18 @@ public class ExperimentExecutor {
 			long pendingExps = (experimentsQuantity - finishedExperiments);
 			long percentage = (pendingExps / experimentsQuantity) * 100;
 			logger.info("--> Pending experiments for this batch: "
-					+ pendingExps + " => Pending " + percentage + "% of all of the batch experiments");
+					+ pendingExps + " => Pending " + percentage
+					+ "% of all of the batch experiments");
 		}
 
-		logger.info("There are "
-				+ threads.size()
-				+ " simulations in progress right now. They are the last simulations for this batch.");
+		logger.info("Last experiments of the batch in execution...");
 		for (Thread thread : threads) {
 			logger.info("Simulation in progress. SimluationID: "
 					+ thread.getName());
 		}
+		logger.info("There are "
+				+ threads.size()
+				+ " simulations in progress right now. They are the last simulations for this batch.");
 
 		while (!threads.isEmpty()) {
 			List<Thread> threads2Remove = new ArrayList<Thread>();
@@ -209,13 +211,13 @@ public class ExperimentExecutor {
 				threads.removeAll(threads2Remove);
 				threads2Remove.clear();
 				System.gc();
-				logger.info("There are "
-						+ threads.size()
-						+ " in progress right now. They are the last simulations for this batch.");
 				for (Thread thread : threads) {
 					logger.info("Simulation in progress. SimluationID: "
 							+ thread.getName());
 				}
+				logger.info("There are "
+						+ threads.size()
+						+ " in progress right now. They are the last simulations for this batch.");
 			}
 			if (!threads.isEmpty()) {
 				try {
@@ -272,8 +274,8 @@ public class ExperimentExecutor {
 			experiments.add(expValidator);
 		}
 		String simulationPrefix = simulationID + "-BayesCentralAgent-DTH-"
-				+ 2.0 + "-BTH-" + 2.0 + "-LEBA-" + 0 + "-TTH-" + 2.0
-				+ "-IT-" + iteration;
+				+ 2.0 + "-BTH-" + 2.0 + "-LEBA-" + 0 + "-TTH-" + 2.0 + "-IT-"
+				+ iteration;
 		BarmasAgentValidator expValidator = new BarmasAgentValidator(
 				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
 				experimentDatasetPath + "/bayes/bayes-central-dataset.net",
