@@ -188,7 +188,7 @@ public class AgentBayesLearningCapability {
 	 * @param bn
 	 * @param agent
 	 */
-	private synchronized static void writeBNFile(Network bn,
+	private static void writeBNFile(Network bn,
 			BayesLearningAgent agent) {
 		// Check if folder parent exists
 		File f = new File(agent.getBNOutputFile());
@@ -209,7 +209,7 @@ public class AgentBayesLearningCapability {
 	 * @param dataset
 	 * @return
 	 */
-	private static Network learnBN(DataSet dataset) {
+	private synchronized static Network learnBN(DataSet dataset) {
 		// Learning algorithm configuration
 		BayesianSearch bs = new BayesianSearch();
 		bs.setRandSeed(0);
