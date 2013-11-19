@@ -289,8 +289,8 @@ public class OneClickExperimentLauncher {
 		simulationID = "SOLARFLARE";
 		dataset = "src/main/resources/dataset/solarflare-global.csv";
 		experimentFolder = "solarflare-simulation";
-		numberOfAgents = 6;
-		testRatio = 0.4;
+		numberOfAgents = 2;
+		testRatio = 0.5;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
@@ -305,7 +305,7 @@ public class OneClickExperimentLauncher {
 		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
-		maxLEBA = 8;
+		maxLEBA = 20;
 		minLEBA = 0;
 		maxArgumentationRounds = 200;
 
@@ -417,8 +417,8 @@ public class OneClickExperimentLauncher {
 		simulationID = "ZOO";
 		dataset = "src/main/resources/dataset/zoo.csv";
 		experimentFolder = "zoo-simulation";
-		numberOfAgents = 3;
-		testRatio = 0.3;
+		numberOfAgents = 2;
+		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
