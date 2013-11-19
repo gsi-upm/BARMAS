@@ -39,6 +39,7 @@ public class OneClickExperimentLauncher {
 	private String summaryFile;
 	private long seed;
 	private int maxThreads;
+	private int maxLearningThreads;
 	private int cores;
 	private int iterations;
 	private String classificationTarget;
@@ -81,6 +82,8 @@ public class OneClickExperimentLauncher {
 			maxThreads = cores * 10;
 			break;
 		}
+
+		this.maxLearningThreads = this.maxThreads;
 	}
 
 	/**
@@ -533,7 +536,8 @@ public class OneClickExperimentLauncher {
 						+ " validations are ready to execute for simulation: "
 						+ simulationID);
 				logger.info("---> Starting validations executions...");
-				executor.executeValidators(validators, maxThreads, logger);
+				executor.executeValidators(validators, maxLearningThreads,
+						logger);
 				logger.info("<--- Finishing validations executions...");
 
 				long finishTime = System.currentTimeMillis();
@@ -640,7 +644,8 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				executor.executeValidators(validators, maxThreads, logger);
+				executor.executeValidators(validators, maxLearningThreads,
+						logger);
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -712,7 +717,8 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				executor.executeValidators(validators, maxThreads, logger);
+				executor.executeValidators(validators, maxLearningThreads,
+						logger);
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
 						.getExperimentFullBatch(simulationID, agentsNumber,
