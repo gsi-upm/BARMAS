@@ -258,11 +258,11 @@ public class OneClickExperimentLauncher {
 		delta = 0.1;
 
 		maxDistanceThreshold = 0.4;
-		minDistanceThreshold = 0.0;
+		minDistanceThreshold = 0.05;
 		maxBeliefThreshold = 0.2;
-		minBeliefThreshold = 0.0;
+		minBeliefThreshold = 0.05;
 		maxTrustThreshold = 0.6;
-		minTrustThreshold = 0.0;
+		minTrustThreshold = 0.05;
 		maxLEBA = 30;
 		minLEBA = 0;
 		maxArgumentationRounds = 200;
