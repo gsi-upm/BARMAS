@@ -44,6 +44,8 @@ import smile.learning.Validator;
  */
 public class AgentBayesLearningCapability {
 
+	private static Object o = new Object();
+
 	/**
 	 * @param agent
 	 * @param iterations
@@ -188,8 +190,7 @@ public class AgentBayesLearningCapability {
 	 * @param bn
 	 * @param agent
 	 */
-	private static void writeBNFile(Network bn,
-			BayesLearningAgent agent) {
+	private static void writeBNFile(Network bn, BayesLearningAgent agent) {
 		// Check if folder parent exists
 		File f = new File(agent.getBNOutputFile());
 		File parent = f.getParentFile();
@@ -210,6 +211,7 @@ public class AgentBayesLearningCapability {
 	 * @return
 	 */
 	private static Network learnBN(DataSet dataset) {
+
 		// Learning algorithm configuration
 		BayesianSearch bs = new BayesianSearch();
 		bs.setRandSeed(0);
@@ -221,7 +223,12 @@ public class AgentBayesLearningCapability {
 		bs.setMaxSearchTime(0);
 
 		// Algorithm execution
-		return bs.learn(dataset);
+		Network net = null;
+		synchronized (o) {
+			net = bs.learn(dataset);
+		}
+
+		return net;
 	}
 
 }
