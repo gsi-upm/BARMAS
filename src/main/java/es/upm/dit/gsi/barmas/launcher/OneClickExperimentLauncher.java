@@ -39,6 +39,7 @@ public class OneClickExperimentLauncher {
 	private String summaryFile;
 	private long seed;
 	private int maxThreads;
+	private int maxLearningThreads;
 	private int cores;
 	private int iterations;
 	private String classificationTarget;
@@ -66,6 +67,7 @@ public class OneClickExperimentLauncher {
 	public OneClickExperimentLauncher() {
 		this.initTime = System.currentTimeMillis();
 		this.cores = Runtime.getRuntime().availableProcessors();
+		this.maxLearningThreads = this.cores;
 
 		switch (this.cores) {
 		case 8:
@@ -203,8 +205,8 @@ public class OneClickExperimentLauncher {
 		simulationID = "MUSHROOM";
 		dataset = "src/main/resources/dataset/agaricus-lepiota.csv";
 		experimentFolder = "mushroom-simulation";
-		numberOfAgents = 20;
-		testRatio = 0.05;
+		numberOfAgents = 10;
+		testRatio = 0.1;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
@@ -641,7 +643,8 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				executor.executeValidators(validators, maxThreads, logger);
+				executor.executeValidators(validators, maxLearningThreads,
+						logger);
 
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
@@ -713,8 +716,8 @@ public class OneClickExperimentLauncher {
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: "
 						+ simulationID + " for iteration " + i);
-				executor.executeValidators(validators, maxThreads, logger);
-
+				executor.executeValidators(validators, maxLearningThreads,
+						logger);
 				// EXPERIMENTS
 				List<RunnableExperiment> experiments = executor
 						.getExperimentFullBatch(simulationID, agentsNumber,
