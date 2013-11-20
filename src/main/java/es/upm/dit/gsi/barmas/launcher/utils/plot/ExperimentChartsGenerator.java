@@ -113,9 +113,7 @@ public class ExperimentChartsGenerator {
 			}
 
 			reader.close();
-			
-			this.writeBetterAndWorstResults(chartOutputFolder);
-			
+
 			for (int i = 0; i < itsNum; i++) {
 				this.saveValidationCylinderChartForIteration(summaryFile,
 						chartOutputFolder, i);
@@ -137,23 +135,6 @@ public class ExperimentChartsGenerator {
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
 			System.exit(1);
-		}
-	}
-
-	/**
-	 * 
-	 */
-	private void writeBetterAndWorstResults(String chartOutputFolder) {
-
-		String globalChartFolder = chartOutputFolder + "/global";
-		try {
-			CsvWriter writer = new CsvWriter(new FileWriter(new File(
-					globalChartFolder + "/betterAndWorstResults.csv")), ',');
-			
-			// TODO implement this
-		} catch (IOException e) {
-			logger.severe("Problem creating betterAndWorstResults.csv");
-			e.printStackTrace();
 		}
 	}
 
@@ -205,7 +186,7 @@ public class ExperimentChartsGenerator {
 			logger.info("Creating The Matrix");
 			this.theMatrix = new double[lebas.size()][tths.size()][dths.size()][bths
 					.size()][agents.size()][its.size()][testRatios.size()];
-			for (int leba = 0; leba < lebas.size(); leba++)
+			for (int leba = 0; leba < lebas.size(); leba++) {
 				for (int tth = 0; tth < tths.size(); tth++) {
 					for (int dth = 0; dth < dths.size(); dth++) {
 						for (int bth = 0; bth < bths.size(); bth++) {
@@ -222,6 +203,7 @@ public class ExperimentChartsGenerator {
 						}
 					}
 				}
+			}
 			logger.info("Filling The Matrix...");
 			for (String[] row : experimentResultsRatios) {
 				String globalImp = row[9];
@@ -464,8 +446,7 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue == 2.0
-												|| bthValue == 2.0) {
+										if (dthValue == 2.0 || bthValue == 2.0) {
 											if (dthValue == 2.0
 													&& bthValue == 2.0) {
 												Coord3d coord = new Coord3d(
@@ -631,8 +612,7 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue == 2.0
-												|| bthValue == 2.0) {
+										if (dthValue == 2.0 || bthValue == 2.0) {
 											if (dthValue == 2.0
 													&& bthValue == 2.0) {
 												Coord3d coord = new Coord3d(
@@ -720,8 +700,7 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue != 2.0
-												&& tthValue != 2.0
+										if (dthValue != 2.0 && tthValue != 2.0
 												&& bthValue != 2.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, bthValue, imp);
@@ -802,8 +781,7 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue != 2.0
-												&& tthValue != 2.0
+										if (dthValue != 2.0 && tthValue != 2.0
 												&& bthValue != 2.0) {
 											Coord3d coord = new Coord3d(
 													lebaValue, dthValue, imp);
@@ -884,8 +862,7 @@ public class ExperimentChartsGenerator {
 											theMatrix, leba, tth, dth, bth,
 											agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue == 2.0
-												|| bthValue == 2.0) {
+										if (dthValue == 2.0 || bthValue == 2.0) {
 											if (dthValue == 2.0
 													&& bthValue == 2.0) {
 												Coord3d coord = new Coord3d(
