@@ -91,11 +91,11 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		 this.launchZooBatch();
+//		 this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 //		this.launchSolarFlareBatch();
-		// this.launchKowlanCZBatch();
+		 this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
