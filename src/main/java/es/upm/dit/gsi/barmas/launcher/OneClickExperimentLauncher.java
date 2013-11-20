@@ -428,11 +428,11 @@ public class OneClickExperimentLauncher {
 		classificationTarget = "AnimalType";
 		delta = 0.1;
 
-		maxDistanceThreshold = 0.5;
+		maxDistanceThreshold = 1.0;
 		minDistanceThreshold = 0.1;
-		maxBeliefThreshold = 0.5;
+		maxBeliefThreshold = 1.0;
 		minBeliefThreshold = 0.1;
-		maxTrustThreshold = 0.5;
+		maxTrustThreshold = 1.0;
 		minTrustThreshold = 0.1;
 		maxLEBA = 50;
 		minLEBA = 0;
