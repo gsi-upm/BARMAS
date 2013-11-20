@@ -260,11 +260,11 @@ public class OneClickExperimentLauncher {
 		maxDistanceThreshold = 0.4;
 		minDistanceThreshold = 0.2;
 		maxBeliefThreshold = 0.2;
-		minBeliefThreshold = 0.2;
+		minBeliefThreshold = 0.1;
 		maxTrustThreshold = 0.6;
 		minTrustThreshold = 0.1;
-		maxLEBA = 30;
-		minLEBA = 5;
+		maxLEBA = 10;
+		minLEBA = 0;
 		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
