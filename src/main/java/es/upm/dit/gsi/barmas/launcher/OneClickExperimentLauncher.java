@@ -419,7 +419,7 @@ public class OneClickExperimentLauncher {
 		dataset = "src/main/resources/dataset/zoo.csv";
 		simName = "zoo-simulation";
 		experimentFolder = "../experiments/" + simName;
-		numberOfAgents = 2;
+		numberOfAgents = 3;
 		testRatio = 0.3;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
