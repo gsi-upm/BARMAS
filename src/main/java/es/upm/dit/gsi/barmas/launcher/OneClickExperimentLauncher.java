@@ -419,7 +419,7 @@ public class OneClickExperimentLauncher {
 		dataset = "src/main/resources/dataset/zoo.csv";
 		simName = "zoo-simulation";
 		experimentFolder = "../experiments/" + simName;
-		numberOfAgents = 3;
+		numberOfAgents = 2;
 		testRatio = 0.3;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
@@ -428,7 +428,7 @@ public class OneClickExperimentLauncher {
 		classificationTarget = "AnimalType";
 		delta = 0.1;
 
-		maxDistanceThreshold = 0.0;
+		maxDistanceThreshold = 0.5;
 		minDistanceThreshold = 0.1;
 		maxBeliefThreshold = 0.5;
 		minBeliefThreshold = 0.1;
