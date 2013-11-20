@@ -420,7 +420,7 @@ public class OneClickExperimentLauncher {
 		simName = "zoo-simulation";
 		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 2;
-		testRatio = 0.10;
+		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
