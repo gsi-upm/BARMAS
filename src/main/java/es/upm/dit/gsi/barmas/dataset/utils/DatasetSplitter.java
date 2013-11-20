@@ -41,7 +41,7 @@ import com.csvreader.CsvWriter;
  * @email a.carrera@gsi.dit.upm.es
  * @twitter @alvarocarrera
  * @date 31/10/2013
- * @version 0.1
+ * @version 0.2
  * 
  */
 public class DatasetSplitter {
@@ -114,6 +114,11 @@ public class DatasetSplitter {
 
 			csvreader.readHeaders();
 			String[] headers = csvreader.getHeaders();
+			int originalDatasetRowsCounter = 0;
+			while (csvreader.readRecord()) {
+				originalDatasetRowsCounter++;
+			}
+			csvreader.close();
 
 			// Create datasets files
 
@@ -151,36 +156,31 @@ public class DatasetSplitter {
 			logger.fine("Test dataset created.");
 
 			// Create an ordering queue
-			int testCases = this.calculeTestCasesQuantity(agents, ratio);
-			logger.fine("For " + agents + " agents and ratio = " + ratio
-					+ " -> test cases are: " + testCases);
-			String[] ordering = new String[testCases + agents];
-			for (int i = 0; i < testCases; i++) {
-				ordering[i] = "TEST";
-			}
-			for (int i = 0; i < agents; i++) {
-				ordering[testCases + i] = "AGENT" + i;
-			}
+			int testCases = (int) (ratio * originalDatasetRowsCounter);
+			int testStep = originalDatasetRowsCounter / testCases;
 
-			// Fill datasets
-			int counter = 0;
+			csvreader = new CsvReader(new FileReader(new File(
+					originalDatasetPath)));
+
+			csvreader.readHeaders();
+			int stepCounter = 0;
+			int agentCounter = 0;
 			while (csvreader.readRecord()) {
-
-				writer = writers.get(ordering[counter]);
 				String[] row = csvreader.getValues();
-				writer.writeRecord(row);
-				writer.flush();
-
-				if (ordering[counter].startsWith("AGENT") && central) {
+				if (stepCounter % testStep == 0) {
+					writer = writers.get("TEST");
+					writer.writeRecord(row);
+				} else {
+					writer = writers.get("AGENT" + agentCounter);
+					writer.writeRecord(row);
 					writer = writers.get("CENTRAL");
 					writer.writeRecord(row);
-					writer.flush();
+					agentCounter++;
+					if (agentCounter == agents) {
+						agentCounter = 0;
+					}
 				}
-
-				counter++;
-				if (counter == ordering.length) {
-					counter = 0;
-				}
+				stepCounter++;
 			}
 
 			csvreader.close();
@@ -261,7 +261,7 @@ public class DatasetSplitter {
 			}
 
 			reader.close();
-			
+
 			logger.fine("Number of Essentials: " + essentials.size());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -269,27 +269,4 @@ public class DatasetSplitter {
 		}
 		return essentials;
 	}
-
-	/**
-	 * @param agents
-	 * @param ratio
-	 * @return test = (ratio/(1-ratio))*agents
-	 * @throws IllegalArgumentException
-	 */
-	private int calculeTestCasesQuantity(int agents, double ratio)
-			throws IllegalArgumentException {
-		if (ratio <= 0 || ratio >= 1 || agents <= 0) {
-			throw new IllegalArgumentException(
-					"Invalid arguments: -> Ratio must be 0<ratio<1 and agents>0");
-		}
-		double aux = ratio / (1 - ratio);
-		int test = (int) (aux * agents);
-		if (test == 0) {
-			throw new IllegalArgumentException(
-					"Tests cases equals to 0 -> Add more agents or increase the ratio. Now agents: "
-							+ agents + " & ratio: " + ratio);
-		}
-		return test;
-	}
-
 }
