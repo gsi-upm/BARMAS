@@ -32,6 +32,7 @@ public class OneClickExperimentLauncher {
 
 	private String simulationID;
 	private String dataset;
+	private String simName;
 	private String experimentFolder;
 	private int numberOfAgents;
 	private double testRatio;
@@ -91,11 +92,11 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-//		 this.launchZooBatch();
+		// this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
-//		this.launchSolarFlareBatch();
-		 this.launchKowlanCZBatch();
+		// this.launchSolarFlareBatch();
+		this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -121,12 +122,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "POKER";
 		dataset = "src/main/resources/dataset/poker.csv";
-		experimentFolder = "poker-simulation";
+		simName = "poker-simulation";
+		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 200;
 		testRatio = 0.1;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "PokerHand";
@@ -162,12 +163,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "CHESS";
 		dataset = "src/main/resources/dataset/kr-vs-k.csv";
-		experimentFolder = "chess-simulation";
+		simName = "chess-simulation";
+		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 10;
 		testRatio = 0.5;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "Game";
@@ -204,12 +205,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "MUSHROOM";
 		dataset = "src/main/resources/dataset/agaricus-lepiota.csv";
-		experimentFolder = "mushroom-simulation";
+		simName = "mushroom-simulation";
+		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 10;
 		testRatio = 0.1;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "mushroomPoisonous";
@@ -246,12 +247,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "KOWLANCZ02";
 		dataset = "src/main/resources/dataset/kowlancz/CZ02/CZ02-dataset.csv";
-		experimentFolder = "kowlancz02-simulation";
-		numberOfAgents = 5;
-		testRatio = 0.2;
+		simName = "kowlancz02-simulation";
+		experimentFolder = "../experiments/" + simName;
+		numberOfAgents = 3;
+		testRatio = 0.3;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "Diagnosis";
@@ -288,12 +289,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "SOLARFLARE";
 		dataset = "src/main/resources/dataset/solarflare-global.csv";
-		experimentFolder = "solarflare-simulation";
+		simName = "solarflare-simulation";
+		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 2;
 		testRatio = 0.4;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "SolarFlareType";
@@ -331,12 +332,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "MARKETING";
 		dataset = "src/main/resources/dataset/marketing.csv";
-		experimentFolder = "marketing-simulation";
+		simName = "marketing-simulation";
+		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 3;
 		testRatio = 0.5;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "Income";
@@ -374,12 +375,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "NURSERY";
 		dataset = "src/main/resources/dataset/nursery.csv";
-		experimentFolder = "nursery-simulation";
+		simName = "nursery-simulation";
+		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 3;
 		testRatio = 0.3;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "Classification";
@@ -416,12 +417,12 @@ public class OneClickExperimentLauncher {
 		// ***********************
 		simulationID = "ZOO";
 		dataset = "src/main/resources/dataset/zoo.csv";
-		experimentFolder = "zoo-simulation";
+		simName = "zoo-simulation";
+		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 2;
 		testRatio = 0.4;
 		centralApproach = true;
-		summaryFile = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		iterations = 1;
 		classificationTarget = "AnimalType";

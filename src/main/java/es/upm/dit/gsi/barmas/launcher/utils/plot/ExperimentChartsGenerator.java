@@ -65,9 +65,9 @@ public class ExperimentChartsGenerator {
 	 */
 	public static void main(String[] args) {
 
-		String experimentFolder = "zoo-simulation";
-		String file = experimentFolder + "/" + experimentFolder
-				+ "-summary.csv";
+		String simName = "kowlancz02-simulation";
+		String experimentFolder = "../experiments/" + simName;
+		String file = experimentFolder + "/" + simName + "-summary.csv";
 		ExperimentChartsGenerator chartGenerator = new ExperimentChartsGenerator(
 				Logger.getLogger(ExperimentChartsGenerator.class
 						.getSimpleName()), file, experimentFolder
@@ -119,6 +119,8 @@ public class ExperimentChartsGenerator {
 						chartOutputFolder, i);
 			}
 
+			this.averageImprovements(chartOutputFolder);
+
 			this.saveGlobalImprovementDelaunayChartsForIteration(summaryFile,
 					chartOutputFolder);
 
@@ -128,6 +130,45 @@ public class ExperimentChartsGenerator {
 				this.saveValidationCylinderChart(summaryFile, chartOutputFolder);
 				// TODO think in interesting scatter plots
 			}
+
+		} catch (FileNotFoundException e) {
+			logger.severe(e.getMessage());
+			System.exit(1);
+		} catch (IOException e) {
+			logger.severe(e.getMessage());
+			System.exit(1);
+		}
+	}
+
+	/**
+	 * @param chartOutputFolder
+	 */
+	private void averageImprovements(String chartOutputFolder) {
+		try {
+			CsvReader reader = new CsvReader(new FileReader(new File(
+					summaryFile)));
+			reader.readHeaders();
+			String[] headers = reader.getHeaders();
+
+			List<String[]> experimentResultsRatios = new ArrayList<String[]>();
+			while (reader.readRecord()) {
+				String[] row = reader.getValues();
+				experimentResultsRatios.add(row);
+			}
+			reader.close();
+
+			// Write little info file
+			CsvWriter writer = new CsvWriter(new FileWriter(new File(
+					outputChartFolder + "/experiments.csv")), ',');
+			writer.writeRecord(headers);
+			for (String[] row : experimentResultsRatios) {
+				writer.writeRecord(row);
+			}
+			writer.flush();
+			writer.close();
+
+			logger.info("Analysis in progress...");
+			// TODO implement this
 
 		} catch (FileNotFoundException e) {
 			logger.severe(e.getMessage());

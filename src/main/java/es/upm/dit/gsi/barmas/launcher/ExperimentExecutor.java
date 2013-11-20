@@ -55,11 +55,12 @@ public class ExperimentExecutor {
 
 		String simulationID = "SOLARFLARE";
 		String dataset = "src/main/resources/dataset/solarflare-global.csv";
-		String experimentFolder = "solarflare-simulation";
+		String simName = "solarflare-simulation";
+		String experimentFolder = "../experiments/"+simName;
 		int numberOfAgents = 5;
 		double testRatio = 0.2;
 
-		String summaryFile = experimentFolder + "/" + experimentFolder
+		String summaryFile = experimentFolder + "/" + simName
 				+ "-summary.csv";
 		long seed = 0;
 		String classificationTarget = "SolarFlareType";
