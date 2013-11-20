@@ -114,9 +114,7 @@ public class ExperimentsAnalyser {
 
 			reader.close();
 
-
 			this.averageImprovements(chartOutputFolder);
-
 
 			for (int i = 0; i < itsNum; i++) {
 				this.saveValidationCylinderChartForIteration(summaryFile,
@@ -167,6 +165,7 @@ public class ExperimentsAnalyser {
 			this.writeAnalysisForVariable(writer, columns, its, "ITERATION");
 			this.writeAnalysisForVariable(writer, columns, testRatios,
 					"TESTRATIOS");
+			this.writeAnalysisForConfigurationParams(writer, columns);
 
 			writer.close();
 		} catch (FileNotFoundException e) {
@@ -176,6 +175,55 @@ public class ExperimentsAnalyser {
 			logger.severe(e.getMessage());
 			System.exit(1);
 		}
+	}
+
+	/**
+	 * @param writer
+	 * @param columns
+	 * @throws IOException
+	 */
+	private void writeAnalysisForConfigurationParams(CsvWriter writer,
+			int columns) throws IOException {
+		String name = "TTH-DTH-BTH";
+		for (int tth = 0; tth < tths.size(); tth++) {
+			for (int dth = 0; dth < dths.size(); dth++) {
+				for (int bth = 0; bth < bths.size(); bth++) {
+					String[] row = new String[columns];
+					row[0] = name;
+					row[1] = this.getStringForPosInTheMatrix(tths, tth) + "-"
+							+ this.getStringForPosInTheMatrix(dths, dth) + "-"
+							+ this.getStringForPosInTheMatrix(bths, bth);
+					row[2] = this.getAvgImpValueForConfigurationsParams(tth,
+							dth, bth);
+					writer.writeRecord(row);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param tth
+	 * @param dth
+	 * @param bth
+	 * @return
+	 */
+	private String getAvgImpValueForConfigurationsParams(int tth, int dth,
+			int bth) {
+		int counter = 0;
+		double sum = 0;
+		for (int leba = 0; leba < lebas.size(); leba++) {
+			for (int agent = 0; agent < agents.size(); agent++) {
+				for (int it = 0; it < its.size(); it++) {
+					for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
+						sum = sum
+								+ this.getImpFromTheMatrix(theMatrix, leba,
+										tth, dth, bth, agent, it, testRatio);
+						counter++;
+					}
+				}
+			}
+		}
+		return Double.toString(sum / counter);
 	}
 
 	/**
