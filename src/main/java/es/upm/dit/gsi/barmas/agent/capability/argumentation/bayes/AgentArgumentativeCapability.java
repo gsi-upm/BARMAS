@@ -722,7 +722,7 @@ public class AgentArgumentativeCapability {
 		String hyp = "";
 		double maxBelief = -2;
 		double maxTrustScore = -2;
-		double maxPonderatedTrust = -2;
+		double maxWeightedTrust = -2;
 		Argument argumentConclusion = null;
 		// Find higher trust score
 		for (Argument arg : possibleConclusions) {
@@ -734,10 +734,10 @@ public class AgentArgumentativeCapability {
 							score = 0.01;
 						}
 						double pTrust = score * p.getMaxValue() * 10;
-						if (pTrust > maxPonderatedTrust) {
+						if (pTrust > maxWeightedTrust) {
 							maxTrustScore = score;
 							maxBelief = p.getMaxValue();
-							maxPonderatedTrust = pTrust;
+							maxWeightedTrust = pTrust;
 							argumentConclusion = arg;
 							hyp = p.getMaxState();
 						}
@@ -752,7 +752,7 @@ public class AgentArgumentativeCapability {
 					if (p.getNode().equals(classificationTarget)) {
 						double score = p.getTrustScoreValue();
 						// double distance = Math.abs(maxTrustScore - score);
-						double distance = Math.abs(maxPonderatedTrust
+						double distance = Math.abs(maxWeightedTrust
 								- (score * p.getMaxValue() * 10));
 						if (distance <= trustThreshold) {
 							if (p.getMaxValue() > maxBelief) {
