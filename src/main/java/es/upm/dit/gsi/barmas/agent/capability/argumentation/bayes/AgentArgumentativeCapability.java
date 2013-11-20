@@ -147,16 +147,14 @@ public class AgentArgumentativeCapability {
 	 * @throws ShanksException
 	 */
 	public static Set<Argument> createArguments(ArgumentativeAgent proponent,
-			Network bn, long step, long timestamp)
-			throws ShanksException {
+			Network bn, long step, long timestamp) throws ShanksException {
 		Set<Argument> args = new HashSet<Argument>();
 		HashMap<String, String> evidences = (HashMap<String, String>) ShanksAgentBayesianReasoningCapability
 				.getEvidences(bn);
 		HashMap<String, HashMap<String, Float>> hypotheses = ShanksAgentBayesianReasoningCapability
 				.getAllHypotheses(bn);
 		for (Entry<String, HashMap<String, Float>> hyp : hypotheses.entrySet()) {
-			int node = bn.getNode(hyp
-					.getKey());
+			int node = bn.getNode(hyp.getKey());
 			if (!bn.isEvidence(node)) {
 				HashMap<String, Float> states = hyp.getValue();
 				for (Entry<String, Float> state : states.entrySet()) {
@@ -724,6 +722,7 @@ public class AgentArgumentativeCapability {
 		String hyp = "";
 		double maxBelief = -2;
 		double maxTrustScore = -2;
+		double maxPonderatedTrust = -2;
 		Argument argumentConclusion = null;
 		// Find higher trust score
 		for (Argument arg : possibleConclusions) {
@@ -731,8 +730,16 @@ public class AgentArgumentativeCapability {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)) {
 						double score = p.getTrustScoreValue();
-						if (score > maxTrustScore) {
+						if (score == 0) {
+							score = 0.01;
+						}
+						double pTrust = score * p.getMaxValue() * 10;
+						if (pTrust > maxPonderatedTrust) {
 							maxTrustScore = score;
+							maxBelief = p.getMaxValue();
+							maxPonderatedTrust = pTrust;
+							argumentConclusion = arg;
+							hyp = p.getMaxState();
 						}
 					}
 				}
@@ -744,7 +751,9 @@ public class AgentArgumentativeCapability {
 				for (Proposal p : arg.getProposals()) {
 					if (p.getNode().equals(classificationTarget)) {
 						double score = p.getTrustScoreValue();
-						double distance = Math.abs(maxTrustScore - score);
+						// double distance = Math.abs(maxTrustScore - score);
+						double distance = Math.abs(maxPonderatedTrust
+								- (score * p.getMaxValue() * 10));
 						if (distance <= trustThreshold) {
 							if (p.getMaxValue() > maxBelief) {
 								maxTrustScore = score;

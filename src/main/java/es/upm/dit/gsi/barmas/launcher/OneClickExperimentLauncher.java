@@ -91,10 +91,10 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		this.launchZooBatch();
+		 this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
-		// this.launchSolarFlareBatch();
+//		this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
@@ -290,7 +290,7 @@ public class OneClickExperimentLauncher {
 		dataset = "src/main/resources/dataset/solarflare-global.csv";
 		experimentFolder = "solarflare-simulation";
 		numberOfAgents = 2;
-		testRatio = 0.5;
+		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";

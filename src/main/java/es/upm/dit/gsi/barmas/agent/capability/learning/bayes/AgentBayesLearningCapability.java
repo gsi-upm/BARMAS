@@ -115,6 +115,7 @@ public class AgentBayesLearningCapability {
 	 */
 	private static double validateBNWithMCC(Network bn, DataSet dataset,
 			BayesLearningAgent agent) {
+
 		String datasetFile = agent.getDatasetFile();
 		dataset.readFile(datasetFile);
 
@@ -127,6 +128,7 @@ public class AgentBayesLearningCapability {
 
 		ValidationMetricsStore scores = new ValidationMetricsStore();
 		double avgMCC = 0;
+		double statesCounter = 0;
 		for (String node : bn.getAllNodeIds()) {
 			scores.addNode(node);
 			int statesCount = bn.getOutcomeCount(node);
@@ -135,12 +137,16 @@ public class AgentBayesLearningCapability {
 			}
 			int[][] confusionMatrix = validator.getConfusionMatrix(node);
 			scores.addMatrix(node, confusionMatrix);
-
+		}
+		for (String node : bn.getAllNodeIds()) {
+			int statesCount = bn.getOutcomeCount(node);
+			statesCounter = statesCounter + statesCount;
 			for (int i = 0; i < statesCount; i++) {
-				avgMCC = (avgMCC + scores
-						.getMCC(node, scores.getState(node, i))) / (i + 1);
+				double mcc = scores.getMCC(node, scores.getState(node, i));
+				avgMCC = (avgMCC + mcc);
 			}
 		}
+		avgMCC = avgMCC / statesCounter;
 		return avgMCC;
 
 	}

@@ -65,7 +65,7 @@ public class ExperimentChartsGenerator {
 	 */
 	public static void main(String[] args) {
 
-		String experimentFolder = "kowlancz02-simulation";
+		String experimentFolder = "zoo-simulation";
 		String file = experimentFolder + "/" + experimentFolder
 				+ "-summary.csv";
 		ExperimentChartsGenerator chartGenerator = new ExperimentChartsGenerator(
@@ -113,7 +113,9 @@ public class ExperimentChartsGenerator {
 			}
 
 			reader.close();
-
+			
+			this.writeBetterAndWorstResults(chartOutputFolder);
+			
 			for (int i = 0; i < itsNum; i++) {
 				this.saveValidationCylinderChartForIteration(summaryFile,
 						chartOutputFolder, i);
@@ -135,6 +137,23 @@ public class ExperimentChartsGenerator {
 		} catch (IOException e) {
 			logger.severe(e.getMessage());
 			System.exit(1);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private void writeBetterAndWorstResults(String chartOutputFolder) {
+
+		String globalChartFolder = chartOutputFolder + "/global";
+		try {
+			CsvWriter writer = new CsvWriter(new FileWriter(new File(
+					globalChartFolder + "/betterAndWorstResults.csv")), ',');
+			
+			// TODO implement this
+		} catch (IOException e) {
+			logger.severe("Problem creating betterAndWorstResults.csv");
+			e.printStackTrace();
 		}
 	}
 

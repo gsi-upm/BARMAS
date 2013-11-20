@@ -329,9 +329,14 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 								.areDistributionsFarEnough(receivedBelief,
 										ownBelief);
 						if (reputationMode) {
-							moreTrust = p.getTrustScoreValue()
-									- this.getTrustScoreValueForCurrentBelief(p
-											.getNode()) >= this.trustThreshold;
+							// moreTrust = p.getTrustScoreValue()
+							// - this.getTrustScoreValueForCurrentBelief(p
+							// .getNode()) >= this.trustThreshold;
+							moreTrust = (p.getTrustScoreValue()
+									* p.getMaxValue() * 10)
+									- (this.getTrustScoreValueForCurrentBelief(p
+											.getNode())
+											* auxp.getMaxValue() * 10) >= this.trustThreshold;
 							otherIsBetter = moreTrust
 									&& (maxDiff >= this.beliefThreshold);
 						} else {
@@ -521,10 +526,16 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					boolean enoughDistance = this.areDistributionsFarEnough(
 							receivedBelief, ownBelief);
 					if (reputationMode) {
-						moreTrust = this
+						// moreTrust = this
+						// .getTrustScoreValueForCurrentBelief(assum
+						// .getNode())
+						// - assum.getTrustScoreValue() >= this.trustThreshold;
+						moreTrust = (this
 								.getTrustScoreValueForCurrentBelief(assum
 										.getNode())
-								- assum.getTrustScoreValue() >= this.trustThreshold;
+								* auxp.getMaxValue() * 10)
+								- (assum.getTrustScoreValue()
+										* assum.getMaxValue() * 10) >= this.trustThreshold;
 						myBeliefIsBetter = moreTrust
 								&& (maxDiff > this.beliefThreshold);
 					} else {
