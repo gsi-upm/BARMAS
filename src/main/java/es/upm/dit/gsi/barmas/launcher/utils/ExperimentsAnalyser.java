@@ -66,7 +66,7 @@ public class ExperimentsAnalyser {
 	 */
 	public static void main(String[] args) {
 
-		String simName = "zoo-simulation";
+		String simName = "kowlancz02-simulation";
 		String experimentFolder = "../experiments/" + simName;
 		String file = experimentFolder + "/" + simName + "-summary.csv";
 		ExperimentsAnalyser chartGenerator = new ExperimentsAnalyser(

@@ -249,8 +249,8 @@ public class OneClickExperimentLauncher {
 		dataset = "src/main/resources/dataset/kowlancz/CZ02/CZ02-dataset.csv";
 		simName = "kowlancz02-simulation";
 		experimentFolder = "../experiments/" + simName;
-		numberOfAgents = 3;
-		testRatio = 0.3;
+		numberOfAgents = 2;
+		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
