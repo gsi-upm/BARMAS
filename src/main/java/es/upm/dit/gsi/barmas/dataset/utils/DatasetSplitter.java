@@ -106,7 +106,7 @@ public class DatasetSplitter {
 		try {
 			// Look for essentials
 			List<String[]> essentials = this.getEssentials(originalDatasetPath,
-					scenario, logger);
+					logger);
 
 			HashMap<String, CsvWriter> writers = new HashMap<String, CsvWriter>();
 			CsvReader csvreader = new CsvReader(new FileReader(new File(
@@ -234,7 +234,7 @@ public class DatasetSplitter {
 	 * @return
 	 */
 	private List<String[]> getEssentials(String originalDatasetPath,
-			String scenario, Logger logger) {
+			Logger logger) {
 		// Find essentials
 		List<String[]> essentials = new ArrayList<String[]>();
 		HashMap<String, List<String>> nodesAndStates = new HashMap<String, List<String>>();
