@@ -92,11 +92,11 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		// this.launchZooBatch();
+		this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		this.launchKowlanCZBatch();
+		// this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -420,7 +420,7 @@ public class OneClickExperimentLauncher {
 		simName = "zoo-simulation";
 		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 2;
-		testRatio = 0.4;
+		testRatio = 0.3;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
@@ -428,11 +428,11 @@ public class OneClickExperimentLauncher {
 		classificationTarget = "AnimalType";
 		delta = 0.1;
 
-		maxDistanceThreshold = 1.0;
+		maxDistanceThreshold = 0.0;
 		minDistanceThreshold = 0.1;
-		maxBeliefThreshold = 1.0;
+		maxBeliefThreshold = 0.5;
 		minBeliefThreshold = 0.1;
-		maxTrustThreshold = 1.0;
+		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
 		maxLEBA = 50;
 		minLEBA = 0;
