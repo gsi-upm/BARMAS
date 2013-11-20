@@ -1,7 +1,7 @@
 /**
  * es.upm.dit.gsi.barmas.launcher.utils.plot.ExperimentChartsGenerator.java
  */
-package es.upm.dit.gsi.barmas.launcher.utils.plot;
+package es.upm.dit.gsi.barmas.launcher.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +28,7 @@ import com.csvreader.CsvWriter;
 import es.upm.dit.gsi.barmas.launcher.experiments.BarmasAgentValidator;
 import es.upm.dit.gsi.barmas.launcher.experiments.BarmasExperiment;
 import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
+import es.upm.dit.gsi.barmas.launcher.utils.plot.Plotter;
 
 /**
  * Project: barmas File:
