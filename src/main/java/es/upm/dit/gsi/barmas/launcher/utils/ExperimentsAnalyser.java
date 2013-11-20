@@ -114,13 +114,14 @@ public class ExperimentsAnalyser {
 
 			reader.close();
 
+
+			this.averageImprovements(chartOutputFolder);
+
+
 			for (int i = 0; i < itsNum; i++) {
 				this.saveValidationCylinderChartForIteration(summaryFile,
 						chartOutputFolder, i);
 			}
-
-			this.averageImprovements(chartOutputFolder);
-
 			this.saveGlobalImprovementDelaunayChartsForIteration(summaryFile,
 					chartOutputFolder);
 

@@ -250,7 +250,7 @@ public class OneClickExperimentLauncher {
 		simName = "kowlancz02-simulation";
 		experimentFolder = "../experiments/" + simName;
 		numberOfAgents = 5;
-		testRatio = 0.2;
+		testRatio = 0.4;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
@@ -266,7 +266,7 @@ public class OneClickExperimentLauncher {
 		minTrustThreshold = 0.1;
 		maxLEBA = 10;
 		minLEBA = 0;
-		maxArgumentationRounds = 20;
+		maxArgumentationRounds = 200;
 
 		this.launchSmartBathAndValidatorsFor(simulationID, dataset,
 				experimentFolder, numberOfAgents, testRatio, centralApproach,
@@ -377,8 +377,8 @@ public class OneClickExperimentLauncher {
 		dataset = "src/main/resources/dataset/nursery.csv";
 		simName = "nursery-simulation";
 		experimentFolder = "../experiments/" + simName;
-		numberOfAgents = 3;
-		testRatio = 0.3;
+		numberOfAgents = 2;
+		testRatio = 0.5;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
