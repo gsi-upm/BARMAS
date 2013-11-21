@@ -446,17 +446,17 @@ public class OneClickExperimentLauncher {
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
 		// iterations = 10;
-		int kfold = 10;
+		int kfold = 3;
 		classificationTarget = "AnimalType";
 		delta = 0.1;
 
-		maxDistanceThreshold = 1.0;
+		maxDistanceThreshold = 0.5;
 		minDistanceThreshold = 0.1;
-		maxBeliefThreshold = 1.0;
+		maxBeliefThreshold = 0.5;
 		minBeliefThreshold = 0.1;
-		maxTrustThreshold = 1.0;
+		maxTrustThreshold = 0.5;
 		minTrustThreshold = 0.1;
-		maxLEBA = 50;
+		maxLEBA = 20;
 		minLEBA = 0;
 		maxArgumentationRounds = 200;
 		maxNumberOfAgents = 5;
@@ -595,7 +595,10 @@ public class OneClickExperimentLauncher {
 		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
 		long experimentsCount = 0;
-		simulationID = simulationID + "-TESTRATIO-" + ratio + "-MAXARGSROUNDS-"
+
+		int ratioint = (int) (ratio * 100);
+		double roundedratio = ((double) ratioint) / 100;
+		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-"
 				+ maxArgumentationRounds;
 		try {
 			for (int i = 0; i < iterations; i++) {
