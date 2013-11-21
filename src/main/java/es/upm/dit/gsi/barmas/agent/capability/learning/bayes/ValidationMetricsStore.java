@@ -26,9 +26,12 @@ public class ValidationMetricsStore {
 	private HashMap<String, int[][]> matrices; // matrix[i] realValures
 												// matrix[X][j] classifiedValue
 
+	private HashMap<String, Double> cache;
+
 	public ValidationMetricsStore() {
 		this.states = new HashMap<String, HashMap<String, Integer>>();
 		this.matrices = new HashMap<String, int[][]>();
+		this.cache = new HashMap<String, Double>();
 	}
 
 	public void addNode(String node) {
@@ -260,5 +263,22 @@ public class ValidationMetricsStore {
 		int i = this.states.get(node).get(trueValue);
 		int j = this.states.get(node).get(predictedValue);
 		matrix[i][j] = matrix[i][j] + 1;
+		this.cache.clear();
+	}
+
+	/**
+	 * @param node
+	 * @param state
+	 * @return
+	 */
+	public double getTrustScore(String node, String state) {
+		String key = node + "-&-" + state;
+		if (cache.containsKey(key)) {
+			return cache.get(key);
+		} else {
+			double mcc = this.getMCC(node, state);
+			this.cache.put(key, mcc);
+			return mcc;
+		}
 	}
 }

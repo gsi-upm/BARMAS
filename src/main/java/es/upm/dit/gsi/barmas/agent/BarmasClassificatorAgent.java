@@ -1049,6 +1049,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 */
 	@Override
 	public double getTrustScore(String node, String state) {
-		return this.scores.getMCC(node, state);
+		return this.scores.getTrustScore(node, state);
 	}
 }
