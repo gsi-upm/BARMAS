@@ -231,9 +231,8 @@ public class BarmasExperiment implements RunnableExperiment {
 		sensors.removeAll(lostSensors);
 		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent(
 				"BayesCentral", classificationTarget, experimentDatasetFolder
-						+ "/bayes/bayes-central-dataset.net",
-				experimentDatasetFolder + "/dataset/bayes-central-dataset.csv",
-				sensors, logger);
+						+ "/bayes-central-dataset.net", experimentDatasetFolder
+						+ "/bayes-central-dataset.csv", sensors, logger);
 		agents.add(bayes);
 
 		// Argumentation Manager AGENTS
@@ -252,9 +251,10 @@ public class BarmasExperiment implements RunnableExperiment {
 			sensors.removeAll(lostSensors);
 			BarmasClassificatorAgent agent = new BarmasClassificatorAgent(
 					"ArgAgent" + agentNum, manager, classificationTarget,
-					experimentDatasetFolder + "/bayes/agent-" + agentNum
-							+ "-dataset.net", experimentDatasetFolder
-							+ "/dataset/agent-" + agentNum + "-dataset.csv",
+					experimentDatasetFolder + "/" + agentsNumber
+							+ "agents/agent-" + agentNum + "-dataset.net",
+					experimentDatasetFolder + "/" + agentsNumber
+							+ "agents/agent-" + agentNum + "-dataset.csv",
 					sensors, diffThreshold, beliefThreshold, trustThreshold,
 					logger);
 			agents.add(agent);

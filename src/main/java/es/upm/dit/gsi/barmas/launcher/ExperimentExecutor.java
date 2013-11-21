@@ -56,12 +56,11 @@ public class ExperimentExecutor {
 		String simulationID = "SOLARFLARE";
 		String dataset = "src/main/resources/dataset/solarflare-global.csv";
 		String simName = "solarflare-simulation";
-		String experimentFolder = "../experiments/"+simName;
+		String experimentFolder = "../experiments/" + simName;
 		int numberOfAgents = 5;
 		double testRatio = 0.2;
 
-		String summaryFile = experimentFolder + "/" + simName
-				+ "-summary.csv";
+		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
 		String classificationTarget = "SolarFlareType";
 		int mode = SimulationConfiguration.DEBUGGING_MODE;
@@ -141,6 +140,7 @@ public class ExperimentExecutor {
 	public void executeRunnables(List<RunnableExperiment> experiments,
 			int maxThreads, Logger logger) {
 
+		long initTime = System.currentTimeMillis();
 		int startedExperiments = 0;
 		int finishedExperiments = 0;
 		int experimentsQuantity = experiments.size();
@@ -182,10 +182,31 @@ public class ExperimentExecutor {
 				logger.info("Starting validator for isolated agent...");
 			}
 			long pendingExps = (experimentsQuantity - finishedExperiments);
-			double percentage = (((double) pendingExps) / ((double) experimentsQuantity)) * 100;
+			double percentage = (((double) pendingExps) / ((double) experimentsQuantity));
 			logger.info("--> Pending experiments for this batch: "
-					+ pendingExps + " => Pending " + percentage
+					+ pendingExps + " => Pending " + (percentage * 100)
 					+ "% of all of the batch experiments");
+			if (finishedExperiments > 0) {
+				long interval = System.currentTimeMillis() - initTime;
+				long intervalSecs = interval / 1000;
+				long intervalMins = intervalSecs / 60;
+				long intervalHours = intervalMins / 60;
+				logger.info(finishedExperiments
+						+ " experiments have been executed in " + intervalHours
+						+ " hours, " + (intervalMins % 60) + " minutes, "
+						+ (intervalSecs % 60) + " seconds and "
+						+ (interval % 1000) + " miliseconds.");
+				double timePerExperiment = interval / finishedExperiments;
+				long remainingTime = (long) (timePerExperiment * pendingExps);
+				intervalSecs = remainingTime / 1000;
+				intervalMins = intervalSecs / 60;
+				intervalHours = intervalMins / 60;
+				logger.info("Estimation: " + pendingExps
+						+ " pending experiments will be finished in " + intervalHours
+						+ " hours, " + (intervalMins % 60) + " minutes, "
+						+ (intervalSecs % 60) + " seconds and "
+						+ (interval % 1000) + " miliseconds.");
+			}
 		}
 
 		logger.info("Last experiments of the batch in execution...");
@@ -219,6 +240,26 @@ public class ExperimentExecutor {
 				logger.info("There are "
 						+ threads.size()
 						+ " in progress right now. They are the last simulations for this batch.");
+				long pendingExps = (experimentsQuantity - finishedExperiments);
+				long interval = System.currentTimeMillis() - initTime;
+				long intervalSecs = interval / 1000;
+				long intervalMins = intervalSecs / 60;
+				long intervalHours = intervalMins / 60;
+				logger.info(finishedExperiments
+						+ " experiments have been executed in " + intervalHours
+						+ " hours, " + (intervalMins % 60) + " minutes, "
+						+ (intervalSecs % 60) + " seconds and "
+						+ (interval % 1000) + " miliseconds.");
+				double timePerExperiment = interval / finishedExperiments;
+				long remainingTime = (long) (timePerExperiment * pendingExps);
+				intervalSecs = remainingTime / 1000;
+				intervalMins = intervalSecs / 60;
+				intervalHours = intervalMins / 60;
+				logger.info("Estimation: " + pendingExps
+						+ " pending experiments will be finished in " + intervalHours
+						+ " hours, " + (intervalMins % 60) + " minutes, "
+						+ (intervalSecs % 60) + " seconds and "
+						+ (interval % 1000) + " miliseconds.");
 			}
 			if (!threads.isEmpty()) {
 				try {
@@ -257,7 +298,8 @@ public class ExperimentExecutor {
 	public List<RunnableExperiment> getValidatorsBatch(String simulationID,
 			int agentsNumber, String summaryFile, long seed, int mode,
 			String experimentDatasetPath, String experimentOutputFolder,
-			String testDataset, String classificationTarget, int iteration) {
+			String testDataset, String classificationTarget, int iteration,
+			double ratio) {
 
 		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
 
@@ -268,9 +310,10 @@ public class ExperimentExecutor {
 					+ "-IT-" + iteration;
 			BarmasAgentValidator expValidator = new BarmasAgentValidator(
 					simulationPrefix, summaryFile, seed, mode, "Agent" + i,
-					experimentDatasetPath + "/bayes/agent-" + i
-							+ "-dataset.net", experimentDatasetPath
-							+ "/dataset/agent-" + i + "-dataset.csv",
+					experimentDatasetPath + "/" + agentsNumber
+							+ "agents/agent-" + i + "-dataset.net",
+					experimentDatasetPath + "/" + agentsNumber
+							+ "agents/agent-" + i + "-dataset.csv",
 					experimentOutputFolder, testDataset, classificationTarget);
 			experiments.add(expValidator);
 		}
@@ -279,130 +322,12 @@ public class ExperimentExecutor {
 				+ iteration;
 		BarmasAgentValidator expValidator = new BarmasAgentValidator(
 				simulationPrefix, summaryFile, seed, mode, "BayesCentralAgent",
-				experimentDatasetPath + "/bayes/bayes-central-dataset.net",
-				experimentDatasetPath + "/dataset/bayes-central-dataset.csv",
+				experimentDatasetPath + "/bayes-central-dataset.net",
+				experimentDatasetPath + "/bayes-central-dataset.csv",
 				experimentOutputFolder, testDataset, classificationTarget);
 		experiments.add(expValidator);
 
 		return experiments;
-	}
-
-	/**
-	 * @param simulationID
-	 * @param agentsNumber
-	 * @param summaryFile
-	 * @param seed
-	 * @param mode
-	 * @param experimentDatasetPath
-	 * @param experimentOutputFolder
-	 * @param testDataset
-	 * @param classificationTarget
-	 * @param delta
-	 * @param iteration
-	 * @return
-	 */
-	public List<RunnableExperiment> getExperimentFullBatch(String simulationID,
-			int agentsNumber, String summaryFile, long seed, int mode,
-			String experimentDatasetPath, String experimentOutputFolder,
-			String testDataset, String classificationTarget, double delta,
-			int iteration, int maxArgumentationRounds) {
-		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
-
-		// Experiments
-		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
-
-		// No assumptions - no trust
-		double diffThreshold = 2.0;
-		double beliefThreshold = 2.0;
-		double trustThreshold = 2.0;
-		int lostEvidencesByAgents = 0;
-		int tint = (int) (diffThreshold * 100);
-		double roundedt = ((double) tint) / 100;
-		int btint = (int) (beliefThreshold * 100);
-		double rounedbt = ((double) btint) / 100;
-		int fsint = (int) (trustThreshold * 100);
-		double roundedfs = ((double) fsint) / 100;
-		String simulationPrefix = simulationID + "-" + agentsNumber
-				+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt + "-LEBA-"
-				+ lostEvidencesByAgents + "-TTH-" + roundedfs + "-IT-"
-				+ iteration;
-		BarmasExperiment exp = new BarmasExperiment(simulationPrefix,
-				summaryFile, seed, mode, experimentDatasetPath,
-				experimentOutputFolder, testDataset, classificationTarget,
-				agentsNumber, lostEvidencesByAgents, diffThreshold,
-				beliefThreshold, trustThreshold, maxArgumentationRounds);
-		experiments.add(exp);
-
-		// + delta to ensure at least one execution without assumptions
-		diffThreshold = 1.0;
-		while (diffThreshold >= 0.01) {
-			beliefThreshold = 0.05;
-			while (beliefThreshold <= 1.0) {
-				trustThreshold = 0;
-				while (trustThreshold <= 1.0) {
-					lostEvidencesByAgents = 0;
-					while (lostEvidencesByAgents <= numberOfEvidences) {
-						tint = (int) (diffThreshold * 100);
-						roundedt = ((double) tint) / 100;
-						btint = (int) (beliefThreshold * 100);
-						rounedbt = ((double) btint) / 100;
-						fsint = (int) (trustThreshold * 100);
-						roundedfs = ((double) fsint) / 100;
-						simulationPrefix = simulationID + "-" + agentsNumber
-								+ "agents-DTH-" + roundedt + "-BTH-" + rounedbt
-								+ "-LEBA-" + lostEvidencesByAgents + "-TTH-"
-								+ roundedfs + "-IT-" + iteration;
-						exp = new BarmasExperiment(simulationPrefix,
-								summaryFile, seed, mode, experimentDatasetPath,
-								experimentOutputFolder, testDataset,
-								classificationTarget, agentsNumber,
-								lostEvidencesByAgents, diffThreshold,
-								beliefThreshold, trustThreshold,
-								maxArgumentationRounds);
-						experiments.add(exp);
-
-						lostEvidencesByAgents++;
-					}
-					trustThreshold = trustThreshold + delta;
-				}
-				beliefThreshold = beliefThreshold + delta;
-			}
-			diffThreshold = diffThreshold - delta;
-		}
-
-		return experiments;
-	}
-
-	/**
-	 * @param simulationID
-	 * @param agentsNumber
-	 * @param summaryFile
-	 * @param seed
-	 * @param mode
-	 * @param experimentDatasetPath
-	 * @param experimentOutputFolder
-	 * @param testDataset
-	 * @param classificationTarget
-	 * @param delta
-	 * @param iteration
-	 * @param maxDistanceThreshold
-	 * @param maxBeliefThreshold
-	 * @param maxTrustThreshold
-	 * @return
-	 */
-	public List<RunnableExperiment> getExperimentSmartBatchWithMinZero(
-			String simulationID, int agentsNumber, String summaryFile,
-			long seed, int mode, String experimentDatasetPath,
-			String experimentOutputFolder, String testDataset,
-			String classificationTarget, double delta, int iteration,
-			double maxDistanceThreshold, double maxBeliefThreshold,
-			double maxTrustThreshold, int maxLEBA, int maxArgumentationRounds) {
-		return this.getExperimentSmartBatch(simulationID, agentsNumber,
-				summaryFile, seed, mode, experimentDatasetPath,
-				experimentOutputFolder, testDataset, classificationTarget,
-				delta, iteration, maxDistanceThreshold, 0, maxBeliefThreshold,
-				0.01, maxTrustThreshold, 0, maxLEBA, 0, maxArgumentationRounds);
-
 	}
 
 	/**
