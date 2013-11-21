@@ -166,34 +166,29 @@ public class ExperimentExecutor {
 						threads.removeAll(threads2Remove);
 						threads2Remove.clear();
 						System.gc();
-
-						if (finishedExperiments > 0) {
-							long interval = System.currentTimeMillis()
-									- initTime;
-							long intervalSecs = interval / 1000;
-							long intervalMins = intervalSecs / 60;
-							long intervalHours = intervalMins / 60;
-							logger.info(finishedExperiments
-									+ " experiments have been executed in "
-									+ intervalHours + " hours, "
-									+ (intervalMins % 60) + " minutes, "
-									+ (intervalSecs % 60) + " seconds and "
-									+ (interval % 1000) + " miliseconds.");
-							double timePerExperiment = interval
-									/ finishedExperiments;
-							pendingExps = (experimentsQuantity - finishedExperiments);
-							long remainingTime = (long) (timePerExperiment * pendingExps);
-							intervalSecs = remainingTime / 1000;
-							intervalMins = intervalSecs / 60;
-							intervalHours = intervalMins / 60;
-							logger.info("Estimation: "
-									+ pendingExps
-									+ " pending experiments will be finished in "
-									+ intervalHours + " hours, "
-									+ (intervalMins % 60) + " minutes, "
-									+ (intervalSecs % 60) + " seconds and "
-									+ (interval % 1000) + " miliseconds.");
-						}
+						long interval = System.currentTimeMillis() - initTime;
+						long intervalSecs = interval / 1000;
+						long intervalMins = intervalSecs / 60;
+						long intervalHours = intervalMins / 60;
+						logger.info(finishedExperiments
+								+ " experiments have been executed in "
+								+ intervalHours + " hours, "
+								+ (intervalMins % 60) + " minutes, "
+								+ (intervalSecs % 60) + " seconds and "
+								+ (interval % 1000) + " miliseconds.");
+						double timePerExperiment = interval
+								/ finishedExperiments;
+						pendingExps = (experimentsQuantity - finishedExperiments);
+						long remainingTime = (long) (timePerExperiment * pendingExps);
+						intervalSecs = remainingTime / 1000;
+						intervalMins = intervalSecs / 60;
+						intervalHours = intervalMins / 60;
+						logger.info("Estimation: " + pendingExps
+								+ " pending experiments will be finished in "
+								+ intervalHours + " hours, "
+								+ (intervalMins % 60) + " minutes, "
+								+ (intervalSecs % 60) + " seconds and "
+								+ (interval % 1000) + " miliseconds.");
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
