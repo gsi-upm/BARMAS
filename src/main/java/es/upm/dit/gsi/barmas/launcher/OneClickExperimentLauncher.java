@@ -470,7 +470,7 @@ public class OneClickExperimentLauncher {
 
 		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
-
+		simulationID = simulationID + "-TESTRATIO-" + ratio;
 		try {
 			for (int i = 0; i < iterations; i++) {
 				DatasetSplitter splitter = new DatasetSplitter();
@@ -570,6 +570,8 @@ public class OneClickExperimentLauncher {
 
 		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
+		simulationID = simulationID + "-TESTRATIO-" + ratio
+				+ "-MAXARGSROUNDS-" + maxArgumentationRounds;
 		try {
 			for (int i = 0; i < iterations; i++) {
 				DatasetSplitter splitter = new DatasetSplitter();
@@ -580,8 +582,6 @@ public class OneClickExperimentLauncher {
 						experimentFolder + "/input/iteration-" + i + "/dataset",
 						central, simulationID, logger, i);
 				ExperimentExecutor executor = new ExperimentExecutor();
-				simulationID = simulationID + "-TESTRATIO-" + ratio
-						+ "-MAXARGSROUNDS-" + maxArgumentationRounds;
 
 				// VALIDATORS
 				List<RunnableExperiment> validators = executor
