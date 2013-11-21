@@ -441,10 +441,10 @@ public class OneClickExperimentLauncher {
 		dataset = "src/main/resources/dataset/zoo.csv";
 		simName = "zoo-simulation";
 		experimentFolder = "../experiments/" + simName;
-		// testRatio = 0.1;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
+		// testRatio = 0.1;
 		// iterations = 10;
 		int kfold = 3;
 		classificationTarget = "AnimalType";
