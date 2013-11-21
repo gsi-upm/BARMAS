@@ -107,7 +107,8 @@ public class ExperimentExecutor {
 
 		DatasetSplitter splitter = new DatasetSplitter();
 		splitter.splitDataset(ratio, agentsNumber, originalDataset,
-				experimentFolder + "/input/dataset", true, simulationID, logger, 0);
+				experimentFolder + "/input/dataset", true, simulationID,
+				logger, 0);
 
 		simulationID = simulationID + "-TESTRATIO-" + ratio + "-MAXARGSROUNDS-"
 				+ maxArgumentationRounds;
@@ -144,6 +145,7 @@ public class ExperimentExecutor {
 		int startedExperiments = 0;
 		int finishedExperiments = 0;
 		int experimentsQuantity = experiments.size();
+		long pendingExps = experimentsQuantity;
 		List<Thread> threads = new ArrayList<Thread>();
 		for (RunnableExperiment experiment : experiments) {
 			logger.info("Number of simulations executing right now: "
@@ -164,6 +166,34 @@ public class ExperimentExecutor {
 						threads.removeAll(threads2Remove);
 						threads2Remove.clear();
 						System.gc();
+
+						if (finishedExperiments > 0) {
+							long interval = System.currentTimeMillis()
+									- initTime;
+							long intervalSecs = interval / 1000;
+							long intervalMins = intervalSecs / 60;
+							long intervalHours = intervalMins / 60;
+							logger.info(finishedExperiments
+									+ " experiments have been executed in "
+									+ intervalHours + " hours, "
+									+ (intervalMins % 60) + " minutes, "
+									+ (intervalSecs % 60) + " seconds and "
+									+ (interval % 1000) + " miliseconds.");
+							double timePerExperiment = interval
+									/ finishedExperiments;
+							pendingExps = (experimentsQuantity - finishedExperiments);
+							long remainingTime = (long) (timePerExperiment * pendingExps);
+							intervalSecs = remainingTime / 1000;
+							intervalMins = intervalSecs / 60;
+							intervalHours = intervalMins / 60;
+							logger.info("Estimation: "
+									+ pendingExps
+									+ " pending experiments will be finished in "
+									+ intervalHours + " hours, "
+									+ (intervalMins % 60) + " minutes, "
+									+ (intervalSecs % 60) + " seconds and "
+									+ (interval % 1000) + " miliseconds.");
+						}
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -181,32 +211,11 @@ public class ExperimentExecutor {
 			if (experiment instanceof BarmasAgentValidator) {
 				logger.info("Starting validator for isolated agent...");
 			}
-			long pendingExps = (experimentsQuantity - finishedExperiments);
+			pendingExps = (experimentsQuantity - finishedExperiments);
 			double percentage = (((double) pendingExps) / ((double) experimentsQuantity));
 			logger.info("--> Pending experiments for this batch: "
 					+ pendingExps + " => Pending " + (percentage * 100)
 					+ "% of all of the batch experiments");
-			if (finishedExperiments > 0) {
-				long interval = System.currentTimeMillis() - initTime;
-				long intervalSecs = interval / 1000;
-				long intervalMins = intervalSecs / 60;
-				long intervalHours = intervalMins / 60;
-				logger.info(finishedExperiments
-						+ " experiments have been executed in " + intervalHours
-						+ " hours, " + (intervalMins % 60) + " minutes, "
-						+ (intervalSecs % 60) + " seconds and "
-						+ (interval % 1000) + " miliseconds.");
-				double timePerExperiment = interval / finishedExperiments;
-				long remainingTime = (long) (timePerExperiment * pendingExps);
-				intervalSecs = remainingTime / 1000;
-				intervalMins = intervalSecs / 60;
-				intervalHours = intervalMins / 60;
-				logger.info("Estimation: " + pendingExps
-						+ " pending experiments will be finished in " + intervalHours
-						+ " hours, " + (intervalMins % 60) + " minutes, "
-						+ (intervalSecs % 60) + " seconds and "
-						+ (interval % 1000) + " miliseconds.");
-			}
 		}
 
 		logger.info("Last experiments of the batch in execution...");
@@ -240,7 +249,7 @@ public class ExperimentExecutor {
 				logger.info("There are "
 						+ threads.size()
 						+ " in progress right now. They are the last simulations for this batch.");
-				long pendingExps = (experimentsQuantity - finishedExperiments);
+				pendingExps = (experimentsQuantity - finishedExperiments);
 				long interval = System.currentTimeMillis() - initTime;
 				long intervalSecs = interval / 1000;
 				long intervalMins = intervalSecs / 60;
@@ -256,9 +265,9 @@ public class ExperimentExecutor {
 				intervalMins = intervalSecs / 60;
 				intervalHours = intervalMins / 60;
 				logger.info("Estimation: " + pendingExps
-						+ " pending experiments will be finished in " + intervalHours
-						+ " hours, " + (intervalMins % 60) + " minutes, "
-						+ (intervalSecs % 60) + " seconds and "
+						+ " pending experiments will be finished in "
+						+ intervalHours + " hours, " + (intervalMins % 60)
+						+ " minutes, " + (intervalSecs % 60) + " seconds and "
 						+ (interval % 1000) + " miliseconds.");
 			}
 			if (!threads.isEmpty()) {
