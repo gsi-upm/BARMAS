@@ -223,8 +223,11 @@ public class ExperimentExecutor {
 				threads.removeAll(threads2Remove);
 				threads2Remove.clear();
 				System.gc();
-				for (Thread thread : threads) {
-					logger.info("Simulation in progress. SimluationID: " + thread.getName());
+				int current = threads.size();
+				if (current % 50 == 0 || current < 10) {
+					for (Thread thread : threads) {
+						logger.info("Simulation in progress. SimluationID: " + thread.getName());
+					}
 				}
 				logger.info("There are " + threads.size()
 						+ " in progress right now. They are the last simulations for this batch.");
