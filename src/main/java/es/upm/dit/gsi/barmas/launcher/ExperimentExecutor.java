@@ -54,7 +54,7 @@ public class ExperimentExecutor {
 		ExperimentExecutor executor = new ExperimentExecutor();
 
 		String simulationID = "SOLARFLARE";
-		String dataset = "src/main/resources/dataset/solarflare-global.csv";
+		String dataset = "src/main/resources/dataset/solarflare.csv";
 		String simName = "solarflare-simulation";
 		String experimentFolder = "../experiments/" + simName;
 		int numberOfAgents = 5;
