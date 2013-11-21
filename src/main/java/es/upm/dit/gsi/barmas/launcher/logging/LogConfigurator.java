@@ -24,12 +24,11 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -44,8 +43,8 @@ public class LogConfigurator {
 	 * Constructor
 	 * 
 	 */
-	public static void log2File(Logger logger, String name, Level fileHandlerLevel, Level consoleHandlerLevel,
-			String dir) {
+	public static void log2File(Logger logger, String name,
+			Level fileHandlerLevel, Level consoleHandlerLevel, String dir) {
 		try {
 			File aux = new File(".");
 			String parent = aux.getCanonicalPath();
@@ -62,7 +61,9 @@ public class LogConfigurator {
 			logger.setLevel(Level.ALL);
 			String path = parent + File.separator + dir + File.separator
 					+ "logs" + File.separator + name + "%u.log";
-			FileHandler fh = new FileHandler(path);
+			int maxsizeMB = 20;
+			int maxfiles = 20;
+			FileHandler fh = new FileHandler(path, maxsizeMB*1024000, maxfiles);
 			fh.setFormatter(new SimpleFormatter());
 			fh.setEncoding("UTF-8");
 			fh.setLevel(fileHandlerLevel);
