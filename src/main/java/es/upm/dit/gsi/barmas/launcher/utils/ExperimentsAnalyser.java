@@ -49,7 +49,6 @@ public class ExperimentsAnalyser {
 	private Logger logger;
 
 	private String summaryFile;
-	private String outputChartFolder;
 
 	private HashMap<String, Integer> lebas;
 	private HashMap<String, Integer> tths;
@@ -66,20 +65,32 @@ public class ExperimentsAnalyser {
 	 */
 	public static void main(String[] args) {
 
-		String simName = "kowlancz02-simulation";
+		String simName = "zoo-simulation";
 		String experimentFolder = "../experiments/" + simName;
 		String file = experimentFolder + "/" + simName + "-summary.csv";
 		ExperimentsAnalyser chartGenerator = new ExperimentsAnalyser(
 				Logger.getLogger(ExperimentsAnalyser.class.getSimpleName()),
-				file, experimentFolder + "/output/charts");
-		chartGenerator.generateAndSaveAllChartsAndExit();
+				file);
+		
+		String analysisOutputFolder = experimentFolder + "/output";
+		chartGenerator.analyseData(analysisOutputFolder);
+		
+		String chartOutputFolder = experimentFolder + "/output/charts";
+		 chartGenerator.generateAndSaveAllChartsAndExit(chartOutputFolder);
 	}
 
-	public ExperimentsAnalyser(Logger logger, String summaryFile,
-			String outputChartFolder) {
+	public ExperimentsAnalyser(Logger logger, String summaryFile) {
 		this.logger = logger;
 		this.summaryFile = summaryFile;
-		this.outputChartFolder = outputChartFolder;
+		this.buildTheMatrix();
+	}
+
+	public void analyseData(String outputFolder) {
+		File f = new File(outputFolder);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		this.averageImprovements(outputFolder);
 	}
 
 	/**
@@ -94,7 +105,6 @@ public class ExperimentsAnalyser {
 				Level.ALL, Level.INFO, chartOutputFolder);
 
 		CsvReader reader;
-		this.buildTheMatrix();
 		try {
 			reader = new CsvReader(new FileReader(new File(summaryFile)));
 			reader.readHeaders();
@@ -113,8 +123,6 @@ public class ExperimentsAnalyser {
 			}
 
 			reader.close();
-
-			this.averageImprovements(chartOutputFolder);
 
 			for (int i = 0; i < itsNum; i++) {
 				this.saveValidationCylinderChartForIteration(summaryFile,
@@ -140,9 +148,9 @@ public class ExperimentsAnalyser {
 	}
 
 	/**
-	 * @param chartOutputFolder
+	 * @param outputFolder
 	 */
-	private void averageImprovements(String chartOutputFolder) {
+	private void averageImprovements(String outputFolder) {
 		try {
 			int columns = 3;
 			String[] headers = new String[columns];
@@ -152,7 +160,7 @@ public class ExperimentsAnalyser {
 
 			// Write little info file
 			CsvWriter writer = new CsvWriter(new FileWriter(new File(
-					outputChartFolder + "/analysis.csv")), ',');
+					outputFolder + "/analysis.csv")), ',');
 			writer.writeRecord(headers);
 			writer.flush();
 
@@ -168,6 +176,8 @@ public class ExperimentsAnalyser {
 			this.writeAnalysisForConfigurationParams(writer, columns);
 
 			writer.close();
+
+			logger.info("Analysis finished! :)");
 		} catch (FileNotFoundException e) {
 			logger.severe(e.getMessage());
 			System.exit(1);
@@ -235,13 +245,21 @@ public class ExperimentsAnalyser {
 	private void writeAnalysisForVariable(CsvWriter writer, int columns,
 			HashMap<String, Integer> map, String name) throws IOException {
 		double[] avgImps = this.getAvgImpValueFor(map);
+		double avgGlobal = 0;
 		for (int i = 0; i < avgImps.length; i++) {
 			String[] row = new String[columns];
 			row[0] = name;
 			row[1] = this.getStringForPosInTheMatrix(map, i);
 			row[2] = Double.toString(avgImps[i]);
 			writer.writeRecord(row);
+			avgGlobal = avgGlobal + avgImps[i];
 		}
+		avgGlobal = avgGlobal / avgImps.length;
+		String[] row = new String[columns];
+		row[0] = name;
+		row[1] = "AVERAGE";
+		row[2] = Double.toString(avgGlobal);
+		writer.writeRecord(row);
 	}
 
 	/**
@@ -572,15 +590,6 @@ public class ExperimentsAnalyser {
 						agentsPos, itPos, testRatiosPos, imp);
 			}
 			reader.close();
-
-			for (String it : its.keySet()) {
-				String iterationChartFolder = this.outputChartFolder
-						+ "/iteration-" + it;
-				File chartFolderFile = new File(iterationChartFolder);
-				if (!chartFolderFile.isDirectory() || !chartFolderFile.exists()) {
-					chartFolderFile.mkdirs();
-				}
-			}
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
 			System.exit(1);
@@ -702,13 +711,14 @@ public class ExperimentsAnalyser {
 	}
 
 	/**
+	 * @param chartOutputFolder
 	 * @param summaryFile
 	 * @param chartOutputFolder
 	 * @param iterations
 	 */
-	public void generateAndSaveAllChartsAndExit() {
+	public void generateAndSaveAllChartsAndExit(String chartOutputFolder) {
 
-		this.generateAndSaveAllCharts(this.summaryFile, this.outputChartFolder);
+		this.generateAndSaveAllCharts(this.summaryFile, chartOutputFolder);
 		logger.info("All Charts generated. Execution finished successfully.");
 		System.exit(0);
 	}
@@ -736,7 +746,7 @@ public class ExperimentsAnalyser {
 
 			// Write little info file
 			CsvWriter writer = new CsvWriter(new FileWriter(new File(
-					outputChartFolder + "/experiments.csv")), ',');
+					chartFolder + "/experiments.csv")), ',');
 			writer.writeRecord(headers);
 			for (String[] row : experimentResultsRatios) {
 				writer.writeRecord(row);
@@ -748,12 +758,15 @@ public class ExperimentsAnalyser {
 			// Build cylinders and save cylinders charts
 			Plotter plotter = new Plotter(logger);
 
-			this.saveChartsLEBAvsTTH(plotter);
-			this.saveChartsLEBAvsDTH(plotter);
-			this.saveChartsLEBAvsBTH(plotter);
-			this.saveChartsTTHvsBTH(plotter);
-			this.saveChartsBTHvsDTH(plotter);
-			this.saveChartsTTHvsDTH(plotter);
+			this.saveChartsLEBAvsTTH(plotter, chartFolder);
+			this.saveChartsLEBAvsDTH(plotter, chartFolder);
+			this.saveChartsLEBAvsBTH(plotter, chartFolder);
+			this.saveChartsTTHvsBTH(plotter, chartFolder);
+			this.saveChartsBTHvsDTH(plotter, chartFolder);
+			this.saveChartsTTHvsDTH(plotter, chartFolder);
+
+			// TODO add charts for agentsNumber
+			// TODO add charts for iterations
 
 		} catch (FileNotFoundException e) {
 			logger.severe(e.getMessage());
@@ -767,8 +780,9 @@ public class ExperimentsAnalyser {
 
 	/**
 	 * @param plotter
+	 * @param chartFolder
 	 */
-	private void saveChartsTTHvsDTH(Plotter plotter) {
+	private void saveChartsTTHvsDTH(Plotter plotter, String chartFolder) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		double bthValue = 0;
@@ -783,8 +797,6 @@ public class ExperimentsAnalyser {
 					for (int it = 0; it < its.size(); it++) {
 						int itValue = (int) this.getValueForPosInTheMatrix(its,
 								it);
-						String iterationChartFolder = this.outputChartFolder
-								+ "/iteration-" + it;
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
@@ -828,7 +840,7 @@ public class ExperimentsAnalyser {
 									axisLabels[1] = "DTH";
 									axisLabels[2] = "ImprovementRatio";
 									plotter.saveDelaunaySurface3DChart(
-											iterationChartFolder
+											chartFolder
 													+ "/globalImprovement-TTHvsDTH"
 													+ "-LEBA-" + leba + "-BTH-"
 													+ bthValue + "-Agents-"
@@ -848,15 +860,16 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "TTH";
 		axisLabels[1] = "DTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(this.outputChartFolder
+		plotter.saveScatter3DChart(chartFolder
 				+ "/globalImprovement-TTHvsDTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
 	 * @param plotter
+	 * @param chartFolder
 	 */
-	private void saveChartsBTHvsDTH(Plotter plotter) {
+	private void saveChartsBTHvsDTH(Plotter plotter, String chartFolder) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
@@ -869,8 +882,6 @@ public class ExperimentsAnalyser {
 					for (int it = 0; it < its.size(); it++) {
 						int itValue = (int) this.getValueForPosInTheMatrix(its,
 								it);
-						String iterationChartFolder = this.outputChartFolder
-								+ "/iteration-" + it;
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
@@ -905,7 +916,7 @@ public class ExperimentsAnalyser {
 									axisLabels[1] = "DTH";
 									axisLabels[2] = "ImprovementRatio";
 									plotter.saveDelaunaySurface3DChart(
-											iterationChartFolder
+											chartFolder
 													+ "/globalImprovement-BTHvsDTH"
 													+ "-LEBA-" + leba + "-TTH-"
 													+ tthValue + "-Agents-"
@@ -925,15 +936,16 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "BTH";
 		axisLabels[1] = "DTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(this.outputChartFolder
+		plotter.saveScatter3DChart(chartFolder
 				+ "/globalImprovement-BTHvsDTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
 	 * @param plotter
+	 * @param chartFolder
 	 */
-	private void saveChartsTTHvsBTH(Plotter plotter) {
+	private void saveChartsTTHvsBTH(Plotter plotter, String chartFolder) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		double bthValue = 0;
@@ -948,8 +960,6 @@ public class ExperimentsAnalyser {
 					for (int it = 0; it < its.size(); it++) {
 						int itValue = (int) this.getValueForPosInTheMatrix(its,
 								it);
-						String iterationChartFolder = this.outputChartFolder
-								+ "/iteration-" + it;
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
@@ -994,7 +1004,7 @@ public class ExperimentsAnalyser {
 									axisLabels[1] = "BTH";
 									axisLabels[2] = "ImprovementRatio";
 									plotter.saveDelaunaySurface3DChart(
-											iterationChartFolder
+											chartFolder
 													+ "/globalImprovement-TTHvsBTH"
 													+ "-LEBA-" + leba + "-DTH-"
 													+ dthValue + "-Agents-"
@@ -1014,15 +1024,16 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "TTH";
 		axisLabels[1] = "BTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(this.outputChartFolder
+		plotter.saveScatter3DChart(chartFolder
 				+ "/globalImprovement-TTHvsBTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
 	 * @param plotter
+	 * @param chartFolder
 	 */
-	private void saveChartsLEBAvsBTH(Plotter plotter) {
+	private void saveChartsLEBAvsBTH(Plotter plotter, String chartFolder) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		double bthValue = 0;
@@ -1036,8 +1047,6 @@ public class ExperimentsAnalyser {
 					for (int it = 0; it < its.size(); it++) {
 						int itValue = (int) this.getValueForPosInTheMatrix(its,
 								it);
-						String iterationChartFolder = this.outputChartFolder
-								+ "/iteration-" + it;
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
@@ -1076,15 +1085,13 @@ public class ExperimentsAnalyser {
 								axisLabels[0] = "LEBA";
 								axisLabels[1] = "BTH";
 								axisLabels[2] = "ImprovementRatio";
-								plotter.saveDelaunaySurface3DChart(
-										iterationChartFolder
-												+ "/globalImprovement-LEBAvsDTH"
-												+ "-TTH-" + tthValue + "-DTH-"
-												+ dthValue + "-Agents-"
-												+ agentValue + "-IT-" + itValue
-												+ "-TestRatio-" + ratioValue
-												+ ".png", axisLabels, coords,
-										ViewPositionMode.FREE, null);
+								plotter.saveDelaunaySurface3DChart(chartFolder
+										+ "/globalImprovement-LEBAvsDTH"
+										+ "-TTH-" + tthValue + "-DTH-"
+										+ dthValue + "-Agents-" + agentValue
+										+ "-IT-" + itValue + "-TestRatio-"
+										+ ratioValue + ".png", axisLabels,
+										coords, ViewPositionMode.FREE, null);
 							}
 						}
 					}
@@ -1095,7 +1102,7 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "LEBA";
 		axisLabels[1] = "BTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(this.outputChartFolder
+		plotter.saveScatter3DChart(chartFolder
 				+ "/globalImprovement-LEBAvsBTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
@@ -1104,8 +1111,9 @@ public class ExperimentsAnalyser {
 	 * LEBAvsDTH with the rest of variables constants
 	 * 
 	 * @param plotter
+	 * @param chartFolder
 	 */
-	private void saveChartsLEBAvsDTH(Plotter plotter) {
+	private void saveChartsLEBAvsDTH(Plotter plotter, String chartFolder) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
@@ -1118,8 +1126,6 @@ public class ExperimentsAnalyser {
 					for (int it = 0; it < its.size(); it++) {
 						int itValue = (int) this.getValueForPosInTheMatrix(its,
 								it);
-						String iterationChartFolder = this.outputChartFolder
-								+ "/iteration-" + it;
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
@@ -1157,15 +1163,13 @@ public class ExperimentsAnalyser {
 								axisLabels[0] = "LEBA";
 								axisLabels[1] = "DTH";
 								axisLabels[2] = "ImprovementRatio";
-								plotter.saveDelaunaySurface3DChart(
-										iterationChartFolder
-												+ "/globalImprovement-LEBAvsDTH"
-												+ "-TTH-" + tthValue + "-BTH-"
-												+ bthValue + "-Agents-"
-												+ agentValue + "-IT-" + itValue
-												+ "-TestRatio-" + ratioValue
-												+ ".png", axisLabels, coords,
-										ViewPositionMode.FREE, null);
+								plotter.saveDelaunaySurface3DChart(chartFolder
+										+ "/globalImprovement-LEBAvsDTH"
+										+ "-TTH-" + tthValue + "-BTH-"
+										+ bthValue + "-Agents-" + agentValue
+										+ "-IT-" + itValue + "-TestRatio-"
+										+ ratioValue + ".png", axisLabels,
+										coords, ViewPositionMode.FREE, null);
 							}
 						}
 					}
@@ -1176,7 +1180,7 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "LEBA";
 		axisLabels[1] = "DTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(this.outputChartFolder
+		plotter.saveScatter3DChart(chartFolder
 				+ "/globalImprovement-LEBAvsDTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
@@ -1185,8 +1189,9 @@ public class ExperimentsAnalyser {
 	 * LEBAvsTTH with the rest of variables constants
 	 * 
 	 * @param plotter
+	 * @param chartFolder
 	 */
-	private void saveChartsLEBAvsTTH(Plotter plotter) {
+	private void saveChartsLEBAvsTTH(Plotter plotter, String chartFolder) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		for (int agent = 0; agent < agents.size(); agent++) {
 			int agentValue = (int) this
@@ -1198,8 +1203,6 @@ public class ExperimentsAnalyser {
 					for (int it = 0; it < its.size(); it++) {
 						int itValue = (int) this.getValueForPosInTheMatrix(its,
 								it);
-						String iterationChartFolder = this.outputChartFolder
-								+ "/iteration-" + it;
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
 							double ratioValue = this.getValueForPosInTheMatrix(
 									testRatios, ratio);
@@ -1241,7 +1244,7 @@ public class ExperimentsAnalyser {
 									axisLabels[1] = "TTH";
 									axisLabels[2] = "ImprovementRatio";
 									plotter.saveDelaunaySurface3DChart(
-											iterationChartFolder
+											chartFolder
 													+ "/globalImprovement-LEBAvsTTH"
 													+ "-DTH-" + dthValue
 													+ "-BTH-" + bthValue
@@ -1257,15 +1260,13 @@ public class ExperimentsAnalyser {
 								axisLabels[0] = "LEBA";
 								axisLabels[1] = "TTH";
 								axisLabels[2] = "ImprovementRatio";
-								plotter.saveDelaunaySurface3DChart(
-										iterationChartFolder
-												+ "/globalImprovement-LEBAvsTTH"
-												+ "-DTH-" + dthValue + "-BTH-"
-												+ bthValue + "-Agents-"
-												+ agentValue + "-IT-" + itValue
-												+ "-TestRatio-" + ratioValue
-												+ ".png", axisLabels, coords,
-										ViewPositionMode.FREE, null);
+								plotter.saveDelaunaySurface3DChart(chartFolder
+										+ "/globalImprovement-LEBAvsTTH"
+										+ "-DTH-" + dthValue + "-BTH-"
+										+ bthValue + "-Agents-" + agentValue
+										+ "-IT-" + itValue + "-TestRatio-"
+										+ ratioValue + ".png", axisLabels,
+										coords, ViewPositionMode.FREE, null);
 							}
 						}
 					}
@@ -1276,7 +1277,7 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "LEBA";
 		axisLabels[1] = "TTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(this.outputChartFolder
+		plotter.saveScatter3DChart(chartFolder
 				+ "/globalImprovement-LEBAvsTTH-Plotter.png", axisLabels,
 				globalCoords, 10, ViewPositionMode.FREE, null);
 	}
