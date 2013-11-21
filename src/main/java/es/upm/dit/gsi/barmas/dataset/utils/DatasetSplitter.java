@@ -59,11 +59,11 @@ public class DatasetSplitter {
 		Logger logger = Logger.getLogger(DatasetSplitter.class.getSimpleName());
 
 		// Experiment 1
-		String outputDir = outputParentDir + File.separator + "exp1" + File.separator + "dataset";
+		String outputDir = outputParentDir;
 		splitter.splitDataset(0.3, 4, originalDatasetPath, outputDir, true, "CZ02", logger, 2);
 
 		// Experiment 2
-		outputDir = outputParentDir + File.separator + "exp1" + File.separator + "dataset";
+		outputDir = outputParentDir;
 		splitter.splitDataset(0.3, 8, originalDatasetPath, outputDir, true, "CZ02", logger, 2);
 
 	}
@@ -91,7 +91,7 @@ public class DatasetSplitter {
 
 		int ratioint = (int) (ratio * 100);
 		double roundedratio = ((double) ratioint) / 100;
-		String outputDirWithRatio = outputDir + File.separator + roundedratio + "testRatio";
+		String outputDirWithRatio = outputDir + "/" + roundedratio + "testRatio/iteration-" + iteration;
 		File dir = new File(outputDirWithRatio);
 		if (!dir.exists() || !dir.isDirectory()) {
 			dir.mkdirs();

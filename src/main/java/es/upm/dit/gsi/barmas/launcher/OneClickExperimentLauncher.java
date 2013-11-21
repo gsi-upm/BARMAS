@@ -70,11 +70,11 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		// this.launchZooBatch();
+		 this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		this.launchKowlanCZBatch();
+//		this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -462,11 +462,11 @@ public class OneClickExperimentLauncher {
 				int ratioint = (int) (ratio * 100);
 				double roundedratio = ((double) ratioint) / 100;
 				List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID,
-						agentsNumber, summaryFile, seed, mode, experimentFolder
-								+ "/input/iteration-" + i + "/dataset/" + roundedratio + "testRatio",
-						experimentFolder + "/output/iteration-" + i, experimentFolder
-								+ "/input/iteration-" + i + "/dataset/" + roundedratio
-								+ "testRatio/test-dataset.csv", classificationTarget, i);
+						agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/"
+								+ roundedratio + "testRatio/iteration-" + i, experimentFolder
+								+ "/output/" + roundedratio + "testRatio/iteration-" + i,
+						experimentFolder + "/input/" + roundedratio + "testRatio/iteration-"
+								+ i + "/test-dataset.csv", classificationTarget, i);
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: " + simulationID);
 				logger.info("---> Starting validations executions...");
@@ -553,31 +553,30 @@ public class OneClickExperimentLauncher {
 			int maxArgumentationRounds) {
 		try {
 			DatasetSplitter splitter = new DatasetSplitter();
-			splitter.splitDataset(ratio, agentsNumber, dataset, experimentFolder
-					+ "/input/iteration-" + iteration + "/dataset", central, simulationID, logger,
-					iteration);
+			splitter.splitDataset(ratio, agentsNumber, dataset, experimentFolder + "/input",
+					central, simulationID, logger, iteration);
 			ExperimentExecutor executor = new ExperimentExecutor();
 
 			// VALIDATORS
 			int ratioint = (int) (ratio * 100);
 			double roundedratio = ((double) ratioint) / 100;
 			List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID,
-					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/iteration-"
-							+ iteration + "/dataset/" + roundedratio + "testRatio", experimentFolder
-							+ "/output/iteration-" + iteration, experimentFolder
-							+ "/input/iteration-" + iteration + "/dataset/" + roundedratio
-							+ "testRatio/test-dataset.csv", classificationTarget, iteration);
+					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/"
+							+ roundedratio + "testRatio/iteration-" + iteration, experimentFolder
+							+ "/output/" + roundedratio + "testRatio/iteration-" + iteration,
+					experimentFolder + "/input/" + roundedratio + "testRatio/iteration-"
+							+ iteration + "/test-dataset.csv", classificationTarget, iteration);
 			logger.info(validators.size() + " validations are ready to execute for simulation: "
 					+ simulationID + " for iteration " + iteration);
 			executor.executeValidators(validators, maxLearningThreads, logger);
 
 			// EXPERIMENTS
 			List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(simulationID,
-					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/iteration-"
-							+ iteration + "/dataset/" + roundedratio + "testRatio", experimentFolder
-							+ "/output/iteration-" + iteration, experimentFolder
-							+ "/input/iteration-" + iteration + "/dataset/" + roundedratio
-							+ "testRatio/test-dataset.csv", classificationTarget, delta, iteration,
+					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/"
+							+ roundedratio + "testRatio/iteration-" + iteration, experimentFolder
+							+ "/output/" + roundedratio + "testRatio/iteration-" + iteration,
+					experimentFolder + "/input/" + roundedratio + "testRatio/iteration-"
+							+ iteration + "/test-dataset.csv", classificationTarget, delta, iteration,
 					maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold,
 					minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
 					maxArgumentationRounds);
