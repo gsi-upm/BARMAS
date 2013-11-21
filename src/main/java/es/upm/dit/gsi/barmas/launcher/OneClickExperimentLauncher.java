@@ -427,11 +427,12 @@ public class OneClickExperimentLauncher {
 		dataset = "src/main/resources/dataset/zoo.csv";
 		simName = "zoo-simulation";
 		experimentFolder = "../experiments/" + simName;
-		testRatio = 0.4;
+		// testRatio = 0.1;
 		centralApproach = true;
 		summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		seed = 0;
-		iterations = 1;
+		// iterations = 10;
+		int kfold = 10;
 		classificationTarget = "AnimalType";
 		delta = 0.1;
 
@@ -447,10 +448,10 @@ public class OneClickExperimentLauncher {
 		maxNumberOfAgents = 5;
 		minNumberOfAgents = 2;
 
-		this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				testRatio, centralApproach, summaryFile, seed, maxThreads,
-				iterations, classificationTarget, delta,
+		this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents,
+				minNumberOfAgents, centralApproach, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
 				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
@@ -478,7 +479,7 @@ public class OneClickExperimentLauncher {
 						agentsNumber,
 						dataset,
 						experimentFolder + "/input/iteration-" + i + "/dataset",
-						central, simulationID, logger);
+						central, simulationID, logger, i);
 				ExperimentExecutor executor = new ExperimentExecutor();
 				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
@@ -511,6 +512,26 @@ public class OneClickExperimentLauncher {
 		}
 	}
 
+	public void launchSmartBathAndValidatorsForAgentRangeKFold(
+			String simulationID, String dataset, String experimentFolder,
+			int maxAgentsNumber, int minAgentsNumber, boolean central,
+			String summaryFile, long seed, int maxThreads, int kfold,
+			String classificationTarget, double delta, int mode,
+			double maxDistanceThreshold, double minDistanceThreshold,
+			double maxBeliefThreshold, double minBeliefThreshold,
+			double maxTrustThreshold, double minTrustThreshold, int maxLEBA,
+			int minLEBA, int maxArgumentationRounds) {
+
+		double ratio = 1 / (double) kfold;
+		this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
+				experimentFolder, maxAgentsNumber, minAgentsNumber, ratio,
+				central, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, mode, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				maxArgumentationRounds);
+	}
+
 	public void launchSmartBathAndValidatorsForAgentRange(String simulationID,
 			String dataset, String experimentFolder, int maxAgentsNumber,
 			int minAgentsNumber, double ratio, boolean central,
@@ -523,13 +544,12 @@ public class OneClickExperimentLauncher {
 		int agentsNumber = minAgentsNumber;
 		while (agentsNumber <= maxAgentsNumber) {
 			this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-					experimentFolder, agentsNumber, testRatio, centralApproach,
+					experimentFolder, agentsNumber, ratio, central,
 					summaryFile, seed, maxThreads, iterations,
-					classificationTarget, delta,
-					SimulationConfiguration.SIMULATION_MODE,
-					maxDistanceThreshold, minDistanceThreshold,
-					maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-					minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
+					classificationTarget, delta, mode, maxDistanceThreshold,
+					minDistanceThreshold, maxBeliefThreshold,
+					minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+					maxLEBA, minLEBA, maxArgumentationRounds);
 			agentsNumber++;
 		}
 	}
@@ -558,7 +578,7 @@ public class OneClickExperimentLauncher {
 						agentsNumber,
 						dataset,
 						experimentFolder + "/input/iteration-" + i + "/dataset",
-						central, simulationID, logger);
+						central, simulationID, logger, i);
 				ExperimentExecutor executor = new ExperimentExecutor();
 				simulationID = simulationID + "-TESTRATIO-" + ratio
 						+ "-MAXARGSROUNDS-" + maxArgumentationRounds;

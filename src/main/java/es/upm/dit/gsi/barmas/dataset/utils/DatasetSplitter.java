@@ -62,13 +62,13 @@ public class DatasetSplitter {
 		String outputDir = outputParentDir + File.separator + "exp1"
 				+ File.separator + "dataset";
 		splitter.splitDataset(0.3, 4, originalDatasetPath, outputDir, true,
-				"CZ02", logger);
+				"CZ02", logger, 2);
 
 		// Experiment 2
 		outputDir = outputParentDir + File.separator + "exp1" + File.separator
 				+ "dataset";
 		splitter.splitDataset(0.3, 8, originalDatasetPath, outputDir, true,
-				"CZ02", logger);
+				"CZ02", logger, 2);
 
 	}
 
@@ -87,11 +87,12 @@ public class DatasetSplitter {
 	 *            true to create a bayescentral dataset that joint all agent
 	 *            data
 	 * @param scenario
+	 * @param iteration
 	 * @throws Exception
 	 */
 	public void splitDataset(double ratio, int agents,
 			String originalDatasetPath, String outputDir, boolean central,
-			String scenario, Logger logger) {
+			String scenario, Logger logger, int iteration) {
 
 		String outputDirWithRatio = outputDir + File.separator + ratio
 				+ "testRatio";
@@ -172,7 +173,7 @@ public class DatasetSplitter {
 					originalDatasetPath)));
 
 			csvreader.readHeaders();
-			int stepCounter = 0;
+			int stepCounter = 0 - (iteration % testStep);
 			int agentCounter = 0;
 			while (csvreader.readRecord()) {
 				String[] row = csvreader.getValues();
@@ -220,7 +221,8 @@ public class DatasetSplitter {
 			String scenario, Logger logger) {
 
 		try {
-			String fileName = outputDir + "/" + agents + "agents/experiment.info";
+			String fileName = outputDir + "/" + agents
+					+ "agents/experiment.info";
 			File file = new File(fileName);
 			File parent = file.getParentFile();
 			if (!parent.exists()) {

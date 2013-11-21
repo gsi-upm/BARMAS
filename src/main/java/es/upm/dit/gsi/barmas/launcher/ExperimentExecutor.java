@@ -107,7 +107,7 @@ public class ExperimentExecutor {
 
 		DatasetSplitter splitter = new DatasetSplitter();
 		splitter.splitDataset(ratio, agentsNumber, originalDataset,
-				experimentFolder + "/input/dataset", true, simulationID, logger);
+				experimentFolder + "/input/dataset", true, simulationID, logger, 0);
 
 		simulationID = simulationID + "-TESTRATIO-" + ratio + "-MAXARGSROUNDS-"
 				+ maxArgumentationRounds;
