@@ -447,13 +447,11 @@ public class OneClickExperimentLauncher {
 		maxArgumentationRounds = 200;
 		maxNumberOfAgents = 5;
 		minNumberOfAgents = 2;
-		
-		int threads = 1000;
 
 		this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID,
 				dataset, experimentFolder, maxNumberOfAgents,
 				minNumberOfAgents, centralApproach, summaryFile, seed,
-				threads, kfold, classificationTarget, delta,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
 				maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
