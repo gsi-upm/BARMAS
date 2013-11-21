@@ -40,8 +40,7 @@ public class PokerDatasetParser {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Logger logger = Logger.getLogger(PokerDatasetParser.class
-				.getSimpleName());
+		Logger logger = Logger.getLogger(PokerDatasetParser.class.getSimpleName());
 		PokerDatasetParser parser = new PokerDatasetParser(logger);
 		parser.parse("src/main/resources/dataset/poker-orig.csv",
 				"src/main/resources/dataset/poker.csv");
@@ -58,11 +57,11 @@ public class PokerDatasetParser {
 			CsvWriter writer = new CsvWriter(outputFile);
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
-			for (int i =0; i < headers.length;i++) {
+			for (int i = 0; i < headers.length; i++) {
 				if (headers[i].startsWith("S")) {
-					headers[i] = "Suit"+headers[i].substring(1);
+					headers[i] = "Suit" + headers[i].substring(1);
 				} else if (headers[i].startsWith("C")) {
-					headers[i] = "Card"+headers[i].substring(1);
+					headers[i] = "Card" + headers[i].substring(1);
 				}
 			}
 			headers[headers.length - 1] = "PokerHand";

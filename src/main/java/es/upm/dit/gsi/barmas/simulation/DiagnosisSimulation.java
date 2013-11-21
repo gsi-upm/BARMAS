@@ -62,9 +62,8 @@ public class DiagnosisSimulation extends ShanksSimulation {
 	 * @param properties
 	 * @throws ShanksException
 	 */
-	public DiagnosisSimulation(long seed,
-			Class<? extends Scenario> scenarioClass, String scenarioID,
-			String initialState, Properties properties) throws ShanksException {
+	public DiagnosisSimulation(long seed, Class<? extends Scenario> scenarioClass,
+			String scenarioID, String initialState, Properties properties) throws ShanksException {
 		super(seed, scenarioClass, scenarioID, initialState, properties);
 	}
 
@@ -75,8 +74,7 @@ public class DiagnosisSimulation extends ShanksSimulation {
 	 */
 	@Override
 	public void addSteppables() {
-		Steppable manager = (Steppable) this.getScenario().getProperties()
-				.get("ManagerAgent");
+		Steppable manager = (Steppable) this.getScenario().getProperties().get("ManagerAgent");
 		try {
 			this.registerShanksAgent((ShanksAgent) manager);
 		} catch (ShanksException e) {
@@ -84,20 +82,15 @@ public class DiagnosisSimulation extends ShanksSimulation {
 			System.exit(1);
 		}
 		schedule.scheduleRepeating(Schedule.EPOCH, 3, manager, 1);
-		Steppable generator = new DiagnosisCaseGenerator(this.getScenario()
-				.getProperties()
+		Steppable generator = new DiagnosisCaseGenerator(this.getScenario().getProperties()
 				.getProperty(SimulationConfiguration.TESTDATASET));
 		schedule.scheduleRepeating(Schedule.EPOCH, 6, generator, 1);
 		boolean repMode = new Boolean(this.getScenario().getProperties()
 				.getProperty(SimulationConfiguration.REPUTATIONMODE));
-		Steppable evaluator = new DiagnosisCaseEvaluator(this.getScenario()
-				.getProperties()
-				.getProperty(SimulationConfiguration.CLASSIFICATIONTARGET),
-				this.getScenario().getProperties()
-						.getProperty(SimulationConfiguration.EXPOUTPUT), this
-						.getScenario().getProperties()
-						.getProperty(SimulationConfiguration.TESTDATASET),
-				repMode);
+		Steppable evaluator = new DiagnosisCaseEvaluator(this.getScenario().getProperties()
+				.getProperty(SimulationConfiguration.CLASSIFICATIONTARGET), this.getScenario()
+				.getProperties().getProperty(SimulationConfiguration.EXPOUTPUT), this.getScenario()
+				.getProperties().getProperty(SimulationConfiguration.TESTDATASET), repMode);
 		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 1);
 	}
 
@@ -110,8 +103,8 @@ public class DiagnosisSimulation extends ShanksSimulation {
 	public void registerShanksAgents() throws ShanksException {
 
 		@SuppressWarnings("unchecked")
-		List<ShanksAgent> agents = (List<ShanksAgent>) this.getScenario()
-				.getProperties().get("AGENTS");
+		List<ShanksAgent> agents = (List<ShanksAgent>) this.getScenario().getProperties()
+				.get("AGENTS");
 		for (ShanksAgent agent : agents) {
 			this.registerShanksAgent(agent);
 		}

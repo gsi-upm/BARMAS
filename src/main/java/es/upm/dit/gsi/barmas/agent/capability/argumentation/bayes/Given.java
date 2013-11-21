@@ -21,12 +21,10 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractGiven;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.Given.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.model.Given.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -39,19 +37,21 @@ public class Given extends AbstractGiven {
 
 	private String node;
 	private String value;
-	
+
 	private ArgumentativeAgent source;
 
 	/**
 	 * Constructor
-	 *
+	 * 
 	 */
 	public Given(String node, String value) {
 		this.node = node;
 		this.value = value;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractGiven#getNode()
 	 */
 	@Override
@@ -59,7 +59,9 @@ public class Given extends AbstractGiven {
 		return this.node;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractGiven#getValue()
 	 */
 	@Override
@@ -75,7 +77,8 @@ public class Given extends AbstractGiven {
 	}
 
 	/**
-	 * @param source the source to set
+	 * @param source
+	 *            the source to set
 	 */
 	public void setSource(ArgumentativeAgent source) {
 		this.source = source;

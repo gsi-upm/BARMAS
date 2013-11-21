@@ -33,12 +33,11 @@ import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.dataset.utils.kowlancz.DatasetBuilder.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.dataset.utils.kowlancz.DatasetBuilder.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -68,8 +67,7 @@ public class DatasetBuilder {
 
 		for (String scenario : scenarios) {
 			List<String> header = builder.getTableHeader(path, scenario);
-			File file = new File(path + scenario + "/" + scenario
-					+ "-dataset.csv");
+			File file = new File(path + scenario + "/" + scenario + "-dataset.csv");
 			builder.createCSVFile(file, header);
 			builder.fillDiagnosesForHeader(path, header, file, scenario);
 			builder.checkValidDataset(file);
@@ -95,9 +93,8 @@ public class DatasetBuilder {
 			}
 			counter++;
 		}
-		logger.info("Empty values counter for file " + file.getName() + ": "
-				+ (counter - valids) + " Total: " + counter + " Valids: "
-				+ valids);
+		logger.info("Empty values counter for file " + file.getName() + ": " + (counter - valids)
+				+ " Total: " + counter + " Valids: " + valids);
 		reader.close();
 	}
 
@@ -123,8 +120,7 @@ public class DatasetBuilder {
 		try {
 
 			File observationcsv = new File(path + scenario + "/observation.csv");
-			CsvReader observations = new CsvReader(new FileReader(
-					observationcsv));
+			CsvReader observations = new CsvReader(new FileReader(observationcsv));
 
 			observations.readHeaders();
 
@@ -146,8 +142,7 @@ public class DatasetBuilder {
 			System.exit(1);
 		}
 
-		logger.info("Scenario: " + scenario + " -> Total number of columns: "
-				+ header.size());
+		logger.info("Scenario: " + scenario + " -> Total number of columns: " + header.size());
 		return header;
 	}
 
@@ -178,14 +173,13 @@ public class DatasetBuilder {
 	 * @param header
 	 * @param file
 	 */
-	private void fillDiagnosesForHeader(String path, List<String> header,
-			File file, String scenario) {
+	private void fillDiagnosesForHeader(String path, List<String> header, File file, String scenario) {
 		try {
 			CsvReader datasetFile = new CsvReader(new FileReader(file));
 
 			datasetFile.readHeaders();
 			String[] datasetHeaders = datasetFile.getHeaders();
-			
+
 			datasetFile.close();
 
 			File operationscsv = new File(path + scenario + "/operations.csv");
@@ -201,24 +195,22 @@ public class DatasetBuilder {
 			}
 
 			operations.close();
-			
+
 			File observationcsv = new File(path + scenario + "/observation.csv");
-			CsvReader observations = new CsvReader(new FileReader(
-					observationcsv));
+			CsvReader observations = new CsvReader(new FileReader(observationcsv));
 
 			observations.readHeaders();
 
 			while (observations.readRecord()) {
 				if (data.containsKey(observations.get(0))) {
-					int column = this.lookPosFor(observations.get(1),
-							datasetHeaders);
+					int column = this.lookPosFor(observations.get(1), datasetHeaders);
 					String[] row = data.get(observations.get(0));
 					String composedValue = observations.get(2);
 					String value = composedValue.split("_")[1];
 					row[column] = value;
 				}
 			}
-			
+
 			observations.close();
 
 			File beliefcsv = new File(path + scenario + "/belief.csv");
@@ -231,25 +223,21 @@ public class DatasetBuilder {
 			while (beliefs.readRecord()) {
 				if (data.containsKey(beliefs.get(0))) {
 					if (!beliefsPerOperationID.containsKey(beliefs.get(0))) {
-						beliefsPerOperationID.put(beliefs.get(0),
-								new HashMap<String, String>());
+						beliefsPerOperationID.put(beliefs.get(0), new HashMap<String, String>());
 					}
-					beliefsPerOperationID.get(beliefs.get(0)).put(
-							beliefs.get(1), beliefs.get(3));
+					beliefsPerOperationID.get(beliefs.get(0)).put(beliefs.get(1), beliefs.get(3));
 				}
 			}
 
 			beliefs.close();
 
-			for (Entry<String, HashMap<String, String>> bels : beliefsPerOperationID
-					.entrySet()) {
+			for (Entry<String, HashMap<String, String>> bels : beliefsPerOperationID.entrySet()) {
 				String higherHyp = this.getHigherHypothesis(bels.getValue());
 				String[] row = data.get(bels.getKey());
 				row[datasetHeaders.length - 1] = higherHyp;
 			}
 
-			CsvWriter datasetFileWriter = new CsvWriter(new FileWriter(file,
-					true), ',');
+			CsvWriter datasetFileWriter = new CsvWriter(new FileWriter(file, true), ',');
 
 			int valids = 0;
 			int invalids = 0;
@@ -259,9 +247,8 @@ public class DatasetBuilder {
 					valids++;
 				} else {
 					invalids++;
-					logger.finer("Data row with empty values found for file "
-							+ file.getName() + " -> Values: "
-							+ datum.getValue());
+					logger.finer("Data row with empty values found for file " + file.getName()
+							+ " -> Values: " + datum.getValue());
 				}
 			}
 			logger.info("File: " + file.getName() + " is ready!");

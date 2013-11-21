@@ -59,11 +59,9 @@ import es.upm.dit.gsi.shanks.agent.capability.reasoning.bayes.smile.ShanksAgentB
  */
 public class AgentBayesLearningCapabilityTest {
 
-	private Logger logger = Logger
-			.getLogger(AgentBayesLearningCapabilityTest.class.getName());
+	private Logger logger = Logger.getLogger(AgentBayesLearningCapabilityTest.class.getName());
 
-	private interface MyBayesLearningAgent extends BayesLearningAgent,
-			BayesianReasonerShanksAgent {
+	private interface MyBayesLearningAgent extends BayesLearningAgent, BayesianReasonerShanksAgent {
 
 	}
 
@@ -167,8 +165,7 @@ public class AgentBayesLearningCapabilityTest {
 
 	@Test
 	public void learningWithOutputTest() {
-		AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
-				"SolarFlareType");
+		AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10, "SolarFlareType");
 		File f = new File(agent.getBNOutputFile());
 		Assert.assertTrue(f.exists());
 	}
@@ -176,8 +173,7 @@ public class AgentBayesLearningCapabilityTest {
 	@Test
 	public void learningAndReasoningTest() {
 		try {
-			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
-					"SolarFlareType");
+			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10, "SolarFlareType");
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(agent);
@@ -202,13 +198,12 @@ public class AgentBayesLearningCapabilityTest {
 	@Test
 	public void learningAndReasoningWithEvidencesTest() {
 		try {
-			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
-					"SolarFlareType");
+			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10, "SolarFlareType");
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
-			ShanksAgentBayesianReasoningCapability.addEvidence(
-					agent.getBayesianNetwork(), "LargestSpotSize", "R");
-			ShanksAgentBayesianReasoningCapability.addEvidence(
-					agent.getBayesianNetwork(), "SpotDistribution", "O");
+			ShanksAgentBayesianReasoningCapability.addEvidence(agent.getBayesianNetwork(),
+					"LargestSpotSize", "R");
+			ShanksAgentBayesianReasoningCapability.addEvidence(agent.getBayesianNetwork(),
+					"SpotDistribution", "O");
 			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(agent);
 			for (Entry<String, HashMap<String, Float>> hyp : hyps.entrySet()) {
@@ -232,8 +227,7 @@ public class AgentBayesLearningCapabilityTest {
 	@Test
 	public void learningWithValidationAndReasoningTest() {
 		try {
-			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10,
-					"SolarFlareType");
+			AgentBayesLearningCapability.learnBNWithBayesianSearch(agent, 10, "SolarFlareType");
 			ShanksAgentBayesianReasoningCapability.loadNetwork(agent);
 			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(agent);

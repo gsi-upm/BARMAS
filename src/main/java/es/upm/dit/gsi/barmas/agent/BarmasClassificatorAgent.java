@@ -117,9 +117,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * @param bnFile
 	 */
 	public BarmasClassificatorAgent(String id, ArgumentativeAgent manager,
-			String classificationTarget, String bnFile, String datasetFile,
-			List<String> sensors, double diffThreshold, double beliefThreshold,
-			double trustThreshold, Logger logger) {
+			String classificationTarget, String bnFile, String datasetFile, List<String> sensors,
+			double diffThreshold, double beliefThreshold, double trustThreshold, Logger logger) {
 		super(id, logger);
 		this.bnFile = bnFile;
 		this.sensors = sensors;
@@ -144,17 +143,14 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		while (this.bn == null) {
 			try {
 				ShanksAgentBayesianReasoningCapability.loadNetwork(this);
-				logger.info("Bayesian network loaded successfully by agent "
-						+ this.getID());
+				logger.info("Bayesian network loaded successfully by agent " + this.getID());
 			} catch (Exception e) {
 				try {
 					int learningIterations = 3;
-					AgentBayesLearningCapability.learnBNWithBayesianSearch(
-							this, learningIterations, classificationTarget);
+					AgentBayesLearningCapability.learnBNWithBayesianSearch(this,
+							learningIterations, classificationTarget);
 				} catch (Exception ex) {
-					this.getLogger().severe(
-							"Problem learning BN. Exception: "
-									+ ex.getMessage());
+					this.getLogger().severe("Problem learning BN. Exception: " + ex.getMessage());
 					ex.printStackTrace();
 					System.exit(1);
 				}
@@ -166,9 +162,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			logger.info("Reputation mode ON in Agent: " + this.getID());
 			this.evidencesToUpdateScores = new HashMap<String, String>();
 			// Update scores based on background knowledge
-			this.scores = AgentArgumentativeCapability
-					.getFScoreStoreBasedOnBackgroundKnowledge(this,
-							this.getBayesianNetworkFilePath());
+			this.scores = AgentArgumentativeCapability.getFScoreStoreBasedOnBackgroundKnowledge(
+					this, this.getBayesianNetworkFilePath());
 		}
 		// END OF REPUTATION BLOCK
 
@@ -213,8 +208,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	@Override
 	public void executeReasoningCycle(ShanksSimulation simulation) {
 		DiagnosisSimulation sim = (DiagnosisSimulation) simulation;
-		DiagnosisCase orig = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.ORIGINALDIAGNOSIS);
+		DiagnosisCase orig = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.ORIGINALDIAGNOSIS);
 		// Check sensors
 		boolean newEvent = false;
 		if (this.IDLE) {
@@ -243,13 +238,11 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	private void evaluateNextAction(DiagnosisSimulation sim) {
 		// Check graph and/or argumentation and try to generate arguments
 		if (this.isThereNewInfo() || this.isThereAssumptionsToImprove(sim)) {
-			this.getLogger()
-					.fine("Useful information found by " + this.getID());
+			this.getLogger().fine("Useful information found by " + this.getID());
 			this.goToArgumenting(sim);
 			this.goToWaiting();
 		} else {
-			this.getLogger().fine(
-					"No useful information found by " + this.getID());
+			this.getLogger().fine("No useful information found by " + this.getID());
 			this.goToWaiting();
 		}
 	}
@@ -294,8 +287,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	private void updateBeliefs(List<Argument> args) {
 
 		if (this.getMyLastArgument() != null
-				&& this.getMyLastArgument().getGivens().size() == this.evidences
-						.size()) {
+				&& this.getMyLastArgument().getGivens().size() == this.evidences.size()) {
 			// check if it is valid
 			List<Integer> attackTypes = new ArrayList<Integer>();
 			attackTypes.add(AgentArgumentativeCapability.UNDERCUT);
@@ -303,9 +295,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			attackTypes.add(AgentArgumentativeCapability.CANONICALUNDERCUT);
 			// attackTypes.add(AgentArgumentativeCapability.DEFEATER);
 			// attackTypes.add(AgentArgumentativeCapability.DIRECTDEFEATER);
-			List<Argument> unattacked = AgentArgumentativeCapability
-					.getUnattackedArguments(args, this.argumentation,
-							attackTypes);
+			List<Argument> unattacked = AgentArgumentativeCapability.getUnattackedArguments(args,
+					this.argumentation, attackTypes);
 			unattacked.removeAll(this.acceptedByMeArguments);
 			for (Argument arg : unattacked) {
 				// check the proposals that are not the classification class
@@ -315,8 +306,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 						HashMap<String, Double> receivedBelief = (HashMap<String, Double>) p
 								.getValuesWithConfidence();
 						HashMap<String, Double> ownBelief = AgentArgumentativeCapability
-								.convertToDoubleValues(this
-										.getAllMyHypotheses().get(p.getNode()));
+								.convertToDoubleValues(this.getAllMyHypotheses().get(p.getNode()));
 						// Only strong beliefs are proposed (sent as
 						// proposals), so no more constrains must be added.
 						// Anyway, you must check if you have other
@@ -325,37 +315,28 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 						double maxDiff = p.getMaxValue() - auxp.getMaxValue();
 						boolean otherIsBetter;
 						boolean moreTrust;
-						boolean enoughDistance = this
-								.areDistributionsFarEnough(receivedBelief,
-										ownBelief);
+						boolean enoughDistance = this.areDistributionsFarEnough(receivedBelief,
+								ownBelief);
 						if (reputationMode) {
 							// moreTrust = p.getTrustScoreValue()
 							// - this.getTrustScoreValueForCurrentBelief(p
 							// .getNode()) >= this.trustThreshold;
-							moreTrust = (p.getTrustScoreValue()
-									* p.getMaxValue() * 10)
-									- (this.getTrustScoreValueForCurrentBelief(p
-											.getNode())
+							moreTrust = (p.getTrustScoreValue() * p.getMaxValue() * 10)
+									- (this.getTrustScoreValueForCurrentBelief(p.getNode())
 											* auxp.getMaxValue() * 10) >= this.trustThreshold;
-							otherIsBetter = moreTrust
-									&& (maxDiff >= this.beliefThreshold);
+							otherIsBetter = moreTrust && (maxDiff >= this.beliefThreshold);
 						} else {
 							otherIsBetter = (maxDiff >= this.beliefThreshold);
 						}
 						if (enoughDistance && otherIsBetter) {
 							try {
-								ShanksAgentBayesianReasoningCapability
-										.addSoftEvidence(
-												this.getBayesianNetwork(),
-												p.getNode(), receivedBelief);
-								this.updatedBeliefs.put(p.getNode(),
-										receivedBelief);
+								ShanksAgentBayesianReasoningCapability.addSoftEvidence(
+										this.getBayesianNetwork(), p.getNode(), receivedBelief);
+								this.updatedBeliefs.put(p.getNode(), receivedBelief);
 								this.acceptedByMeArguments.add(arg);
-								this.updateSourceOfData(p.getNode(),
-										p.getSource());
+								this.updateSourceOfData(p.getNode(), p.getSource());
 								this.getLogger().fine(
-										"Belief " + p.getNode()
-												+ " updated for agent: "
+										"Belief " + p.getNode() + " updated for agent: "
 												+ this.getID());
 								if (reputationMode) {
 									this.getLogger().fine(
@@ -364,10 +345,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 								}
 								this.newBeliefs = true;
 							} catch (ShanksException e) {
-								this.getLogger()
-										.warning(
-												this.getID()
-														+ " -> Problems updating beliefs.");
+								this.getLogger().warning(
+										this.getID() + " -> Problems updating beliefs.");
 								this.getLogger().warning(e.getMessage());
 								e.printStackTrace();
 								System.exit(1);
@@ -405,38 +384,30 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			for (Given given : givens) {
 				if (evidencesToOffer.contains(given.getNode())) {
 					evidencesToOffer.remove(given.getNode());
-					if (!this.evidences.get(given.getNode()).equals(
-							given.getValue())) {
+					if (!this.evidences.get(given.getNode()).equals(given.getValue())) {
 						this.getLogger()
 								.warning(
 										"INCOHERENCE! -> No sense! Different evidences from different agents.");
 						this.getLogger().warning(
-								"Agent: " + this.getID() + " Evidence: "
-										+ given.getNode() + " - "
+								"Agent: " + this.getID() + " Evidence: " + given.getNode() + " - "
 										+ evidences.get(given.getValue()));
 						this.getLogger().warning(
-								"Agent: "
-										+ arg.getProponent().getProponentName()
-										+ " Evidence: " + given.getNode()
-										+ " - " + given.getValue());
+								"Agent: " + arg.getProponent().getProponentName() + " Evidence: "
+										+ given.getNode() + " - " + given.getValue());
 						System.exit(1);
 					}
 				}
 				if (evidences.keySet().contains(given.getNode())) {
-					if (!evidences.get(given.getNode())
-							.equals(given.getValue())) {
+					if (!evidences.get(given.getNode()).equals(given.getValue())) {
 						this.getLogger()
 								.warning(
 										"INCOHERENCE! -> No sense! Different evidences from different agents.");
 						this.getLogger().warning(
-								"Agent: " + this.getID() + " Evidence: "
-										+ given.getNode() + " - "
+								"Agent: " + this.getID() + " Evidence: " + given.getNode() + " - "
 										+ evidences.get(given.getValue()));
 						this.getLogger().warning(
-								"Agent: "
-										+ arg.getProponent().getProponentName()
-										+ " Evidence: " + given.getNode()
-										+ " - " + given.getValue());
+								"Agent: " + arg.getProponent().getProponentName() + " Evidence: "
+										+ given.getNode() + " - " + given.getValue());
 						System.exit(1);
 					}
 				} else {
@@ -460,15 +431,12 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	private void addEvidencesToBN() {
 		// Add evidences
 		this.getLogger().finer(
-				"Agent: " + this.getID() + " -> Number of evidences: "
-						+ this.evidences.size());
+				"Agent: " + this.getID() + " -> Number of evidences: " + this.evidences.size());
 		try {
-			ShanksAgentBayesianReasoningCapability.addEvidences(this,
-					this.evidences);
+			ShanksAgentBayesianReasoningCapability.addEvidences(this, this.evidences);
 		} catch (Exception e) {
-			this.getLogger().fine(
-					"Agent: " + this.getID()
-							+ " -> Problems updating evidences: "
+			this.getLogger()
+					.fine("Agent: " + this.getID() + " -> Problems updating evidences: "
 							+ e.getMessage());
 			System.exit(1);
 		}
@@ -482,8 +450,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		// If the agent is starting the argumentation or
 		// if it is the first argument from this agent in this argumentation
 		// if new evidences can be added or new belief has been updated
-		if (this.argumentation.getArguments().isEmpty()
-				|| this.mySentArguments.isEmpty() || this.isThereNewInfo()) {
+		if (this.argumentation.getArguments().isEmpty() || this.mySentArguments.isEmpty()
+				|| this.isThereNewInfo()) {
 			// Full argument
 			this.sendFullArgument(sim);
 		} else {
@@ -498,8 +466,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * @return
 	 */
 	private boolean isThereAssumptionsToImprove(DiagnosisSimulation sim) {
-		HashMap<String, HashMap<String, Float>> ownHypotheses = this
-				.getAllMyHypotheses();
+		HashMap<String, HashMap<String, Float>> ownHypotheses = this.getAllMyHypotheses();
 
 		List<Integer> attackTypes = new ArrayList<Integer>();
 		attackTypes.add(AgentArgumentativeCapability.UNDERCUT);
@@ -507,8 +474,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		attackTypes.add(AgentArgumentativeCapability.CANONICALUNDERCUT);
 		// attackTypes.add(AgentArgumentativeCapability.DEFEATER);
 		// attackTypes.add(AgentArgumentativeCapability.DIRECTDEFEATER);
-		List<Argument> unattacked = AgentArgumentativeCapability
-				.getUnattackedArguments(this.argumentation, attackTypes);
+		List<Argument> unattacked = AgentArgumentativeCapability.getUnattackedArguments(
+				this.argumentation, attackTypes);
 		unattacked.removeAll(this.attackedByMeArguments);
 		for (Argument arg : unattacked) {
 			for (Assumption assum : arg.getAssumptions()) {
@@ -516,28 +483,23 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					HashMap<String, Double> receivedBelief = (HashMap<String, Double>) assum
 							.getValuesWithConfidence();
 					HashMap<String, Double> ownBelief = AgentArgumentativeCapability
-							.convertToDoubleValues(ownHypotheses.get(assum
-									.getNode()));
+							.convertToDoubleValues(ownHypotheses.get(assum.getNode()));
 					Proposal auxp = new Proposal(assum.getNode(), ownBelief);
 
 					double maxDiff = auxp.getMaxValue() - assum.getMaxValue();
 					boolean myBeliefIsBetter;
 					boolean moreTrust;
-					boolean enoughDistance = this.areDistributionsFarEnough(
-							receivedBelief, ownBelief);
+					boolean enoughDistance = this.areDistributionsFarEnough(receivedBelief,
+							ownBelief);
 					if (reputationMode) {
 						// moreTrust = this
 						// .getTrustScoreValueForCurrentBelief(assum
 						// .getNode())
 						// - assum.getTrustScoreValue() >= this.trustThreshold;
-						moreTrust = (this
-								.getTrustScoreValueForCurrentBelief(assum
-										.getNode())
+						moreTrust = (this.getTrustScoreValueForCurrentBelief(assum.getNode())
 								* auxp.getMaxValue() * 10)
-								- (assum.getTrustScoreValue()
-										* assum.getMaxValue() * 10) >= this.trustThreshold;
-						myBeliefIsBetter = moreTrust
-								&& (maxDiff > this.beliefThreshold);
+								- (assum.getTrustScoreValue() * assum.getMaxValue() * 10) >= this.trustThreshold;
+						myBeliefIsBetter = moreTrust && (maxDiff > this.beliefThreshold);
 					} else {
 						myBeliefIsBetter = (maxDiff > this.beliefThreshold);
 					}
@@ -548,8 +510,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					}
 				} catch (Exception e) {
 					this.getLogger().warning(
-							"Problems getting local belief for: "
-									+ assum.getNode());
+							"Problems getting local belief for: " + assum.getNode());
 					this.getLogger().warning(e.getMessage());
 					e.printStackTrace();
 					System.exit(1);
@@ -562,12 +523,10 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	/**
 	 * @param assumptionsToImprove
 	 */
-	private void sendCounterArgument(
-			HashMap<Assumption, Argument> assumptionsToImprove,
+	private void sendCounterArgument(HashMap<Assumption, Argument> assumptionsToImprove,
 			ShanksSimulation sim) {
 		this.addEvidencesToBN();
-		HashMap<String, HashMap<String, Float>> ownHypotheses = this
-				.getAllMyHypotheses();
+		HashMap<String, HashMap<String, Float>> ownHypotheses = this.getAllMyHypotheses();
 		for (Assumption assum : assumptionsToImprove.keySet()) {
 			// Get proposal
 			HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
@@ -580,28 +539,22 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			proposals.put(assum.getNode(), beliefs);
 
 			HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String, Double>>();
-			for (Entry<String, HashMap<String, Float>> entry : ownHypotheses
-					.entrySet()) {
+			for (Entry<String, HashMap<String, Float>> entry : ownHypotheses.entrySet()) {
 				String node = entry.getKey();
-				if (!node.equals(this.classificationTarget)
-						&& !node.equals(assum.getNode())
+				if (!node.equals(this.classificationTarget) && !node.equals(assum.getNode())
 						&& !evidences.keySet().contains(node)) {
 					beliefs = new HashMap<String, Double>();
-					for (Entry<String, Float> values : entry.getValue()
-							.entrySet()) {
-						beliefs.put(values.getKey(),
-								new Double(values.getValue()));
+					for (Entry<String, Float> values : entry.getValue().entrySet()) {
+						beliefs.put(values.getKey(), new Double(values.getValue()));
 					}
 					assumptions.put(node, beliefs);
 				}
 			}
 
 			this.getLogger().fine(
-					this.getID() + " -> Counter argument sent for belief: "
-							+ assum.getNode());
-			Argument arg = AgentArgumentativeCapability.createArgument(this,
-					proposals, assumptions, evidences, sim.schedule.getSteps(),
-					System.currentTimeMillis());
+					this.getID() + " -> Counter argument sent for belief: " + assum.getNode());
+			Argument arg = AgentArgumentativeCapability.createArgument(this, proposals,
+					assumptions, evidences, sim.schedule.getSteps(), System.currentTimeMillis());
 			this.sendArgument(arg);
 			this.attackedByMeArguments.add(assumptionsToImprove.get(assum));
 		}
@@ -612,8 +565,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		this.addEvidencesToBN();
 
 		// Get hypothesis
-		HashMap<String, HashMap<String, Float>> hypotheses = this
-				.getAllMyHypotheses();
+		HashMap<String, HashMap<String, Float>> hypotheses = this.getAllMyHypotheses();
 
 		HashMap<String, HashMap<String, Double>> proposals = new HashMap<String, HashMap<String, Double>>();
 		HashMap<String, Float> hyps = hypotheses.get(this.classificationTarget);
@@ -625,11 +577,9 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		proposals.put(this.classificationTarget, beliefs);
 
 		HashMap<String, HashMap<String, Double>> assumptions = new HashMap<String, HashMap<String, Double>>();
-		for (Entry<String, HashMap<String, Float>> entry : hypotheses
-				.entrySet()) {
+		for (Entry<String, HashMap<String, Float>> entry : hypotheses.entrySet()) {
 			String node = entry.getKey();
-			if (!node.equals(this.classificationTarget)
-					&& !evidences.keySet().contains(node)) {
+			if (!node.equals(this.classificationTarget) && !evidences.keySet().contains(node)) {
 				beliefs = new HashMap<String, Double>();
 				for (Entry<String, Float> values : entry.getValue().entrySet()) {
 					beliefs.put(values.getKey(), new Double(values.getValue()));
@@ -638,9 +588,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			}
 		}
 
-		Argument arg = AgentArgumentativeCapability.createArgument(this,
-				proposals, assumptions, evidences, sim.schedule.getSteps(),
-				System.currentTimeMillis());
+		Argument arg = AgentArgumentativeCapability.createArgument(this, proposals, assumptions,
+				evidences, sim.schedule.getSteps(), System.currentTimeMillis());
 		this.sendArgument(arg);
 	}
 
@@ -653,11 +602,9 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	private HashMap<String, HashMap<String, Float>> getAllMyHypotheses() {
 		HashMap<String, HashMap<String, Float>> ownBeliefs = null;
 		try {
-			ownBeliefs = ShanksAgentBayesianReasoningCapability
-					.getAllHypotheses(this);
+			ownBeliefs = ShanksAgentBayesianReasoningCapability.getAllHypotheses(this);
 			List<String> beliefsToRemove = new ArrayList<String>();
-			for (Entry<String, HashMap<String, Float>> entry : ownBeliefs
-					.entrySet()) {
+			for (Entry<String, HashMap<String, Float>> entry : ownBeliefs.entrySet()) {
 				if (entry.getKey().startsWith("softEvidenceNode")) {
 					beliefsToRemove.add(entry.getKey());
 				}
@@ -688,8 +635,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * @return
 	 */
 	private boolean getSensorsUpdateData(DiagnosisSimulation sim) {
-		DiagnosisCase orig = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.ORIGINALDIAGNOSIS);
+		DiagnosisCase orig = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.ORIGINALDIAGNOSIS);
 		boolean newEvent = orig.getStatus().get(DiagnosisCase.READY);
 		if (newEvent) {
 			for (String sensor : this.sensors) {
@@ -760,8 +707,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		this.evidencesToUpdateScores = new HashMap<String, String>();
 		if (reputationMode) {
 			for (Entry<String, String> evidence : this.evidences.entrySet()) {
-				this.evidencesToUpdateScores.put(evidence.getKey(),
-						evidence.getValue());
+				this.evidencesToUpdateScores.put(evidence.getKey(), evidence.getValue());
 			}
 		}
 		this.evidences.clear();
@@ -809,9 +755,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	public void addArgumentationGroupMember(ArgumentativeAgent agent) {
 		if (!agent.equals(this) && !this.argumentationGroup.contains(agent)) {
 			this.argumentationGroup.add(agent);
-			this.getLogger()
-					.fine("Agent: "
-							+ this.getID()
+			this.getLogger().fine(
+					"Agent: " + this.getID()
 							+ " has added a new agent as argumentation member -> New member: "
 							+ agent.getProponentName());
 		}
@@ -949,8 +894,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * #areDistributionsFarEnough(java.util.Map, java.util.Map)
 	 */
 	@Override
-	public boolean areDistributionsFarEnough(Map<String, Double> a,
-			Map<String, Double> b) {
+	public boolean areDistributionsFarEnough(Map<String, Double> a, Map<String, Double> b) {
 		if (AgentArgumentativeCapability.getNormalisedHellingerDistance(
 				(HashMap<String, Double>) a, (HashMap<String, Double>) b) >= diffThreshold) {
 			return true;
@@ -994,25 +938,20 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	public void updateFScoreStore(DiagnosisCase diagnosisCase) {
 		try {
 			this.getLogger().finest(
-					"Updating scores for agent: " + this.getID()
-							+ " after diagnosis case id: "
+					"Updating scores for agent: " + this.getID() + " after diagnosis case id: "
 							+ diagnosisCase.getCaseID());
-			ShanksAgentBayesianReasoningCapability.addEvidences(this,
-					this.evidencesToUpdateScores);
+			ShanksAgentBayesianReasoningCapability.addEvidences(this, this.evidencesToUpdateScores);
 			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(this);
 
-			for (Entry<String, Object> property : diagnosisCase.getProperties()
-					.entrySet()) {
+			for (Entry<String, Object> property : diagnosisCase.getProperties().entrySet()) {
 				HashMap<String, Float> belief = hyps.get(property.getKey());
 				String state = (String) property.getValue();
-				this.checkBeliefAndUpdateScores(property.getKey(), state,
-						belief);
+				this.checkBeliefAndUpdateScores(property.getKey(), state, belief);
 			}
 		} catch (ShanksException e) {
 			this.getLogger().severe(
-					"Problem updating scores in reputation mode. Exception: "
-							+ e.getMessage());
+					"Problem updating scores in reputation mode. Exception: " + e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -1021,8 +960,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	 * @param state
 	 * @param belief
 	 */
-	private void checkBeliefAndUpdateScores(String node, String state,
-			HashMap<String, Float> belief) {
+	private void checkBeliefAndUpdateScores(String node, String state, HashMap<String, Float> belief) {
 		float max = 0;
 		String maxState = "";
 		for (Entry<String, Float> entry : belief.entrySet()) {
@@ -1083,8 +1021,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 	public double getTrustScoreValueForCurrentBelief(String variable) {
 		HashMap<String, Float> hyps;
 		try {
-			hyps = ShanksAgentBayesianReasoningCapability
-					.getNodeStatesHypotheses(this, variable);
+			hyps = ShanksAgentBayesianReasoningCapability.getNodeStatesHypotheses(this, variable);
 			float max = 0;
 			String stateMax = "";
 			for (Entry<String, Float> entry : hyps.entrySet()) {
@@ -1097,8 +1034,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			return source.getTrustScore(variable, stateMax);
 
 		} catch (ShanksException e) {
-			this.getLogger().severe(
-					"Problem getting beliefs from BN for node: " + variable);
+			this.getLogger().severe("Problem getting beliefs from BN for node: " + variable);
 			System.exit(1);
 		}
 		return -1;

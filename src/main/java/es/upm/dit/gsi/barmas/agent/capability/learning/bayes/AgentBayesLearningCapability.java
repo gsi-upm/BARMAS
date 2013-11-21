@@ -49,8 +49,8 @@ public class AgentBayesLearningCapability {
 	 * @param iterations
 	 * @param classificationTarget
 	 */
-	public static void learnBNWithBayesianSearch(BayesLearningAgent agent,
-			int iterations, String classificationTarget) {
+	public static void learnBNWithBayesianSearch(BayesLearningAgent agent, int iterations,
+			String classificationTarget) {
 
 		String datasetFile = agent.getDatasetFile();
 		DataSet dataset = new DataSet();
@@ -59,8 +59,7 @@ public class AgentBayesLearningCapability {
 		HashMap<Network, Double> results = new HashMap<Network, Double>();
 		for (int i = 0; i < iterations; i++) {
 			Network bn = AgentBayesLearningCapability.learnBN(dataset);
-			double validation = AgentBayesLearningCapability.validateBNWithMCC(
-					bn, dataset, agent);
+			double validation = AgentBayesLearningCapability.validateBNWithMCC(bn, dataset, agent);
 			results.put(bn, validation);
 		}
 		double max = 0;
@@ -79,8 +78,8 @@ public class AgentBayesLearningCapability {
 			agent.getLogger().info("Trying with accuracy as validation metric");
 			for (Entry<Network, Double> result : results.entrySet()) {
 				Network bn = result.getKey();
-				double validation = AgentBayesLearningCapability.validateBN(bn,
-						dataset, classificationTarget, agent);
+				double validation = AgentBayesLearningCapability.validateBN(bn, dataset,
+						classificationTarget, agent);
 				results.put(bn, validation);
 			}
 			max = -1;
@@ -93,17 +92,15 @@ public class AgentBayesLearningCapability {
 
 			AgentBayesLearningCapability.writeBNFile(betterBN, agent);
 			agent.getLogger().info(
-					"BN learnt in: " + agent.getBNOutputFile() + " from: "
-							+ datasetFile + " with accuracy " + max
-							+ " for node " + classificationTarget + " after "
-							+ iterations + " iterations.");
+					"BN learnt in: " + agent.getBNOutputFile() + " from: " + datasetFile
+							+ " with accuracy " + max + " for node " + classificationTarget
+							+ " after " + iterations + " iterations.");
 		} else {
 			AgentBayesLearningCapability.writeBNFile(betterBN, agent);
 			agent.getLogger().info(
-					"BN learnt in: " + agent.getBNOutputFile() + " from: "
-							+ datasetFile + " with average MCC " + max
-							+ " for node " + classificationTarget + " after "
-							+ iterations + " iterations.");
+					"BN learnt in: " + agent.getBNOutputFile() + " from: " + datasetFile
+							+ " with average MCC " + max + " for node " + classificationTarget
+							+ " after " + iterations + " iterations.");
 		}
 	}
 
@@ -113,8 +110,7 @@ public class AgentBayesLearningCapability {
 	 * @param agent
 	 * @return
 	 */
-	private static double validateBNWithMCC(Network bn, DataSet dataset,
-			BayesLearningAgent agent) {
+	private static double validateBNWithMCC(Network bn, DataSet dataset, BayesLearningAgent agent) {
 
 		String datasetFile = agent.getDatasetFile();
 		dataset.readFile(datasetFile);
@@ -157,8 +153,8 @@ public class AgentBayesLearningCapability {
 	 * @param classificationTarget
 	 * @return
 	 */
-	private static double validateBN(Network bn, DataSet dataset,
-			String classificationTarget, BayesLearningAgent agent) {
+	private static double validateBN(Network bn, DataSet dataset, String classificationTarget,
+			BayesLearningAgent agent) {
 		String datasetFile = agent.getDatasetFile();
 		dataset.readFile(datasetFile);
 
@@ -181,8 +177,7 @@ public class AgentBayesLearningCapability {
 			scores.addMatrix(node, confusionMatrix);
 
 			for (int i = 0; i < statesCount; i++) {
-				avgAccuracy = (avgAccuracy + scores.getAccuracy(node,
-						scores.getState(node, i)))
+				avgAccuracy = (avgAccuracy + scores.getAccuracy(node, scores.getState(node, i)))
 						/ (i + 1);
 			}
 		}

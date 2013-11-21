@@ -75,9 +75,8 @@ public class BarmasAgentValidator implements RunnableExperiment {
 	 * @param summaryFile
 	 * @param seed
 	 */
-	public BarmasAgentValidator(String simulationID, String summaryFile,
-			long seed, int mode, String agentID, String bnFile,
-			String datasetFile, String experimentOutputFolder,
+	public BarmasAgentValidator(String simulationID, String summaryFile, long seed, int mode,
+			String agentID, String bnFile, String datasetFile, String experimentOutputFolder,
 			String testDataset, String classificationTarget) {
 		this.summaryFile = summaryFile;
 		this.seed = seed;
@@ -92,20 +91,18 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		this.maxArgumentationRounds = 10;
 	}
 
-	private void launchValidationAgent(String simulationID, long seed,
-			String summaryFile, int mode, String agentID, String bnFile,
-			String datasetFile, String experimentOutputFolder,
-			String testDataset, String classificationTarget,
+	private void launchValidationAgent(String simulationID, long seed, String summaryFile,
+			int mode, String agentID, String bnFile, String datasetFile,
+			String experimentOutputFolder, String testDataset, String classificationTarget,
 			int maxArgumentationRounds) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
-			simulationName = this.getClass().getSimpleName() + "-seed-" + seed
-					+ "-timestamp-" + System.currentTimeMillis();
-		} else {
-			simulationName = this.getClass().getSimpleName() + "-"
-					+ simulationID + "-seed-" + seed + "-timestamp-"
+			simulationName = this.getClass().getSimpleName() + "-seed-" + seed + "-timestamp-"
 					+ System.currentTimeMillis();
+		} else {
+			simulationName = this.getClass().getSimpleName() + "-" + simulationID + "-seed-" + seed
+					+ "-timestamp-" + System.currentTimeMillis();
 		}
 		// Logging properties
 		this.logger = Logger.getLogger(simulationName);
@@ -115,10 +112,9 @@ public class BarmasAgentValidator implements RunnableExperiment {
 			consoleHandlerLevel = Level.INFO;
 			fileHandlerLevel = Level.ALL;
 		}
-		String experimentOutputPath = experimentOutputFolder + File.separator
-				+ simulationName;
-		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel,
-				consoleHandlerLevel, experimentOutputPath);
+		String experimentOutputPath = experimentOutputFolder + File.separator + simulationName;
+		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel, consoleHandlerLevel,
+				experimentOutputPath);
 
 		logger.info("Creating simulation info file...");
 		this.createSimulationInfoFile(experimentOutputPath);
@@ -126,20 +122,16 @@ public class BarmasAgentValidator implements RunnableExperiment {
 
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
-		scenarioProperties
-				.put(SimulationConfiguration.TESTDATASET, testDataset);
-		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
-				experimentOutputPath);
-		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET,
-				classificationTarget);
+		scenarioProperties.put(SimulationConfiguration.TESTDATASET, testDataset);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT, experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET, classificationTarget);
 		scenarioProperties.put(SimulationConfiguration.MODE, mode);
 
 		List<ShanksAgent> agents = new ArrayList<ShanksAgent>();
 
 		String[] headers = null;
 		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					testDataset)));
+			CsvReader reader = new CsvReader(new FileReader(new File(testDataset)));
 			reader.readHeaders();
 			headers = reader.getHeaders();
 			reader.close();
@@ -155,23 +147,22 @@ public class BarmasAgentValidator implements RunnableExperiment {
 		for (int i = 0; i < headers.length - 1; i++) {
 			sensors.add(headers[i]);
 		}
-		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent(
-				"BayesCentral", classificationTarget, bnFile, datasetFile,
-				sensors, logger);
+		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent("BayesCentral",
+				classificationTarget, bnFile, datasetFile, sensors, logger);
 		agents.add(bayes);
 
 		// Argumentation AGENTS
 		double NOREPUTATION = 20;
 		double NOASSUMPTIONS = 20; // impossible to generate assumptions with
 									// diffThreshold > 1
-		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
-				experimentOutputPath, NOASSUMPTIONS, logger,
+		BarmasManagerAgent manager = new BarmasManagerAgent("Manager", experimentOutputPath,
+				NOASSUMPTIONS, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
 				classificationTarget, NOREPUTATION, maxArgumentationRounds);
 		scenarioProperties.put("ManagerAgent", manager);
-		BarmasClassificatorAgent agent = new BarmasClassificatorAgent(agentID,
-				manager, classificationTarget, bnFile, datasetFile, sensors,
-				NOASSUMPTIONS, NOASSUMPTIONS, NOREPUTATION, logger);
+		BarmasClassificatorAgent agent = new BarmasClassificatorAgent(agentID, manager,
+				classificationTarget, bnFile, datasetFile, sensors, NOASSUMPTIONS, NOASSUMPTIONS,
+				NOREPUTATION, logger);
 		agents.add(agent);
 
 		scenarioProperties.put("AGENTS", agents);
@@ -180,9 +171,8 @@ public class BarmasAgentValidator implements RunnableExperiment {
 
 		DiagnosisSimulation sim;
 		try {
-			sim = new DiagnosisSimulation(seed, DiagnosisScenario.class,
-					simulationName, DiagnosisScenario.NORMALSTATE,
-					scenarioProperties);
+			sim = new DiagnosisSimulation(seed, DiagnosisScenario.class, simulationName,
+					DiagnosisScenario.NORMALSTATE, scenarioProperties);
 
 			logger.info("--> Launching simulation...");
 			sim.start();
@@ -194,8 +184,8 @@ public class BarmasAgentValidator implements RunnableExperiment {
 			// while (sim.schedule.getSteps() < totalSteps);
 			// sim.finish();
 
-			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
-					+ File.separator + "summary.csv", summaryFile);
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath + File.separator
+					+ "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -239,9 +229,9 @@ public class BarmasAgentValidator implements RunnableExperiment {
 	@Override
 	public void run() {
 		try {
-			this.launchValidationAgent(simulationID, seed, summaryFile, mode,
-					agentID, bnFile, datasetFile, experimentOutputFolder,
-					testDataset, classificationTarget, maxArgumentationRounds);
+			this.launchValidationAgent(simulationID, seed, summaryFile, mode, agentID, bnFile,
+					datasetFile, experimentOutputFolder, testDataset, classificationTarget,
+					maxArgumentationRounds);
 		} catch (Exception e) {
 			logger.severe("Experiment finished unexpectedly...");
 			logger.severe(e.getMessage());

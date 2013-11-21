@@ -25,14 +25,12 @@ import java.util.logging.Logger;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.shanks.agent.ShanksAgent;
 
-
 /**
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.ArgumentativeAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -89,7 +87,7 @@ public interface ArgumentativeAgent extends ShanksAgent {
 	 * @param agent
 	 */
 	public void removeArgumentationGroupMember(ArgumentativeAgent agent);
-	
+
 	/**
 	 * @return
 	 */
@@ -99,27 +97,27 @@ public interface ArgumentativeAgent extends ShanksAgent {
 	 * @return
 	 */
 	public Logger getLogger();
-	
+
 	public void updateFScoreStore(DiagnosisCase diagnosisCase);
-	
+
 	public double getTrustScore(String node, String state);
 
 	/**
 	 * @return
 	 */
 	public String getDatasetFile();
-	
+
 	/**
 	 * @return
 	 */
 	public HashMap<String, ArgumentativeAgent> getSourceOfData();
-	
+
 	/**
 	 * @param variable
 	 * @return
 	 */
 	public ArgumentativeAgent getSourceOfData(String variable);
-	
+
 	/**
 	 * @param variable
 	 * @param source

@@ -26,12 +26,11 @@ import java.util.Map.Entry;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractAssumption;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.Assumption.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -46,37 +45,45 @@ public class Assumption extends AbstractAssumption {
 	private Map<String, Double> beliefs;
 
 	private ArgumentativeAgent source;
-	
+
 	/**
 	 * Constructor
-	 *
-	 * @param node The name of the proposed node
-	 * @param beliefs The map with value-confidence. Consistency of this probability distribution is not checked in this class.
+	 * 
+	 * @param node
+	 *            The name of the proposed node
+	 * @param beliefs
+	 *            The map with value-confidence. Consistency of this probability
+	 *            distribution is not checked in this class.
 	 */
-	public Assumption (String node, Map<String,Double> beliefs) {
+	public Assumption(String node, Map<String, Double> beliefs) {
 		this.node = node;
 		this.beliefs = beliefs;
 	}
-	
+
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param node
 	 */
-	public Assumption (String node) {
+	public Assumption(String node) {
 		this.node = node;
 		this.beliefs = new HashMap<String, Double>();
 	}
-	
+
 	/**
-	 * @param value A possible value of the node
-	 * @param confidence Its confidence. Consistency of this probability distribution is not checked in this class.
+	 * @param value
+	 *            A possible value of the node
+	 * @param confidence
+	 *            Its confidence. Consistency of this probability distribution
+	 *            is not checked in this class.
 	 */
 	public void addValueWithConfidence(String value, double confidence) {
 		this.beliefs.put(value, confidence);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getNode()
 	 */
 	@Override
@@ -84,7 +91,9 @@ public class Assumption extends AbstractAssumption {
 		return this.node;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getValues()
 	 */
 	@Override
@@ -92,16 +101,23 @@ public class Assumption extends AbstractAssumption {
 		return this.beliefs.keySet();
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getValuesWithConfidence()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.model.AbstractProposal#getValuesWithConfidence()
 	 */
 	@Override
 	public Map<String, Double> getValuesWithConfidence() {
 		return this.beliefs;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.model.AbstractProposal#getConfidenceForValue(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.model.AbstractProposal#getConfidenceForValue(java
+	 * .lang.String)
 	 */
 	@Override
 	public double getConfidenceForValue(String value) {
@@ -139,7 +155,8 @@ public class Assumption extends AbstractAssumption {
 	}
 
 	/**
-	 * @param source the source to set
+	 * @param source
+	 *            the source to set
 	 */
 	public void setSource(ArgumentativeAgent source) {
 		this.source = source;

@@ -77,8 +77,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 
 		// Output classification results file
 		// Writing csv headers
-		this.classResultsFile = outputPath + File.separator
-				+ "classification-results.csv";
+		this.classResultsFile = outputPath + File.separator + "classification-results.csv";
 		try {
 
 			Reader fr = new FileReader(originalPath);
@@ -97,8 +96,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 			for (String header : resultsHeaders) {
 				newHeaders[i++] = header;
 			}
-			CsvWriter writer = new CsvWriter(new FileWriter(classResultsFile),
-					',');
+			CsvWriter writer = new CsvWriter(new FileWriter(classResultsFile), ',');
 			this.classResultsHeaders = newHeaders;
 			writer.writeRecord(newHeaders);
 			writer.flush();
@@ -131,8 +129,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 			for (String header : summaryHeaders) {
 				newHeaders[i++] = header;
 			}
-			CsvWriter writer = new CsvWriter(
-					new FileWriter(summaryPerClassFile), ',');
+			CsvWriter writer = new CsvWriter(new FileWriter(summaryPerClassFile), ',');
 			this.summaryHeaders = newHeaders;
 			writer.writeRecord(newHeaders);
 			writer.flush();
@@ -154,12 +151,12 @@ public class DiagnosisCaseEvaluator implements Steppable {
 	 */
 	public void step(SimState simstate) {
 		DiagnosisSimulation sim = (DiagnosisSimulation) simstate;
-		DiagnosisCase argConclusion = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.ARGUMENTATIONCONCLUSION);
-		DiagnosisCase centralConclusion = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.CENTRALCONCLUSION);
-		DiagnosisCase origDiagnosis = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.ORIGINALDIAGNOSIS);
+		DiagnosisCase argConclusion = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.ARGUMENTATIONCONCLUSION);
+		DiagnosisCase centralConclusion = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.CENTRALCONCLUSION);
+		DiagnosisCase origDiagnosis = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.ORIGINALDIAGNOSIS);
 
 		if (argConclusion.getStatus().get(DiagnosisCase.READY)
 				&& centralConclusion.getStatus().get(DiagnosisCase.READY)) {
@@ -168,18 +165,14 @@ public class DiagnosisCaseEvaluator implements Steppable {
 			if (reputationMode) {
 				for (ShanksAgent agent : sim.getAgents()) {
 					if (agent instanceof BarmasClassificatorAgent) {
-						((BarmasClassificatorAgent) agent)
-								.updateFScoreStore(origDiagnosis);
+						((BarmasClassificatorAgent) agent).updateFScoreStore(origDiagnosis);
 					}
 				}
 			}
 
-			String argClass = (String) argConclusion
-					.getProperty(classificationTarget);
-			String centralClass = (String) centralConclusion
-					.getProperty(classificationTarget);
-			String origClass = (String) origDiagnosis
-					.getProperty(classificationTarget);
+			String argClass = (String) argConclusion.getProperty(classificationTarget);
+			String centralClass = (String) centralConclusion.getProperty(classificationTarget);
+			String origClass = (String) origDiagnosis.getProperty(classificationTarget);
 			sim.getLogger().info("-----> Writing CSV files...");
 			try {
 				FileWriter fw = new FileWriter(classResultsFile, true); // append
@@ -188,8 +181,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 				String[] data = new String[this.classResultsHeaders.length];
 				data[0] = Integer.toString(origDiagnosis.getCaseID());
 				for (int i = 0; i < this.classResultsHeaders.length - 3; i++) {
-					data[i + 1] = (String) origDiagnosis
-							.getProperty(classResultsHeaders[i + 1]);
+					data[i + 1] = (String) origDiagnosis.getProperty(classResultsHeaders[i + 1]);
 				}
 				data[classResultsHeaders.length - 3] = origClass;
 				data[classResultsHeaders.length - 2] = centralClass;
@@ -213,26 +205,22 @@ public class DiagnosisCaseEvaluator implements Steppable {
 				} else {
 					data[3] = "0";
 				}
-				if (centralClass.equals(origClass)
-						&& !argClass.equals(origClass)) {
+				if (centralClass.equals(origClass) && !argClass.equals(origClass)) {
 					data[4] = "1";
 				} else {
 					data[4] = "0";
 				}
-				if (!centralClass.equals(origClass)
-						&& argClass.equals(origClass)) {
+				if (!centralClass.equals(origClass) && argClass.equals(origClass)) {
 					data[5] = "1";
 				} else {
 					data[5] = "0";
 				}
-				if (centralClass.equals(origClass)
-						&& argClass.equals(origClass)) {
+				if (centralClass.equals(origClass) && argClass.equals(origClass)) {
 					data[6] = "1";
 				} else {
 					data[6] = "0";
 				}
-				if (!centralClass.equals(origClass)
-						&& !argClass.equals(origClass)) {
+				if (!centralClass.equals(origClass) && !argClass.equals(origClass)) {
 					data[7] = "1";
 				} else {
 					data[7] = "0";

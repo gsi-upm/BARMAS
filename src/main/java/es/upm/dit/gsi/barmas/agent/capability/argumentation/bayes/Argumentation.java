@@ -23,15 +23,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
  * Project: barmas File:
  * es.upm.dit.gsi.barmas.agent.capability.argumentation.manager
  * .Argumentation.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -44,7 +42,7 @@ public class Argumentation {
 
 	private int id;
 	private List<Argument> conclusions;
-	private HashMap<Argument,HashMap<Argument,Integer>> graph;
+	private HashMap<Argument, HashMap<Argument, Integer>> graph;
 	private HashMap<Integer, Argument> ids;
 	private boolean finished;
 
@@ -76,12 +74,12 @@ public class Argumentation {
 	 */
 	public List<Argument> getSortedArguments() {
 		List<Argument> sortedList = new ArrayList<Argument>();
-		for (int i = 0; i<this.ids.keySet().size(); i++) {
+		for (int i = 0; i < this.ids.keySet().size(); i++) {
 			sortedList.add(this.ids.get(i));
 		}
 		return sortedList;
 	}
-	
+
 	/**
 	 * @return
 	 */

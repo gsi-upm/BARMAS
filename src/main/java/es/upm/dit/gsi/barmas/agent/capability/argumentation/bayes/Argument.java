@@ -24,12 +24,10 @@ import java.util.Set;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.Argument.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.model.Argument.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -50,11 +48,14 @@ public class Argument extends AbstractArgument {
 
 	/**
 	 * Constructor
-	 *
-	 * @param givens All givens
-	 * @param proposals All proposals
+	 * 
+	 * @param givens
+	 *            All givens
+	 * @param proposals
+	 *            All proposals
 	 */
-	public Argument(ArgumentativeAgent proponent, Set<Given> givens, Set<Assumption> assumptions, Set<Proposal> proposals, long step, long timestamp) {
+	public Argument(ArgumentativeAgent proponent, Set<Given> givens, Set<Assumption> assumptions,
+			Set<Proposal> proposals, long step, long timestamp) {
 		this.proponent = proponent;
 		this.givens = givens;
 		this.assumptions = assumptions;
@@ -62,10 +63,10 @@ public class Argument extends AbstractArgument {
 		this.step = step;
 		this.timestamp = timestamp;
 	}
-	
+
 	/**
 	 * Constructor of empty argument with known proponent
-	 *
+	 * 
 	 */
 	public Argument(ArgumentativeAgent proponent, long step, long timestamp) {
 		this.proponent = proponent;
@@ -75,17 +76,17 @@ public class Argument extends AbstractArgument {
 		this.step = step;
 		this.timestamp = timestamp;
 	}
-	
+
 	/**
 	 * Constructor of empty argument with unknow proponent
-	 *
+	 * 
 	 */
 	public Argument() {
 		this.givens = new HashSet<Given>();
 		this.assumptions = new HashSet<Assumption>();
-		this.proposals = new HashSet<Proposal>();		
+		this.proposals = new HashSet<Proposal>();
 	}
-	
+
 	/**
 	 * @return the id
 	 */
@@ -94,7 +95,8 @@ public class Argument extends AbstractArgument {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
@@ -106,14 +108,14 @@ public class Argument extends AbstractArgument {
 	public void addGiven(Given given) {
 		this.givens.add(given);
 	}
-	
+
 	/**
 	 * @param assumption
 	 */
 	public void addAssumption(Assumption assumption) {
 		this.assumptions.add(assumption);
 	}
-	
+
 	/**
 	 * @param proposal
 	 */
@@ -121,7 +123,9 @@ public class Argument extends AbstractArgument {
 		this.proposals.add(proposal);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractArgument#getGivens()
 	 */
 	@Override
@@ -129,7 +133,9 @@ public class Argument extends AbstractArgument {
 		return this.givens;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see es.upm.dit.gsi.barmas.model.AbstractArgument#getProposals()
 	 */
 	@Override
@@ -137,21 +143,29 @@ public class Argument extends AbstractArgument {
 		return this.proposals;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#getAssumptions()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument
+	 * #getAssumptions()
 	 */
 	@Override
 	public Set<Assumption> getAssumptions() {
 		return this.assumptions;
 	}
-	
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#getProponent()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument
+	 * #getProponent()
 	 */
 	public ArgumentativeAgent getProponent() {
 		return this.proponent;
 	}
-	
+
 	/**
 	 * @param prop
 	 */
@@ -173,20 +187,29 @@ public class Argument extends AbstractArgument {
 		return timestamp;
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#getProponentName()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument
+	 * #getProponentName()
 	 */
 	@Override
 	public String getProponentName() {
 		return this.getProponent().getProponentName();
 	}
 
-	/* (non-Javadoc)
-	 * @see es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument#clone()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * es.upm.dit.gsi.barmas.agent.capability.argumentation.AbstractArgument
+	 * #clone()
 	 */
 	@Override
 	public AbstractArgument clone() {
-		Argument clone = new Argument(this.proponent, this.givens, this.assumptions, this.proposals, this.step, this.timestamp);
+		Argument clone = new Argument(this.proponent, this.givens, this.assumptions,
+				this.proposals, this.step, this.timestamp);
 		clone.setId(this.getId());
 		return clone;
 	}

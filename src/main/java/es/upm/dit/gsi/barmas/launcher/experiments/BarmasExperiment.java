@@ -78,12 +78,10 @@ public class BarmasExperiment implements RunnableExperiment {
 	 * @param summaryFile
 	 * @param seed
 	 */
-	public BarmasExperiment(String simulationID, String summaryFile, long seed,
-			int mode, String experimentDatasetFolder,
-			String experimentOutputFolder, String testDataset,
-			String classificationTarget, int agentsNumber,
-			int lostEvidencesByAgents, double diffThreshold,
-			double beliefThreshold, double trustThreshold,
+	public BarmasExperiment(String simulationID, String summaryFile, long seed, int mode,
+			String experimentDatasetFolder, String experimentOutputFolder, String testDataset,
+			String classificationTarget, int agentsNumber, int lostEvidencesByAgents,
+			double diffThreshold, double beliefThreshold, double trustThreshold,
 			int maxArgumentationRounds) {
 		this.summaryFile = summaryFile;
 		this.agentsNumber = agentsNumber;
@@ -123,20 +121,15 @@ public class BarmasExperiment implements RunnableExperiment {
 				fw.write("Mode: SIMULATION MODE\n");
 			}
 			fw.write("Global Summary File: " + summaryFile + "\n");
-			fw.write("Experiment Dataset Folder: " + experimentDatasetFolder
-					+ "\n");
-			fw.write("Simulation Output Folder: " + simulationOutputFolder
-					+ "\n");
+			fw.write("Experiment Dataset Folder: " + experimentDatasetFolder + "\n");
+			fw.write("Simulation Output Folder: " + simulationOutputFolder + "\n");
 			fw.write("Test dataset: " + testDataset + "\n");
 			fw.write("Classification Target: " + classificationTarget + "\n");
-			fw.write("Lost evidences by agents: " + lostEvidencesByAgents
-					+ "\n");
-			fw.write("Difference between Prob. Distribution Threshold: "
-					+ diffThreshold + "\n");
+			fw.write("Lost evidences by agents: " + lostEvidencesByAgents + "\n");
+			fw.write("Difference between Prob. Distribution Threshold: " + diffThreshold + "\n");
 			fw.write("Belief Threshold: " + beliefThreshold + "\n");
 			fw.write("Trust Threshold: " + trustThreshold + "\n");
-			fw.write("Max number of argumentation rounds: "
-					+ maxArgumentationRounds);
+			fw.write("Max number of argumentation rounds: " + maxArgumentationRounds);
 			fw.close();
 
 		} catch (Exception e) {
@@ -145,22 +138,19 @@ public class BarmasExperiment implements RunnableExperiment {
 		}
 	}
 
-	private void launchExperiment(String simulationID, long seed,
-			String summaryFile, int mode, String experimentDatasetFolder,
-			String experimentOutputFolder, String testDataset,
-			String classificationTarget, int agentsNumber,
-			int lostEvidencesByAgents, double diffThreshold,
-			double beliefThreshold, double trustThreshold,
+	private void launchExperiment(String simulationID, long seed, String summaryFile, int mode,
+			String experimentDatasetFolder, String experimentOutputFolder, String testDataset,
+			String classificationTarget, int agentsNumber, int lostEvidencesByAgents,
+			double diffThreshold, double beliefThreshold, double trustThreshold,
 			int maxArgumentationRounds) {
 		// Simulation properties
 		String simulationName = "";
 		if (simulationID == null || simulationID.equals("")) {
-			simulationName = this.getClass().getSimpleName() + "-seed-" + seed
-					+ "-timestamp-" + System.currentTimeMillis();
-		} else {
-			simulationName = this.getClass().getSimpleName() + "-"
-					+ simulationID + "-seed-" + seed + "-timestamp-"
+			simulationName = this.getClass().getSimpleName() + "-seed-" + seed + "-timestamp-"
 					+ System.currentTimeMillis();
+		} else {
+			simulationName = this.getClass().getSimpleName() + "-" + simulationID + "-seed-" + seed
+					+ "-timestamp-" + System.currentTimeMillis();
 		}
 
 		// Logging properties
@@ -171,10 +161,9 @@ public class BarmasExperiment implements RunnableExperiment {
 			consoleHandlerLevel = Level.INFO;
 			fileHandlerLevel = Level.ALL;
 		}
-		String experimentOutputPath = experimentOutputFolder + File.separator
-				+ simulationName;
-		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel,
-				consoleHandlerLevel, experimentOutputPath);
+		String experimentOutputPath = experimentOutputFolder + File.separator + simulationName;
+		LogConfigurator.log2File(logger, "simulation-logs", fileHandlerLevel, consoleHandlerLevel,
+				experimentOutputPath);
 
 		logger.info("Creating simulation info file...");
 		this.createSimulationInfoFile(experimentOutputPath);
@@ -182,14 +171,10 @@ public class BarmasExperiment implements RunnableExperiment {
 
 		Properties scenarioProperties = new Properties();
 		scenarioProperties.put(Scenario.SIMULATION_GUI, Scenario.NO_GUI);
-		scenarioProperties.put(SimulationConfiguration.EXPDATA,
-				experimentDatasetFolder);
-		scenarioProperties
-				.put(SimulationConfiguration.TESTDATASET, testDataset);
-		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT,
-				experimentOutputPath);
-		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET,
-				classificationTarget);
+		scenarioProperties.put(SimulationConfiguration.EXPDATA, experimentDatasetFolder);
+		scenarioProperties.put(SimulationConfiguration.TESTDATASET, testDataset);
+		scenarioProperties.put(SimulationConfiguration.EXPOUTPUT, experimentOutputPath);
+		scenarioProperties.put(SimulationConfiguration.CLASSIFICATIONTARGET, classificationTarget);
 		scenarioProperties.put(SimulationConfiguration.MODE, mode);
 		scenarioProperties.put(SimulationConfiguration.REPUTATIONMODE,
 				Boolean.toString(trustThreshold <= 1));
@@ -198,8 +183,7 @@ public class BarmasExperiment implements RunnableExperiment {
 
 		String[] headers = null;
 		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					testDataset)));
+			CsvReader reader = new CsvReader(new FileReader(new File(testDataset)));
 			reader.readHeaders();
 			headers = reader.getHeaders();
 			reader.close();
@@ -229,15 +213,14 @@ public class BarmasExperiment implements RunnableExperiment {
 			sensors.add(headers[i]);
 		}
 		sensors.removeAll(lostSensors);
-		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent(
-				"BayesCentral", classificationTarget, experimentDatasetFolder
-						+ "/bayes-central-dataset.net", experimentDatasetFolder
-						+ "/bayes-central-dataset.csv", sensors, logger);
+		BarmasBayesCentralAgent bayes = new BarmasBayesCentralAgent("BayesCentral",
+				classificationTarget, experimentDatasetFolder + "/bayes-central-dataset.net",
+				experimentDatasetFolder + "/bayes-central-dataset.csv", sensors, logger);
 		agents.add(bayes);
 
 		// Argumentation Manager AGENTS
-		BarmasManagerAgent manager = new BarmasManagerAgent("Manager",
-				experimentOutputPath, diffThreshold, logger,
+		BarmasManagerAgent manager = new BarmasManagerAgent("Manager", experimentOutputPath,
+				diffThreshold, logger,
 				(Integer) scenarioProperties.get(SimulationConfiguration.MODE),
 				classificationTarget, trustThreshold, maxArgumentationRounds);
 		scenarioProperties.put("ManagerAgent", manager);
@@ -249,14 +232,11 @@ public class BarmasExperiment implements RunnableExperiment {
 				sensors.add(headers[(i * agentsNumber) + agentNum]);
 			}
 			sensors.removeAll(lostSensors);
-			BarmasClassificatorAgent agent = new BarmasClassificatorAgent(
-					"ArgAgent" + agentNum, manager, classificationTarget,
-					experimentDatasetFolder + "/" + agentsNumber
-							+ "agents/agent-" + agentNum + "-dataset.net",
-					experimentDatasetFolder + "/" + agentsNumber
-							+ "agents/agent-" + agentNum + "-dataset.csv",
-					sensors, diffThreshold, beliefThreshold, trustThreshold,
-					logger);
+			BarmasClassificatorAgent agent = new BarmasClassificatorAgent("ArgAgent" + agentNum,
+					manager, classificationTarget, experimentDatasetFolder + "/" + agentsNumber
+							+ "agents/agent-" + agentNum + "-dataset.net", experimentDatasetFolder
+							+ "/" + agentsNumber + "agents/agent-" + agentNum + "-dataset.csv",
+					sensors, diffThreshold, beliefThreshold, trustThreshold, logger);
 			agents.add(agent);
 		}
 
@@ -266,9 +246,8 @@ public class BarmasExperiment implements RunnableExperiment {
 
 		DiagnosisSimulation sim;
 		try {
-			sim = new DiagnosisSimulation(seed, DiagnosisScenario.class,
-					simulationName, DiagnosisScenario.NORMALSTATE,
-					scenarioProperties);
+			sim = new DiagnosisSimulation(seed, DiagnosisScenario.class, simulationName,
+					DiagnosisScenario.NORMALSTATE, scenarioProperties);
 
 			logger.info("--> Launching simulation...");
 			sim.start();
@@ -280,8 +259,8 @@ public class BarmasExperiment implements RunnableExperiment {
 			// while (sim.schedule.getSteps() < totalSteps);
 			// sim.finish();
 
-			SummaryCreator.makeNumbers(simulationName, experimentOutputPath
-					+ File.separator + "summary.csv", summaryFile);
+			SummaryCreator.makeNumbers(simulationName, experimentOutputPath + File.separator
+					+ "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			logger.warning(e.getMessage());
 			e.printStackTrace();
@@ -297,11 +276,10 @@ public class BarmasExperiment implements RunnableExperiment {
 	@Override
 	public void run() {
 		try {
-			this.launchExperiment(simulationID, seed, summaryFile, mode,
-					experimentDatasetFolder, experimentOutputFolder,
-					testDataset, classificationTarget, agentsNumber,
-					lostEvidencesByAgents, diffThreshold, beliefThreshold,
-					trustThreshold, maxArgumentationRounds);
+			this.launchExperiment(simulationID, seed, summaryFile, mode, experimentDatasetFolder,
+					experimentOutputFolder, testDataset, classificationTarget, agentsNumber,
+					lostEvidencesByAgents, diffThreshold, beliefThreshold, trustThreshold,
+					maxArgumentationRounds);
 		} catch (Exception e) {
 			logger.severe("Experiment finished unexpectedly...");
 			logger.severe(e.getMessage());

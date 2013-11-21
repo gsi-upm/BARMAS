@@ -81,14 +81,14 @@ public class ValidationMetricsStore {
 		double fp = this.getFalsePositive(node, state);
 		double fn = this.getFalseNegative(node, state);
 
-		 //*********
-		 // Calculate MCC with classic formula
-		 double aux = (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn);
-		 if (aux == 0) {
-		 return 0;
-		 }
-		 double mcc = ((tp * tn) - (fp * fn)) / Math.sqrt(aux);
-		 // *********
+		// *********
+		// Calculate MCC with classic formula
+		double aux = (tp + fp) * (tp + fn) * (tn + fp) * (tn + fn);
+		if (aux == 0) {
+			return 0;
+		}
+		double mcc = ((tp * tn) - (fp * fn)) / Math.sqrt(aux);
+		// *********
 
 		// // *********
 		// // Calculate MCC with other formula

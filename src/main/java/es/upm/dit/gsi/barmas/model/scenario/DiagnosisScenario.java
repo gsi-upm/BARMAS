@@ -61,8 +61,8 @@ public class DiagnosisScenario extends Scenario {
 	 * @param properties
 	 * @throws ShanksException
 	 */
-	public DiagnosisScenario(String id, String initialState,
-			Properties properties, Logger logger) throws ShanksException {
+	public DiagnosisScenario(String id, String initialState, Properties properties, Logger logger)
+			throws ShanksException {
 		super(id, initialState, properties, logger);
 	}
 
@@ -75,8 +75,7 @@ public class DiagnosisScenario extends Scenario {
 	 * es.upm.dit.gsi.shanks.model.scenario.Scenario#createScenario2DPortrayal()
 	 */
 	@Override
-	public Scenario2DPortrayal createScenario2DPortrayal()
-			throws ShanksException {
+	public Scenario2DPortrayal createScenario2DPortrayal() throws ShanksException {
 		return new Scenario2DPortrayal(null, 0, 0) {
 			@Override
 			public void setupPortrayals() {
@@ -99,8 +98,7 @@ public class DiagnosisScenario extends Scenario {
 	 * es.upm.dit.gsi.shanks.model.scenario.Scenario#createScenario3DPortrayal()
 	 */
 	@Override
-	public Scenario3DPortrayal createScenario3DPortrayal()
-			throws ShanksException {
+	public Scenario3DPortrayal createScenario3DPortrayal() throws ShanksException {
 		return new Scenario3DPortrayal(null, 0, 0, 0) {
 			@Override
 			public void setupPortrayals() {
@@ -133,26 +131,24 @@ public class DiagnosisScenario extends Scenario {
 	 */
 	@Override
 	public void addNetworkElements() throws ShanksException {
-		String testDataset = (String) this.getProperties().get(
-				SimulationConfiguration.TESTDATASET);
+		String testDataset = (String) this.getProperties().get(SimulationConfiguration.TESTDATASET);
 		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					testDataset)));
+			CsvReader reader = new CsvReader(new FileReader(new File(testDataset)));
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
-			reader.close();			
-			DiagnosisCase diagnosis = new DiagnosisCase(ORIGINALDIAGNOSIS,
-					headers, this.getLogger());
+			reader.close();
+			DiagnosisCase diagnosis = new DiagnosisCase(ORIGINALDIAGNOSIS, headers,
+					this.getLogger());
 			diagnosis.setCurrentStatus(DiagnosisCase.READY, false);
 			this.addNetworkElement(diagnosis);
 
-			DiagnosisCase classified = new DiagnosisCase(
-					ARGUMENTATIONCONCLUSION, headers, this.getLogger());
+			DiagnosisCase classified = new DiagnosisCase(ARGUMENTATIONCONCLUSION, headers,
+					this.getLogger());
 			classified.setCurrentStatus(DiagnosisCase.READY, false);
 			this.addNetworkElement(classified);
 
-			DiagnosisCase bayesCentral = new DiagnosisCase(CENTRALCONCLUSION,
-					headers, this.getLogger());
+			DiagnosisCase bayesCentral = new DiagnosisCase(CENTRALCONCLUSION, headers,
+					this.getLogger());
 			bayesCentral.setCurrentStatus(DiagnosisCase.READY, false);
 			this.addNetworkElement(bayesCentral);
 		} catch (FileNotFoundException e) {
@@ -192,8 +188,8 @@ public class DiagnosisScenario extends Scenario {
 	 * .lang.String)
 	 */
 	@Override
-	public HashMap<Class<? extends Failure>, Double> getPenaltiesInStatus(
-			String status) throws ShanksException {
+	public HashMap<Class<? extends Failure>, Double> getPenaltiesInStatus(String status)
+			throws ShanksException {
 		return null;
 	}
 

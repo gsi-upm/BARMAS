@@ -70,22 +70,19 @@ public class AgentArgumentativeCapability {
 	 * @param evidences
 	 * @return an argument with the provided info.
 	 */
-	public static Argument createArgument(ArgumentativeAgent proponent,
-			String node, String value, double conf,
-			HashMap<String, String> evidences, long step, long timestamp) {
+	public static Argument createArgument(ArgumentativeAgent proponent, String node, String value,
+			double conf, HashMap<String, String> evidences, long step, long timestamp) {
 
 		Argument arg = new Argument(proponent, step, timestamp);
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			Given given = new Given(entry.getKey(), entry.getValue());
-			ArgumentativeAgent source = proponent.getSourceOfData(entry
-					.getKey());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry.getKey());
 			given.setSource(source);
 			arg.addGiven(given);
 		}
 		Proposal proposal = new Proposal(node);
 		proposal.addValueWithConfidence(value, conf);
-		ArgumentativeAgent source = proponent.getSourceOfData(proposal
-				.getNode());
+		ArgumentativeAgent source = proponent.getSourceOfData(proposal.getNode());
 		proposal.setSource(source);
 		arg.addProposal(proposal);
 
@@ -110,27 +107,21 @@ public class AgentArgumentativeCapability {
 
 		for (Entry<String, String> entry : evidences.entrySet()) {
 			Given given = new Given(entry.getKey(), entry.getValue());
-			ArgumentativeAgent source = proponent.getSourceOfData(entry
-					.getKey());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry.getKey());
 			given.setSource(source);
 			arg.addGiven(given);
 		}
 
-		for (Entry<String, HashMap<String, Double>> entry : assumptions
-				.entrySet()) {
-			Assumption assumption = new Assumption(entry.getKey(),
-					entry.getValue());
-			ArgumentativeAgent source = proponent.getSourceOfData(entry
-					.getKey());
+		for (Entry<String, HashMap<String, Double>> entry : assumptions.entrySet()) {
+			Assumption assumption = new Assumption(entry.getKey(), entry.getValue());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry.getKey());
 			assumption.setSource(source);
 			arg.addAssumption(assumption);
 		}
 
-		for (Entry<String, HashMap<String, Double>> entry : proposals
-				.entrySet()) {
+		for (Entry<String, HashMap<String, Double>> entry : proposals.entrySet()) {
 			Proposal proposal = new Proposal(entry.getKey(), entry.getValue());
-			ArgumentativeAgent source = proponent.getSourceOfData(entry
-					.getKey());
+			ArgumentativeAgent source = proponent.getSourceOfData(entry.getKey());
 			proposal.setSource(source);
 			arg.addProposal(proposal);
 		}
@@ -146,8 +137,8 @@ public class AgentArgumentativeCapability {
 	 * @return all arguments for a given Bayesian network
 	 * @throws ShanksException
 	 */
-	public static Set<Argument> createArguments(ArgumentativeAgent proponent,
-			Network bn, long step, long timestamp) throws ShanksException {
+	public static Set<Argument> createArguments(ArgumentativeAgent proponent, Network bn,
+			long step, long timestamp) throws ShanksException {
 		Set<Argument> args = new HashSet<Argument>();
 		HashMap<String, String> evidences = (HashMap<String, String>) ShanksAgentBayesianReasoningCapability
 				.getEvidences(bn);
@@ -158,9 +149,9 @@ public class AgentArgumentativeCapability {
 			if (!bn.isEvidence(node)) {
 				HashMap<String, Float> states = hyp.getValue();
 				for (Entry<String, Float> state : states.entrySet()) {
-					Argument arg = AgentArgumentativeCapability.createArgument(
-							proponent, hyp.getKey(), state.getKey(),
-							state.getValue(), evidences, step, timestamp);
+					Argument arg = AgentArgumentativeCapability.createArgument(proponent,
+							hyp.getKey(), state.getKey(), state.getValue(), evidences, step,
+							timestamp);
 					args.add(arg);
 				}
 			}
@@ -174,12 +165,10 @@ public class AgentArgumentativeCapability {
 	 * @return all arguments for a given agent
 	 * @throws ShanksException
 	 */
-	public static Set<Argument> createArguments(
-			BayesianReasonerShanksAgent agent, long step, long timestamp)
-			throws ShanksException {
-		return AgentArgumentativeCapability.createArguments(
-				(ArgumentativeAgent) agent, agent.getBayesianNetwork(), step,
-				timestamp);
+	public static Set<Argument> createArguments(BayesianReasonerShanksAgent agent, long step,
+			long timestamp) throws ShanksException {
+		return AgentArgumentativeCapability.createArguments((ArgumentativeAgent) agent,
+				agent.getBayesianNetwork(), step, timestamp);
 	}
 
 	/**
@@ -189,8 +178,7 @@ public class AgentArgumentativeCapability {
 	 * @param bn
 	 * @throws ShanksException
 	 */
-	public static void updateBeliefs(Set<Argument> args, Network bn)
-			throws ShanksException {
+	public static void updateBeliefs(Set<Argument> args, Network bn) throws ShanksException {
 		HashMap<String, HashMap<String, Double>> beliefs = new HashMap<String, HashMap<String, Double>>();
 		for (Argument arg : args) {
 			for (Proposal p : arg.getProposals()) {
@@ -203,9 +191,8 @@ public class AgentArgumentativeCapability {
 					if (!beliefs.get(node).containsKey(value.getKey())) {
 						beliefs.get(node).put(value.getKey(), value.getValue());
 					} else {
-						throw new ShanksException(
-								"Duplicated belief in the argument: " + node
-										+ "-" + value.getKey());
+						throw new ShanksException("Duplicated belief in the argument: " + node
+								+ "-" + value.getKey());
 					}
 				}
 			}
@@ -220,8 +207,8 @@ public class AgentArgumentativeCapability {
 	 * @param agent
 	 * @throws ShanksException
 	 */
-	public static void updateBeliefs(Set<Argument> args,
-			BayesianReasonerShanksAgent agent) throws ShanksException {
+	public static void updateBeliefs(Set<Argument> args, BayesianReasonerShanksAgent agent)
+			throws ShanksException {
 		Network bn = agent.getBayesianNetwork();
 		AgentArgumentativeCapability.updateBeliefs(args, bn);
 	}
@@ -233,8 +220,7 @@ public class AgentArgumentativeCapability {
 	 * @param proponent
 	 * @param args
 	 */
-	public static void sendArguments(ArgumentativeAgent proponent,
-			Set<Argument> args) {
+	public static void sendArguments(ArgumentativeAgent proponent, Set<Argument> args) {
 		for (Argument arg : args) {
 			proponent.sendArgument(arg);
 		}
@@ -247,20 +233,17 @@ public class AgentArgumentativeCapability {
 	 * @return a list of arguments no attacked for other arguments of given
 	 *         attack type from the given args list
 	 */
-	public static List<Argument> getUnattackedArgumentsForAttackType(
-			List<Argument> args, Argumentation argumentation, int attackType) {
+	public static List<Argument> getUnattackedArgumentsForAttackType(List<Argument> args,
+			Argumentation argumentation, int attackType) {
 		List<Argument> unattackedArgs = new ArrayList<Argument>();
 		unattackedArgs.addAll(args);
-		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
-				.getGraph();
+		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation.getGraph();
 		for (Argument arg : args) {
 			boolean attacked = false;
-			for (Entry<Argument, HashMap<Argument, Integer>> entry : graph
-					.entrySet()) {
+			for (Entry<Argument, HashMap<Argument, Integer>> entry : graph.entrySet()) {
 				HashMap<Argument, Integer> attacks = entry.getValue();
 				for (Entry<Argument, Integer> entry2 : attacks.entrySet()) {
-					if (entry2.getKey().equals(arg)
-							&& entry2.getValue() == attackType) {
+					if (entry2.getKey().equals(arg) && entry2.getValue() == attackType) {
 						unattackedArgs.remove(arg);
 						attacked = true;
 						break;
@@ -286,9 +269,8 @@ public class AgentArgumentativeCapability {
 		List<Argument> unattackedArgs = new ArrayList<Argument>();
 		unattackedArgs.addAll(args);
 		for (Integer attackType : attackTypes) {
-			unattackedArgs = AgentArgumentativeCapability
-					.getUnattackedArgumentsForAttackType(unattackedArgs,
-							argumentation, attackType);
+			unattackedArgs = AgentArgumentativeCapability.getUnattackedArgumentsForAttackType(
+					unattackedArgs, argumentation, attackType);
 		}
 		return unattackedArgs;
 	}
@@ -298,12 +280,12 @@ public class AgentArgumentativeCapability {
 	 * @param attackTypes
 	 * @return
 	 */
-	public static List<Argument> getUnattackedArguments(
-			Argumentation argumentation, List<Integer> attackTypes) {
+	public static List<Argument> getUnattackedArguments(Argumentation argumentation,
+			List<Integer> attackTypes) {
 		List<Argument> arguments = new ArrayList<Argument>();
 		arguments.addAll(argumentation.getArguments());
-		return AgentArgumentativeCapability.getUnattackedArguments(arguments,
-				argumentation, attackTypes);
+		return AgentArgumentativeCapability.getUnattackedArguments(arguments, argumentation,
+				attackTypes);
 	}
 
 	/**
@@ -333,8 +315,7 @@ public class AgentArgumentativeCapability {
 	 * @param agent
 	 * @return 0-7 attack type
 	 */
-	public static int getAttackType(Argument a, Argument b,
-			ArgumentativeAgent agent) {
+	public static int getAttackType(Argument a, Argument b, ArgumentativeAgent agent) {
 
 		// In the code (Claim = Givens + Proposal) and (Support = Givens +
 		// Assumptions)
@@ -353,20 +334,13 @@ public class AgentArgumentativeCapability {
 				for (Given agiven : agivens) {
 					if (agiven.getNode().equals(bgiven.getNode())) {
 						if (!agiven.getValue().equals(bgiven.getValue())) {
+							agent.getLogger().severe("Incoherent evidence in arguments!");
 							agent.getLogger().severe(
-									"Incoherent evidence in arguments!");
-							agent.getLogger().severe(
-									"For evidence: "
-											+ agiven.getNode()
-											+ " - "
-											+ agiven.getSource()
-													.getProponentName()
-											+ " says "
-											+ agiven.getValue()
-											+ " and "
-											+ bgiven.getSource()
-													.getProponentName()
-											+ " says " + bgiven.getValue());
+									"For evidence: " + agiven.getNode() + " - "
+											+ agiven.getSource().getProponentName() + " says "
+											+ agiven.getValue() + " and "
+											+ bgiven.getSource().getProponentName() + " says "
+											+ bgiven.getValue());
 							System.exit(1); // This has no sense!!
 						}
 					}
@@ -398,8 +372,7 @@ public class AgentArgumentativeCapability {
 				for (Proposal ap : aproposals) {
 					for (Assumption ba : bassumptions) {
 						if (ba.getNode().equals(ap.getNode())) {
-							if (agent.areDistributionsFarEnough(
-									ba.getValuesWithConfidence(),
+							if (agent.areDistributionsFarEnough(ba.getValuesWithConfidence(),
 									ap.getValuesWithConfidence())) {
 								return DEFEATER;
 							}
@@ -413,8 +386,7 @@ public class AgentArgumentativeCapability {
 			for (Proposal ap : aproposals) {
 				for (Assumption ba : bassumptions) {
 					if (ba.getNode().equals(ap.getNode())) {
-						if (agent.areDistributionsFarEnough(
-								ba.getValuesWithConfidence(),
+						if (agent.areDistributionsFarEnough(ba.getValuesWithConfidence(),
 								ap.getValuesWithConfidence())) {
 							return DIRECTDEFEATER;
 						}
@@ -465,16 +437,13 @@ public class AgentArgumentativeCapability {
 	 * @param argumentation
 	 * @param agent
 	 */
-	public static void updateAttacksGraph(Argument argument,
-			Argumentation argumentation, ArgumentativeAgent agent) {
-		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation
-				.getGraph();
+	public static void updateAttacksGraph(Argument argument, Argumentation argumentation,
+			ArgumentativeAgent agent) {
+		HashMap<Argument, HashMap<Argument, Integer>> graph = argumentation.getGraph();
 		for (Argument arg : argumentation.getArguments()) {
-			int attackType = AgentArgumentativeCapability.getAttackType(
-					argument, arg, agent);
+			int attackType = AgentArgumentativeCapability.getAttackType(argument, arg, agent);
 			graph.get(argument).put(arg, attackType);
-			attackType = AgentArgumentativeCapability.getAttackType(arg,
-					argument, agent);
+			attackType = AgentArgumentativeCapability.getAttackType(arg, argument, agent);
 			graph.get(arg).put(argument, attackType);
 		}
 	}
@@ -486,13 +455,11 @@ public class AgentArgumentativeCapability {
 	 *         distributions, -1 if there is any problem
 	 * 
 	 */
-	public static double getNormalisedEuclideanDistance(
-			HashMap<String, Double> p, HashMap<String, Double> q) {
+	public static double getNormalisedEuclideanDistance(HashMap<String, Double> p,
+			HashMap<String, Double> q) {
 		if (p.size() != q.size()
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(p))
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(q))) {
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		double distance = 0;
@@ -509,19 +476,16 @@ public class AgentArgumentativeCapability {
 	 * @return normalised hellinger distance between both probability
 	 *         distributions, -1 if there is any problem
 	 */
-	public static double getNormalisedHellingerDistance(
-			HashMap<String, Double> p, HashMap<String, Double> q) {
+	public static double getNormalisedHellingerDistance(HashMap<String, Double> p,
+			HashMap<String, Double> q) {
 		if (p.size() != q.size()
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(p))
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(q))) {
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		double distance = 0;
 		for (String s : p.keySet()) {
-			distance = distance
-					+ Math.pow((Math.sqrt(p.get(s)) - Math.sqrt(q.get(s))), 2);
+			distance = distance + Math.pow((Math.sqrt(p.get(s)) - Math.sqrt(q.get(s))), 2);
 		}
 		distance = Math.sqrt(distance) / Math.sqrt(2);
 		return distance;
@@ -533,13 +497,11 @@ public class AgentArgumentativeCapability {
 	 * @return normalised j-divergence distance between both probability
 	 *         distributions, -1 if there is any problem
 	 */
-	public static double getNormalisedJDivergeDistance(
-			HashMap<String, Double> p, HashMap<String, Double> q) {
+	public static double getNormalisedJDivergeDistance(HashMap<String, Double> p,
+			HashMap<String, Double> q) {
 		if (p.size() != q.size()
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(p))
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(q))) {
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		for (String s : p.keySet()) {
@@ -547,13 +509,11 @@ public class AgentArgumentativeCapability {
 				return 1;
 			}
 		}
-		double distance = AgentArgumentativeCapability
-				.getKullBackLeiberDistance(p, q)
+		double distance = AgentArgumentativeCapability.getKullBackLeiberDistance(p, q)
 				+ AgentArgumentativeCapability.getKullBackLeiberDistance(q, p);
 		distance = distance / 2;
 		int alpha = 10;
-		distance = distance
-				/ Math.sqrt(Math.sqrt(Math.pow(distance, 2)) + alpha);
+		distance = distance / Math.sqrt(Math.sqrt(Math.pow(distance, 2)) + alpha);
 		return distance;
 	}
 
@@ -566,16 +526,13 @@ public class AgentArgumentativeCapability {
 	private static double getKullBackLeiberDistance(HashMap<String, Double> p,
 			HashMap<String, Double> q) {
 		if (p.size() != q.size()
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(p))
-				|| !(AgentArgumentativeCapability
-						.isCoherentProbabilityDistribution(q))) {
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(p))
+				|| !(AgentArgumentativeCapability.isCoherentProbabilityDistribution(q))) {
 			return -1;
 		}
 		double distance = 0;
 		for (String s : p.keySet()) {
-			distance = distance
-					- (p.get(s) * (Math.log10(q.get(s) / Math.log10(2))))
+			distance = distance - (p.get(s) * (Math.log10(q.get(s) / Math.log10(2))))
 					+ (p.get(s) * (Math.log10(p.get(s) / Math.log10(2))));
 		}
 		return distance;
@@ -587,8 +544,7 @@ public class AgentArgumentativeCapability {
 	 * @return true if sum(pi)=1+-0.01; false if the distribution is not
 	 *         coherent
 	 */
-	private static boolean isCoherentProbabilityDistribution(
-			HashMap<String, Double> p) {
+	private static boolean isCoherentProbabilityDistribution(HashMap<String, Double> p) {
 		double counter = 0;
 		for (Double d : p.values()) {
 			if (d < 0 || d > 1.001) {
@@ -607,8 +563,7 @@ public class AgentArgumentativeCapability {
 	 * @param map
 	 * @return
 	 */
-	public static HashMap<String, Double> convertToDoubleValues(
-			HashMap<String, Float> map) {
+	public static HashMap<String, Double> convertToDoubleValues(HashMap<String, Float> map) {
 		HashMap<String, Double> newMap = new HashMap<String, Double>();
 		for (Entry<String, Float> entry : map.entrySet()) {
 			newMap.put(entry.getKey(), new Double(entry.getValue()));
@@ -620,8 +575,7 @@ public class AgentArgumentativeCapability {
 	 * @param map
 	 * @return
 	 */
-	public static HashMap<String, Float> convertToFloatValues(
-			HashMap<String, Double> map) {
+	public static HashMap<String, Float> convertToFloatValues(HashMap<String, Double> map) {
 		HashMap<String, Float> newMap = new HashMap<String, Float>();
 		for (Entry<String, Double> entry : map.entrySet()) {
 			newMap.put(entry.getKey(), new Float(entry.getValue()));
@@ -635,20 +589,18 @@ public class AgentArgumentativeCapability {
 	 * @param argumentation
 	 * @param logger
 	 */
-	public static void addConclusionHigherHypothesis(
-			Argumentation argumentation, Logger logger,
+	public static void addConclusionHigherHypothesis(Argumentation argumentation, Logger logger,
 			String classificationTarget) {
 		logger.finest("Evaluating possible conclusions...");
 		List<Integer> attackTypes = new ArrayList<Integer>();
 		attackTypes.add(UNDERCUT);
 		attackTypes.add(DIRECTUNDERCUT);
 		attackTypes.add(CANONICALUNDERCUT);
-		List<Argument> possibleConclusions = AgentArgumentativeCapability
-				.getUnattackedArguments(argumentation, attackTypes);
+		List<Argument> possibleConclusions = AgentArgumentativeCapability.getUnattackedArguments(
+				argumentation, attackTypes);
 
-		possibleConclusions = AgentArgumentativeCapability
-				.getLastValidConclusionsArguments(possibleConclusions,
-						classificationTarget);
+		possibleConclusions = AgentArgumentativeCapability.getLastValidConclusionsArguments(
+				possibleConclusions, classificationTarget);
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -664,8 +616,7 @@ public class AgentArgumentativeCapability {
 		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
 				for (Proposal p : arg.getProposals()) {
-					if (p.getNode().equals(classificationTarget)
-							&& p.getMaxValue() > max) {
+					if (p.getNode().equals(classificationTarget) && p.getMaxValue() > max) {
 						max = p.getMaxValue();
 						hyp = p.getMaxState();
 						argumentConclusion = arg;
@@ -676,9 +627,8 @@ public class AgentArgumentativeCapability {
 
 		if (argumentConclusion != null) {
 
-			logger.fine("Argumentation Manager --> Higher hypothesis found: "
-					+ hyp + " - " + max + " from "
-					+ argumentConclusion.getProponent().getProponentName()
+			logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp + " - " + max
+					+ " from " + argumentConclusion.getProponent().getProponentName()
 					+ " - ArgumentID: " + argumentConclusion.getId());
 
 			argumentation.getConclusions().add(argumentConclusion);
@@ -696,20 +646,18 @@ public class AgentArgumentativeCapability {
 	 * @param classificationTarget
 	 * @param trustThreshold
 	 */
-	public static void addConclusionReputationAndHigherHypothesis(
-			Argumentation argumentation, Logger logger,
-			String classificationTarget, double trustThreshold) {
+	public static void addConclusionReputationAndHigherHypothesis(Argumentation argumentation,
+			Logger logger, String classificationTarget, double trustThreshold) {
 		logger.finest("Evaluating possible conclusions...");
 		List<Integer> attackTypes = new ArrayList<Integer>();
 		attackTypes.add(UNDERCUT);
 		attackTypes.add(DIRECTUNDERCUT);
 		attackTypes.add(CANONICALUNDERCUT);
-		List<Argument> possibleConclusions = AgentArgumentativeCapability
-				.getUnattackedArguments(argumentation, attackTypes);
+		List<Argument> possibleConclusions = AgentArgumentativeCapability.getUnattackedArguments(
+				argumentation, attackTypes);
 
-		possibleConclusions = AgentArgumentativeCapability
-				.getLastValidConclusionsArguments(possibleConclusions,
-						classificationTarget);
+		possibleConclusions = AgentArgumentativeCapability.getLastValidConclusionsArguments(
+				possibleConclusions, classificationTarget);
 
 		int maxEvidences = 0;
 		for (Argument arg : argumentation.getArguments()) {
@@ -769,19 +717,17 @@ public class AgentArgumentativeCapability {
 
 		if (argumentConclusion != null) {
 
-			logger.fine("Argumentation Manager --> Conclusion found: " + hyp
-					+ " - " + maxBelief + " with TrustScore: " + maxTrustScore
-					+ " from "
-					+ argumentConclusion.getProponent().getProponentName()
-					+ " - ArgumentID: " + argumentConclusion.getId());
+			logger.fine("Argumentation Manager --> Conclusion found: " + hyp + " - " + maxBelief
+					+ " with TrustScore: " + maxTrustScore + " from "
+					+ argumentConclusion.getProponent().getProponentName() + " - ArgumentID: "
+					+ argumentConclusion.getId());
 
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
 			logger.severe("No conclusion found with reputation and higher hyp for argumentation: "
-					+ argumentation.getId()
-					+ " MaxTrustScore: "
-					+ maxTrustScore + " MaxBelief: " + maxBelief);
+					+ argumentation.getId() + " MaxTrustScore: " + maxTrustScore + " MaxBelief: "
+					+ maxBelief);
 			System.exit(1);
 		}
 	}
@@ -796,12 +742,10 @@ public class AgentArgumentativeCapability {
 		for (Argument arg : possibleConclusions) {
 			for (Proposal p : arg.getProposals()) {
 				if (p.getNode().equals(classificationTarget)) {
-					if (!lastArguments.keySet()
-							.contains(arg.getProponentName())) {
+					if (!lastArguments.keySet().contains(arg.getProponentName())) {
 						lastArguments.put(arg.getProponentName(), arg);
 					} else {
-						int prevId = lastArguments.get(arg.getProponentName())
-								.getId();
+						int prevId = lastArguments.get(arg.getProponentName()).getId();
 						int actualId = arg.getId();
 						if (actualId > prevId) {
 							lastArguments.put(arg.getProponentName(), arg);

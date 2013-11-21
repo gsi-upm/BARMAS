@@ -21,12 +21,10 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
 import es.upm.dit.gsi.shanks.model.element.device.Device;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.DiagnosisCase.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.model.DiagnosisCase.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -62,7 +60,7 @@ public class DiagnosisCase extends Device {
 	 */
 	@Override
 	public void fillIntialProperties() {
-		//Nothing to do. This is done in the constructor.
+		// Nothing to do. This is done in the constructor.
 	}
 
 	/*
@@ -125,7 +123,7 @@ public class DiagnosisCase extends Device {
 			System.exit(1);
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -138,7 +136,7 @@ public class DiagnosisCase extends Device {
 			System.exit(1);
 		}
 	}
-	
+
 	public String[] getPossibleVariables() {
 		return this.variables;
 	}

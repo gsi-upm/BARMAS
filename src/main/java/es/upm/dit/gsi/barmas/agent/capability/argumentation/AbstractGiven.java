@@ -18,14 +18,11 @@
  */
 package es.upm.dit.gsi.barmas.agent.capability.argumentation;
 
-
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.AbstractGiven.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.model.AbstractGiven.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -35,12 +32,12 @@ package es.upm.dit.gsi.barmas.agent.capability.argumentation;
  * 
  */
 public abstract class AbstractGiven {
-	
+
 	/**
 	 * @return The name of the evidenced node.
 	 */
 	public abstract String getNode();
-	
+
 	/**
 	 * @return The value of the given node.
 	 */

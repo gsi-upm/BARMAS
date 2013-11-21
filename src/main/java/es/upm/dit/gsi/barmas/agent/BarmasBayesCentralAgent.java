@@ -64,9 +64,8 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 	 * 
 	 * @param id
 	 */
-	public BarmasBayesCentralAgent(String id, String classificationTarget,
-			String bnFile, String datasetFile, List<String> sensors,
-			Logger logger) {
+	public BarmasBayesCentralAgent(String id, String classificationTarget, String bnFile,
+			String datasetFile, List<String> sensors, Logger logger) {
 		super(id, logger);
 		this.classificationTarget = classificationTarget;
 		this.datasetFile = datasetFile;
@@ -75,13 +74,12 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 		while (this.bn == null) {
 			try {
 				ShanksAgentBayesianReasoningCapability.loadNetwork(this);
-				logger.info("Bayesian network loaded successfully by agent "
-						+ this.getID());
+				logger.info("Bayesian network loaded successfully by agent " + this.getID());
 			} catch (Exception e) {
 				try {
 					int learningIterations = 3;
-					AgentBayesLearningCapability.learnBNWithBayesianSearch(
-							this, learningIterations, classificationTarget);
+					AgentBayesLearningCapability.learnBNWithBayesianSearch(this,
+							learningIterations, classificationTarget);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					System.exit(1);
@@ -144,11 +142,11 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 	public void executeReasoningCycle(ShanksSimulation simulation) {
 		DiagnosisSimulation sim = (DiagnosisSimulation) simulation;
 
-		DiagnosisCase origDiagnosis = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.ORIGINALDIAGNOSIS);
+		DiagnosisCase origDiagnosis = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.ORIGINALDIAGNOSIS);
 
-		DiagnosisCase bayesDiagnosis = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.CENTRALCONCLUSION);
+		DiagnosisCase bayesDiagnosis = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.CENTRALCONCLUSION);
 
 		// Check if it is time to check the diagnosis case
 		if (origDiagnosis.getStatus().get(DiagnosisCase.READY)
@@ -167,14 +165,12 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 			try {
 				for (Entry<String, String> entry : evidences.entrySet()) {
 					try {
-						ShanksAgentBayesianReasoningCapability.addEvidence(
-								this, entry.getKey(), entry.getValue());
+						ShanksAgentBayesianReasoningCapability.addEvidence(this, entry.getKey(),
+								entry.getValue());
 					} catch (Exception e) {
 						sim.getLogger().warning(
-								"Agent: " + this.getID()
-										+ " -> Unknown state for node: "
-										+ entry.getKey() + " -> State: "
-										+ entry.getValue());
+								"Agent: " + this.getID() + " -> Unknown state for node: "
+										+ entry.getKey() + " -> State: " + entry.getValue());
 						System.exit(1);
 					}
 
@@ -205,9 +201,8 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 
 				sim.getLogger().info(
 						"Hypothesis by Central Bayesian Agent. Diagnosis Case ID: "
-								+ bayesDiagnosis.getCaseID() + ": "
-								+ classificationTarget + " - " + conclusion
-								+ " -> Confidence: " + max);
+								+ bayesDiagnosis.getCaseID() + ": " + classificationTarget + " - "
+								+ conclusion + " -> Confidence: " + max);
 
 				ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 

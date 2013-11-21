@@ -1,4 +1,5 @@
 package es.upm.dit.gsi.barmas.utils.plot.test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

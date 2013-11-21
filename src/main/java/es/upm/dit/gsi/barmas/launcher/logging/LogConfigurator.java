@@ -43,13 +43,12 @@ public class LogConfigurator {
 	 * Constructor
 	 * 
 	 */
-	public static void log2File(Logger logger, String name,
-			Level fileHandlerLevel, Level consoleHandlerLevel, String dir) {
+	public static void log2File(Logger logger, String name, Level fileHandlerLevel,
+			Level consoleHandlerLevel, String dir) {
 		try {
 			File aux = new File(".");
 			String parent = aux.getCanonicalPath();
-			File f = new File(parent + File.separator + dir + File.separator
-					+ "logs");
+			File f = new File(parent + File.separator + dir + File.separator + "logs");
 			if (!f.isDirectory()) {
 				boolean made = f.mkdirs();
 				if (!made) {
@@ -59,11 +58,11 @@ public class LogConfigurator {
 			}
 			logger.setUseParentHandlers(false);
 			logger.setLevel(Level.ALL);
-			String path = parent + File.separator + dir + File.separator
-					+ "logs" + File.separator + name + "%u.log";
+			String path = parent + File.separator + dir + File.separator + "logs" + File.separator
+					+ name + "%u.log";
 			int maxsizeMB = 20;
 			int maxfiles = 20;
-			FileHandler fh = new FileHandler(path, maxsizeMB*1024000, maxfiles);
+			FileHandler fh = new FileHandler(path, maxsizeMB * 1024 * 1000, maxfiles);
 			fh.setFormatter(new SimpleFormatter());
 			fh.setEncoding("UTF-8");
 			fh.setLevel(fileHandlerLevel);

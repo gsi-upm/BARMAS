@@ -41,8 +41,7 @@ import es.upm.dit.gsi.barmas.launcher.utils.plot.Plotter;
  */
 public class PlotterTest {
 
-	private Logger logger = Logger
-			.getLogger(AgentBayesLearningCapabilityTest.class.getName());
+	private Logger logger = Logger.getLogger(AgentBayesLearningCapabilityTest.class.getName());
 
 	private List<Coord3d> coordinates;
 	private String outputFile;
@@ -109,8 +108,7 @@ public class PlotterTest {
 	@Test
 	public void saveDelaunayChartScreenshotFreeView() {
 		Plotter plotter = new Plotter(logger);
-		plotter.saveDelaunaySurface3DChart(outputFile, axisLabels, coordinates,
-				null, null);
+		plotter.saveDelaunaySurface3DChart(outputFile, axisLabels, coordinates, null, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -156,8 +154,7 @@ public class PlotterTest {
 			Coord3d coord = new Coord3d(x, y, z);
 			coordinates.add(coord);
 		}
-		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2,
-				null, null);
+		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2, null, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -176,8 +173,8 @@ public class PlotterTest {
 			Coord3d coord = new Coord3d(x, y, z);
 			coordinates.add(coord);
 		}
-		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2,
-				ViewPositionMode.TOP, null);
+		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2, ViewPositionMode.TOP,
+				null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -216,8 +213,8 @@ public class PlotterTest {
 			Coord3d coord = new Coord3d(x, y, z);
 			coordinates.add(coord);
 		}
-		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2,
-				ViewPositionMode.FREE, null);
+		plotter.saveScatter3DChart(outputFile, axisLabels, coordinates, 2, ViewPositionMode.FREE,
+				null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}
@@ -237,8 +234,7 @@ public class PlotterTest {
 			float height = r.nextFloat() - 0.5f;
 			cylinders.add(plotter.getCylinder(baseCenter, height, 0.1f));
 		}
-		plotter.saveCylinder3DChart(outputFile, axisLabels, cylinders,
-				ViewPositionMode.FREE, null);
+		plotter.saveCylinder3DChart(outputFile, axisLabels, cylinders, ViewPositionMode.FREE, null);
 		File f = new File(outputFile);
 		Assert.assertTrue(f.exists());
 	}

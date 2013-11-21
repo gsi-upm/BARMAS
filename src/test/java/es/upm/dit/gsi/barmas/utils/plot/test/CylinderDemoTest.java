@@ -1,4 +1,5 @@
 package es.upm.dit.gsi.barmas.utils.plot.test;
+
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
 import org.jzy3d.chart.Settings;
@@ -31,33 +32,27 @@ public class CylinderDemoTest {
 
 	public static void main(String[] args) {
 
-
 		AWTChartComponentFactory factory = new AWTChartComponentFactory();
-		Chart chart = new Chart(factory, Quality.Nicest,
-				SurfaceDemoTest.DEFAULT_CANVAS_TYPE, Settings.getInstance()
-						.getGLCapabilities());
-		
+		Chart chart = new Chart(factory, Quality.Nicest, SurfaceDemoTest.DEFAULT_CANVAS_TYPE,
+				Settings.getInstance().getGLCapabilities());
+
 		Cylinder cylinder = new Cylinder();
-		cylinder.setData(new Coord3d(0, 0, 0), 5, 1, 20, 0, new Color(1, 1, 1,
-				0.75f));
+		cylinder.setData(new Coord3d(0, 0, 0), 5, 1, 20, 0, new Color(1, 1, 1, 0.75f));
 
 		cylinder.setFaceDisplayed(true);
-//		cylinder.setWireframeDisplayed(true);
-		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), cylinder
-				.getBounds().getZmin(), cylinder.getBounds().getZmax(),
-				new Color(1, 1, 1, 0.75f)));
+		// cylinder.setWireframeDisplayed(true);
+		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), cylinder.getBounds()
+				.getZmin(), cylinder.getBounds().getZmax(), new Color(1, 1, 1, 0.75f)));
 
 		chart.getScene().getGraph().add(cylinder);
-		
+
 		cylinder = new Cylinder();
-		cylinder.setData(new Coord3d(-10, -10, -10), 10, 3, 20, 0, new Color(-10, -10, -10,
-				0.75f));
+		cylinder.setData(new Coord3d(-10, -10, -10), 10, 3, 20, 0, new Color(-10, -10, -10, 0.75f));
 
 		cylinder.setFaceDisplayed(true);
 		cylinder.setWireframeDisplayed(true);
-		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), cylinder
-				.getBounds().getZmin(), cylinder.getBounds().getZmax(),
-				new Color(10, 10, 10, 0.75f)));
+		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), cylinder.getBounds()
+				.getZmin(), cylinder.getBounds().getZmax(), new Color(10, 10, 10, 0.75f)));
 
 		chart.getScene().getGraph().add(cylinder);
 

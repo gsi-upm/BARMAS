@@ -68,11 +68,9 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  */
 public class AgentArgumentativeCapabilityTest {
 
-	private Logger logger = Logger
-			.getLogger(AgentArgumentativeCapabilityTest.class.getName());
+	private Logger logger = Logger.getLogger(AgentArgumentativeCapabilityTest.class.getName());
 
-	private interface MyArgumentativeAgent extends BayesianReasonerShanksAgent,
-			ArgumentativeAgent {
+	private interface MyArgumentativeAgent extends BayesianReasonerShanksAgent, ArgumentativeAgent {
 
 		Set<Argument> getCurrentArguments() throws ShanksException;
 
@@ -143,8 +141,7 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			@SuppressWarnings("unused")
-			public void updateBeliefsWithNewArguments(Set<Argument> args)
-					throws ShanksException {
+			public void updateBeliefsWithNewArguments(Set<Argument> args) throws ShanksException {
 				AgentArgumentativeCapability.updateBeliefs(args, agent);
 			}
 
@@ -172,15 +169,13 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			@Override
-			public boolean areDistributionsFarEnough(Map<String, Double> a,
-					Map<String, Double> b) {
+			public boolean areDistributionsFarEnough(Map<String, Double> a, Map<String, Double> b) {
 				return false;
 			}
 
 			@Override
 			public Logger getLogger() {
-				return Logger.getLogger(AgentArgumentativeCapabilityTest.class
-						.getName());
+				return Logger.getLogger(AgentArgumentativeCapabilityTest.class.getName());
 			}
 
 			@Override
@@ -228,8 +223,7 @@ public class AgentArgumentativeCapabilityTest {
 			}
 
 			@Override
-			public void updateSourceOfData(String variable,
-					ArgumentativeAgent source) {
+			public void updateSourceOfData(String variable, ArgumentativeAgent source) {
 			}
 
 			@Override
@@ -252,8 +246,8 @@ public class AgentArgumentativeCapabilityTest {
 		try {
 			String nodeName = "MinVol";
 			String status = "High";
-			ShanksAgentBayesianReasoningCapability.addEvidence(
-					agent.getBayesianNetwork(), nodeName, status);
+			ShanksAgentBayesianReasoningCapability.addEvidence(agent.getBayesianNetwork(),
+					nodeName, status);
 			String queryNodeName = "TPR";
 			String queryStatus = "Normal";
 			float value = ShanksAgentBayesianReasoningCapability.getHypothesis(
@@ -270,12 +264,10 @@ public class AgentArgumentativeCapabilityTest {
 				Assert.assertTrue(arg.getGivens().size() == 1);
 				for (Proposal p : arg.getProposals()) {
 					Assert.assertNotSame("MinVol", p.getNode());
-					if (p.getNode().equals("TPR")
-							&& p.getValues().contains("Normal")) {
+					if (p.getNode().equals("TPR") && p.getValues().contains("Normal")) {
 						double d = p.getConfidenceForValue("Normal");
 						Assert.assertEquals(0.3961F, d, 0.001F);
-					} else if (p.getNode().equals("ArtCO2")
-							&& p.getValues().contains("Normal")) {
+					} else if (p.getNode().equals("ArtCO2") && p.getValues().contains("Normal")) {
 						double d = p.getConfidenceForValue("Normal");
 						Assert.assertEquals(0.2322F, d, 0.001F);
 					}
@@ -300,12 +292,12 @@ public class AgentArgumentativeCapabilityTest {
 		try {
 			String nodeName = "MinVol";
 			String status = "High";
-			ShanksAgentBayesianReasoningCapability.addEvidence(
-					agent.getBayesianNetwork(), nodeName, status);
+			ShanksAgentBayesianReasoningCapability.addEvidence(agent.getBayesianNetwork(),
+					nodeName, status);
 			nodeName = "TPR";
 			status = "Normal";
-			ShanksAgentBayesianReasoningCapability.addEvidence(
-					agent.getBayesianNetwork(), nodeName, status);
+			ShanksAgentBayesianReasoningCapability.addEvidence(agent.getBayesianNetwork(),
+					nodeName, status);
 
 			Set<Argument> args = agent.getCurrentArguments();
 			for (Argument arg : args) {
@@ -330,8 +322,8 @@ public class AgentArgumentativeCapabilityTest {
 		try {
 			String nodeName = "MinVol";
 			String status = "High";
-			ShanksAgentBayesianReasoningCapability.addEvidence(
-					agent.getBayesianNetwork(), nodeName, status);
+			ShanksAgentBayesianReasoningCapability.addEvidence(agent.getBayesianNetwork(),
+					nodeName, status);
 			String queryNodeName = "TPR";
 			String queryStatus = "Normal";
 			float value = ShanksAgentBayesianReasoningCapability.getHypothesis(

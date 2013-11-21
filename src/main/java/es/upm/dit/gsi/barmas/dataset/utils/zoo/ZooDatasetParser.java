@@ -42,8 +42,7 @@ public class ZooDatasetParser {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Logger logger = Logger.getLogger(PokerDatasetParser.class
-				.getSimpleName());
+		Logger logger = Logger.getLogger(PokerDatasetParser.class.getSimpleName());
 		ZooDatasetParser parser = new ZooDatasetParser(logger);
 		parser.parse("src/main/resources/dataset/zoo-orig.csv",
 				"src/main/resources/dataset/zoo.csv");

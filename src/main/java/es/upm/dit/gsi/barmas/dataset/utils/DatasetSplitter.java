@@ -59,16 +59,12 @@ public class DatasetSplitter {
 		Logger logger = Logger.getLogger(DatasetSplitter.class.getSimpleName());
 
 		// Experiment 1
-		String outputDir = outputParentDir + File.separator + "exp1"
-				+ File.separator + "dataset";
-		splitter.splitDataset(0.3, 4, originalDatasetPath, outputDir, true,
-				"CZ02", logger, 2);
+		String outputDir = outputParentDir + File.separator + "exp1" + File.separator + "dataset";
+		splitter.splitDataset(0.3, 4, originalDatasetPath, outputDir, true, "CZ02", logger, 2);
 
 		// Experiment 2
-		outputDir = outputParentDir + File.separator + "exp1" + File.separator
-				+ "dataset";
-		splitter.splitDataset(0.3, 8, originalDatasetPath, outputDir, true,
-				"CZ02", logger, 2);
+		outputDir = outputParentDir + File.separator + "exp1" + File.separator + "dataset";
+		splitter.splitDataset(0.3, 8, originalDatasetPath, outputDir, true, "CZ02", logger, 2);
 
 	}
 
@@ -90,12 +86,10 @@ public class DatasetSplitter {
 	 * @param iteration
 	 * @throws Exception
 	 */
-	public void splitDataset(double ratio, int agents,
-			String originalDatasetPath, String outputDir, boolean central,
-			String scenario, Logger logger, int iteration) {
+	public void splitDataset(double ratio, int agents, String originalDatasetPath,
+			String outputDir, boolean central, String scenario, Logger logger, int iteration) {
 
-		String outputDirWithRatio = outputDir + File.separator + ratio
-				+ "testRatio";
+		String outputDirWithRatio = outputDir + File.separator + ratio + "testRatio";
 		File dir = new File(outputDirWithRatio);
 		if (!dir.exists() || !dir.isDirectory()) {
 			dir.mkdirs();
@@ -103,17 +97,15 @@ public class DatasetSplitter {
 
 		logger.finer("--> splitDataset()");
 		logger.fine("Creating experiment.info...");
-		this.createExperimentInfoFile(ratio, agents, originalDatasetPath,
-				outputDirWithRatio, central, scenario, logger);
+		this.createExperimentInfoFile(ratio, agents, originalDatasetPath, outputDirWithRatio,
+				central, scenario, logger);
 
 		try {
 			// Look for essentials
-			List<String[]> essentials = this.getEssentials(originalDatasetPath,
-					logger);
+			List<String[]> essentials = this.getEssentials(originalDatasetPath, logger);
 
 			HashMap<String, CsvWriter> writers = new HashMap<String, CsvWriter>();
-			CsvReader csvreader = new CsvReader(new FileReader(new File(
-					originalDatasetPath)));
+			CsvReader csvreader = new CsvReader(new FileReader(new File(originalDatasetPath)));
 
 			csvreader.readHeaders();
 			String[] headers = csvreader.getHeaders();
@@ -127,8 +119,7 @@ public class DatasetSplitter {
 
 			// Central dataset
 			if (central) {
-				String fileName = outputDirWithRatio + File.separator
-						+ "bayes-central-dataset.csv";
+				String fileName = outputDirWithRatio + File.separator + "bayes-central-dataset.csv";
 				CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
 				writer.writeRecord(headers);
 				writers.put("CENTRAL", writer);
@@ -139,15 +130,14 @@ public class DatasetSplitter {
 			}
 
 			// Agent datasets
-			String agentsDatasetsDir = outputDirWithRatio + File.separator
-					+ agents + "agents";
+			String agentsDatasetsDir = outputDirWithRatio + File.separator + agents + "agents";
 			File f = new File(agentsDatasetsDir);
 			if (!f.isDirectory()) {
 				f.mkdirs();
 			}
 			for (int i = 0; i < agents; i++) {
-				String fileName = agentsDatasetsDir + File.separator + "agent-"
-						+ i + "-dataset.csv";
+				String fileName = agentsDatasetsDir + File.separator + "agent-" + i
+						+ "-dataset.csv";
 				CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
 				writer.writeRecord(headers);
 				for (String[] essential : essentials) {
@@ -158,8 +148,7 @@ public class DatasetSplitter {
 			}
 
 			// Test dataset
-			String fileName = outputDirWithRatio + File.separator
-					+ "test-dataset.csv";
+			String fileName = outputDirWithRatio + File.separator + "test-dataset.csv";
 			CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
 			writer.writeRecord(headers);
 			writers.put("TEST", writer);
@@ -169,8 +158,7 @@ public class DatasetSplitter {
 			int testCases = (int) (ratio * originalDatasetRowsCounter);
 			int testStep = originalDatasetRowsCounter / testCases;
 
-			csvreader = new CsvReader(new FileReader(new File(
-					originalDatasetPath)));
+			csvreader = new CsvReader(new FileReader(new File(originalDatasetPath)));
 
 			csvreader.readHeaders();
 			int stepCounter = 0 - (iteration % testStep);
@@ -216,13 +204,11 @@ public class DatasetSplitter {
 	 * @param central
 	 * @param scenario
 	 */
-	private void createExperimentInfoFile(double ratio, int agents,
-			String originalDatasetPath, String outputDir, boolean central,
-			String scenario, Logger logger) {
+	private void createExperimentInfoFile(double ratio, int agents, String originalDatasetPath,
+			String outputDir, boolean central, String scenario, Logger logger) {
 
 		try {
-			String fileName = outputDir + "/" + agents
-					+ "agents/experiment.info";
+			String fileName = outputDir + "/" + agents + "agents/experiment.info";
 			File file = new File(fileName);
 			File parent = file.getParentFile();
 			if (!parent.exists()) {
@@ -248,8 +234,7 @@ public class DatasetSplitter {
 	 * @param scenario
 	 * @return
 	 */
-	private List<String[]> getEssentials(String originalDatasetPath,
-			Logger logger) {
+	private List<String[]> getEssentials(String originalDatasetPath, Logger logger) {
 		// Find essentials
 		List<String[]> essentials = new ArrayList<String[]>();
 		HashMap<String, List<String>> nodesAndStates = new HashMap<String, List<String>>();

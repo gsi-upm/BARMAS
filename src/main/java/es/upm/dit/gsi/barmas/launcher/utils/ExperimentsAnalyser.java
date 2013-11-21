@@ -69,14 +69,13 @@ public class ExperimentsAnalyser {
 		String experimentFolder = "../experiments/" + simName;
 		String file = experimentFolder + "/" + simName + "-summary.csv";
 		ExperimentsAnalyser chartGenerator = new ExperimentsAnalyser(
-				Logger.getLogger(ExperimentsAnalyser.class.getSimpleName()),
-				file);
-		
+				Logger.getLogger(ExperimentsAnalyser.class.getSimpleName()), file);
+
 		String analysisOutputFolder = experimentFolder + "/output";
 		chartGenerator.analyseData(analysisOutputFolder);
-		
+
 		String chartOutputFolder = experimentFolder + "/output/charts";
-		 chartGenerator.generateAndSaveAllChartsAndExit(chartOutputFolder);
+		chartGenerator.generateAndSaveAllChartsAndExit(chartOutputFolder);
 	}
 
 	public ExperimentsAnalyser(Logger logger, String summaryFile) {
@@ -98,11 +97,10 @@ public class ExperimentsAnalyser {
 	 * @param chartOutputFolder
 	 * @param iterations
 	 */
-	public void generateAndSaveAllCharts(String summaryFile,
-			String chartOutputFolder) {
+	public void generateAndSaveAllCharts(String summaryFile, String chartOutputFolder) {
 
-		LogConfigurator.log2File(logger, "ExperimentChartsGenerator",
-				Level.ALL, Level.INFO, chartOutputFolder);
+		LogConfigurator.log2File(logger, "ExperimentChartsGenerator", Level.ALL, Level.INFO,
+				chartOutputFolder);
 
 		CsvReader reader;
 		try {
@@ -125,11 +123,9 @@ public class ExperimentsAnalyser {
 			reader.close();
 
 			for (int i = 0; i < itsNum; i++) {
-				this.saveValidationCylinderChartForIteration(summaryFile,
-						chartOutputFolder, i);
+				this.saveValidationCylinderChartForIteration(summaryFile, chartOutputFolder, i);
 			}
-			this.saveGlobalImprovementDelaunayChartsForIteration(summaryFile,
-					chartOutputFolder);
+			this.saveGlobalImprovementDelaunayChartsForIteration(summaryFile, chartOutputFolder);
 
 			if (itsNum > 1) {
 				// Save all global charts
@@ -159,8 +155,8 @@ public class ExperimentsAnalyser {
 			headers[2] = "AvgGlobalImp";
 
 			// Write little info file
-			CsvWriter writer = new CsvWriter(new FileWriter(new File(
-					outputFolder + "/analysis.csv")), ',');
+			CsvWriter writer = new CsvWriter(new FileWriter(
+					new File(outputFolder + "/analysis.csv")), ',');
 			writer.writeRecord(headers);
 			writer.flush();
 
@@ -171,8 +167,7 @@ public class ExperimentsAnalyser {
 			this.writeAnalysisForVariable(writer, columns, bths, "BTH");
 			this.writeAnalysisForVariable(writer, columns, agents, "AGENTS");
 			this.writeAnalysisForVariable(writer, columns, its, "ITERATION");
-			this.writeAnalysisForVariable(writer, columns, testRatios,
-					"TESTRATIOS");
+			this.writeAnalysisForVariable(writer, columns, testRatios, "TESTRATIOS");
 			this.writeAnalysisForConfigurationParams(writer, columns);
 
 			writer.close();
@@ -192,8 +187,8 @@ public class ExperimentsAnalyser {
 	 * @param columns
 	 * @throws IOException
 	 */
-	private void writeAnalysisForConfigurationParams(CsvWriter writer,
-			int columns) throws IOException {
+	private void writeAnalysisForConfigurationParams(CsvWriter writer, int columns)
+			throws IOException {
 		String name = "TTH-DTH-BTH";
 		for (int tth = 0; tth < tths.size(); tth++) {
 			for (int dth = 0; dth < dths.size(); dth++) {
@@ -203,8 +198,7 @@ public class ExperimentsAnalyser {
 					row[1] = this.getStringForPosInTheMatrix(tths, tth) + "-"
 							+ this.getStringForPosInTheMatrix(dths, dth) + "-"
 							+ this.getStringForPosInTheMatrix(bths, bth);
-					row[2] = this.getAvgImpValueForConfigurationsParams(tth,
-							dth, bth);
+					row[2] = this.getAvgImpValueForConfigurationsParams(tth, dth, bth);
 					writer.writeRecord(row);
 				}
 			}
@@ -217,8 +211,7 @@ public class ExperimentsAnalyser {
 	 * @param bth
 	 * @return
 	 */
-	private String getAvgImpValueForConfigurationsParams(int tth, int dth,
-			int bth) {
+	private String getAvgImpValueForConfigurationsParams(int tth, int dth, int bth) {
 		int counter = 0;
 		double sum = 0;
 		for (int leba = 0; leba < lebas.size(); leba++) {
@@ -226,8 +219,8 @@ public class ExperimentsAnalyser {
 				for (int it = 0; it < its.size(); it++) {
 					for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
 						sum = sum
-								+ this.getImpFromTheMatrix(theMatrix, leba,
-										tth, dth, bth, agent, it, testRatio);
+								+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth, bth, agent,
+										it, testRatio);
 						counter++;
 					}
 				}
@@ -302,8 +295,7 @@ public class ExperimentsAnalyser {
 							for (int agent = 0; agent < agents.size(); agent++) {
 								for (int it = 0; it < its.size(); it++) {
 									sum = sum
-											+ this.getImpFromTheMatrix(
-													theMatrix, leba, tth, dth,
+											+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth,
 													bth, agent, it, testRatio);
 									counter++;
 								}
@@ -331,11 +323,9 @@ public class ExperimentsAnalyser {
 					for (int dth = 0; dth < dths.size(); dth++) {
 						for (int bth = 0; bth < bths.size(); bth++) {
 							for (int agent = 0; agent < agents.size(); agent++) {
-								for (int testRatio = 0; testRatio < testRatios
-										.size(); testRatio++) {
+								for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
 									sum = sum
-											+ this.getImpFromTheMatrix(
-													theMatrix, leba, tth, dth,
+											+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth,
 													bth, agent, it, testRatio);
 									counter++;
 								}
@@ -363,11 +353,9 @@ public class ExperimentsAnalyser {
 					for (int dth = 0; dth < dths.size(); dth++) {
 						for (int bth = 0; bth < bths.size(); bth++) {
 							for (int it = 0; it < its.size(); it++) {
-								for (int testRatio = 0; testRatio < testRatios
-										.size(); testRatio++) {
+								for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
 									sum = sum
-											+ this.getImpFromTheMatrix(
-													theMatrix, leba, tth, dth,
+											+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth,
 													bth, agent, it, testRatio);
 									counter++;
 								}
@@ -395,11 +383,9 @@ public class ExperimentsAnalyser {
 					for (int dth = 0; dth < dths.size(); dth++) {
 						for (int agent = 0; agent < agents.size(); agent++) {
 							for (int it = 0; it < its.size(); it++) {
-								for (int testRatio = 0; testRatio < testRatios
-										.size(); testRatio++) {
+								for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
 									sum = sum
-											+ this.getImpFromTheMatrix(
-													theMatrix, leba, tth, dth,
+											+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth,
 													bth, agent, it, testRatio);
 									counter++;
 								}
@@ -427,11 +413,9 @@ public class ExperimentsAnalyser {
 					for (int bth = 0; bth < bths.size(); bth++) {
 						for (int agent = 0; agent < agents.size(); agent++) {
 							for (int it = 0; it < its.size(); it++) {
-								for (int testRatio = 0; testRatio < testRatios
-										.size(); testRatio++) {
+								for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
 									sum = sum
-											+ this.getImpFromTheMatrix(
-													theMatrix, leba, tth, dth,
+											+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth,
 													bth, agent, it, testRatio);
 									counter++;
 								}
@@ -459,11 +443,9 @@ public class ExperimentsAnalyser {
 					for (int bth = 0; bth < bths.size(); bth++) {
 						for (int agent = 0; agent < agents.size(); agent++) {
 							for (int it = 0; it < its.size(); it++) {
-								for (int testRatio = 0; testRatio < testRatios
-										.size(); testRatio++) {
+								for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
 									sum = sum
-											+ this.getImpFromTheMatrix(
-													theMatrix, leba, tth, dth,
+											+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth,
 													bth, agent, it, testRatio);
 									counter++;
 								}
@@ -491,11 +473,9 @@ public class ExperimentsAnalyser {
 					for (int bth = 0; bth < bths.size(); bth++) {
 						for (int agent = 0; agent < agents.size(); agent++) {
 							for (int it = 0; it < its.size(); it++) {
-								for (int testRatio = 0; testRatio < testRatios
-										.size(); testRatio++) {
+								for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
 									sum = sum
-											+ this.getImpFromTheMatrix(
-													theMatrix, leba, tth, dth,
+											+ this.getImpFromTheMatrix(theMatrix, leba, tth, dth,
 													bth, agent, it, testRatio);
 									counter++;
 								}
@@ -514,8 +494,7 @@ public class ExperimentsAnalyser {
 	 */
 	private void buildTheMatrix() {
 		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					summaryFile)));
+			CsvReader reader = new CsvReader(new FileReader(new File(summaryFile)));
 			reader.readHeaders();
 
 			List<String[]> experimentResultsRatios = new ArrayList<String[]>();
@@ -555,19 +534,17 @@ public class ExperimentsAnalyser {
 			this.testRatios = this.getSortedMap(ratiosList);
 
 			logger.info("Creating The Matrix");
-			this.theMatrix = new double[lebas.size()][tths.size()][dths.size()][bths
-					.size()][agents.size()][its.size()][testRatios.size()];
+			this.theMatrix = new double[lebas.size()][tths.size()][dths.size()][bths.size()][agents
+					.size()][its.size()][testRatios.size()];
 			for (int leba = 0; leba < lebas.size(); leba++) {
 				for (int tth = 0; tth < tths.size(); tth++) {
 					for (int dth = 0; dth < dths.size(); dth++) {
 						for (int bth = 0; bth < bths.size(); bth++) {
 							for (int agent = 0; agent < agents.size(); agent++) {
 								for (int it = 0; it < its.size(); it++) {
-									for (int testRatio = 0; testRatio < testRatios
-											.size(); testRatio++) {
-										this.addToTheMatrix(theMatrix, leba,
-												tth, dth, bth, agent, it,
-												testRatio, Double.MIN_VALUE);
+									for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
+										this.addToTheMatrix(theMatrix, leba, tth, dth, bth, agent,
+												it, testRatio, Double.MIN_VALUE);
 									}
 								}
 							}
@@ -586,8 +563,8 @@ public class ExperimentsAnalyser {
 				int itPos = its.get(row[15]);
 				int agentsPos = agents.get(row[16]);
 				int testRatiosPos = testRatios.get(row[17]);
-				this.addToTheMatrix(theMatrix, lebaPos, tthPos, dthPos, bthPos,
-						agentsPos, itPos, testRatiosPos, imp);
+				this.addToTheMatrix(theMatrix, lebaPos, tthPos, dthPos, bthPos, agentsPos, itPos,
+						testRatiosPos, imp);
 			}
 			reader.close();
 		} catch (Exception e) {
@@ -600,8 +577,7 @@ public class ExperimentsAnalyser {
 	 * @param summaryFile
 	 * @param chartOutputFolder
 	 */
-	private void saveValidationCylinderChart(String summaryFile,
-			String chartOutputFolder) {
+	private void saveValidationCylinderChart(String summaryFile, String chartOutputFolder) {
 
 		String globalChartFolder = chartOutputFolder + "/global";
 		File chartFolderFile = new File(globalChartFolder);
@@ -610,8 +586,7 @@ public class ExperimentsAnalyser {
 		}
 
 		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					summaryFile)));
+			CsvReader reader = new CsvReader(new FileReader(new File(summaryFile)));
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
 
@@ -625,8 +600,8 @@ public class ExperimentsAnalyser {
 			reader.close();
 
 			// Write little info file
-			CsvWriter writer = new CsvWriter(new FileWriter(new File(
-					globalChartFolder + "/global-validations.csv")), ',');
+			CsvWriter writer = new CsvWriter(new FileWriter(new File(globalChartFolder
+					+ "/global-validations.csv")), ',');
 			writer.writeRecord(headers);
 			for (String[] row : validationResults) {
 				writer.writeRecord(row);
@@ -675,16 +650,14 @@ public class ExperimentsAnalyser {
 
 			float radius = 0.5f;
 			for (int i = -1; i < mins.size() - 1; i++) {
-				Coord3d baseCentre = new Coord3d(i * 2, i * 2,
-						100 * mins.get(i));
+				Coord3d baseCentre = new Coord3d(i * 2, i * 2, 100 * mins.get(i));
 				float height = (maxs.get(i) - mins.get(i)) * 100;
 				if (height == 0) {
 					height = 0.01f;
 				}
-				Cylinder cylinder = plotter.getCylinder(baseCentre, height,
-						radius);
-				cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(),
-						new Color(height, height, height)));
+				Cylinder cylinder = plotter.getCylinder(baseCentre, height, radius);
+				cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), new Color(height,
+						height, height)));
 				cylinders.add(cylinder);
 			}
 
@@ -696,9 +669,8 @@ public class ExperimentsAnalyser {
 			// plotter.saveCylinder3DChart(globalChartFolder
 			// + "/global-validations.png", axisLabels, cylinders,
 			// ViewPositionMode.FREE, null);
-			plotter.saveCylinder3DChart(globalChartFolder
-					+ "/global-validations.png", axisLabels, cylinders,
-					ViewPositionMode.PROFILE, new Coord3d(0, 1, 0));
+			plotter.saveCylinder3DChart(globalChartFolder + "/global-validations.png", axisLabels,
+					cylinders, ViewPositionMode.PROFILE, new Coord3d(0, 1, 0));
 
 		} catch (FileNotFoundException e) {
 			logger.severe(e.getMessage());
@@ -728,12 +700,11 @@ public class ExperimentsAnalyser {
 	 * @param chartFolder
 	 * @param iteration
 	 */
-	private void saveGlobalImprovementDelaunayChartsForIteration(
-			String summaryFile, String chartFolder) {
+	private void saveGlobalImprovementDelaunayChartsForIteration(String summaryFile,
+			String chartFolder) {
 
 		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					summaryFile)));
+			CsvReader reader = new CsvReader(new FileReader(new File(summaryFile)));
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
 
@@ -745,8 +716,8 @@ public class ExperimentsAnalyser {
 			reader.close();
 
 			// Write little info file
-			CsvWriter writer = new CsvWriter(new FileWriter(new File(
-					chartFolder + "/experiments.csv")), ',');
+			CsvWriter writer = new CsvWriter(new FileWriter(new File(chartFolder
+					+ "/experiments.csv")), ',');
 			writer.writeRecord(headers);
 			for (String[] row : experimentResultsRatios) {
 				writer.writeRecord(row);
@@ -788,40 +759,31 @@ public class ExperimentsAnalyser {
 		double bthValue = 0;
 		double tthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
-			int agentValue = (int) this
-					.getValueForPosInTheMatrix(agents, agent);
+			int agentValue = (int) this.getValueForPosInTheMatrix(agents, agent);
 			for (int leba = 0; leba < lebas.size(); leba++) {
 				double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 				for (int bth = 0; bth < bths.size(); bth++) {
 					bthValue = this.getValueForPosInTheMatrix(bths, bth);
 					for (int it = 0; it < its.size(); it++) {
-						int itValue = (int) this.getValueForPosInTheMatrix(its,
-								it);
+						int itValue = (int) this.getValueForPosInTheMatrix(its, it);
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
-							double ratioValue = this.getValueForPosInTheMatrix(
-									testRatios, ratio);
+							double ratioValue = this.getValueForPosInTheMatrix(testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
 							for (int tth = 0; tth < tths.size(); tth++) {
-								tthValue = this.getValueForPosInTheMatrix(tths,
-										tth);
+								tthValue = this.getValueForPosInTheMatrix(tths, tth);
 								for (int dth = 0; dth < dths.size(); dth++) {
-									dthValue = this.getValueForPosInTheMatrix(
-											dths, dth);
-									double imp = this.getImpFromTheMatrix(
-											theMatrix, leba, tth, dth, bth,
-											agent, it, ratio);
+									dthValue = this.getValueForPosInTheMatrix(dths, dth);
+									double imp = this.getImpFromTheMatrix(theMatrix, leba, tth,
+											dth, bth, agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
 										if (dthValue == 2.0 || bthValue == 2.0) {
-											if (dthValue == 2.0
-													&& bthValue == 2.0) {
-												Coord3d coord = new Coord3d(
-														tthValue, dthValue, imp);
+											if (dthValue == 2.0 && bthValue == 2.0) {
+												Coord3d coord = new Coord3d(tthValue, dthValue, imp);
 												coords.add(coord);
 												// globalCoords.add(coord);
 											}
 										} else if (tthValue != 2.0) {
-											Coord3d coord = new Coord3d(
-													tthValue, dthValue, imp);
+											Coord3d coord = new Coord3d(tthValue, dthValue, imp);
 											coords.add(coord);
 											globalCoords.add(coord);
 										}
@@ -839,16 +801,11 @@ public class ExperimentsAnalyser {
 									axisLabels[0] = "TTH";
 									axisLabels[1] = "DTH";
 									axisLabels[2] = "ImprovementRatio";
-									plotter.saveDelaunaySurface3DChart(
-											chartFolder
-													+ "/globalImprovement-TTHvsDTH"
-													+ "-LEBA-" + leba + "-BTH-"
-													+ bthValue + "-Agents-"
-													+ agentValue + "-IT-"
-													+ itValue + "-TestRatio-"
-													+ ratioValue + ".png",
-											axisLabels, coords,
-											ViewPositionMode.FREE, null);
+									plotter.saveDelaunaySurface3DChart(chartFolder
+											+ "/globalImprovement-TTHvsDTH" + "-LEBA-" + leba
+											+ "-BTH-" + bthValue + "-Agents-" + agentValue + "-IT-"
+											+ itValue + "-TestRatio-" + ratioValue + ".png",
+											axisLabels, coords, ViewPositionMode.FREE, null);
 								}
 							}
 						}
@@ -860,9 +817,8 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "TTH";
 		axisLabels[1] = "DTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(chartFolder
-				+ "/globalImprovement-TTHvsDTH-Plotter.png", axisLabels,
-				globalCoords, 10, ViewPositionMode.FREE, null);
+		plotter.saveScatter3DChart(chartFolder + "/globalImprovement-TTHvsDTH-Plotter.png",
+				axisLabels, globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
@@ -873,32 +829,24 @@ public class ExperimentsAnalyser {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
-			int agentValue = (int) this
-					.getValueForPosInTheMatrix(agents, agent);
+			int agentValue = (int) this.getValueForPosInTheMatrix(agents, agent);
 			for (int leba = 0; leba < lebas.size(); leba++) {
 				double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 				for (int tth = 0; tth < tths.size(); tth++) {
 					double tthValue = this.getValueForPosInTheMatrix(tths, tth);
 					for (int it = 0; it < its.size(); it++) {
-						int itValue = (int) this.getValueForPosInTheMatrix(its,
-								it);
+						int itValue = (int) this.getValueForPosInTheMatrix(its, it);
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
-							double ratioValue = this.getValueForPosInTheMatrix(
-									testRatios, ratio);
+							double ratioValue = this.getValueForPosInTheMatrix(testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
 							for (int dth = 0; dth < dths.size(); dth++) {
-								dthValue = this.getValueForPosInTheMatrix(dths,
-										dth);
+								dthValue = this.getValueForPosInTheMatrix(dths, dth);
 								for (int bth = 0; bth < bths.size(); bth++) {
-									double bthValue = this
-											.getValueForPosInTheMatrix(bths,
-													bth);
-									double imp = this.getImpFromTheMatrix(
-											theMatrix, leba, tth, dth, bth,
-											agent, it, ratio);
+									double bthValue = this.getValueForPosInTheMatrix(bths, bth);
+									double imp = this.getImpFromTheMatrix(theMatrix, leba, tth,
+											dth, bth, agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										Coord3d coord = new Coord3d(bthValue,
-												dthValue, imp);
+										Coord3d coord = new Coord3d(bthValue, dthValue, imp);
 										coords.add(coord);
 										globalCoords.add(coord);
 									}
@@ -915,16 +863,11 @@ public class ExperimentsAnalyser {
 									axisLabels[0] = "BTH";
 									axisLabels[1] = "DTH";
 									axisLabels[2] = "ImprovementRatio";
-									plotter.saveDelaunaySurface3DChart(
-											chartFolder
-													+ "/globalImprovement-BTHvsDTH"
-													+ "-LEBA-" + leba + "-TTH-"
-													+ tthValue + "-Agents-"
-													+ agentValue + "-IT-"
-													+ itValue + "-TestRatio-"
-													+ ratioValue + ".png",
-											axisLabels, coords,
-											ViewPositionMode.FREE, null);
+									plotter.saveDelaunaySurface3DChart(chartFolder
+											+ "/globalImprovement-BTHvsDTH" + "-LEBA-" + leba
+											+ "-TTH-" + tthValue + "-Agents-" + agentValue + "-IT-"
+											+ itValue + "-TestRatio-" + ratioValue + ".png",
+											axisLabels, coords, ViewPositionMode.FREE, null);
 								}
 							}
 						}
@@ -936,9 +879,8 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "BTH";
 		axisLabels[1] = "DTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(chartFolder
-				+ "/globalImprovement-BTHvsDTH-Plotter.png", axisLabels,
-				globalCoords, 10, ViewPositionMode.FREE, null);
+		plotter.saveScatter3DChart(chartFolder + "/globalImprovement-BTHvsDTH-Plotter.png",
+				axisLabels, globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
@@ -951,41 +893,32 @@ public class ExperimentsAnalyser {
 		double bthValue = 0;
 		double tthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
-			int agentValue = (int) this
-					.getValueForPosInTheMatrix(agents, agent);
+			int agentValue = (int) this.getValueForPosInTheMatrix(agents, agent);
 			for (int leba = 0; leba < lebas.size(); leba++) {
 				double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 				for (int dth = 0; dth < dths.size(); dth++) {
 					dthValue = this.getValueForPosInTheMatrix(dths, dth);
 					for (int it = 0; it < its.size(); it++) {
-						int itValue = (int) this.getValueForPosInTheMatrix(its,
-								it);
+						int itValue = (int) this.getValueForPosInTheMatrix(its, it);
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
-							double ratioValue = this.getValueForPosInTheMatrix(
-									testRatios, ratio);
+							double ratioValue = this.getValueForPosInTheMatrix(testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
 							for (int tth = 0; tth < tths.size(); tth++) {
-								tthValue = this.getValueForPosInTheMatrix(tths,
-										tth);
+								tthValue = this.getValueForPosInTheMatrix(tths, tth);
 
 								for (int bth = 0; bth < bths.size(); bth++) {
-									bthValue = this.getValueForPosInTheMatrix(
-											bths, bth);
-									double imp = this.getImpFromTheMatrix(
-											theMatrix, leba, tth, dth, bth,
-											agent, it, ratio);
+									bthValue = this.getValueForPosInTheMatrix(bths, bth);
+									double imp = this.getImpFromTheMatrix(theMatrix, leba, tth,
+											dth, bth, agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
 										if (dthValue == 2.0 || bthValue == 2.0) {
-											if (dthValue == 2.0
-													&& bthValue == 2.0) {
-												Coord3d coord = new Coord3d(
-														tthValue, bthValue, imp);
+											if (dthValue == 2.0 && bthValue == 2.0) {
+												Coord3d coord = new Coord3d(tthValue, bthValue, imp);
 												coords.add(coord);
 												// globalCoords.add(coord);
 											}
 										} else if (tthValue != 2.0) {
-											Coord3d coord = new Coord3d(
-													tthValue, bthValue, imp);
+											Coord3d coord = new Coord3d(tthValue, bthValue, imp);
 											coords.add(coord);
 											globalCoords.add(coord);
 										}
@@ -1003,16 +936,11 @@ public class ExperimentsAnalyser {
 									axisLabels[0] = "TTH";
 									axisLabels[1] = "BTH";
 									axisLabels[2] = "ImprovementRatio";
-									plotter.saveDelaunaySurface3DChart(
-											chartFolder
-													+ "/globalImprovement-TTHvsBTH"
-													+ "-LEBA-" + leba + "-DTH-"
-													+ dthValue + "-Agents-"
-													+ agentValue + "-IT-"
-													+ itValue + "-TestRatio-"
-													+ ratioValue + ".png",
-											axisLabels, coords,
-											ViewPositionMode.FREE, null);
+									plotter.saveDelaunaySurface3DChart(chartFolder
+											+ "/globalImprovement-TTHvsBTH" + "-LEBA-" + leba
+											+ "-DTH-" + dthValue + "-Agents-" + agentValue + "-IT-"
+											+ itValue + "-TestRatio-" + ratioValue + ".png",
+											axisLabels, coords, ViewPositionMode.FREE, null);
 								}
 							}
 						}
@@ -1024,9 +952,8 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "TTH";
 		axisLabels[1] = "BTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(chartFolder
-				+ "/globalImprovement-TTHvsBTH-Plotter.png", axisLabels,
-				globalCoords, 10, ViewPositionMode.FREE, null);
+		plotter.saveScatter3DChart(chartFolder + "/globalImprovement-TTHvsBTH-Plotter.png",
+				axisLabels, globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
@@ -1038,41 +965,31 @@ public class ExperimentsAnalyser {
 		double dthValue = 0;
 		double bthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
-			int agentValue = (int) this
-					.getValueForPosInTheMatrix(agents, agent);
+			int agentValue = (int) this.getValueForPosInTheMatrix(agents, agent);
 			for (int tth = 0; tth < tths.size(); tth++) {
 				double tthValue = this.getValueForPosInTheMatrix(tths, tth);
 				for (int dth = 0; dth < dths.size(); dth++) {
 					dthValue = this.getValueForPosInTheMatrix(dths, dth);
 					for (int it = 0; it < its.size(); it++) {
-						int itValue = (int) this.getValueForPosInTheMatrix(its,
-								it);
+						int itValue = (int) this.getValueForPosInTheMatrix(its, it);
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
-							double ratioValue = this.getValueForPosInTheMatrix(
-									testRatios, ratio);
+							double ratioValue = this.getValueForPosInTheMatrix(testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
 							for (int leba = 0; leba < lebas.size(); leba++) {
-								double lebaValue = this
-										.getValueForPosInTheMatrix(lebas, leba);
+								double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 
 								for (int bth = 0; bth < bths.size(); bth++) {
-									bthValue = this.getValueForPosInTheMatrix(
-											bths, bth);
-									double imp = this.getImpFromTheMatrix(
-											theMatrix, leba, tth, dth, bth,
-											agent, it, ratio);
+									bthValue = this.getValueForPosInTheMatrix(bths, bth);
+									double imp = this.getImpFromTheMatrix(theMatrix, leba, tth,
+											dth, bth, agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue != 2.0 && tthValue != 2.0
-												&& bthValue != 2.0) {
-											Coord3d coord = new Coord3d(
-													lebaValue, bthValue, imp);
+										if (dthValue != 2.0 && tthValue != 2.0 && bthValue != 2.0) {
+											Coord3d coord = new Coord3d(lebaValue, bthValue, imp);
 											coords.add(coord);
 											globalCoords.add(coord);
-										} else if (dthValue == 2.0
-												&& bthValue == 2.0
+										} else if (dthValue == 2.0 && bthValue == 2.0
 												&& tthValue == 2.0) {
-											Coord3d coord = new Coord3d(
-													lebaValue, bthValue, imp);
+											Coord3d coord = new Coord3d(lebaValue, bthValue, imp);
 											coords.add(coord);
 											// globalCoords.add(coord);
 										}
@@ -1086,12 +1003,10 @@ public class ExperimentsAnalyser {
 								axisLabels[1] = "BTH";
 								axisLabels[2] = "ImprovementRatio";
 								plotter.saveDelaunaySurface3DChart(chartFolder
-										+ "/globalImprovement-LEBAvsDTH"
-										+ "-TTH-" + tthValue + "-DTH-"
-										+ dthValue + "-Agents-" + agentValue
-										+ "-IT-" + itValue + "-TestRatio-"
-										+ ratioValue + ".png", axisLabels,
-										coords, ViewPositionMode.FREE, null);
+										+ "/globalImprovement-LEBAvsDTH" + "-TTH-" + tthValue
+										+ "-DTH-" + dthValue + "-Agents-" + agentValue + "-IT-"
+										+ itValue + "-TestRatio-" + ratioValue + ".png",
+										axisLabels, coords, ViewPositionMode.FREE, null);
 							}
 						}
 					}
@@ -1102,9 +1017,8 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "LEBA";
 		axisLabels[1] = "BTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(chartFolder
-				+ "/globalImprovement-LEBAvsBTH-Plotter.png", axisLabels,
-				globalCoords, 10, ViewPositionMode.FREE, null);
+		plotter.saveScatter3DChart(chartFolder + "/globalImprovement-LEBAvsBTH-Plotter.png",
+				axisLabels, globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
@@ -1117,40 +1031,30 @@ public class ExperimentsAnalyser {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		double dthValue = 0;
 		for (int agent = 0; agent < agents.size(); agent++) {
-			int agentValue = (int) this
-					.getValueForPosInTheMatrix(agents, agent);
+			int agentValue = (int) this.getValueForPosInTheMatrix(agents, agent);
 			for (int tth = 0; tth < tths.size(); tth++) {
 				double tthValue = this.getValueForPosInTheMatrix(tths, tth);
 				for (int bth = 0; bth < bths.size(); bth++) {
 					double bthValue = this.getValueForPosInTheMatrix(bths, bth);
 					for (int it = 0; it < its.size(); it++) {
-						int itValue = (int) this.getValueForPosInTheMatrix(its,
-								it);
+						int itValue = (int) this.getValueForPosInTheMatrix(its, it);
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
-							double ratioValue = this.getValueForPosInTheMatrix(
-									testRatios, ratio);
+							double ratioValue = this.getValueForPosInTheMatrix(testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
 							for (int leba = 0; leba < lebas.size(); leba++) {
-								double lebaValue = this
-										.getValueForPosInTheMatrix(lebas, leba);
+								double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 								for (int dth = 0; dth < dths.size(); dth++) {
-									dthValue = this.getValueForPosInTheMatrix(
-											dths, dth);
-									double imp = this.getImpFromTheMatrix(
-											theMatrix, leba, tth, dth, bth,
-											agent, it, ratio);
+									dthValue = this.getValueForPosInTheMatrix(dths, dth);
+									double imp = this.getImpFromTheMatrix(theMatrix, leba, tth,
+											dth, bth, agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
-										if (dthValue != 2.0 && tthValue != 2.0
-												&& bthValue != 2.0) {
-											Coord3d coord = new Coord3d(
-													lebaValue, dthValue, imp);
+										if (dthValue != 2.0 && tthValue != 2.0 && bthValue != 2.0) {
+											Coord3d coord = new Coord3d(lebaValue, dthValue, imp);
 											coords.add(coord);
 											globalCoords.add(coord);
-										} else if (dthValue == 2.0
-												&& bthValue == 2.0
+										} else if (dthValue == 2.0 && bthValue == 2.0
 												&& tthValue == 2.0) {
-											Coord3d coord = new Coord3d(
-													lebaValue, dthValue, imp);
+											Coord3d coord = new Coord3d(lebaValue, dthValue, imp);
 											coords.add(coord);
 											// globalCoords.add(coord);
 										}
@@ -1164,12 +1068,10 @@ public class ExperimentsAnalyser {
 								axisLabels[1] = "DTH";
 								axisLabels[2] = "ImprovementRatio";
 								plotter.saveDelaunaySurface3DChart(chartFolder
-										+ "/globalImprovement-LEBAvsDTH"
-										+ "-TTH-" + tthValue + "-BTH-"
-										+ bthValue + "-Agents-" + agentValue
-										+ "-IT-" + itValue + "-TestRatio-"
-										+ ratioValue + ".png", axisLabels,
-										coords, ViewPositionMode.FREE, null);
+										+ "/globalImprovement-LEBAvsDTH" + "-TTH-" + tthValue
+										+ "-BTH-" + bthValue + "-Agents-" + agentValue + "-IT-"
+										+ itValue + "-TestRatio-" + ratioValue + ".png",
+										axisLabels, coords, ViewPositionMode.FREE, null);
 							}
 						}
 					}
@@ -1180,9 +1082,8 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "LEBA";
 		axisLabels[1] = "DTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(chartFolder
-				+ "/globalImprovement-LEBAvsDTH-Plotter.png", axisLabels,
-				globalCoords, 10, ViewPositionMode.FREE, null);
+		plotter.saveScatter3DChart(chartFolder + "/globalImprovement-LEBAvsDTH-Plotter.png",
+				axisLabels, globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
@@ -1194,42 +1095,32 @@ public class ExperimentsAnalyser {
 	private void saveChartsLEBAvsTTH(Plotter plotter, String chartFolder) {
 		List<Coord3d> globalCoords = new ArrayList<Coord3d>();
 		for (int agent = 0; agent < agents.size(); agent++) {
-			int agentValue = (int) this
-					.getValueForPosInTheMatrix(agents, agent);
+			int agentValue = (int) this.getValueForPosInTheMatrix(agents, agent);
 			for (int dth = 0; dth < dths.size(); dth++) {
 				double dthValue = this.getValueForPosInTheMatrix(dths, dth);
 				for (int bth = 0; bth < bths.size(); bth++) {
 					double bthValue = this.getValueForPosInTheMatrix(bths, bth);
 					for (int it = 0; it < its.size(); it++) {
-						int itValue = (int) this.getValueForPosInTheMatrix(its,
-								it);
+						int itValue = (int) this.getValueForPosInTheMatrix(its, it);
 						for (int ratio = 0; ratio < testRatios.size(); ratio++) {
-							double ratioValue = this.getValueForPosInTheMatrix(
-									testRatios, ratio);
+							double ratioValue = this.getValueForPosInTheMatrix(testRatios, ratio);
 							List<Coord3d> coords = new ArrayList<Coord3d>();
 							for (int leba = 0; leba < lebas.size(); leba++) {
-								double lebaValue = this
-										.getValueForPosInTheMatrix(lebas, leba);
+								double lebaValue = this.getValueForPosInTheMatrix(lebas, leba);
 								for (int tth = 0; tth < tths.size(); tth++) {
-									double tthValue = this
-											.getValueForPosInTheMatrix(tths,
-													tth);
-									double imp = this.getImpFromTheMatrix(
-											theMatrix, leba, tth, dth, bth,
-											agent, it, ratio);
+									double tthValue = this.getValueForPosInTheMatrix(tths, tth);
+									double imp = this.getImpFromTheMatrix(theMatrix, leba, tth,
+											dth, bth, agent, it, ratio);
 									if (imp != Double.MIN_VALUE) {
 										if (dthValue == 2.0 || bthValue == 2.0) {
-											if (dthValue == 2.0
-													&& bthValue == 2.0) {
-												Coord3d coord = new Coord3d(
-														lebaValue, tthValue,
+											if (dthValue == 2.0 && bthValue == 2.0) {
+												Coord3d coord = new Coord3d(lebaValue, tthValue,
 														imp);
 												coords.add(coord);
 												// globalCoords.add(coord);
 											}
 										} else if (tthValue != 2.0) {
-											Coord3d coord = new Coord3d(
-													lebaValue, tthValue, imp);
+											Coord3d coord = new Coord3d(lebaValue, tthValue, imp);
 											coords.add(coord);
 											globalCoords.add(coord);
 										}
@@ -1243,17 +1134,11 @@ public class ExperimentsAnalyser {
 									axisLabels[0] = "LEBA";
 									axisLabels[1] = "TTH";
 									axisLabels[2] = "ImprovementRatio";
-									plotter.saveDelaunaySurface3DChart(
-											chartFolder
-													+ "/globalImprovement-LEBAvsTTH"
-													+ "-DTH-" + dthValue
-													+ "-BTH-" + bthValue
-													+ "-Agents-" + agentValue
-													+ "-IT-" + itValue
-													+ "-TestRatio-"
-													+ ratioValue + ".png",
-											axisLabels, coords,
-											ViewPositionMode.FREE, null);
+									plotter.saveDelaunaySurface3DChart(chartFolder
+											+ "/globalImprovement-LEBAvsTTH" + "-DTH-" + dthValue
+											+ "-BTH-" + bthValue + "-Agents-" + agentValue + "-IT-"
+											+ itValue + "-TestRatio-" + ratioValue + ".png",
+											axisLabels, coords, ViewPositionMode.FREE, null);
 								}
 							} else {
 								String[] axisLabels = new String[3];
@@ -1261,12 +1146,10 @@ public class ExperimentsAnalyser {
 								axisLabels[1] = "TTH";
 								axisLabels[2] = "ImprovementRatio";
 								plotter.saveDelaunaySurface3DChart(chartFolder
-										+ "/globalImprovement-LEBAvsTTH"
-										+ "-DTH-" + dthValue + "-BTH-"
-										+ bthValue + "-Agents-" + agentValue
-										+ "-IT-" + itValue + "-TestRatio-"
-										+ ratioValue + ".png", axisLabels,
-										coords, ViewPositionMode.FREE, null);
+										+ "/globalImprovement-LEBAvsTTH" + "-DTH-" + dthValue
+										+ "-BTH-" + bthValue + "-Agents-" + agentValue + "-IT-"
+										+ itValue + "-TestRatio-" + ratioValue + ".png",
+										axisLabels, coords, ViewPositionMode.FREE, null);
 							}
 						}
 					}
@@ -1277,9 +1160,8 @@ public class ExperimentsAnalyser {
 		axisLabels[0] = "LEBA";
 		axisLabels[1] = "TTH";
 		axisLabels[2] = "ImprovementRatio";
-		plotter.saveScatter3DChart(chartFolder
-				+ "/globalImprovement-LEBAvsTTH-Plotter.png", axisLabels,
-				globalCoords, 10, ViewPositionMode.FREE, null);
+		plotter.saveScatter3DChart(chartFolder + "/globalImprovement-LEBAvsTTH-Plotter.png",
+				axisLabels, globalCoords, 10, ViewPositionMode.FREE, null);
 	}
 
 	/**
@@ -1293,9 +1175,8 @@ public class ExperimentsAnalyser {
 	 * @param testRatiosPos
 	 * @param imp
 	 */
-	private void addToTheMatrix(double[][][][][][][] theMatrix, int lebaPos,
-			int tthPos, int dthPos, int bthPos, int agentsPos, int itPos,
-			int testRatiosPos, double imp) {
+	private void addToTheMatrix(double[][][][][][][] theMatrix, int lebaPos, int tthPos,
+			int dthPos, int bthPos, int agentsPos, int itPos, int testRatiosPos, double imp) {
 		theMatrix[lebaPos][tthPos][dthPos][bthPos][agentsPos][itPos][testRatiosPos] = imp;
 
 	}
@@ -1311,8 +1192,8 @@ public class ExperimentsAnalyser {
 	 * @param ratio
 	 * @return
 	 */
-	private double getImpFromTheMatrix(double[][][][][][][] theMatrix,
-			int leba, int tth, int dth, int bth, int agent, int it, int ratio) {
+	private double getImpFromTheMatrix(double[][][][][][][] theMatrix, int leba, int tth, int dth,
+			int bth, int agent, int it, int ratio) {
 		return theMatrix[leba][tth][dth][bth][agent][it][ratio];
 	}
 
@@ -1321,8 +1202,7 @@ public class ExperimentsAnalyser {
 	 * @param pos
 	 * @return
 	 */
-	private double getValueForPosInTheMatrix(HashMap<String, Integer> map,
-			int pos) {
+	private double getValueForPosInTheMatrix(HashMap<String, Integer> map, int pos) {
 		for (Entry<String, Integer> entry : map.entrySet()) {
 			if (pos == entry.getValue()) {
 				String key = entry.getKey();
@@ -1338,8 +1218,7 @@ public class ExperimentsAnalyser {
 	 * @param pos
 	 * @return
 	 */
-	private String getStringForPosInTheMatrix(HashMap<String, Integer> map,
-			int pos) {
+	private String getStringForPosInTheMatrix(HashMap<String, Integer> map, int pos) {
 		for (Entry<String, Integer> entry : map.entrySet()) {
 			if (pos == entry.getValue()) {
 				String key = entry.getKey();
@@ -1401,8 +1280,8 @@ public class ExperimentsAnalyser {
 	 * @param chartFolder
 	 * @param iteration
 	 */
-	private void saveValidationCylinderChartForIteration(String summaryFile,
-			String chartFolder, int iteration) {
+	private void saveValidationCylinderChartForIteration(String summaryFile, String chartFolder,
+			int iteration) {
 		String iterationChartFolder = chartFolder + "/iteration-" + iteration;
 		File chartFolderFile = new File(iterationChartFolder);
 		if (!chartFolderFile.isDirectory() || !chartFolderFile.exists()) {
@@ -1410,8 +1289,7 @@ public class ExperimentsAnalyser {
 		}
 
 		try {
-			CsvReader reader = new CsvReader(new FileReader(new File(
-					summaryFile)));
+			CsvReader reader = new CsvReader(new FileReader(new File(summaryFile)));
 			reader.readHeaders();
 			String[] headers = reader.getHeaders();
 
@@ -1426,8 +1304,8 @@ public class ExperimentsAnalyser {
 			reader.close();
 
 			// Write little info file
-			CsvWriter writer = new CsvWriter(new FileWriter(new File(
-					iterationChartFolder + "/validations.csv")), ',');
+			CsvWriter writer = new CsvWriter(new FileWriter(new File(iterationChartFolder
+					+ "/validations.csv")), ',');
 			writer.writeRecord(headers);
 			for (String[] row : validationResults) {
 				writer.writeRecord(row);
@@ -1459,22 +1337,19 @@ public class ExperimentsAnalyser {
 
 				float height = new Float(row[3]);
 				float radius = 0.5f;
-				Cylinder cylinder = plotter.getCylinder(baseCentre, height,
-						radius);
-				cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(),
-						new Color(height * 200, height * 200, height * 200)));
+				Cylinder cylinder = plotter.getCylinder(baseCentre, height, radius);
+				cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), new Color(
+						height * 200, height * 200, height * 200)));
 				cylinders.add(cylinder);
 			}
 
-			logger.info("Generating validations chart for iteration "
-					+ iteration);
+			logger.info("Generating validations chart for iteration " + iteration);
 			String[] axisLabels = new String[3];
 			axisLabels[0] = "";
 			axisLabels[1] = "Agent Number";
 			axisLabels[2] = "SuccessRatio";
-			plotter.saveCylinder3DChart(iterationChartFolder
-					+ "/validations.png", axisLabels, cylinders,
-					ViewPositionMode.PROFILE, new Coord3d(0, 1, 0));
+			plotter.saveCylinder3DChart(iterationChartFolder + "/validations.png", axisLabels,
+					cylinders, ViewPositionMode.PROFILE, new Coord3d(0, 1, 0));
 
 		} catch (FileNotFoundException e) {
 			logger.severe(e.getMessage());

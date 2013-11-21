@@ -74,12 +74,11 @@ public class Plotter {
 	/**
 	 * 
 	 */
-	public void saveScreenshot(String outputFile, Chart chart,
-			ViewPositionMode viewPosMode, Coord3d viewPoint) {
+	public void saveScreenshot(String outputFile, Chart chart, ViewPositionMode viewPosMode,
+			Coord3d viewPoint) {
 		Rectangle window = new Rectangle(200, 200, 700, 600);
 
-		FrameAWT frame = (FrameAWT) chart.getFactory().newFrame(chart, window,
-				"Chart Frame");
+		FrameAWT frame = (FrameAWT) chart.getFactory().newFrame(chart, window, "Chart Frame");
 
 		if (viewPosMode != null) {
 			chart.setViewMode(viewPosMode);
@@ -106,25 +105,22 @@ public class Plotter {
 		}
 	}
 
-	public void saveDelaunaySurface3DChart(String outputFile,
-			String[] axisLabels, List<Coord3d> coordinates,
-			ViewPositionMode viewPosMode, Coord3d viewPoint) {
+	public void saveDelaunaySurface3DChart(String outputFile, String[] axisLabels,
+			List<Coord3d> coordinates, ViewPositionMode viewPosMode, Coord3d viewPoint) {
 		Chart chart = this.getDelaunayChart(coordinates);
 		this.setAxisLabels(chart, axisLabels[0], axisLabels[1], axisLabels[2]);
 		this.saveScreenshot(outputFile, chart, viewPosMode, viewPoint);
 	}
 
 	public void saveScatter3DChart(String outputFile, String[] axisLabels,
-			List<Coord3d> coordinates, float width,
-			ViewPositionMode viewPosMode, Coord3d viewPoint) {
+			List<Coord3d> coordinates, float width, ViewPositionMode viewPosMode, Coord3d viewPoint) {
 		Chart chart = this.getScatterChart(coordinates, width);
 		this.setAxisLabels(chart, axisLabels[0], axisLabels[1], axisLabels[2]);
 		this.saveScreenshot(outputFile, chart, viewPosMode, viewPoint);
 	}
 
 	public void saveCylinder3DChart(String outputFile, String[] axisLabels,
-			List<Cylinder> cylinders, ViewPositionMode viewPosMode,
-			Coord3d viewPoint) {
+			List<Cylinder> cylinders, ViewPositionMode viewPosMode, Coord3d viewPoint) {
 		Chart chart = this.getCylinder3DChart(cylinders);
 		this.setAxisLabels(chart, axisLabels[0], axisLabels[1], axisLabels[2]);
 		this.saveScreenshot(outputFile, chart, viewPosMode, viewPoint);
@@ -157,18 +153,17 @@ public class Plotter {
 		// Create the object to represent the function over the given range.
 		Shape surface = Builder.buildDelaunay(coordinates);
 
-		surface.setColorMapper(new ColorMapper(new ColorMapRainbow(), surface
-				.getBounds().getZmin(), surface.getBounds().getZmax(),
-				new Color(1, 1, 1, 0.75f)));
+		surface.setColorMapper(new ColorMapper(new ColorMapRainbow(),
+				surface.getBounds().getZmin(), surface.getBounds().getZmax(), new Color(1, 1, 1,
+						0.75f)));
 		surface.setFaceDisplayed(true);
 		surface.setWireframeDisplayed(true);
-		AWTColorbarLegend legend = new AWTColorbarLegend(surface,
-				new AxeBoxLayout());
+		AWTColorbarLegend legend = new AWTColorbarLegend(surface, new AxeBoxLayout());
 		surface.setLegend(legend);
 
 		// Create a chart
-		Chart chart = new Chart(this.factory, Quality.Nicest, "awt", Settings
-				.getInstance().getGLCapabilities());
+		Chart chart = new Chart(this.factory, Quality.Nicest, "awt", Settings.getInstance()
+				.getGLCapabilities());
 		chart.setAxeDisplayed(true);
 		chart.getScene().getGraph().add(surface);
 
@@ -198,8 +193,8 @@ public class Plotter {
 			scatter = new Scatter(points, colors, width);
 		}
 
-		Chart chart = new Chart(this.factory, Quality.Nicest, "awt", Settings
-				.getInstance().getGLCapabilities());
+		Chart chart = new Chart(this.factory, Quality.Nicest, "awt", Settings.getInstance()
+				.getGLCapabilities());
 		chart.getScene().add(scatter);
 
 		return chart;
@@ -211,8 +206,8 @@ public class Plotter {
 	 */
 	public Chart getCylinder3DChart(List<Cylinder> cylinders) {
 
-		Chart chart = new Chart(this.factory, Quality.Nicest, "awt", Settings
-				.getInstance().getGLCapabilities());
+		Chart chart = new Chart(this.factory, Quality.Nicest, "awt", Settings.getInstance()
+				.getGLCapabilities());
 		for (Cylinder cylinder : cylinders) {
 			chart.getScene().add(cylinder);
 		}
@@ -228,18 +223,17 @@ public class Plotter {
 	 */
 	public Cylinder getCylinder(Coord3d baseCenter, float height, float radius) {
 		Cylinder cylinder = new Cylinder();
-		cylinder.setData(baseCenter, height, radius, 20, 0, new Color(height,
-				height, height, 0.75f));
+		cylinder.setData(baseCenter, height, radius, 20, 0,
+				new Color(height, height, height, 0.75f));
 
 		cylinder.setFaceDisplayed(true);
-		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(),
-				new Color(height, height, height)));
+		cylinder.setColorMapper(new ColorMapper(new ColorMapRainbow(), new Color(height, height,
+				height)));
 
 		return cylinder;
 	}
 
-	public void setAxisLabels(Chart chart, String xLabel, String yLabel,
-			String zLabel) {
+	public void setAxisLabels(Chart chart, String xLabel, String yLabel, String zLabel) {
 		IAxeLayout layout = chart.getAxeLayout();
 		layout.setXAxeLabel(xLabel);
 		layout.setYAxeLabel(yLabel);

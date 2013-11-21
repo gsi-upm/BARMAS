@@ -23,12 +23,10 @@ import java.util.Set;
 import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeAgent;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.model.AbstractArgument.java
+ * Project: barmas File: es.upm.dit.gsi.barmas.model.AbstractArgument.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -38,33 +36,35 @@ import es.upm.dit.gsi.barmas.agent.capability.argumentation.bayes.ArgumentativeA
  * 
  */
 public abstract class AbstractArgument {
-	
+
 	/**
 	 * @return The givens/evidences of the argument
 	 */
 	public abstract Set<? extends AbstractGiven> getGivens();
-	
+
 	/**
 	 * @return The assumptions of the argument
 	 */
 	public abstract Set<? extends AbstractAssumption> getAssumptions();
-	
+
 	/**
 	 * @return The proposals/beliefs of the argument
 	 */
 	public abstract Set<? extends AbstractProposal> getProposals();
-	
+
 	/**
 	 * @return The agent that proposes the argument
 	 */
 	public abstract ArgumentativeAgent getProponent();
-	
+
 	/**
 	 * @return The name of the agent that proposes the argument
 	 */
 	public abstract String getProponentName();
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	public abstract AbstractArgument clone();

@@ -60,8 +60,7 @@ import es.upm.dit.gsi.shanks.exception.ShanksException;
  * @version 0.1
  * 
  */
-public class BarmasManagerAgent extends SimpleShanksAgent implements
-		ArgumentativeAgent {
+public class BarmasManagerAgent extends SimpleShanksAgent implements ArgumentativeAgent {
 
 	/**
 	 * 
@@ -100,10 +99,8 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * @param id
 	 * @param outputDir
 	 */
-	public BarmasManagerAgent(String id, String outputDir,
-			double diffThreshold, Logger logger, int mode,
-			String classificationTarget, double trustThreshold,
-			int maxArgumentationRounds) {
+	public BarmasManagerAgent(String id, String outputDir, double diffThreshold, Logger logger,
+			int mode, String classificationTarget, double trustThreshold, int maxArgumentationRounds) {
 		super(id, logger);
 		this.classificationTarget = classificationTarget;
 		this.mode = mode;
@@ -118,8 +115,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		this.currentArgumentationrounds = 0;
 
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
-			this.argumentationDir = this.outputDir + File.separator
-					+ "argumentation";
+			this.argumentationDir = this.outputDir + File.separator + "argumentation";
 
 			// Create folders
 			File f = new File(argumentationDir);
@@ -191,8 +187,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 
 		if (this.getCurrentArgumentation() == null) {
 			this.argumentation = new Argumentation(argumentationCounter);
-			this.getLogger().finer(
-					"Creating new argumentation - ID: " + argumentationCounter);
+			this.getLogger().finer("Creating new argumentation - ID: " + argumentationCounter);
 			argumentationCounter++;
 			this.currentArgumentationrounds = 0;
 		}
@@ -201,8 +196,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 			this.registerNewArgument(arg);
 		}
 
-		this.getLogger().info(
-				"Argumentation round: " + currentArgumentationrounds);
+		this.getLogger().info("Argumentation round: " + currentArgumentationrounds);
 
 	}
 
@@ -210,10 +204,9 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * @param a
 	 * @param simulation
 	 */
-	private void updateDiagnosisCase(Argumentation a,
-			ShanksSimulation simulation) {
-		DiagnosisCase argDiagnosis = (DiagnosisCase) simulation.getScenario()
-				.getNetworkElement(DiagnosisScenario.ARGUMENTATIONCONCLUSION);
+	private void updateDiagnosisCase(Argumentation a, ShanksSimulation simulation) {
+		DiagnosisCase argDiagnosis = (DiagnosisCase) simulation.getScenario().getNetworkElement(
+				DiagnosisScenario.ARGUMENTATIONCONCLUSION);
 		try {
 			for (Argument arg : a.getConclusions()) {
 				for (Given g : arg.getGivens()) {
@@ -223,8 +216,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 					String node = p.getNode();
 					String state = "";
 					double max = 0;
-					for (Entry<String, Double> e : p.getValuesWithConfidence()
-							.entrySet()) {
+					for (Entry<String, Double> e : p.getValuesWithConfidence().entrySet()) {
 						if (e.getValue() > max) {
 							max = e.getValue();
 							state = e.getKey();
@@ -233,8 +225,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 					argDiagnosis.changeProperty(node, state);
 					this.getLogger().info(
 							"Argumentative agents conclude for Diagnosi Case ID: "
-									+ argDiagnosis.getCaseID() + " that "
-									+ node + " - " + state
+									+ argDiagnosis.getCaseID() + " that " + node + " - " + state
 									+ " with confidence: " + max);
 				}
 			}
@@ -251,8 +242,8 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	private void argumentation2File(Argumentation currentArgumentation) {
 
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
-			File f = new File(argumentationDir + File.separator
-					+ "argumentation" + currentArgumentation.getId());
+			File f = new File(argumentationDir + File.separator + "argumentation"
+					+ currentArgumentation.getId());
 			if (!f.isDirectory()) {
 				boolean made = f.mkdir();
 				if (!made) {
@@ -284,56 +275,47 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * @param currentArgumentation
 	 * @throws IOException
 	 */
-	private void writeArgumentsInFriendlyFormat(
-			Argumentation currentArgumentation) throws IOException {
+	private void writeArgumentsInFriendlyFormat(Argumentation currentArgumentation)
+			throws IOException {
 
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
-			for (int aux = 0; aux < currentArgumentation.getArgumentsWithID()
-					.size(); aux++) {
-				Argument argument = currentArgumentation.getArgumentsWithID()
-						.get(aux);
-				FileWriter fw = new FileWriter(this.argumentationDir
-						+ File.separator + "argumentation"
-						+ currentArgumentation.getId() + File.separator
-						+ "arguments-argumentation-"
-						+ currentArgumentation.getId() + ".info", true);
-				fw.write("Argumentation: " + currentArgumentation.getId()
-						+ " - Argument: " + argument.getId() + "\nProponent: "
-						+ argument.getProponent().getProponentName()
-						+ "\n\nStep: " + argument.getStep() + " - Timestamp: "
-						+ argument.getTimestamp() + "\n\n");
+			for (int aux = 0; aux < currentArgumentation.getArgumentsWithID().size(); aux++) {
+				Argument argument = currentArgumentation.getArgumentsWithID().get(aux);
+				FileWriter fw = new FileWriter(this.argumentationDir + File.separator
+						+ "argumentation" + currentArgumentation.getId() + File.separator
+						+ "arguments-argumentation-" + currentArgumentation.getId() + ".info", true);
+				fw.write("Argumentation: " + currentArgumentation.getId() + " - Argument: "
+						+ argument.getId() + "\nProponent: "
+						+ argument.getProponent().getProponentName() + "\n\nStep: "
+						+ argument.getStep() + " - Timestamp: " + argument.getTimestamp() + "\n\n");
 				fw.flush();
-				fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size()
-						+ "\n");
+				fw.write("\tGivens:\n\tQuantity:" + argument.getGivens().size() + "\n");
 				fw.flush();
 				for (Given given : argument.getGivens()) {
-					fw.write("\t\tNode: " + given.getNode() + "\n\t\t\tValue: "
-							+ given.getValue() + "\n");
+					fw.write("\t\tNode: " + given.getNode() + "\n\t\t\tValue: " + given.getValue()
+							+ "\n");
 					fw.flush();
 				}
-				fw.write("\n\tAssumptions:\n\tQuantity:"
-						+ argument.getAssumptions().size() + "\n");
+				fw.write("\n\tAssumptions:\n\tQuantity:" + argument.getAssumptions().size() + "\n");
 				fw.flush();
 				for (Assumption assump : argument.getAssumptions()) {
 					fw.write("\t\tNode: " + assump.getNode() + "\n");
 					fw.flush();
-					for (Entry<String, Double> entry : assump
-							.getValuesWithConfidence().entrySet()) {
-						fw.write("\t\t\tValue: " + entry.getKey()
-								+ " - Confidene: " + entry.getValue() + "\n");
+					for (Entry<String, Double> entry : assump.getValuesWithConfidence().entrySet()) {
+						fw.write("\t\t\tValue: " + entry.getKey() + " - Confidene: "
+								+ entry.getValue() + "\n");
 						fw.flush();
 					}
 				}
-				fw.write("\n\tProposal:\n\tQuantity:"
-						+ argument.getProposals().size() + "\n");
+				fw.write("\n\tProposal:\n\tQuantity:" + argument.getProposals().size() + "\n");
 				fw.flush();
 				for (Proposal proposal : argument.getProposals()) {
 					fw.write("\t\tNode: " + proposal.getNode() + "\n");
 					fw.flush();
-					for (Entry<String, Double> entry : proposal
-							.getValuesWithConfidence().entrySet()) {
-						fw.write("\t\t\tValue: " + entry.getKey()
-								+ " - Confidene: " + entry.getValue() + "\n");
+					for (Entry<String, Double> entry : proposal.getValuesWithConfidence()
+							.entrySet()) {
+						fw.write("\t\t\tValue: " + entry.getKey() + " - Confidene: "
+								+ entry.getValue() + "\n");
 						fw.flush();
 					}
 				}
@@ -349,18 +331,14 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * @param currentArgumentation
 	 * @throws IOException
 	 */
-	private void writeGraphInCSVFile(Argumentation currentArgumentation)
-			throws IOException {
+	private void writeGraphInCSVFile(Argumentation currentArgumentation) throws IOException {
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
-			HashMap<Argument, HashMap<Argument, Integer>> graph = currentArgumentation
-					.getGraph();
-			String graphFile = argumentationDir + File.separator
-					+ "argumentation" + currentArgumentation.getId()
-					+ File.separator + "graph-argumentation-"
+			HashMap<Argument, HashMap<Argument, Integer>> graph = currentArgumentation.getGraph();
+			String graphFile = argumentationDir + File.separator + "argumentation"
+					+ currentArgumentation.getId() + File.separator + "graph-argumentation-"
 					+ currentArgumentation.getId() + ".csv";
 			CsvWriter graphWriter = null;
-			String[] graphHeaders = new String[currentArgumentation
-					.getArgumentsWithID().size() + 2];
+			String[] graphHeaders = new String[currentArgumentation.getArgumentsWithID().size() + 2];
 			graphHeaders[0] = "ProponentID";
 			graphHeaders[1] = "ArgID";
 			for (int aux = 2; aux < graphHeaders.length; aux++) {
@@ -372,21 +350,18 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 				graphWriter.writeRecord(graphHeaders);
 				graphWriter.flush();
 			} else {
-				graphWriter = new CsvWriter(new FileWriter(graphFile, true),
-						',');
+				graphWriter = new CsvWriter(new FileWriter(graphFile, true), ',');
 			}
 
 			for (int aux = 2; aux < graphHeaders.length; aux++) {
 				String[] graphData = new String[graphHeaders.length];
-				graphData[0] = currentArgumentation.getArgumentsWithID()
-						.get(aux - 2).getProponent().getProponentName();
+				graphData[0] = currentArgumentation.getArgumentsWithID().get(aux - 2)
+						.getProponent().getProponentName();
 				graphData[1] = Integer.toString(aux - 2);
-				Argument arg = currentArgumentation.getArgumentsWithID().get(
-						aux - 2);
+				Argument arg = currentArgumentation.getArgumentsWithID().get(aux - 2);
 				HashMap<Argument, Integer> attacks = graph.get(arg);
 				for (int aux2 = 0; aux2 < graphHeaders.length - 2; aux2++) {
-					Argument arg2 = currentArgumentation.getArgumentsWithID()
-							.get(aux2);
+					Argument arg2 = currentArgumentation.getArgumentsWithID().get(aux2);
 					graphData[aux2 + 2] = attacks.get(arg2).toString();
 				}
 				graphWriter.writeRecord(graphData);
@@ -403,8 +378,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * @param currentArgumentation
 	 * @throws IOException
 	 */
-	private void writeArgumentationInCSVFile(Argumentation currentArgumentation)
-			throws IOException {
+	private void writeArgumentationInCSVFile(Argumentation currentArgumentation) throws IOException {
 		List<String> headers = new ArrayList<String>();
 
 		headers.add("ArgumentationID");
@@ -424,38 +398,32 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 		File f = new File(generalArgumentationsFile);
 		CsvWriter generalWriter = null;
 		if (!f.exists()) {
-			generalWriter = new CsvWriter(new FileWriter(
-					generalArgumentationsFile), ',');
+			generalWriter = new CsvWriter(new FileWriter(generalArgumentationsFile), ',');
 			generalWriter.writeRecord(newHeaders);
 			generalWriter.flush();
 		} else {
-			generalWriter = new CsvWriter(new FileWriter(
-					generalArgumentationsFile, true), ',');
+			generalWriter = new CsvWriter(new FileWriter(generalArgumentationsFile, true), ',');
 		}
 
 		CsvWriter concreteWriter = null;
 
 		if (this.mode == SimulationConfiguration.DEBUGGING_MODE) {
-			String concreteArgumentationFile = argumentationDir
-					+ File.separator + "argumentation"
-					+ currentArgumentation.getId() + File.separator
-					+ "argumentation-" + currentArgumentation.getId() + ".csv";
+			String concreteArgumentationFile = argumentationDir + File.separator + "argumentation"
+					+ currentArgumentation.getId() + File.separator + "argumentation-"
+					+ currentArgumentation.getId() + ".csv";
 			f = new File(concreteArgumentationFile);
 			if (!f.exists()) {
-				concreteWriter = new CsvWriter(new FileWriter(
-						concreteArgumentationFile), ',');
+				concreteWriter = new CsvWriter(new FileWriter(concreteArgumentationFile), ',');
 				concreteWriter.writeRecord(newHeaders);
 				concreteWriter.flush();
 			} else {
-				concreteWriter = new CsvWriter(new FileWriter(
-						concreteArgumentationFile, true), ',');
+				concreteWriter = new CsvWriter(new FileWriter(concreteArgumentationFile, true), ',');
 			}
 		}
 
 		int argNums = currentArgumentation.getArgumentsWithID().size();
 		for (int argNum = 0; argNum < argNums; argNum++) {
-			Argument arg = currentArgumentation.getArgumentsWithID()
-					.get(argNum);
+			Argument arg = currentArgumentation.getArgumentsWithID().get(argNum);
 			String[] data = new String[newHeaders.length];
 			data[0] = Integer.toString(currentArgumentation.getId());
 			data[1] = Integer.toString(arg.getId());
@@ -560,19 +528,16 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	public void finishArgumenation() {
 		Argumentation argumentation = this.getCurrentArgumentation();
 		if (reputationMode) {
-			AgentArgumentativeCapability
-					.addConclusionReputationAndHigherHypothesis(argumentation,
-							this.getLogger(), classificationTarget,
-							trustThreshold);
+			AgentArgumentativeCapability.addConclusionReputationAndHigherHypothesis(argumentation,
+					this.getLogger(), classificationTarget, trustThreshold);
 		} else {
-			AgentArgumentativeCapability.addConclusionHigherHypothesis(
-					argumentation, this.getLogger(), classificationTarget);
+			AgentArgumentativeCapability.addConclusionHigherHypothesis(argumentation,
+					this.getLogger(), classificationTarget);
 		}
 		this.argumentation2File(this.getCurrentArgumentation());
 		argumentation.setFinished(true);
 		this.argumentation = null;
-		this.getLogger().info(
-				"Argumentation Manager: Finishing argumentation...");
+		this.getLogger().info("Argumentation Manager: Finishing argumentation...");
 		for (ArgumentativeAgent s : this.suscribers) {
 			s.finishArgumenation();
 		}
@@ -585,8 +550,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 									+ this.argumentation.getId());
 		} else {
 			this.getLogger().info(
-					"Finishing Argumentation in "
-							+ (currentArgumentationrounds) + " rounds.");
+					"Finishing Argumentation in " + (currentArgumentationrounds) + " rounds.");
 		}
 		this.currentArgumentationrounds = 0;
 	}
@@ -741,8 +705,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements
 	 * #areDistributionsFarEnough(java.util.Map, java.util.Map)
 	 */
 	@Override
-	public boolean areDistributionsFarEnough(Map<String, Double> a,
-			Map<String, Double> b) {
+	public boolean areDistributionsFarEnough(Map<String, Double> a, Map<String, Double> b) {
 		if (AgentArgumentativeCapability.getNormalisedHellingerDistance(
 				(HashMap<String, Double>) a, (HashMap<String, Double>) b) >= diffThreshold) {
 			return true;

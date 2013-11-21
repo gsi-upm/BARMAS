@@ -23,12 +23,11 @@ import java.util.logging.Logger;
 import es.upm.dit.gsi.shanks.agent.ShanksAgent;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.agent.capability.learning.bayes.BayesLearningAgent.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -38,17 +37,17 @@ import es.upm.dit.gsi.shanks.agent.ShanksAgent;
  * 
  */
 public interface BayesLearningAgent extends ShanksAgent {
-	
+
 	/**
 	 * @return
 	 */
 	public String getDatasetFile();
-	
+
 	/**
 	 * @return
 	 */
 	public String getBNOutputFile();
-	
+
 	/**
 	 * @return
 	 */

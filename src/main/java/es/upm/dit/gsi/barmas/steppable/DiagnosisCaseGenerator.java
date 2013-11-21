@@ -32,12 +32,11 @@ import es.upm.dit.gsi.barmas.simulation.DiagnosisSimulation;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
 
 /**
- * Project: barmas
- * File: es.upm.dit.gsi.barmas.steppable.DiagnosisCaseGenerator.java
+ * Project: barmas File:
+ * es.upm.dit.gsi.barmas.steppable.DiagnosisCaseGenerator.java
  * 
- * Grupo de Sistemas Inteligentes
- * Departamento de Ingeniería de Sistemas Telemáticos
- * Universidad Politécnica de Madrid (UPM)
+ * Grupo de Sistemas Inteligentes Departamento de Ingeniería de Sistemas
+ * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
  * @email a.carrera@gsi.dit.upm.es
@@ -85,8 +84,8 @@ public class DiagnosisCaseGenerator implements Steppable {
 	 */
 	public void step(SimState simstate) {
 		DiagnosisSimulation sim = (DiagnosisSimulation) simstate;
-		DiagnosisCase diagnosisCase = (DiagnosisCase) sim.getScenario()
-				.getNetworkElement(DiagnosisScenario.ORIGINALDIAGNOSIS);
+		DiagnosisCase diagnosisCase = (DiagnosisCase) sim.getScenario().getNetworkElement(
+				DiagnosisScenario.ORIGINALDIAGNOSIS);
 
 		try {
 			if (!diagnosisCase.getStatus().get(DiagnosisCase.READY)) {
@@ -102,13 +101,12 @@ public class DiagnosisCaseGenerator implements Steppable {
 					diagnosisCase.setCurrentStatus(DiagnosisCase.READY, true);
 
 					sim.getLogger().info(
-							"New Diagnosis Case generated in step "
-									+ sim.schedule.getSteps() + ". Case ID: "
-									+ diagnosisCase.getCaseID()
-									+ " Classification Target: " + diagnosisCaseValues[headers.length-1]);
+							"New Diagnosis Case generated in step " + sim.schedule.getSteps()
+									+ ". Case ID: " + diagnosisCase.getCaseID()
+									+ " Classification Target: "
+									+ diagnosisCaseValues[headers.length - 1]);
 				} else {
-					sim.getLogger().info(
-							"Finishing simulation. No more test cases.");
+					sim.getLogger().info("Finishing simulation. No more test cases.");
 					for (Handler h : sim.getLogger().getHandlers()) {
 						h.close();
 					}
