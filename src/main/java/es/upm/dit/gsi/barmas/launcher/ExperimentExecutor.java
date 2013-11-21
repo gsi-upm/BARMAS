@@ -166,29 +166,6 @@ public class ExperimentExecutor {
 						threads.removeAll(threads2Remove);
 						threads2Remove.clear();
 						System.gc();
-						long interval = System.currentTimeMillis() - initTime;
-						long intervalSecs = interval / 1000;
-						long intervalMins = intervalSecs / 60;
-						long intervalHours = intervalMins / 60;
-						logger.info(finishedExperiments
-								+ " experiments have been executed in "
-								+ intervalHours + " hours, "
-								+ (intervalMins % 60) + " minutes, "
-								+ (intervalSecs % 60) + " seconds and "
-								+ (interval % 1000) + " miliseconds.");
-						double timePerExperiment = interval
-								/ finishedExperiments;
-						pendingExps = (experimentsQuantity - finishedExperiments);
-						long remainingTime = (long) (timePerExperiment * pendingExps);
-						intervalSecs = remainingTime / 1000;
-						intervalMins = intervalSecs / 60;
-						intervalHours = intervalMins / 60;
-						logger.info("Estimation: " + pendingExps
-								+ " pending experiments will be finished in "
-								+ intervalHours + " hours, "
-								+ (intervalMins % 60) + " minutes, "
-								+ (intervalSecs % 60) + " seconds and "
-								+ (interval % 1000) + " miliseconds.");
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -206,11 +183,33 @@ public class ExperimentExecutor {
 			if (experiment instanceof BarmasAgentValidator) {
 				logger.info("Starting validator for isolated agent...");
 			}
-			pendingExps = (experimentsQuantity - finishedExperiments);
-			double percentage = (((double) pendingExps) / ((double) experimentsQuantity));
-			logger.info("--> Pending experiments for this batch: "
-					+ pendingExps + " => Pending " + (percentage * 100)
-					+ "% of all of the batch experiments");
+			if (threads.size() == maxThreads && finishedExperiments > 0) {
+				pendingExps = (experimentsQuantity - finishedExperiments);
+				double percentage = (((double) pendingExps) / ((double) experimentsQuantity));
+				logger.info("--> Pending experiments for this batch: "
+						+ pendingExps + " => Pending " + (percentage * 100)
+						+ "% of all of the batch experiments");
+				long interval = System.currentTimeMillis() - initTime;
+				long intervalSecs = interval / 1000;
+				long intervalMins = intervalSecs / 60;
+				long intervalHours = intervalMins / 60;
+				logger.info(finishedExperiments
+						+ " experiments have been executed in " + intervalHours
+						+ " hours, " + (intervalMins % 60) + " minutes, "
+						+ (intervalSecs % 60) + " seconds and "
+						+ (interval % 1000) + " miliseconds.");
+				double timePerExperiment = interval / finishedExperiments;
+				pendingExps = (experimentsQuantity - finishedExperiments);
+				long remainingTime = (long) (timePerExperiment * pendingExps);
+				intervalSecs = remainingTime / 1000;
+				intervalMins = intervalSecs / 60;
+				intervalHours = intervalMins / 60;
+				logger.info("Estimation: " + pendingExps
+						+ " pending experiments will be finished in "
+						+ intervalHours + " hours, " + (intervalMins % 60)
+						+ " minutes, " + (intervalSecs % 60) + " seconds and "
+						+ (interval % 1000) + " miliseconds.");
+			}
 		}
 
 		logger.info("Last experiments of the batch in execution...");
