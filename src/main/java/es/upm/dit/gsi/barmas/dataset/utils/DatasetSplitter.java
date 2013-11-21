@@ -89,7 +89,9 @@ public class DatasetSplitter {
 	public void splitDataset(double ratio, int agents, String originalDatasetPath,
 			String outputDir, boolean central, String scenario, Logger logger, int iteration) {
 
-		String outputDirWithRatio = outputDir + File.separator + ratio + "testRatio";
+		int ratioint = (int) (ratio * 100);
+		double roundedratio = ((double) ratioint) / 100;
+		String outputDirWithRatio = outputDir + File.separator + roundedratio + "testRatio";
 		File dir = new File(outputDirWithRatio);
 		if (!dir.exists() || !dir.isDirectory()) {
 			dir.mkdirs();

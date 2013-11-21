@@ -284,7 +284,7 @@ public class ExperimentExecutor {
 	public List<RunnableExperiment> getValidatorsBatch(String simulationID, int agentsNumber,
 			String summaryFile, long seed, int mode, String experimentDatasetPath,
 			String experimentOutputFolder, String testDataset, String classificationTarget,
-			int iteration, double ratio) {
+			int iteration) {
 
 		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
 

@@ -459,12 +459,14 @@ public class OneClickExperimentLauncher {
 				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
 				// VALIDATORS
+				int ratioint = (int) (ratio * 100);
+				double roundedratio = ((double) ratioint) / 100;
 				List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID,
 						agentsNumber, summaryFile, seed, mode, experimentFolder
-								+ "/input/iteration-" + i + "/dataset/" + ratio + "testRatio",
+								+ "/input/iteration-" + i + "/dataset/" + roundedratio + "testRatio",
 						experimentFolder + "/output/iteration-" + i, experimentFolder
-								+ "/input/iteration-" + i + "/dataset/" + ratio
-								+ "testRatio/test-dataset.csv", classificationTarget, i, ratio);
+								+ "/input/iteration-" + i + "/dataset/" + roundedratio
+								+ "testRatio/test-dataset.csv", classificationTarget, i);
 				logger.info(validators.size()
 						+ " validations are ready to execute for simulation: " + simulationID);
 				logger.info("---> Starting validations executions...");
@@ -557,12 +559,14 @@ public class OneClickExperimentLauncher {
 			ExperimentExecutor executor = new ExperimentExecutor();
 
 			// VALIDATORS
+			int ratioint = (int) (ratio * 100);
+			double roundedratio = ((double) ratioint) / 100;
 			List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID,
 					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/iteration-"
-							+ iteration + "/dataset/" + ratio + "testRatio", experimentFolder
+							+ iteration + "/dataset/" + roundedratio + "testRatio", experimentFolder
 							+ "/output/iteration-" + iteration, experimentFolder
-							+ "/input/iteration-" + iteration + "/dataset/" + ratio
-							+ "testRatio/test-dataset.csv", classificationTarget, iteration, ratio);
+							+ "/input/iteration-" + iteration + "/dataset/" + roundedratio
+							+ "testRatio/test-dataset.csv", classificationTarget, iteration);
 			logger.info(validators.size() + " validations are ready to execute for simulation: "
 					+ simulationID + " for iteration " + iteration);
 			executor.executeValidators(validators, maxLearningThreads, logger);
@@ -570,9 +574,9 @@ public class OneClickExperimentLauncher {
 			// EXPERIMENTS
 			List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(simulationID,
 					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/iteration-"
-							+ iteration + "/dataset/" + ratio + "testRatio", experimentFolder
+							+ iteration + "/dataset/" + roundedratio + "testRatio", experimentFolder
 							+ "/output/iteration-" + iteration, experimentFolder
-							+ "/input/iteration-" + iteration + "/dataset/" + ratio
+							+ "/input/iteration-" + iteration + "/dataset/" + roundedratio
 							+ "testRatio/test-dataset.csv", classificationTarget, delta, iteration,
 					maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold,
 					minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
