@@ -73,8 +73,8 @@ public class OneClickExperimentLauncher {
 		// this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
-		// this.launchSolarFlareBatch();
-		this.launchKowlanCZBatch();
+		 this.launchSolarFlareBatch();
+//		this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -279,20 +279,20 @@ public class OneClickExperimentLauncher {
 		long seed = 0;
 		// testRatio = 0.4;
 		// iterations = 1;
-		int kfold = 2;
+		int kfold = 3;
 		String classificationTarget = "SolarFlareType";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.5;
-		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 0.5;
-		double minBeliefThreshold = 0.1;
+		double maxDistanceThreshold = 0.4;
+		double minDistanceThreshold = 0.2;
+		double maxBeliefThreshold = 0.4;
+		double minBeliefThreshold = 0.2;
 		double maxTrustThreshold = 0.5;
 		double minTrustThreshold = 0.1;
 		int maxLEBA = 20;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 2;
+		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
