@@ -70,11 +70,11 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		// this.launchZooBatch();
+		this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
-		 this.launchSolarFlareBatch();
-//		this.launchKowlanCZBatch();
+		// this.launchSolarFlareBatch();
+		// this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -235,7 +235,7 @@ public class OneClickExperimentLauncher {
 		long seed = 0;
 		// double testRatio = 0.4;
 		// int iterations = 1;
-		int kfold = 3;
+		int kfold = 10;
 		String classificationTarget = "Diagnosis";
 		double delta = 0.1;
 
@@ -243,7 +243,7 @@ public class OneClickExperimentLauncher {
 		double minDistanceThreshold = 0.2;
 		double maxBeliefThreshold = 0.3;
 		double minBeliefThreshold = 0.2;
-		double maxTrustThreshold = 0.6;
+		double maxTrustThreshold = 0.3;
 		double minTrustThreshold = 0.1;
 		int maxLEBA = 10;
 		int minLEBA = 0;
@@ -411,20 +411,20 @@ public class OneClickExperimentLauncher {
 		long seed = 0;
 		// testRatio = 0.1;
 		// iterations = 10;
-		int kfold = 3;
+		int kfold = 10;
 		String classificationTarget = "AnimalType";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.5;
+		double maxDistanceThreshold = 1.0;
 		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 0.5;
+		double maxBeliefThreshold = 1.0;
 		double minBeliefThreshold = 0.1;
-		double maxTrustThreshold = 0.5;
+		double maxTrustThreshold = 1.0;
 		double minTrustThreshold = 0.1;
 		int maxLEBA = 20;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 5;
+		int maxNumberOfAgents = 6;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
