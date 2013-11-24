@@ -70,11 +70,11 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		this.launchZooBatch();
+		// this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		// this.launchKowlanCZBatch();
+		this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -241,14 +241,14 @@ public class OneClickExperimentLauncher {
 
 		double maxDistanceThreshold = 0.4;
 		double minDistanceThreshold = 0.2;
-		double maxBeliefThreshold = 0.3;
+		double maxBeliefThreshold = 0.4;
 		double minBeliefThreshold = 0.2;
-		double maxTrustThreshold = 0.3;
+		double maxTrustThreshold = 0.6;
 		double minTrustThreshold = 0.1;
 		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 4;
+		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
