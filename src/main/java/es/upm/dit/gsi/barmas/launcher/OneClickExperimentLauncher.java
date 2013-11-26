@@ -71,10 +71,10 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		// this.launchZooBatch();
-		 this.launchMarketingBatch();
+		this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-//		this.launchKowlanCZBatch();
+		// this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -322,8 +322,8 @@ public class OneClickExperimentLauncher {
 		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-//		double testRatio = 0.5;
-//		int iterations = 1;
+		// double testRatio = 0.5;
+		// int iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "Income";
 		double delta = 0.1;
@@ -337,7 +337,7 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 7;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 4;
+		int maxNumberOfAgents = 6;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
