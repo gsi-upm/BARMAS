@@ -133,6 +133,7 @@ public class BarmasExperiment implements RunnableExperiment {
 			fw.close();
 
 		} catch (Exception e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

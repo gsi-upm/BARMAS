@@ -479,6 +479,7 @@ public class OneClickExperimentLauncher {
 				counter = counter + validators.size();
 			}
 		} catch (Exception e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -592,6 +593,7 @@ public class OneClickExperimentLauncher {
 
 			return experimentsCount;
 		} catch (Exception e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -627,6 +629,7 @@ public class OneClickExperimentLauncher {
 				experimentsCount = experimentsCount + count;
 			}
 		} catch (Exception e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

@@ -187,6 +187,7 @@ public class BarmasAgentValidator implements RunnableExperiment {
 			SummaryCreator.makeNumbers(simulationName, experimentOutputPath + File.separator
 					+ "summary.csv", summaryFile);
 		} catch (ShanksException e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -216,6 +217,7 @@ public class BarmasAgentValidator implements RunnableExperiment {
 			fw.close();
 
 		} catch (Exception e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

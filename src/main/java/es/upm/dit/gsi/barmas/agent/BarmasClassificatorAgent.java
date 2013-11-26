@@ -719,6 +719,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		try {
 			ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 		} catch (ShanksException e) {
+			this.getLogger().severe("Problem clearing evidences of agent: " + this.getID());
 			e.printStackTrace();
 			System.exit(1);
 		}

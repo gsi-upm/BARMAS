@@ -78,6 +78,7 @@ public class DiagnosisSimulation extends ShanksSimulation {
 		try {
 			this.registerShanksAgent((ShanksAgent) manager);
 		} catch (ShanksException e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

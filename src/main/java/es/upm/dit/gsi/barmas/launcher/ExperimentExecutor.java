@@ -159,6 +159,7 @@ public class ExperimentExecutor {
 						System.gc();
 					}
 				} catch (InterruptedException e) {
+					logger.severe(e.getMessage());
 					e.printStackTrace();
 					System.exit(1);
 				}
@@ -254,6 +255,7 @@ public class ExperimentExecutor {
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
+					logger.severe(e.getMessage());
 					e.printStackTrace();
 					System.exit(1);
 				}

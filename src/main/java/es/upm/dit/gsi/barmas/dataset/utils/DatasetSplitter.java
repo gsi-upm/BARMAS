@@ -226,6 +226,7 @@ public class DatasetSplitter {
 			fw.close();
 
 		} catch (Exception e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -266,6 +267,7 @@ public class DatasetSplitter {
 
 			logger.fine("Number of Essentials: " + essentials.size());
 		} catch (Exception e) {
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}

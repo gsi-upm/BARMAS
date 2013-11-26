@@ -81,6 +81,7 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 					AgentBayesLearningCapability.learnBNWithBayesianSearch(this,
 							learningIterations, classificationTarget);
 				} catch (Exception ex) {
+					logger.severe("Impossible to load BN");
 					ex.printStackTrace();
 					System.exit(1);
 				}
@@ -207,6 +208,8 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 				ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 
 			} catch (ShanksException e) {
+				this.getLogger().severe("Problem in reasoning cycle of: " + this.getID());
+				this.getLogger().severe(e.getMessage());
 				e.printStackTrace();
 				System.exit(1);
 			}

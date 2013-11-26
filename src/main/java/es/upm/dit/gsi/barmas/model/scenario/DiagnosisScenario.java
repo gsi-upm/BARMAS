@@ -152,9 +152,11 @@ public class DiagnosisScenario extends Scenario {
 			bayesCentral.setCurrentStatus(DiagnosisCase.READY, false);
 			this.addNetworkElement(bayesCentral);
 		} catch (FileNotFoundException e) {
+			this.getLogger().severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		} catch (IOException e) {
+			this.getLogger().severe(e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
 		}
