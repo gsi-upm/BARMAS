@@ -59,6 +59,7 @@ public class ExperimentsAnalyser {
 	private HashMap<String, Integer> testRatios;
 
 	private double[][][][][][][] theMatrix;
+	private String[][][][][][][] theNamesMatrix;
 
 	/**
 	 * @param args
@@ -66,20 +67,133 @@ public class ExperimentsAnalyser {
 	public static void main(String[] args) {
 
 		String simName = "zoo-simulation";
+		// String simName = "kowlancz02-simulation";
 		String experimentFolder = "../experiments/" + simName;
 		String file = experimentFolder + "/" + simName + "-summary.csv";
-		ExperimentsAnalyser chartGenerator = new ExperimentsAnalyser(
-				Logger.getLogger(ExperimentsAnalyser.class.getSimpleName()), file);
+		String outputFolder = experimentFolder + "/output";
+		ExperimentsAnalyser analyser = new ExperimentsAnalyser(
+				Logger.getLogger(ExperimentsAnalyser.class.getSimpleName()), file, outputFolder);
 
-		String analysisOutputFolder = experimentFolder + "/output";
-		chartGenerator.analyseData(analysisOutputFolder);
+		// String leba = "0";
+		// String tth = "0.2";
+		// String dth = "0.2";
+		// String bth = "0.2";
+		// String agentsNum = "2";
+		// String it = "0";
+		// String ratio = "0.33";
+		// analyser.query(leba, tth, dth, bth, agentsNum, it, ratio);
+		//
+		// analyser.queryFor(tth, dth, bth);
+		//
+		// analyser.queryResultsHigherThan(0.01);
 
-		String chartOutputFolder = experimentFolder + "/output/charts";
-		chartGenerator.generateAndSaveAllChartsAndExit(chartOutputFolder);
+		analyser.analyseData(outputFolder);
+
+		// String chartOutputFolder = experimentFolder + "/output/charts";
+		// analyser.generateAndSaveAllChartsAndExit(chartOutputFolder);
 	}
 
-	public ExperimentsAnalyser(Logger logger, String summaryFile) {
+	/**
+	 * @param tth
+	 * @param dth
+	 * @param bth
+	 */
+	private void queryFor(String tth, String dth, String bth) {
+		int tthPos = this.tths.get(tth);
+		int dthPos = this.dths.get(dth);
+		int bthPos = this.bths.get(bth);
+		for (int leba = 0; leba < lebas.size(); leba++) {
+			for (int agent = 0; agent < agents.size(); agent++) {
+				for (int it = 0; it < its.size(); it++) {
+					for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
+						double imp = this.getImpFromTheMatrix(theMatrix, leba, tthPos, dthPos,
+								bthPos, agent, it, testRatio);
+						String id = this.getNameFromTheNameMatrix(theNamesMatrix, leba, tthPos,
+								dthPos, bthPos, agent, it, testRatio);
+						logger.info("Result: " + imp + " for simulation id: " + id);
+					}
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * @param leba
+	 * @param tth
+	 * @param dth
+	 * @param bth
+	 * @param agentsNum
+	 * @param it
+	 * @param ratio
+	 */
+	private void query(String leba, String tth, String dth, String bth, String agentsNum,
+			String it, String ratio) {
+		try {
+			int lebaPos = this.lebas.get(leba);
+			int tthPos = this.tths.get(tth);
+			int dthPos = this.dths.get(dth);
+			int bthPos = this.bths.get(bth);
+			int agentPos = this.agents.get(agentsNum);
+			int itPos = this.its.get(it);
+			int ratioPos = this.testRatios.get(ratio);
+			double imp = this.getImpFromTheMatrix(theMatrix, lebaPos, tthPos, dthPos, bthPos,
+					agentPos, itPos, ratioPos);
+			String id = this.getNameFromTheNameMatrix(theNamesMatrix, lebaPos, tthPos, dthPos,
+					bthPos, agentPos, itPos, ratioPos);
+			logger.info("Result: " + imp + " for simulation id: " + id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	/**
+	 * @param threshold
+	 * 
+	 */
+	private void queryResultsHigherThan(double threshold) {
+		int counter = 0;
+		int total = 0;
+		double highest = Double.MIN_VALUE;
+		String highestName = "";
+		for (int agent = 0; agent < agents.size(); agent++) {
+			for (int leba = 0; leba < lebas.size(); leba++) {
+				for (int tth = 0; tth < tths.size(); tth++) {
+					for (int dth = 0; dth < dths.size(); dth++) {
+						for (int bth = 0; bth < bths.size(); bth++) {
+							for (int it = 0; it < its.size(); it++) {
+								for (int testRatio = 0; testRatio < testRatios.size(); testRatio++) {
+									double imp = this.getImpFromTheMatrix(theMatrix, leba, tth,
+											dth, bth, agent, it, testRatio);
+									if (imp > threshold) {
+										String id = this.getNameFromTheNameMatrix(theNamesMatrix,
+												leba, tth, dth, bth, agent, it, testRatio);
+										logger.info("Result: " + imp + " for simulation id: " + id);
+										counter++;
+
+										if (imp > highest) {
+											highest = imp;
+											highestName = id;
+										}
+									}
+									total++;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		logger.info("There are " + counter + " positive results. Total cases: " + total
+				+ " -> Ratio: " + ((double) counter / total));
+		logger.info("The highest result is: " + highest + " for simulation: " + highestName);
+	}
+
+	public ExperimentsAnalyser(Logger logger, String summaryFile, String outputFolder) {
 		this.logger = logger;
+		LogConfigurator.log2File(logger, ExperimentsAnalyser.class.getSimpleName(), Level.ALL,
+				Level.INFO, outputFolder);
 		this.summaryFile = summaryFile;
 		this.buildTheMatrix();
 	}
@@ -98,9 +212,6 @@ public class ExperimentsAnalyser {
 	 * @param iterations
 	 */
 	public void generateAndSaveAllCharts(String summaryFile, String chartOutputFolder) {
-
-		LogConfigurator.log2File(logger, "ExperimentChartsGenerator", Level.ALL, Level.INFO,
-				chartOutputFolder);
 
 		CsvReader reader;
 		try {
@@ -536,6 +647,8 @@ public class ExperimentsAnalyser {
 			logger.info("Creating The Matrix");
 			this.theMatrix = new double[lebas.size()][tths.size()][dths.size()][bths.size()][agents
 					.size()][its.size()][testRatios.size()];
+			this.theNamesMatrix = new String[lebas.size()][tths.size()][dths.size()][bths.size()][agents
+					.size()][its.size()][testRatios.size()];
 			for (int leba = 0; leba < lebas.size(); leba++) {
 				for (int tth = 0; tth < tths.size(); tth++) {
 					for (int dth = 0; dth < dths.size(); dth++) {
@@ -565,6 +678,8 @@ public class ExperimentsAnalyser {
 				int testRatiosPos = testRatios.get(row[17]);
 				this.addToTheMatrix(theMatrix, lebaPos, tthPos, dthPos, bthPos, agentsPos, itPos,
 						testRatiosPos, imp);
+				this.addToTheNamesMatrix(theNamesMatrix, lebaPos, tthPos, dthPos, bthPos,
+						agentsPos, itPos, testRatiosPos, row[0]);
 			}
 			reader.close();
 		} catch (Exception e) {
@@ -1178,7 +1293,11 @@ public class ExperimentsAnalyser {
 	private void addToTheMatrix(double[][][][][][][] theMatrix, int lebaPos, int tthPos,
 			int dthPos, int bthPos, int agentsPos, int itPos, int testRatiosPos, double imp) {
 		theMatrix[lebaPos][tthPos][dthPos][bthPos][agentsPos][itPos][testRatiosPos] = imp;
+	}
 
+	private void addToTheNamesMatrix(String[][][][][][][] theNamesMatrix, int lebaPos, int tthPos,
+			int dthPos, int bthPos, int agentsPos, int itPos, int testRatiosPos, String name) {
+		theNamesMatrix[lebaPos][tthPos][dthPos][bthPos][agentsPos][itPos][testRatiosPos] = name;
 	}
 
 	/**
@@ -1195,6 +1314,22 @@ public class ExperimentsAnalyser {
 	private double getImpFromTheMatrix(double[][][][][][][] theMatrix, int leba, int tth, int dth,
 			int bth, int agent, int it, int ratio) {
 		return theMatrix[leba][tth][dth][bth][agent][it][ratio];
+	}
+
+	/**
+	 * @param theNamesMatrix
+	 * @param leba
+	 * @param tth
+	 * @param dth
+	 * @param bth
+	 * @param agent
+	 * @param it
+	 * @param ratio
+	 * @return
+	 */
+	private String getNameFromTheNameMatrix(String[][][][][][][] theNamesMatrix, int leba, int tth,
+			int dth, int bth, int agent, int it, int ratio) {
+		return theNamesMatrix[leba][tth][dth][bth][agent][it][ratio];
 	}
 
 	/**

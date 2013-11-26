@@ -77,7 +77,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>es.upm.dit.gsi.barmas.launcher.OneClickExperimentLauncher</mainClass>
 					<arguments>
 						<argument>-Xmx6g</argument>
 						<argument>-XX:-UseLoopPredicate</argument>
@@ -118,6 +117,11 @@
 			<groupId>org.jzy3d</groupId>
 			<artifactId>jzy3d-api</artifactId>
 			<version>0.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jumpmind.symmetric.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
 	<repositories>
