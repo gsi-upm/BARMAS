@@ -71,10 +71,10 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		// this.launchZooBatch();
-		// this.launchMarketingBatch();
+		 this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		this.launchKowlanCZBatch();
+//		this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -319,11 +319,12 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/marketing.csv";
 		String simName = "marketing-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		double testRatio = 0.5;
 		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		int iterations = 1;
+//		double testRatio = 0.5;
+//		int iterations = 1;
+		int kfold = 10;
 		String classificationTarget = "Income";
 		double delta = 0.1;
 
@@ -339,9 +340,9 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio, centralApproach,
-				summaryFile, seed, maxThreads, iterations, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
+				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
