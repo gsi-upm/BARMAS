@@ -172,6 +172,7 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 						sim.getLogger().warning(
 								"Agent: " + this.getID() + " -> Unknown state for node: "
 										+ entry.getKey() + " -> State: " + entry.getValue());
+						sim.getLogger().warning(e.getMessage());
 						System.exit(1);
 					}
 
