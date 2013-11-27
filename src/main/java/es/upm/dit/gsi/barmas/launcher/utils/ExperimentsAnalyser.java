@@ -98,7 +98,7 @@ public class ExperimentsAnalyser {
 	 * @param dth
 	 * @param bth
 	 */
-	private void queryFor(String tth, String dth, String bth) {
+	public void queryFor(String tth, String dth, String bth) {
 		int tthPos = this.tths.get(tth);
 		int dthPos = this.dths.get(dth);
 		int bthPos = this.bths.get(bth);
@@ -127,7 +127,7 @@ public class ExperimentsAnalyser {
 	 * @param it
 	 * @param ratio
 	 */
-	private void query(String leba, String tth, String dth, String bth, String agentsNum,
+	public void query(String leba, String tth, String dth, String bth, String agentsNum,
 			String it, String ratio) {
 		try {
 			int lebaPos = this.lebas.get(leba);
@@ -153,7 +153,7 @@ public class ExperimentsAnalyser {
 	 * @param threshold
 	 * 
 	 */
-	private void queryResultsHigherThan(double threshold) {
+	public void queryResultsHigherThan(double threshold) {
 		int counter = 0;
 		int total = 0;
 		double highest = Double.MIN_VALUE;
