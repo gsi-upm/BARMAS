@@ -72,10 +72,10 @@ public class OneClickExperimentLauncher {
 
 		// this.launchZooBatch();
 		// this.launchMarketingBatch();
-		this.launchNurseryBatch();
+		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
-		// this.launchMushroomBatch();
+		this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
 
@@ -189,9 +189,9 @@ public class OneClickExperimentLauncher {
 		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		double testRatio = 0.4;
-		int iterations = 1;
-		// int kfold = 3;
+//		double testRatio = 0.4;
+//		int iterations = 1;
+		 int kfold = 10;
 		String classificationTarget = "mushroomPoisonous";
 		double delta = 0.1;
 
@@ -204,12 +204,12 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 8;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 4;
+		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio, centralApproach,
-				summaryFile, seed, maxThreads, iterations, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
+				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
