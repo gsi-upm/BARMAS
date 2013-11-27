@@ -32,11 +32,14 @@ public class DBParser {
 
 //		String filePath = "../experiments/zoo-simulation/zoo-simulation-summary.csv";
 //		String tableName = "zoo";
-//		String filePath = "../experiments/kowlancz02-simulation/kowlancz02-simulation-summary.csv";
-//		String tableName = "kowlancz02";
-
-		String filePath = "../experiments/solarflare-simulation/solarflare-simulation-summary.csv";
-		String tableName = "solarflare";
+		String filePath = "../experiments/kowlancz02-simulation/kowlancz02-simulation-summary.csv";
+		String tableName = "kowlancz02";
+		dbparser.putDataInDB(tableName, filePath);
+		
+//		String filePath = "../experiments/solarflare-simulation/solarflare-simulation-summary.csv";
+//		String tableName = "solarflare";
+		filePath = "../experiments/solarflare-simulation/solarflare-simulation-summary.csv";
+		tableName = "solarflare";
 		dbparser.putDataInDB(tableName, filePath);
 
 	}// end main
@@ -64,14 +67,14 @@ public class DBParser {
 			stmt = conn.createStatement();
 
 			String sql = "CREATE TABLE " + tableName + " " + "(id INTEGER not NULL, "
-					+ " simulationid VARCHAR(1000), " + " type VARCHAR(255), " + " cases INTEGER, "
+					+ " simulationid VARCHAR(1000), " + " type VARCHAR(255), " + " cases DOUBLE, "
 					+ " bayesCentralOk DOUBLE, " + " argumentationOk DOUBLE, "
 					+ " bayesCentralBetter DOUBLE, " + " argumentationBetter DOUBLE, "
 					+ " bothOk DOUBLE, " + " bothWrong DOUBLE, "
 					+ " globalImprovementWithArgumentation DOUBLE, " + " draw DOUBLE, "
 					+ " dth DOUBLE, " + " bth DOUBLE, " + " leba INTEGER, " + " tth DOUBLE, "
-					+ " iteration DOUBLE, " + " argumentativeAgents INTEGER, "
-					+ " testRatio DOUBLE, " + " seed DOUBLE, " + " timestamp TIMESTAMP, "
+					+ " iteration INTEGER, " + " argumentativeAgents INTEGER, "
+					+ " testRatio DOUBLE, " + " seed BIGINT, " + " timestamp BIGINT, "
 					+ " dataset VARCHAR(255), " + " maxArgumentationRounds INTEGER, "
 					+ " PRIMARY KEY ( id ))";
 			stmt.executeUpdate(sql);
