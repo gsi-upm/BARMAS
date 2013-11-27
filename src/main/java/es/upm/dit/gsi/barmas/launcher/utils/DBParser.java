@@ -67,7 +67,7 @@ public class DBParser {
 					+ " bayesCentralBetter DOUBLE, " + " argumentationBetter DOUBLE, "
 					+ " bothOk DOUBLE, " + " bothWrong DOUBLE, "
 					+ " globalImprovementWithArgumentation DOUBLE, " + " draw DOUBLE, "
-					+ " dth DOUBLE, " + " bth DOUBLE, " + " leba DOUBLE, " + " tth DOUBLE, "
+					+ " dth DOUBLE, " + " bth DOUBLE, " + " leba INTEGER, " + " tth DOUBLE, "
 					+ " iteration DOUBLE, " + " argumentativeAgents INTEGER, "
 					+ " testRatio DOUBLE, " + " seed DOUBLE, " + " timestamp TIMESTAMP, "
 					+ " dataset VARCHAR(255), " + " maxArgumentationRounds INTEGER, "
