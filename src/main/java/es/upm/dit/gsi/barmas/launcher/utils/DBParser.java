@@ -44,7 +44,7 @@ public class DBParser {
 	/**
 	 * @param filePath
 	 */
-	private void putDataInDB(String tableName, String filePath) {
+	public void putDataInDB(String tableName, String filePath) {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
@@ -52,7 +52,6 @@ public class DBParser {
 			CsvReader reader = new CsvReader(filePath);
 
 			reader.readHeaders();
-			String[] headers = reader.getHeaders();
 			// STEP 2: Register JDBC driver
 			Class.forName(JDBC_DRIVER);
 
@@ -139,7 +138,7 @@ public class DBParser {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	private void createDB() throws ClassNotFoundException {
+	public void createDB() throws ClassNotFoundException {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
