@@ -151,7 +151,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 							learningIterations, classificationTarget);
 				} catch (Exception ex) {
 					this.getLogger().severe("Problem learning BN. Exception: " + ex.getMessage());
-					ex.printStackTrace();
 					System.exit(1);
 				}
 			}
@@ -348,7 +347,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 								this.getLogger().warning(
 										this.getID() + " -> Problems updating beliefs.");
 								this.getLogger().warning(e.getMessage());
-								e.printStackTrace();
 								System.exit(1);
 							}
 						} else {
@@ -436,7 +434,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.addEvidences(this, this.evidences);
 		} catch (Exception e) {
 			this.getLogger()
-					.fine("Agent: " + this.getID() + " -> Problems updating evidences: "
+					.warning("Agent: " + this.getID() + " -> Problems updating evidences: "
 							+ e.getMessage());
 			System.exit(1);
 		}
@@ -512,7 +510,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 					this.getLogger().warning(
 							"Problems getting local belief for: " + assum.getNode());
 					this.getLogger().warning(e.getMessage());
-					e.printStackTrace();
 					System.exit(1);
 				}
 			}
@@ -616,7 +613,6 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		} catch (ShanksException e) {
 			this.getLogger().warning("Problems getting hypotheses...");
 			this.getLogger().warning(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 		return ownBeliefs;
@@ -720,7 +716,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.clearEvidences(this);
 		} catch (ShanksException e) {
 			this.getLogger().severe("Problem clearing evidences of agent: " + this.getID());
-			e.printStackTrace();
+			this.getLogger().severe(e.getMessage());
 			System.exit(1);
 		}
 		this.goToIdle();
@@ -1036,6 +1032,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 
 		} catch (ShanksException e) {
 			this.getLogger().severe("Problem getting beliefs from BN for node: " + variable);
+			this.getLogger().severe(e.getMessage());
 			System.exit(1);
 		}
 		return -1;

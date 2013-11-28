@@ -112,14 +112,14 @@ public class DiagnosisCase extends Device {
 	/**
 	 * Delete all data of the diagnosis case.
 	 */
-	public void clean() {
+	public void clean(Logger logger) {
 		try {
 			for (String variable : variables) {
 				this.changeProperty(variable, "");
 			}
 			this.setCaseID(-1);
 		} catch (ShanksException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -127,12 +127,12 @@ public class DiagnosisCase extends Device {
 	/**
 	 * 
 	 */
-	public void reset() {
+	public void reset(Logger logger) {
 		try {
-			this.clean();
+			this.clean(logger);
 			this.setCurrentStatus(DiagnosisCase.READY, false);
 		} catch (ShanksException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 	}

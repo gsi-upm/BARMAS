@@ -79,19 +79,18 @@ public class DiagnosisSimulation extends ShanksSimulation {
 			this.registerShanksAgent((ShanksAgent) manager);
 		} catch (ShanksException e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 		schedule.scheduleRepeating(Schedule.EPOCH, 3, manager, 1);
 		Steppable generator = new DiagnosisCaseGenerator(this.getScenario().getProperties()
-				.getProperty(SimulationConfiguration.TESTDATASET));
+				.getProperty(SimulationConfiguration.TESTDATASET), this.getLogger());
 		schedule.scheduleRepeating(Schedule.EPOCH, 6, generator, 1);
 		boolean repMode = new Boolean(this.getScenario().getProperties()
 				.getProperty(SimulationConfiguration.REPUTATIONMODE));
 		Steppable evaluator = new DiagnosisCaseEvaluator(this.getScenario().getProperties()
 				.getProperty(SimulationConfiguration.CLASSIFICATIONTARGET), this.getScenario()
 				.getProperties().getProperty(SimulationConfiguration.EXPOUTPUT), this.getScenario()
-				.getProperties().getProperty(SimulationConfiguration.TESTDATASET), repMode);
+				.getProperties().getProperty(SimulationConfiguration.TESTDATASET), repMode, this.getLogger());
 		schedule.scheduleRepeating(Schedule.EPOCH, 5, evaluator, 1);
 	}
 

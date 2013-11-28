@@ -191,7 +191,6 @@ public class DatasetSplitter {
 		} catch (Exception e) {
 			logger.severe("Exception while splitting dataset. ->");
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 
@@ -227,7 +226,6 @@ public class DatasetSplitter {
 
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -268,7 +266,6 @@ public class DatasetSplitter {
 			logger.fine("Number of Essentials: " + essentials.size());
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 		return essentials;

@@ -82,7 +82,7 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 							learningIterations, classificationTarget);
 				} catch (Exception ex) {
 					logger.severe("Impossible to load BN");
-					ex.printStackTrace();
+					logger.severe(ex.getMessage());
 					System.exit(1);
 				}
 			}
@@ -153,7 +153,7 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 		if (origDiagnosis.getStatus().get(DiagnosisCase.READY)
 				&& !bayesDiagnosis.getStatus().get(DiagnosisCase.READY)) {
 
-			bayesDiagnosis.clean();
+			bayesDiagnosis.clean(this.getLogger());
 			bayesDiagnosis.setCaseID(origDiagnosis.getCaseID());
 
 			HashMap<String, String> evidences = new HashMap<String, String>();
@@ -211,7 +211,6 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 			} catch (ShanksException e) {
 				this.getLogger().severe("Problem in reasoning cycle of: " + this.getID());
 				this.getLogger().severe(e.getMessage());
-				e.printStackTrace();
 				System.exit(1);
 			}
 		}

@@ -261,7 +261,7 @@ public class SummaryCreator {
 		} catch (IOException e) {
 			logger.warning("Impossible to create summary file for simulation: " + simulationName
 					+ " in file: " + outputPath);
-			e.printStackTrace();
+			logger.warning(e.getMessage());
 			System.exit(1);
 		}
 

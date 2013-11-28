@@ -160,7 +160,6 @@ public class ExperimentExecutor {
 					}
 				} catch (InterruptedException e) {
 					logger.severe(e.getMessage());
-					e.printStackTrace();
 					System.exit(1);
 				}
 			}
@@ -256,7 +255,6 @@ public class ExperimentExecutor {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					logger.severe(e.getMessage());
-					e.printStackTrace();
 					System.exit(1);
 				}
 			}
@@ -335,8 +333,10 @@ public class ExperimentExecutor {
 	 * @param minBeliefThreshold
 	 * @param maxTrustThreshold
 	 * @param minTrustThreshold
-	 * @param minLEBA
 	 * @param maxLEBA
+	 * @param minLEBA
+	 * @param maxArgumentationRounds
+	 * @param logger
 	 * @return
 	 */
 	public List<RunnableExperiment> getExperimentSmartBatch(String simulationID, int agentsNumber,
@@ -344,11 +344,11 @@ public class ExperimentExecutor {
 			String experimentOutputFolder, String testDataset, String classificationTarget,
 			double delta, int iteration, double maxDistanceThreshold, double minDistanceThreshold,
 			double maxBeliefThreshold, double minBeliefThreshold, double maxTrustThreshold,
-			double minTrustThreshold, int maxLEBA, int minLEBA, int maxArgumentationRounds) {
+			double minTrustThreshold, int maxLEBA, int minLEBA, int maxArgumentationRounds, Logger logger) {
 		List<RunnableExperiment> experiments = new ArrayList<RunnableExperiment>();
 
 		// Experiments
-		int numberOfEvidences = this.getNumberOfEvidences(testDataset);
+		int numberOfEvidences = this.getNumberOfEvidences(testDataset, logger);
 		if (maxLEBA < numberOfEvidences) {
 			numberOfEvidences = maxLEBA;
 		}
@@ -487,7 +487,7 @@ public class ExperimentExecutor {
 	 * @param testDataset
 	 * @return
 	 */
-	private int getNumberOfEvidences(String testDataset) {
+	private int getNumberOfEvidences(String testDataset, Logger logger) {
 		int result = 0;
 		try {
 			CsvReader reader = new CsvReader(new FileReader(new File(testDataset)));
@@ -496,7 +496,7 @@ public class ExperimentExecutor {
 			result = headers.length - 1;
 			reader.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 		return result;

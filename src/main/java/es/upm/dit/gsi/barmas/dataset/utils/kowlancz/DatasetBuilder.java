@@ -135,10 +135,10 @@ public class DatasetBuilder {
 			header.add("Diagnosis");
 
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.warning(e.getMessage());
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warning(e.getMessage());
 			System.exit(1);
 		}
 
@@ -164,7 +164,7 @@ public class DatasetBuilder {
 			csv.close();
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -259,7 +259,7 @@ public class DatasetBuilder {
 			datasetFileWriter.close();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.warning(e.getMessage());
 			System.exit(1);
 		}
 	}

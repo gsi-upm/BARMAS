@@ -134,7 +134,6 @@ public class BarmasExperiment implements RunnableExperiment {
 
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -191,7 +190,6 @@ public class BarmasExperiment implements RunnableExperiment {
 		} catch (IOException e) {
 			logger.severe("Impossible to read test dataset file.");
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 
@@ -264,7 +262,6 @@ public class BarmasExperiment implements RunnableExperiment {
 					+ "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			logger.warning(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}

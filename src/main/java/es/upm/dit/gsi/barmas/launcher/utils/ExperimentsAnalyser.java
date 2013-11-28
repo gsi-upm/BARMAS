@@ -144,7 +144,6 @@ public class ExperimentsAnalyser {
 			logger.info("Result: " + imp + " for simulation id: " + id);
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}

@@ -232,7 +232,7 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements Argumentati
 			argDiagnosis.setCurrentStatus(DiagnosisCase.READY, true);
 		} catch (ShanksException e) {
 			this.getLogger().severe("Problem updating cases by " + this.getID());
-			e.printStackTrace();
+			this.getLogger().severe(e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -266,12 +266,10 @@ public class BarmasManagerAgent extends SimpleShanksAgent implements Argumentati
 		} catch (FileNotFoundException e) {
 			this.getLogger().severe("Problem writing argumentation data. Agent: " + this.getID());
 			this.getLogger().severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		} catch (IOException e) {
 			this.getLogger().severe("Problem writing argumentation data. Agent: " + this.getID());
 			this.getLogger().severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}

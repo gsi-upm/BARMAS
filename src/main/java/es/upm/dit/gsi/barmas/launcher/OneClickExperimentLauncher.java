@@ -481,7 +481,6 @@ public class OneClickExperimentLauncher {
 			}
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 		return counter;
@@ -582,7 +581,7 @@ public class OneClickExperimentLauncher {
 							+ iteration + "/test-dataset.csv", classificationTarget, delta,
 					iteration, maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold,
 					minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
-					maxArgumentationRounds);
+					maxArgumentationRounds, logger);
 			logger.info(experiments.size() + " experiments are ready to execute for simulation: "
 					+ simulationID + " for iteration " + iteration);
 			logger.info("---> Starting experiments executions...");
@@ -595,7 +594,6 @@ public class OneClickExperimentLauncher {
 			return experimentsCount;
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 		return Long.MIN_VALUE;
@@ -631,7 +629,6 @@ public class OneClickExperimentLauncher {
 			}
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 		return experimentsCount;

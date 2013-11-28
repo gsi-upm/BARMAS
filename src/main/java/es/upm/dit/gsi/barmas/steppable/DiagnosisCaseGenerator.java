@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -60,7 +61,7 @@ public class DiagnosisCaseGenerator implements Steppable {
 	 * Constructor
 	 * 
 	 */
-	public DiagnosisCaseGenerator(String path) {
+	public DiagnosisCaseGenerator(String path, Logger logger) {
 		this.counter = 0;
 		Reader fr;
 		try {
@@ -69,10 +70,10 @@ public class DiagnosisCaseGenerator implements Steppable {
 			this.reader.readHeaders();
 			this.headers = reader.getHeaders();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 	}
@@ -114,10 +115,10 @@ public class DiagnosisCaseGenerator implements Steppable {
 				}
 			}
 		} catch (ShanksException e) {
-			e.printStackTrace();
+			sim.getLogger().severe(e.getMessage());
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			sim.getLogger().severe(e.getMessage());
 			System.exit(1);
 		}
 

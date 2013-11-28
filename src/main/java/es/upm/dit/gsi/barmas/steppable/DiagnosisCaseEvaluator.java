@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -69,7 +70,7 @@ public class DiagnosisCaseEvaluator implements Steppable {
 	private boolean reputationMode;
 
 	public DiagnosisCaseEvaluator(String classificationTarget, String output,
-			String originalTestCases, boolean reputationMode) {
+			String originalTestCases, boolean reputationMode, Logger logger) {
 		this.outputPath = output;
 		this.originalPath = originalTestCases;
 		this.classificationTarget = classificationTarget;
@@ -102,10 +103,10 @@ public class DiagnosisCaseEvaluator implements Steppable {
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 
@@ -135,10 +136,10 @@ public class DiagnosisCaseEvaluator implements Steppable {
 			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 
@@ -230,16 +231,16 @@ public class DiagnosisCaseEvaluator implements Steppable {
 				writer.flush();
 				writer.close();
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				sim.getLogger().severe(e.getMessage());
 				System.exit(1);
 			} catch (IOException e) {
-				e.printStackTrace();
+				sim.getLogger().severe(e.getMessage());
 				System.exit(1);
 			}
 
-			argConclusion.reset();
-			centralConclusion.reset();
-			origDiagnosis.reset();
+			argConclusion.reset(sim.getLogger());
+			centralConclusion.reset(sim.getLogger());
+			origDiagnosis.reset(sim.getLogger());
 
 			sim.getLogger().info("-----> EVALUATION finished --- RESULTS: ");
 			sim.getLogger().info("-> Original Case: " + origClass);

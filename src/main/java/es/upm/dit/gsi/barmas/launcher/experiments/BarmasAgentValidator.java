@@ -137,7 +137,7 @@ public class BarmasAgentValidator implements RunnableExperiment {
 			reader.close();
 		} catch (IOException e) {
 			logger.severe("Impossible to read test dataset file.");
-			e.printStackTrace();
+			logger.severe(e.getMessage());
 			System.exit(1);
 		}
 
@@ -188,7 +188,6 @@ public class BarmasAgentValidator implements RunnableExperiment {
 					+ "summary.csv", summaryFile);
 		} catch (ShanksException e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -218,7 +217,6 @@ public class BarmasAgentValidator implements RunnableExperiment {
 
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
-			e.printStackTrace();
 			System.exit(1);
 		}
 	}
