@@ -170,7 +170,7 @@ public class BarmasBayesCentralAgent extends SimpleShanksAgent implements
 								entry.getValue());
 					} catch (Exception e) {
 						sim.getLogger().warning(
-								"Agent: " + this.getID() + " -> Problem adding evidence: state for node: "
+								"Agent: " + this.getID() + " -> Problem adding evidence for node: "
 										+ entry.getKey() + " -> State: " + entry.getValue());
 						sim.getLogger().warning(e.getMessage());
 						System.exit(1);
