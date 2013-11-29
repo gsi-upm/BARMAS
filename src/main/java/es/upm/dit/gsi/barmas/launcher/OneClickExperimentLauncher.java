@@ -71,11 +71,11 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		// this.launchZooBatch();
-		// this.launchMarketingBatch();
+		this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
-		this.launchMushroomBatch();
+		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
 
@@ -189,9 +189,9 @@ public class OneClickExperimentLauncher {
 		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-//		double testRatio = 0.4;
-//		int iterations = 1;
-		 int kfold = 10;
+		// double testRatio = 0.4;
+		// int iterations = 1;
+		int kfold = 10;
 		String classificationTarget = "mushroomPoisonous";
 		double delta = 0.1;
 
