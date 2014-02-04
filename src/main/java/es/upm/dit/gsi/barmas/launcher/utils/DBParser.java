@@ -36,8 +36,10 @@ public class DBParser {
 //		String tableName = "kowlancz02";
 //		String filePath = "../experiments/solarflare-simulation/solarflare-simulation-summary.csv";
 //		String tableName = "solarflare";
-		String filePath = "../experiments/nursery-simulation/nursery-simulation-summary.csv";
-		String tableName = "nursery";
+//		String filePath = "../experiments/nursery-simulation/nursery-simulation-summary.csv";
+//		String tableName = "nursery";
+		String filePath = "../experiments/marketing-simulation/marketing-simulation-summary.csv";
+		String tableName = "martketing";
 		dbparser.putDataInDB(tableName, filePath);
 
 	}// end main
