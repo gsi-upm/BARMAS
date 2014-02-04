@@ -39,7 +39,7 @@ public class DBParser {
 //		String filePath = "../experiments/nursery-simulation/nursery-simulation-summary.csv";
 //		String tableName = "nursery";
 		String filePath = "../experiments/marketing-simulation/marketing-simulation-summary.csv";
-		String tableName = "martketing";
+		String tableName = "marketing";
 		dbparser.putDataInDB(tableName, filePath);
 
 	}// end main
