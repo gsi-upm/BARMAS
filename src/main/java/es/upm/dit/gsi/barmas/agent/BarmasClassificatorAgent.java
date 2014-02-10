@@ -420,7 +420,9 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			this.newEvidences = true;
 		}
 
-		this.addEvidencesToBN();
+		if (!this.evidences.isEmpty()) {
+			this.addEvidencesToBN();
+		}
 	}
 
 	/**
@@ -434,8 +436,9 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.addEvidences(this, this.evidences);
 		} catch (Exception e) {
 			this.getLogger()
-					.warning("Agent: " + this.getID() + " -> Problems updating evidences: "
-							+ e.getMessage());
+					.warning(
+							"Agent: " + this.getID() + " -> Problems updating evidences: "
+									+ e.getMessage());
 			System.exit(1);
 		}
 	}
