@@ -420,9 +420,7 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			this.newEvidences = true;
 		}
 
-		if (!this.evidences.isEmpty()) {
-			this.addEvidencesToBN();
-		}
+		this.addEvidencesToBN();
 	}
 
 	/**
@@ -435,11 +433,13 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 		try {
 			ShanksAgentBayesianReasoningCapability.addEvidences(this, this.evidences);
 		} catch (Exception e) {
-			this.getLogger()
-					.warning(
-							"Agent: " + this.getID() + " -> Problems updating evidences: "
-									+ e.getMessage());
-			System.exit(1);
+			if (!this.evidences.isEmpty()) {
+				// If it is empty is because LEBA parameter is exactly equals to the number of possible evidences 
+				this.getLogger().warning(
+						"Agent: " + this.getID() + " -> Problems updating evidences: "
+								+ e.getMessage());
+				System.exit(1);
+			}
 		}
 	}
 
