@@ -73,9 +73,9 @@ public class OneClickExperimentLauncher {
 		// this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
-		 this.launchSolarFlareBatch();
+		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
-//		 this.launchMushroomBatch();
+		this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
 
@@ -195,17 +195,17 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "mushroomPoisonous";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.5;
-		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 0.5;
-		double minBeliefThreshold = 0.1;
-		double maxTrustThreshold = 0.5;
-		double minTrustThreshold = 0.1;
-		int maxLEBA = 8;
-		int minLEBA = 0;
+		double maxDistanceThreshold = 0.2;
+		double minDistanceThreshold = 0.2;
+		double maxBeliefThreshold = 0.3;
+		double minBeliefThreshold = 0.3;
+		double maxTrustThreshold = 0.2;
+		double minTrustThreshold = 0.2;
+		int maxLEBA = 4;
+		int minLEBA = 4;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 5;
-		int minNumberOfAgents = 2;
+		int maxNumberOfAgents = 8;
+		int minNumberOfAgents = 8;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
 				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
