@@ -161,8 +161,8 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 3;
 		int minLEBA = 3;
 		int maxArgumentationRounds = 1000;
-		int maxNumberOfAgents = 20;
-		int minNumberOfAgents = 20;
+		int maxNumberOfAgents = 10;
+		int minNumberOfAgents = 10;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
 				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
