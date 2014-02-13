@@ -34,8 +34,10 @@ public class DBParser {
 //		String tableName = "zoo";
 //		String filePath = "../experiments/kowlancz02-simulation/kowlancz02-simulation-summary.csv";
 //		String tableName = "kowlancz02";
-		String filePath = "../experiments/mushroom-simulation/mushroom-simulation-summary.csv";
-		String tableName = "mushroom";
+//		String filePath = "../experiments/mushroom-simulation/mushroom-simulation-summary.csv";
+//		String tableName = "mushroom";
+		String filePath = "../experiments/chess-simulation/chess-simulation-summary.csv";
+		String tableName = "chess";
 //		String filePath = "../experiments/solarflare-simulation/solarflare-simulation-summary.csv";
 //		String tableName = "solarflare";
 //		String filePath = "../experiments/nursery-simulation/nursery-simulation-summary.csv";
