@@ -75,9 +75,9 @@ public class OneClickExperimentLauncher {
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
-//		this.launchMushroomBatch();
-		this.launchChessBatch();
-		// this.launchPokerBatch();
+		// this.launchMushroomBatch();
+		// this.launchChessBatch();
+		this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -101,34 +101,49 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/poker.csv";
 		String simName = "poker-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		double testRatio = 0.1;
+//		double testRatio = 0.1;
 		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		int iterations = 1;
+//		int iterations = 1;
+
+		int kfold = 2;
 		String classificationTarget = "PokerHand";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.5;
-		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 0.5;
-		double minBeliefThreshold = 0.1;
-		double maxTrustThreshold = 0.5;
-		double minTrustThreshold = 0.1;
-		int maxLEBA = 6;
-		int minLEBA = 0;
+		double maxDistanceThreshold = 0.2;
+		double minDistanceThreshold = 0.2;
+		double maxBeliefThreshold = 0.2;
+		double minBeliefThreshold = 0.2;
+		double maxTrustThreshold = 0.2;
+		double minTrustThreshold = 0.2;
+		int maxLEBA = 5;
+		int minLEBA = 5;
 		int maxArgumentationRounds = 1000;
-		int maxNumberOfAgents = 4;
-		int minNumberOfAgents = 2;
+		int maxNumberOfAgents = 20;
+		int minNumberOfAgents = 20;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio, centralApproach,
-				summaryFile, seed, maxThreads, iterations, classificationTarget, delta,
+
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
+				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 		logger.info("Total number of experiments executed in all iterations and with all parameters for "
 				+ simulationID + " simulation = " + totalExps);
+		// long totalExps =
+		// this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
+		// experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio,
+		// centralApproach,
+		// summaryFile, seed, maxThreads, iterations, classificationTarget,
+		// delta,
+		// SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+		// minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+		// maxTrustThreshold,
+		// minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
+		// logger.info("Total number of experiments executed in all iterations and with all parameters for "
+		// + simulationID + " simulation = " + totalExps);
 		// ***********************
 	}
 
@@ -143,11 +158,11 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/kr-vs-k.csv";
 		String simName = "chess-simulation";
 		String experimentFolder = "../experiments/" + simName;
-//		double testRatio = 0.5;
+		// double testRatio = 0.5;
 		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-//		int iterations = 1;
+		// int iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "Game";
 		double delta = 0.1;
@@ -172,14 +187,18 @@ public class OneClickExperimentLauncher {
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 		logger.info("Total number of experiments executed in all iterations and with all parameters for "
 				+ simulationID + " simulation = " + totalExps);
-//		long totalExps = this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-//				experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio, centralApproach,
-//				summaryFile, seed, maxThreads, iterations, classificationTarget, delta,
-//				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-//				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-//				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
-//		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-//				+ simulationID + " simulation = " + totalExps);
+		// long totalExps =
+		// this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
+		// experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio,
+		// centralApproach,
+		// summaryFile, seed, maxThreads, iterations, classificationTarget,
+		// delta,
+		// SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+		// minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+		// maxTrustThreshold,
+		// minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
+		// logger.info("Total number of experiments executed in all iterations and with all parameters for "
+		// + simulationID + " simulation = " + totalExps);
 		// ***********************
 	}
 
