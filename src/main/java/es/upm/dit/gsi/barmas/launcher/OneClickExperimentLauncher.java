@@ -394,13 +394,13 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "AnimalType";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 1.0;
+		double maxDistanceThreshold = 0.5;
 		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 1.0;
+		double maxBeliefThreshold = 0.5;
 		double minBeliefThreshold = 0.1;
-		double maxTrustThreshold = 1.0;
+		double maxTrustThreshold = 0.5;
 		double minTrustThreshold = 0.1;
-		int maxLEBA = 20;
+		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
 		int maxNumberOfAgents = 6;
@@ -651,7 +651,7 @@ public class OneClickExperimentLauncher {
 	 * @param maxLEBA
 	 * @param minLEBA
 	 * @param maxArgumentationRounds
-	 * @return 
+	 * @return
 	 */
 	private long launchSmartBathAndValidatorsForAgentRangeWEKAKFold(String simulationID,
 			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
@@ -660,12 +660,11 @@ public class OneClickExperimentLauncher {
 			double maxBeliefThreshold, double minBeliefThreshold, double maxTrustThreshold,
 			double minTrustThreshold, int maxLEBA, int minLEBA, int maxArgumentationRounds) {
 
-		int agentsNumber = minAgentsNumber;
 		long experimentsCount = 0;
-		while (agentsNumber <= maxAgentsNumber) {
-			logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
-			LogConfigurator.log2File(logger, simulationID + "-OneClickExperimentLauncher",
-					Level.ALL, Level.INFO, experimentFolder);
+		String loggerName = simulationID + "-OneClickExperimentLauncher";
+		logger = Logger.getLogger(loggerName);
+		LogConfigurator.log2File(logger, loggerName, Level.ALL, Level.INFO, experimentFolder);
+		for (int agentsNumber = minAgentsNumber; agentsNumber <= maxAgentsNumber; agentsNumber++) {
 
 			logger.info("Executing experiments in " + cores + " cores.");
 
@@ -728,7 +727,6 @@ public class OneClickExperimentLauncher {
 				logger.severe(e.getMessage());
 				System.exit(1);
 			}
-			agentsNumber++;
 		}
 		return experimentsCount;
 	}
