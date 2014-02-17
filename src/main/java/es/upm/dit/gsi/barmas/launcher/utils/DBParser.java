@@ -30,35 +30,100 @@ public class DBParser {
 	public static void main(String[] args) {
 		DBParser dbparser = new DBParser();
 
-//		String filePath = "../experiments/zoo-simulation/zoo-simulation-summary.csv";
-//		String tableName = "zoo";
-//		String filePath = "../experiments/kowlancz02-simulation/kowlancz02-simulation-summary.csv";
-//		String tableName = "kowlancz02";
-//		String filePath = "../experiments/mushroom-simulation/mushroom-simulation-summary.csv";
-//		String tableName = "mushroom";
-		String filePath = "../experiments/chess-simulation/chess-simulation-summary.csv";
-		String tableName = "chess";
-//		String filePath = "../experiments/solarflare-simulation/solarflare-simulation-summary.csv";
-//		String tableName = "solarflare";
-//		String filePath = "../experiments/nursery-simulation/nursery-simulation-summary.csv";
-//		String tableName = "nursery";
-//		String filePath = "../experiments/marketing-simulation/marketing-simulation-summary.csv";
-//		String tableName = "marketing";
-		dbparser.putDataInDB(tableName, filePath);
+		dbparser.createTable();
+		dbparser.createWekaTable();
+		
+//		String folder = "../experiments/";
+
+//		String dataset = "zoo";
+		// String dataset = "kowlancz02";
+		// String dataset = "mushroom";
+		// String dataset = "chess";
+		// String dataset = "solarflare";
+		// String dataset = "nursery";
+		// String dataset = "marketing";
+		
+//		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
+//		dbparser.putDataInDB(filePath);
+
+		// String wekaFilePath = folder + dataset +
+		// "-simulation/weka/weka-results.csv";
+		//	dbparser.putWekaDataInDB(wekaFilePath);
 
 	}// end main
 
 	/**
-	 * @param filePath
+	 * @param wekaFilePath
+	 * 
 	 */
-	public void putDataInDB(String tableName, String filePath) {
+	private void putWekaDataInDB(String wekaFilePath) {
+
+		String tableName = "weka";
 		Connection conn = null;
 		Statement stmt = null;
 		try {
 
-			CsvReader reader = new CsvReader(filePath);
+			CsvReader reader = new CsvReader(wekaFilePath);
 
 			reader.readHeaders();
+			// STEP 2: Register JDBC driver
+			Class.forName(JDBC_DRIVER);
+
+			// STEP 3: Open a connection
+			logger.info("Connecting to a selected database...");
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			logger.info("Connected database successfully...");
+			// STEP 5: Execute a query
+			stmt = conn.createStatement();
+
+			int counter = 0;
+			String sql;
+			while (reader.readRecord()) {
+
+				if (counter % 500 == 0) {
+					logger.info("Inserting validation " + counter);
+				}
+				String[] values = reader.getValues();
+				sql = "INSERT INTO `" + tableName + "` VALUES (";
+				sql = this.appendValue(sql, Integer.toString(counter));
+				for (String value : values) {
+					sql = this.appendValue(sql, value);
+				}
+				sql = this.closeSQL(sql);
+				stmt.executeUpdate(sql);
+				counter++;
+			}
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		}
+		try {
+			if (stmt != null) {
+				conn.close();
+			}
+		} catch (SQLException se) {
+			// do nothing
+		}
+		try {
+			if (conn != null)
+				conn.close();
+		} catch (SQLException se) {
+			se.printStackTrace();
+		}// end finally try
+
+	}
+
+	/**
+	 * 
+	 */
+	private void createTable() {
+		String tableName = "results";
+		Connection conn = null;
+		Statement stmt = null;
+		try {
 			// STEP 2: Register JDBC driver
 			Class.forName(JDBC_DRIVER);
 
@@ -83,8 +148,116 @@ public class DBParser {
 					+ " PRIMARY KEY ( id ))";
 			stmt.executeUpdate(sql);
 			logger.info("Created table in given database...");
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		}
+		try {
+			if (stmt != null) {
+				conn.close();
+			}
+		} catch (SQLException se) {
+			// do nothing
+		}
+		try {
+			if (conn != null)
+				conn.close();
+		} catch (SQLException se) {
+			se.printStackTrace();
+		}// end finally try
+	}
+
+	/**
+	 * 
+	 */
+	private void createWekaTable() {
+		Connection conn = null;
+		Statement stmt = null;
+		String tableName = "weka";
+		try {
+			// STEP 2: Register JDBC driver
+			Class.forName(JDBC_DRIVER);
+
+			// STEP 3: Open a connection
+			logger.info("Connecting to a selected database...");
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			logger.info("Connected database successfully...");
+			// STEP 5: Execute a query
+			logger.info("Creating table in given database...");
+			stmt = conn.createStatement();
+
+			// Headers of csv file
+			// headers[0] = "dataset";
+			// headers[1] = "kfold";
+			// headers[2] = "classifier";
+			// headers[3] = "iteration";
+			// headers[4] = "ratioOk";
+			// headers[5] = "ratioWrong";
+			// headers[6] = "agentID";
+			// headers[7] = "agents";
+
+			String sql = "CREATE TABLE " + tableName + " " + "(id INTEGER not NULL, "
+					+ " dataset VARCHAR(100), " + " kfold INTEGER, " + " classifier VARCHAR(100), "
+					+ " iteration VARCHAR(50), " + " ratioOk DOUBLE, " + " ratioWrong DOUBLE, "
+					+ " agentID VARCHAR(50), " + " agents INTEGER, " + " PRIMARY KEY ( id ))";
+			stmt.executeUpdate(sql);
+			logger.info("Created table in given database...");
+
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		}
+		try {
+			if (stmt != null) {
+				conn.close();
+			}
+		} catch (SQLException se) {
+			// do nothing
+		}
+		try {
+			if (conn != null)
+				conn.close();
+		} catch (SQLException se) {
+			se.printStackTrace();
+		}// end finally try
+	}
+
+	/**
+	 * @param filePath
+	 */
+	private void putDataInDB(String filePath) {
+		Connection conn = null;
+		Statement stmt = null;
+		String tableName = "results";
+		try {
+
+			CsvReader reader = new CsvReader(filePath);
+
+			reader.readHeaders();
+			// STEP 2: Register JDBC driver
+			Class.forName(JDBC_DRIVER);
+
+			// STEP 3: Open a connection
+			logger.info("Connecting to a selected database...");
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			logger.info("Connected database successfully...");
+			// STEP 5: Execute a query
+			stmt = conn.createStatement();
 
 			int counter = 0;
+			String sql;
+
+			sql = "SELECT COUNT(*) FROM `" + tableName + "`);";
+			ResultSet result = stmt.executeQuery(sql);
+			counter = result.getInt(0);
+			logger.info("Current count(*)=" + counter);
+
 			while (reader.readRecord()) {
 
 				if (counter % 500 == 0) {
@@ -145,7 +318,7 @@ public class DBParser {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	public void createDB() throws ClassNotFoundException {
+	private void createDB() throws ClassNotFoundException {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
