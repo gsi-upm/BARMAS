@@ -434,7 +434,8 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			ShanksAgentBayesianReasoningCapability.addEvidences(this, this.evidences);
 		} catch (Exception e) {
 			if (!this.evidences.isEmpty()) {
-				// If it is empty is because LEBA parameter is exactly equals to the number of possible evidences 
+				// If it is empty is because LEBA parameter is exactly equals to
+				// the number of possible evidences
 				this.getLogger().warning(
 						"Agent: " + this.getID() + " -> Problems updating evidences: "
 								+ e.getMessage());
@@ -940,7 +941,10 @@ public class BarmasClassificatorAgent extends SimpleShanksAgent implements
 			this.getLogger().finest(
 					"Updating scores for agent: " + this.getID() + " after diagnosis case id: "
 							+ diagnosisCase.getCaseID());
-			ShanksAgentBayesianReasoningCapability.addEvidences(this, this.evidencesToUpdateScores);
+			if (this.evidencesToUpdateScores != null && !this.evidencesToUpdateScores.isEmpty()) {
+				ShanksAgentBayesianReasoningCapability.addEvidences(this,
+						this.evidencesToUpdateScores);
+			}
 			HashMap<String, HashMap<String, Float>> hyps = ShanksAgentBayesianReasoningCapability
 					.getAllHypotheses(this);
 
