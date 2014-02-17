@@ -101,12 +101,8 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/poker.csv";
 		String simName = "poker-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		// double testRatio = 0.1;
-		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// int iterations = 1;
-
 		int kfold = 2;
 		String classificationTarget = "PokerHand";
 		double delta = 0.1;
@@ -123,26 +119,14 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 20;
 		int minNumberOfAgents = 20;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 		logger.info("Total number of experiments executed in all iterations and with all parameters for "
 				+ simulationID + " simulation = " + totalExps);
-		// long totalExps =
-		// this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-		// experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio,
-		// centralApproach,
-		// summaryFile, seed, maxThreads, iterations, classificationTarget,
-		// delta,
-		// SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		// minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		// maxTrustThreshold,
-		// minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
-		// logger.info("Total number of experiments executed in all iterations and with all parameters for "
-		// + simulationID + " simulation = " + totalExps);
 		// ***********************
 	}
 
@@ -157,11 +141,8 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/kr-vs-k.csv";
 		String simName = "chess-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		// double testRatio = 0.5;
-		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// int iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "Game";
 		double delta = 0.1;
@@ -178,27 +159,14 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 10;
 		int minNumberOfAgents = 10;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 		logger.info("Total number of experiments executed in all iterations and with all parameters for "
 				+ simulationID + " simulation = " + totalExps);
-		// long totalExps =
-		// this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-		// experimentFolder, maxNumberOfAgents, minNumberOfAgents, testRatio,
-		// centralApproach,
-		// summaryFile, seed, maxThreads, iterations, classificationTarget,
-		// delta,
-		// SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-		// minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-		// maxTrustThreshold,
-		// minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
-		// logger.info("Total number of experiments executed in all iterations and with all parameters for "
-		// + simulationID + " simulation = " + totalExps);
-		// ***********************
 	}
 
 	/**
@@ -213,11 +181,8 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/agaricus-lepiota.csv";
 		String simName = "mushroom-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// double testRatio = 0.4;
-		// int iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "mushroomPoisonous";
 		double delta = 0.1;
@@ -234,9 +199,9 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 8;
 		int minNumberOfAgents = 8;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
@@ -257,11 +222,8 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/kowlancz/CZ02/CZ02-dataset.csv";
 		String simName = "kowlancz02-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// double testRatio = 0.4;
-		// int iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "Diagnosis";
 		double delta = 0.1;
@@ -278,9 +240,9 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
@@ -301,11 +263,8 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/solarflare.csv";
 		String simName = "solarflare-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// testRatio = 0.4;
-		// iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "SolarFlareType";
 		double delta = 0.1;
@@ -322,9 +281,9 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
@@ -346,11 +305,8 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/marketing.csv";
 		String simName = "marketing-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// double testRatio = 0.5;
-		// int iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "Income";
 		double delta = 0.1;
@@ -367,9 +323,9 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 6;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
@@ -391,11 +347,8 @@ public class OneClickExperimentLauncher {
 		String dataset = "src/main/resources/dataset/nursery.csv";
 		String simName = "nursery-simulation";
 		String experimentFolder = "../experiments/" + simName;
-		boolean centralApproach = true;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// double testRatio = 0.5;
-		// int iterations = 1;
 		int kfold = 10;
 		String classificationTarget = "Classification";
 		double delta = 0.1;
@@ -412,9 +365,9 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeKFold(simulationID, dataset,
-				experimentFolder, maxNumberOfAgents, minNumberOfAgents, centralApproach,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
+				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
+				maxThreads, kfold, classificationTarget, delta,
 				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
@@ -437,8 +390,6 @@ public class OneClickExperimentLauncher {
 		String experimentFolder = "../experiments/" + simName;
 		String summaryFile = experimentFolder + "/" + simName + "-summary.csv";
 		long seed = 0;
-		// testRatio = 0.1;
-		// iterations = 10;
 		int kfold = 10;
 		String classificationTarget = "AnimalType";
 		double delta = 0.1;
@@ -466,7 +417,7 @@ public class OneClickExperimentLauncher {
 		// ***********************
 	}
 
-	protected long launchValidationBatchFor(String simulationID, String dataset,
+	private long launchValidationBatchFor(String simulationID, String dataset,
 			String experimentFolder, int agentsNumber, double ratio, boolean central,
 			String summaryFile, long seed, int maxThreads, int iterations,
 			String classificationTarget, double delta, int mode) {
@@ -512,7 +463,7 @@ public class OneClickExperimentLauncher {
 		return counter;
 	}
 
-	protected long launchSmartBathAndValidatorsForAgentRangeKFold(String simulationID,
+	private long launchSmartBathAndValidatorsForAgentRangeKFold(String simulationID,
 			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
 			boolean central, String summaryFile, long seed, int maxThreads, int kfold,
 			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
@@ -530,10 +481,10 @@ public class OneClickExperimentLauncher {
 		return counter;
 	}
 
-	protected long launchSmartBathAndValidatorsForAgentRangeForConcreteIteration(
-			String simulationID, String dataset, String experimentFolder, int maxAgentsNumber,
-			int minAgentsNumber, double ratio, boolean central, String summaryFile, long seed,
-			int maxThreads, int iteration, String classificationTarget, double delta, int mode,
+	private long launchSmartBathAndValidatorsForAgentRangeForConcreteIteration(String simulationID,
+			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
+			double ratio, boolean central, String summaryFile, long seed, int maxThreads,
+			int iteration, String classificationTarget, double delta, int mode,
 			double maxDistanceThreshold, double minDistanceThreshold, double maxBeliefThreshold,
 			double minBeliefThreshold, double maxTrustThreshold, double minTrustThreshold,
 			int maxLEBA, int minLEBA, int maxArgumentationRounds) {
@@ -552,7 +503,7 @@ public class OneClickExperimentLauncher {
 
 	}
 
-	protected long launchSmartBathAndValidatorsForAgentRange(String simulationID, String dataset,
+	private long launchSmartBathAndValidatorsForAgentRange(String simulationID, String dataset,
 			String experimentFolder, int maxAgentsNumber, int minAgentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads, int iterations,
 			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
@@ -573,7 +524,7 @@ public class OneClickExperimentLauncher {
 		return counter;
 	}
 
-	protected long launchSmartBathAndValidatorsForConcreteIteration(String simulationID,
+	private long launchSmartBathAndValidatorsForConcreteIteration(String simulationID,
 			String dataset, String experimentFolder, int agentsNumber, double ratio,
 			boolean central, String summaryFile, long seed, int maxThreads, int iteration,
 			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
@@ -626,7 +577,7 @@ public class OneClickExperimentLauncher {
 		return Long.MIN_VALUE;
 	}
 
-	protected long launchSmartBathAndValidatorsFor(String simulationID, String dataset,
+	private long launchSmartBathAndValidatorsFor(String simulationID, String dataset,
 			String experimentFolder, int agentsNumber, double ratio, boolean central,
 			String summaryFile, long seed, int maxThreads, int iterations,
 			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
@@ -674,7 +625,7 @@ public class OneClickExperimentLauncher {
 				+ (interval % 1000) + " miliseconds. Finishing execution of simulations.");
 	}
 
-	protected long launchSmartBathAndValidatorsForAgentRangeWEKAKFold(String simulationID,
+	private long launchSmartBathAndValidatorsForAgentRangeWEKAKFold(String simulationID,
 			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
 			String summaryFile, long seed, int maxThreads, int kfold, String classificationTarget,
 			double delta, int mode, double maxDistanceThreshold, double minDistanceThreshold,
