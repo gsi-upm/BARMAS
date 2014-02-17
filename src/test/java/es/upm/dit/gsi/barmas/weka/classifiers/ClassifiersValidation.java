@@ -1,12 +1,14 @@
 /**
  * weka.classifiers.ClassifierJ48.java
  */
-package weka.classifiers;
+package es.upm.dit.gsi.barmas.weka.classifiers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.functions.RBFNetwork;
@@ -262,6 +264,11 @@ public class ClassifiersValidation {
 					Instances trainingData = cv
 							.getDataFromCSV(folder + "bayes-central-dataset.csv");
 					Instances testData = cv.getDataFromCSV(folder + "test-dataset.csv");
+
+					testData.deleteAttributeAt(0);
+					testData.deleteAttributeAt(1);
+					testData.deleteAttributeAt(2);
+
 					Classifier classifier = clss.get(j);
 					double[] results = cv.getValidation(classifier, trainingData, testData);
 					logger.finer("-> " + classifier.getClass().getSimpleName());
