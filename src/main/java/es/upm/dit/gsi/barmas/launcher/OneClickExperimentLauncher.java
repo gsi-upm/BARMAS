@@ -625,6 +625,34 @@ public class OneClickExperimentLauncher {
 				+ (interval % 1000) + " miliseconds. Finishing execution of simulations.");
 	}
 
+	/**
+	 * 
+	 * This method executes experiments with WEKA CV folds generation.
+	 * 
+	 * 
+	 * @param simulationID
+	 * @param dataset
+	 * @param experimentFolder
+	 * @param maxAgentsNumber
+	 * @param minAgentsNumber
+	 * @param summaryFile
+	 * @param seed
+	 * @param maxThreads
+	 * @param kfold
+	 * @param classificationTarget
+	 * @param delta
+	 * @param mode
+	 * @param maxDistanceThreshold
+	 * @param minDistanceThreshold
+	 * @param maxBeliefThreshold
+	 * @param minBeliefThreshold
+	 * @param maxTrustThreshold
+	 * @param minTrustThreshold
+	 * @param maxLEBA
+	 * @param minLEBA
+	 * @param maxArgumentationRounds
+	 * @return 
+	 */
 	private long launchSmartBathAndValidatorsForAgentRangeWEKAKFold(String simulationID,
 			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
 			String summaryFile, long seed, int maxThreads, int kfold, String classificationTarget,
