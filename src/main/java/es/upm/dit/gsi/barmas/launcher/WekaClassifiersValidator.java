@@ -75,12 +75,12 @@ public class WekaClassifiersValidator {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		String dataset = "solarflare";
-		String simName = "solarflare-simulation";
-		String inputFolder = "../experiments-without-weka/" + simName + "/input";
-		String outputFolder = "../experiments-without-weka/" + simName + "/weka";
+		String dataset = "zoo";
+		String simName = dataset + "-simulation";
+		String inputFolder = "../experiments/" + simName + "/input";
+		String outputFolder = "../experiments/" + simName + "/weka";
 		int folds = 10;
-		int maxAgents = 5;
+		int maxAgents = 6;
 		int minAgents = 2;
 
 		WekaClassifiersValidator validator = new WekaClassifiersValidator(dataset, inputFolder,

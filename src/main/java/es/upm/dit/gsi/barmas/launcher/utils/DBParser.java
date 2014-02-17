@@ -30,25 +30,24 @@ public class DBParser {
 	public static void main(String[] args) {
 		DBParser dbparser = new DBParser();
 
-		dbparser.createTable();
-		dbparser.createWekaTable();
-		
-//		String folder = "../experiments/";
+		// dbparser.createTable();
+		// dbparser.createWekaTable();
 
-//		String dataset = "zoo";
+		String folder = "../experiments/";
+
+		String dataset = "zoo";
 		// String dataset = "kowlancz02";
 		// String dataset = "mushroom";
 		// String dataset = "chess";
 		// String dataset = "solarflare";
 		// String dataset = "nursery";
 		// String dataset = "marketing";
-		
-//		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
-//		dbparser.putDataInDB(filePath);
 
-		// String wekaFilePath = folder + dataset +
-		// "-simulation/weka/weka-results.csv";
-		//	dbparser.putWekaDataInDB(wekaFilePath);
+		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
+		dbparser.putDataInDB(filePath);
+
+		String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
+		dbparser.putWekaDataInDB(wekaFilePath);
 
 	}// end main
 
@@ -56,7 +55,7 @@ public class DBParser {
 	 * @param wekaFilePath
 	 * 
 	 */
-	private void putWekaDataInDB(String wekaFilePath) {
+	public void putWekaDataInDB(String wekaFilePath) {
 
 		String tableName = "weka";
 		Connection conn = null;
@@ -119,7 +118,7 @@ public class DBParser {
 	/**
 	 * 
 	 */
-	private void createTable() {
+	public void createTable() {
 		String tableName = "results";
 		Connection conn = null;
 		Statement stmt = null;
@@ -173,7 +172,7 @@ public class DBParser {
 	/**
 	 * 
 	 */
-	private void createWekaTable() {
+	public void createWekaTable() {
 		Connection conn = null;
 		Statement stmt = null;
 		String tableName = "weka";
@@ -231,7 +230,7 @@ public class DBParser {
 	/**
 	 * @param filePath
 	 */
-	private void putDataInDB(String filePath) {
+	public void putDataInDB(String filePath) {
 		Connection conn = null;
 		Statement stmt = null;
 		String tableName = "results";
@@ -299,7 +298,7 @@ public class DBParser {
 	 * @param sql
 	 * @param value
 	 */
-	private String appendValue(String sql, String value) {
+	public String appendValue(String sql, String value) {
 		if (sql.endsWith("VALUES (")) {
 			return sql + "'" + value + "'";
 		} else {
@@ -310,7 +309,7 @@ public class DBParser {
 	/**
 	 * @param sql
 	 */
-	private String closeSQL(String sql) {
+	public String closeSQL(String sql) {
 		return sql + ");";
 	}
 
@@ -318,7 +317,7 @@ public class DBParser {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	private void createDB() throws ClassNotFoundException {
+	public void createDB() throws ClassNotFoundException {
 		Connection conn = null;
 		Statement stmt = null;
 		try {
