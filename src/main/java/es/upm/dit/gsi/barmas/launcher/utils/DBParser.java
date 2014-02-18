@@ -85,6 +85,11 @@ public class DBParser {
 
 			int counter = 0;
 			String sql;
+
+			sql = "SELECT COUNT(*) FROM `" + tableName + "`;";
+			ResultSet result = stmt.executeQuery(sql);
+			counter = result.getInt(0);
+			logger.info("Current count(*)=" + counter);
 			while (reader.readRecord()) {
 
 				if (counter % 500 == 0) {
@@ -260,7 +265,7 @@ public class DBParser {
 			int counter = 0;
 			String sql;
 
-			sql = "SELECT COUNT(*) FROM `" + tableName + "`);";
+			sql = "SELECT COUNT(*) FROM `" + tableName + "`;";
 			ResultSet result = stmt.executeQuery(sql);
 			counter = result.getInt(0);
 			logger.info("Current count(*)=" + counter);
