@@ -46,8 +46,8 @@ public class DBParser {
 		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
 		dbparser.putDataInDB(filePath);
 
-		String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
-		dbparser.putWekaDataInDB(wekaFilePath);
+//		String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
+//		dbparser.putWekaDataInDB(wekaFilePath);
 
 	}// end main
 
