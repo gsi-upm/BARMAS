@@ -4,10 +4,17 @@
 package es.upm.dit.gsi.barmas.launcher.utils;
 
 //STEP 1. Import required packages
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.csvreader.CsvReader;
+
+import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
 
 public class DBParser {
 	// JDBC driver name and database URL
@@ -25,6 +32,7 @@ public class DBParser {
 
 	public DBParser() {
 		this.logger = Logger.getLogger(DBParser.class.getSimpleName());
+		LogConfigurator.log2File(this.logger, this.getClass().getSimpleName(), Level.ALL, Level.SEVERE, "../DBParser");
 	}
 
 	public static void main(String[] args) {
