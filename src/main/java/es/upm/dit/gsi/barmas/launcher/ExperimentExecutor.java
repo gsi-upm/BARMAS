@@ -293,7 +293,7 @@ public class ExperimentExecutor {
 
 		// Validators
 		for (int i = 0; i < agentsNumber; i++) {
-			String simulationPrefix = simulationID + "-Agent" + i + "-DTH-" + 2.0 + "-BTH-" + 2.0
+			String simulationPrefix = simulationID + "-" + agentsNumber + "agents-Agent" + i + "-DTH-" + 2.0 + "-BTH-" + 2.0
 					+ "-LEBA-" + 0 + "-TTH-" + 2.0 + "-IT-" + iteration;
 			BarmasAgentValidator expValidator = new BarmasAgentValidator(simulationPrefix,
 					summaryFile, seed, mode, "Agent" + i, experimentDatasetPath + "/"
@@ -303,7 +303,7 @@ public class ExperimentExecutor {
 					classificationTarget);
 			experiments.add(expValidator);
 		}
-		String simulationPrefix = simulationID + "-BayesCentralAgent-DTH-" + 2.0 + "-BTH-" + 2.0
+		String simulationPrefix = simulationID + "-" + agentsNumber + "agents-BayesCentralAgent-DTH-" + 2.0 + "-BTH-" + 2.0
 				+ "-LEBA-" + 0 + "-TTH-" + 2.0 + "-IT-" + iteration;
 		BarmasAgentValidator expValidator = new BarmasAgentValidator(simulationPrefix, summaryFile,
 				seed, mode, "BayesCentralAgent", experimentDatasetPath

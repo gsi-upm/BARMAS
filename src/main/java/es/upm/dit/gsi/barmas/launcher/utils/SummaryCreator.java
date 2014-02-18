@@ -233,8 +233,8 @@ public class SummaryCreator {
 					totalRatio2[17] = nameSplits[++i];
 				} else if (split.contains("agents")) {
 					totalRatio2[16] = split.replaceAll("agents", "");
-				} else if (split.contains("Agent")) {
-					totalRatio2[16] = "1";
+//				} else if (split.contains("Agent")) {
+//					totalRatio2[16] = "1";
 				} else if (split.equals("seed")) {
 					totalRatio2[18] = nameSplits[++i];
 				} else if (split.equals("timestamp")) {
