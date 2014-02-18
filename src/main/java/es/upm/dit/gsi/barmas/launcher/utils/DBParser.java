@@ -88,6 +88,7 @@ public class DBParser {
 
 			sql = "SELECT COUNT(*) FROM `" + tableName + "`;";
 			ResultSet result = stmt.executeQuery(sql);
+			logger.info("Query for count successfully executed");
 			counter = result.getInt(0);
 			logger.info("Current count(*)=" + counter);
 			while (reader.readRecord()) {
@@ -267,6 +268,7 @@ public class DBParser {
 
 			sql = "SELECT COUNT(*) FROM `" + tableName + "`;";
 			ResultSet result = stmt.executeQuery(sql);
+			logger.info("Query for count successfully executed");
 			counter = result.getInt(0);
 			logger.info("Current count(*)=" + counter);
 
