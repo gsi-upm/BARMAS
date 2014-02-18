@@ -22,18 +22,12 @@ import weka.classifiers.functions.SimpleLogistic;
 import weka.classifiers.rules.ConjunctiveRule;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.JRip;
-import weka.classifiers.rules.OneR;
-import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.BFTree;
 import weka.classifiers.trees.DecisionStump;
-import weka.classifiers.trees.J48;
-import weka.classifiers.trees.J48graft;
 import weka.classifiers.trees.LADTree;
 import weka.classifiers.trees.LMT;
-import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.REPTree;
-import weka.classifiers.trees.RandomForest;
 import weka.classifiers.trees.SimpleCart;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -76,26 +70,32 @@ public class WekaClassifiersValidator {
 	 */
 	public static void main(String[] args) {
 
-		String dataset = "zoo";
-		// String dataset = "solarflare";
-		// String dataset = "marketing";
-		// String dataset = "nursery";
-		// String dataset = "mushroom";
-		// String dataset = "chess";
-		// String dataset = "kowlancz02";
-		String simName = dataset + "-simulation";
-		String inputFolder = "../experiments/" + simName + "/input";
-		String outputFolder = "../experiments/" + simName + "/weka";
-		int folds = 10;
-		int maxAgents = 5;
-		int minAgents = 2;
-		int maxLEBA = 10;
-		int minLEBA = 0;
+		List<String> datasets = new ArrayList<String>();
+		datasets.add("zoo");
+		datasets.add("solarflare");
+		datasets.add("marketing");
+		datasets.add("nursery");
+		datasets.add("mushroom");
+		datasets.add("chess");
+		datasets.add("kowlancz02");
+		datasets.add("poker");
 
-		WekaClassifiersValidator validator = new WekaClassifiersValidator(dataset, inputFolder,
-				outputFolder, folds, minAgents, maxAgents, minLEBA, maxLEBA);
-		validator.validateAllWekaClassifiers();
+		List<Classifier> classifiers = null;
 
+		for (String dataset : datasets) {
+			String simName = dataset + "-simulation";
+			String inputFolder = "../experiments/" + simName + "/input";
+			String outputFolder = "../experiments/" + simName + "/weka";
+			int folds = 10;
+			int maxAgents = 5;
+			int minAgents = 2;
+			int maxLEBA = 10;
+			int minLEBA = 0;
+
+			WekaClassifiersValidator validator = new WekaClassifiersValidator(dataset, inputFolder,
+					outputFolder, folds, minAgents, maxAgents, minLEBA, maxLEBA);
+			classifiers = validator.validateAllWekaClassifiers(classifiers);
+		}
 	}
 
 	/**
@@ -154,8 +154,13 @@ public class WekaClassifiersValidator {
 	/**
 	 * 
 	 */
-	public void validateAllWekaClassifiers() {
-		List<Classifier> classifiers = this.getNewClassifiers();
+	public List<Classifier> validateAllWekaClassifiers(List<Classifier> classifiers) {
+
+		if (classifiers == null) {
+			classifiers = this.getNewClassifiers();
+		} else if (classifiers.isEmpty()) {
+			logger.warning("No algorithms available!! All of them were eliminated :( Jop");
+		}
 
 		logger.info("Validating all classifiers for dataset: " + this.dataset);
 
@@ -183,6 +188,7 @@ public class WekaClassifiersValidator {
 		}
 
 		logger.info("All classifiers validated.");
+		return classifiers;
 	}
 
 	/**
@@ -377,10 +383,6 @@ public class WekaClassifiersValidator {
 		classifier = new REPTree();
 		classifiers.add(classifier);
 
-		// NBTree - Error with zoo dataset
-		classifier = new NBTree();
-		classifiers.add(classifier);
-
 		// SimpleLogistic
 		classifier = new SimpleLogistic();
 		classifiers.add(classifier);
@@ -395,14 +397,6 @@ public class WekaClassifiersValidator {
 
 		// DecisionStump
 		classifier = new DecisionStump();
-		classifiers.add(classifier);
-
-		// PART - Error with zoo dataset
-		classifier = new PART();
-		classifiers.add(classifier);
-
-		// RandomForest - Error with zoo dataset
-		classifier = new RandomForest();
 		classifiers.add(classifier);
 
 		// LMT
@@ -421,16 +415,6 @@ public class WekaClassifiersValidator {
 		classifier = new RBFNetwork();
 		classifiers.add(classifier);
 
-		// J48
-		classifier = new J48();
-		((J48) classifier).setUnpruned(true);
-		classifiers.add(classifier);
-
-		// J48Graft
-		classifier = new J48graft();
-		((J48graft) classifier).setUnpruned(true);
-		classifiers.add(classifier);
-
 		// DTNB
 		classifier = new DTNB();
 		classifiers.add(classifier);
@@ -447,13 +431,37 @@ public class WekaClassifiersValidator {
 		classifier = new ZeroR();
 		classifiers.add(classifier);
 
-		// OneR
-		classifier = new OneR();
-		classifiers.add(classifier);
-
 		// SMO
 		classifier = new SMO();
 		classifiers.add(classifier);
+
+		// // Error with zoo dataset
+		//
+		// // NBTree
+		// classifier = new NBTree();
+		// classifiers.add(classifier);
+		//
+		// // PART
+		// classifier = new PART();
+		// classifiers.add(classifier);
+		//
+		// // RandomForest
+		// classifier = new RandomForest();
+		// classifiers.add(classifier);
+		//
+		// // J48
+		// classifier = new J48();
+		// ((J48) classifier).setUnpruned(true);
+		// classifiers.add(classifier);
+		//
+		// // J48Graft
+		// classifier = new J48graft();
+		// ((J48graft) classifier).setUnpruned(true);
+		// classifiers.add(classifier);
+		//
+		// // OneR
+		// classifier = new OneR();
+		// classifiers.add(classifier);
 
 		return classifiers;
 

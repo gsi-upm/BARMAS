@@ -71,13 +71,13 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		// this.launchZooBatch();
-		// this.launchMarketingBatch();
-		// this.launchNurseryBatch();
-		this.launchSolarFlareBatch();
-		// this.launchKowlanCZBatch();
-		// this.launchMushroomBatch();
-		// this.launchChessBatch();
-		// this.launchPokerBatch();
+		this.launchMarketingBatch();
+		this.launchNurseryBatch();
+		// this.launchSolarFlareBatch();
+		this.launchKowlanCZBatch();
+		this.launchMushroomBatch();
+		this.launchChessBatch();
+		this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -116,8 +116,8 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 5;
 		int minLEBA = 5;
 		int maxArgumentationRounds = 1000;
-		int maxNumberOfAgents = 20;
-		int minNumberOfAgents = 20;
+		int maxNumberOfAgents = 5;
+		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
 				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
@@ -156,8 +156,8 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 3;
 		int minLEBA = 3;
 		int maxArgumentationRounds = 1000;
-		int maxNumberOfAgents = 10;
-		int minNumberOfAgents = 10;
+		int maxNumberOfAgents = 5;
+		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
 				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
@@ -196,8 +196,8 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 4;
 		int minLEBA = 4;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 8;
-		int minNumberOfAgents = 8;
+		int maxNumberOfAgents = 5;
+		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
 				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
@@ -320,7 +320,7 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 7;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 6;
+		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
@@ -403,7 +403,7 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 6;
+		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
@@ -693,7 +693,8 @@ public class OneClickExperimentLauncher {
 						logger.info(validators.size()
 								+ " validations are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
-						executor.executeValidators(validators, maxLearningThreads, logger);
+						// executor.executeValidators(validators,
+						// maxLearningThreads, logger);
 
 						// EXPERIMENTS
 						List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(
@@ -711,7 +712,8 @@ public class OneClickExperimentLauncher {
 								+ " experiments are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
 						logger.info("---> Starting experiments executions...");
-						executor.executeExperiments(experiments, maxThreads, logger);
+						// executor.executeExperiments(experiments, maxThreads,
+						// logger);
 						logger.info("<--- Finishing experiments executions...");
 						long finishTime = System.currentTimeMillis();
 						experimentsCount = experimentsCount + validators.size()
