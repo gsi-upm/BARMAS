@@ -110,6 +110,7 @@ public class DBParser {
 				stmt.executeUpdate(sql);
 				counter++;
 			}
+			logger.info("All data inserted in DB. Closing connection...");
 		} catch (SQLException se) {
 			// Handle errors for JDBC
 			se.printStackTrace();
@@ -293,6 +294,8 @@ public class DBParser {
 				stmt.executeUpdate(sql);
 				counter++;
 			}
+			
+			logger.info("All data inserted in DB. Closing connection...");
 		} catch (SQLException se) {
 			logger.severe("Problem with an SQL Exception");
 			logger.severe(se.getMessage());
