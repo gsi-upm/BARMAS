@@ -23,7 +23,6 @@ import weka.classifiers.rules.ConjunctiveRule;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.JRip;
 import weka.classifiers.rules.OneR;
-import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.BFTree;
 import weka.classifiers.trees.DecisionStump;
