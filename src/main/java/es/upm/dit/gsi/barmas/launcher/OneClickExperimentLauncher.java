@@ -394,12 +394,12 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "AnimalType";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.5;
-		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 0.5;
-		double minBeliefThreshold = 0.1;
-		double maxTrustThreshold = 0.5;
-		double minTrustThreshold = 0.1;
+		double maxDistanceThreshold = 0.3;
+		double minDistanceThreshold = 0.2;
+		double maxBeliefThreshold = 0.3;
+		double minBeliefThreshold = 0.2;
+		double maxTrustThreshold = 0.3;
+		double minTrustThreshold = 0.2;
 		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
@@ -664,19 +664,19 @@ public class OneClickExperimentLauncher {
 		String loggerName = simulationID + "-OneClickExperimentLauncher";
 		logger = Logger.getLogger(loggerName);
 		LogConfigurator.log2File(logger, loggerName, Level.ALL, Level.INFO, experimentFolder);
+		int ratioint = (int) ((1 / (double) kfold) * 100);
+		double roundedratio = ((double) ratioint) / 100;
+		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-"
+				+ maxArgumentationRounds;
+
+		DatasetSplitter splitter = new DatasetSplitter();
+		splitter.splitDataset(kfold, minAgentsNumber, maxAgentsNumber, dataset, experimentFolder
+				+ "/input", simulationID, logger);
 		for (int agentsNumber = minAgentsNumber; agentsNumber <= maxAgentsNumber; agentsNumber++) {
 
 			logger.info("Executing experiments in " + cores + " cores.");
 
-			int ratioint = (int) ((1 / (double) kfold) * 100);
-			double roundedratio = ((double) ratioint) / 100;
-			simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-"
-					+ maxArgumentationRounds;
 			try {
-
-				DatasetSplitter splitter = new DatasetSplitter();
-				splitter.splitDataset(kfold, agentsNumber, dataset, experimentFolder + "/input",
-						simulationID, logger);
 				for (int iteration = 0; iteration < kfold; iteration++) {
 					try {
 						ExperimentExecutor executor = new ExperimentExecutor();
