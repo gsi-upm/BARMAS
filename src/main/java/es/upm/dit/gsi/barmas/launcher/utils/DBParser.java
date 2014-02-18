@@ -32,7 +32,8 @@ public class DBParser {
 
 	public DBParser() {
 		this.logger = Logger.getLogger(DBParser.class.getSimpleName());
-		LogConfigurator.log2File(this.logger, this.getClass().getSimpleName(), Level.ALL, Level.SEVERE, "../DBParser");
+		LogConfigurator.log2File(this.logger, this.getClass().getSimpleName(), Level.ALL,
+				Level.SEVERE, "../DBParser");
 	}
 
 	public static void main(String[] args) {
@@ -54,8 +55,9 @@ public class DBParser {
 		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
 		dbparser.putDataInDB(filePath);
 
-//		String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
-//		dbparser.putWekaDataInDB(wekaFilePath);
+		// String wekaFilePath = folder + dataset +
+		// "-simulation/weka/weka-results.csv";
+		// dbparser.putWekaDataInDB(wekaFilePath);
 
 	}// end main
 
@@ -89,7 +91,9 @@ public class DBParser {
 			sql = "SELECT COUNT(*) FROM `" + tableName + "`;";
 			ResultSet result = stmt.executeQuery(sql);
 			logger.info("Query for count successfully executed");
-			counter = result.getInt(1);
+			if (result.next()) {
+				counter = result.getInt(1);
+			}
 			logger.info("Current count(*)=" + counter);
 			while (reader.readRecord()) {
 
@@ -269,7 +273,9 @@ public class DBParser {
 			sql = "SELECT COUNT(*) FROM `" + tableName + "`;";
 			ResultSet result = stmt.executeQuery(sql);
 			logger.info("Query for count successfully executed");
-			counter = result.getInt(1);
+			if (result.next()) {
+				counter = result.getInt(1);
+			}
 			logger.info("Current count(*)=" + counter);
 
 			while (reader.readRecord()) {
