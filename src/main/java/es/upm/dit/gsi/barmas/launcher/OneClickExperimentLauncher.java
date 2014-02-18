@@ -71,13 +71,13 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		// this.launchZooBatch();
-		this.launchMarketingBatch();
-		this.launchNurseryBatch();
+		// this.launchMarketingBatch();
+		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		this.launchKowlanCZBatch();
+		// this.launchKowlanCZBatch();
 		this.launchMushroomBatch();
-		this.launchChessBatch();
-		this.launchPokerBatch();
+		// this.launchChessBatch();
+		// this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -187,14 +187,14 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "mushroomPoisonous";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.2;
+		double maxDistanceThreshold = 0.3;
 		double minDistanceThreshold = 0.2;
 		double maxBeliefThreshold = 0.3;
-		double minBeliefThreshold = 0.3;
-		double maxTrustThreshold = 0.2;
+		double minBeliefThreshold = 0.2;
+		double maxTrustThreshold = 0.3;
 		double minTrustThreshold = 0.2;
-		int maxLEBA = 4;
-		int minLEBA = 4;
+		int maxLEBA = 0;
+		int minLEBA = 10;
 		int maxArgumentationRounds = 200;
 		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
@@ -693,8 +693,7 @@ public class OneClickExperimentLauncher {
 						logger.info(validators.size()
 								+ " validations are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
-						// executor.executeValidators(validators,
-						// maxLearningThreads, logger);
+						executor.executeValidators(validators, maxLearningThreads, logger);
 
 						// EXPERIMENTS
 						List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(
@@ -712,8 +711,7 @@ public class OneClickExperimentLauncher {
 								+ " experiments are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
 						logger.info("---> Starting experiments executions...");
-						// executor.executeExperiments(experiments, maxThreads,
-						// logger);
+						executor.executeExperiments(experiments, maxThreads, logger);
 						logger.info("<--- Finishing experiments executions...");
 						long finishTime = System.currentTimeMillis();
 						experimentsCount = experimentsCount + validators.size()
