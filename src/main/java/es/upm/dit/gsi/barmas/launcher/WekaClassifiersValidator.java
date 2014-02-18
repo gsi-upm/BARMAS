@@ -77,15 +77,15 @@ public class WekaClassifiersValidator {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		String dataset = "solarflare";
+		String dataset = "zoo";
 		String simName = dataset + "-simulation";
 		String inputFolder = "../experiments/" + simName + "/input";
 		String outputFolder = "../experiments/" + simName + "/weka";
 		int folds = 10;
-		int maxAgents = 4;
+		int maxAgents = 6;
 		int minAgents = 2;
+		int maxLEBA = 10;
 		int minLEBA = 0;
-		int maxLEBA = 2;
 
 		WekaClassifiersValidator validator = new WekaClassifiersValidator(dataset, inputFolder,
 				outputFolder, folds, minAgents, maxAgents, minLEBA, maxLEBA);
@@ -146,7 +146,7 @@ public class WekaClassifiersValidator {
 	 * @throws Exception
 	 * 
 	 */
-	private void validateAllWekaClassifiers() throws Exception {
+	public void validateAllWekaClassifiers() throws Exception {
 		List<Classifier> classifiers = this.getNewClassifiers();
 		logger.info("Validating all classifiers for dataset: " + this.dataset);
 
@@ -162,7 +162,7 @@ public class WekaClassifiersValidator {
 	 * 
 	 * @throws Exception
 	 */
-	private void validateClassifier(Classifier classifier) throws Exception {
+	public void validateClassifier(Classifier classifier) throws Exception {
 
 		String classifierName = classifier.getClass().getSimpleName();
 
@@ -308,7 +308,7 @@ public class WekaClassifiersValidator {
 	/**
 	 * @return a list of all WEKA classifiers
 	 */
-	private List<Classifier> getNewClassifiers() {
+	public List<Classifier> getNewClassifiers() {
 		Classifier classifier;
 		List<Classifier> classifiers = new ArrayList<Classifier>();
 
