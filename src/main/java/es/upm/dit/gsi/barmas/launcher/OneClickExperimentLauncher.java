@@ -70,10 +70,10 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		this.launchZooBatch();
+		// this.launchZooBatch();
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
-		// this.launchSolarFlareBatch();
+		this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
@@ -269,12 +269,12 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "SolarFlareType";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.5;
-		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 0.5;
-		double minBeliefThreshold = 0.1;
-		double maxTrustThreshold = 0.5;
-		double minTrustThreshold = 0.1;
+		double maxDistanceThreshold = 0.3;
+		double minDistanceThreshold = 0.2;
+		double maxBeliefThreshold = 0.3;
+		double minBeliefThreshold = 0.2;
+		double maxTrustThreshold = 0.3;
+		double minTrustThreshold = 0.2;
 		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
