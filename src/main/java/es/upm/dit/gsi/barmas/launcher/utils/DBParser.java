@@ -44,11 +44,11 @@ public class DBParser {
 
 		String folder = "../experiments/";
 
-		String dataset = "zoo";
+		// String dataset = "zoo";
 		// String dataset = "kowlancz02";
 		// String dataset = "mushroom";
 		// String dataset = "chess";
-		// String dataset = "solarflare";
+		String dataset = "solarflare";
 		// String dataset = "nursery";
 		// String dataset = "marketing";
 
@@ -294,7 +294,7 @@ public class DBParser {
 				stmt.executeUpdate(sql);
 				counter++;
 			}
-			
+
 			logger.info("All data inserted in DB. Closing connection...");
 		} catch (SQLException se) {
 			logger.severe("Problem with an SQL Exception");
