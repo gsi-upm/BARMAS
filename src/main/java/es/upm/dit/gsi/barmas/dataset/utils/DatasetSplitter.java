@@ -104,7 +104,8 @@ public class DatasetSplitter {
 
 		int ratioint = (int) (ratio * 100);
 		double roundedratio = ((double) ratioint) / 100;
-		String outputDirWithRatio = outputDir + "/" + roundedratio + "testRatio/iteration-" + iteration;
+		String outputDirWithRatio = outputDir + "/" + roundedratio + "testRatio/iteration-"
+				+ iteration;
 		File dir = new File(outputDirWithRatio);
 		if (!dir.exists() || !dir.isDirectory()) {
 			dir.mkdirs();
@@ -219,26 +220,26 @@ public class DatasetSplitter {
 	 * 
 	 * @param folds
 	 *            KFold number
-	 * @param agents
-	 *            number of agents to split the original dataset
+	 * @param minAgents
+	 *            min number of agents to split the original dataset
+	 * @param maxAgents
+	 *            max number of agents to split the original dataset
 	 * @param originalDatasetPath
 	 * @param outputDir
 	 * @param central
 	 *            true to create a bayescentral dataset that joint all agent
 	 *            data
 	 * @param scenario
-	 * @param iteration
-	 * @throws Exception
 	 */
-	public void splitDataset(int folds, int agents, String originalDatasetPath, String outputDir,
-			String scenario, Logger logger) {
-	
+	public void splitDataset(int folds, int minAgents, int maxAgents, String originalDatasetPath,
+			String outputDir, String scenario, Logger logger) {
+
 		int ratioint = (int) ((1 / (double) folds) * 100);
 		double roundedratio = ((double) ratioint) / 100;
-	
+
 		// Look for essentials
 		List<String[]> essentials = this.getEssentials(originalDatasetPath, logger);
-	
+
 		for (int fold = 0; fold < folds; fold++) {
 			String outputDirWithRatio = outputDir + "/" + roundedratio + "testRatio/iteration-"
 					+ fold;
@@ -246,23 +247,21 @@ public class DatasetSplitter {
 			if (!dir.exists() || !dir.isDirectory()) {
 				dir.mkdirs();
 			}
-	
+
 			logger.finer("--> splitDataset()");
 			logger.fine("Creating experiment.info...");
-			this.createExperimentInfoFile(folds, agents, originalDatasetPath, outputDirWithRatio,
-					scenario, logger);
-	
+
 			try {
-	
+
 				Instances originalData = this.getDataFromCSV(originalDatasetPath);
-	
+
 				// TestDataSet
 				Instances testData = originalData.testCV(folds, fold);
 				CSVSaver saver = new CSVSaver();
 				saver.setInstances(testData);
 				saver.setFile(new File(outputDirWithRatio + File.separator + "test-dataset.csv"));
 				saver.writeBatch();
-	
+
 				// BayesCentralDataset
 				Instances trainData = originalData.trainCV(folds, fold);
 				saver.resetOptions();
@@ -270,13 +269,141 @@ public class DatasetSplitter {
 				saver.setFile(new File(outputDirWithRatio + File.separator
 						+ "bayes-central-dataset.csv"));
 				saver.writeBatch();
-	
+				String fileName = outputDirWithRatio + File.separator
+						+ "bayes-central-dataset.csv";
+				CsvWriter w = new CsvWriter(new FileWriter(fileName, true), ',');
+				for (String[] essential : essentials) {
+						w.writeRecord(essential);
+				}
+				w.close();
+
 				// Agent datasets
 				CsvReader csvreader = new CsvReader(new FileReader(new File(originalDatasetPath)));
 				csvreader.readHeaders();
 				String[] headers = csvreader.getHeaders();
 				csvreader.close();
-	
+
+				for (int agents = minAgents; agents <= maxAgents; agents++) {
+					this.createExperimentInfoFile(folds, agents, originalDatasetPath, outputDirWithRatio,
+							scenario, logger);
+					HashMap<String, CsvWriter> writers = new HashMap<String, CsvWriter>();
+					String agentsDatasetsDir = outputDirWithRatio + File.separator + agents
+							+ "agents";
+					File f = new File(agentsDatasetsDir);
+					if (!f.isDirectory()) {
+						f.mkdirs();
+					}
+					for (int i = 0; i < agents; i++) {
+						fileName = agentsDatasetsDir + File.separator + "agent-" + i
+								+ "-dataset.csv";
+						CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
+						writer.writeRecord(headers);
+						writers.put("AGENT" + i, writer);
+						logger.fine("AGENT" + i + " dataset created.");
+					}
+
+					int agentCounter = 0;
+					for (int i = 0; i < trainData.numInstances(); i++) {
+						Instance instance = trainData.instance(i);
+						CsvWriter writer = writers.get("AGENT" + agentCounter);
+						String[] row = new String[instance.numAttributes()];
+						for (int a = 0; a < instance.numAttributes(); a++) {
+							row[a] = instance.stringValue(a);
+						}
+						writer.writeRecord(row);
+						agentCounter++;
+						if (agentCounter == agents) {
+							agentCounter = 0;
+						}
+					}
+
+					// Append essentials to all
+					for (String[] essential : essentials) {
+						for (CsvWriter writer : writers.values()) {
+							writer.writeRecord(essential);
+						}
+					}
+					for (CsvWriter writer : writers.values()) {
+						writer.close();
+					}
+				}
+
+			} catch (Exception e) {
+				logger.severe("Exception while splitting dataset. ->");
+				logger.severe(e.getMessage());
+				System.exit(1);
+			}
+
+			logger.finest("Dataset for fold " + fold + " created.");
+		}
+
+		logger.finer("<-- splitDataset()");
+
+	}
+
+	/**
+	 * This method splits the original dataset in many small datasets for a
+	 * given number of agents.
+	 * 
+	 * This method uses folds generated by WEKA and appends the language at the
+	 * end of the datasets (i.e. the essentials).
+	 * 
+	 * @param folds
+	 *            KFold number
+	 * @param agents
+	 *            number of agents to split the original dataset
+	 * @param originalDatasetPath
+	 * @param outputDir
+	 * @param scenario
+	 * @param logger
+	 */
+	public void splitDataset(int folds, int agents, String originalDatasetPath, String outputDir,
+			String scenario, Logger logger) {
+
+		int ratioint = (int) ((1 / (double) folds) * 100);
+		double roundedratio = ((double) ratioint) / 100;
+
+		// Look for essentials
+		List<String[]> essentials = this.getEssentials(originalDatasetPath, logger);
+
+		for (int fold = 0; fold < folds; fold++) {
+			String outputDirWithRatio = outputDir + "/" + roundedratio + "testRatio/iteration-"
+					+ fold;
+			File dir = new File(outputDirWithRatio);
+			if (!dir.exists() || !dir.isDirectory()) {
+				dir.mkdirs();
+			}
+
+			logger.finer("--> splitDataset()");
+			logger.fine("Creating experiment.info...");
+			this.createExperimentInfoFile(folds, agents, originalDatasetPath, outputDirWithRatio,
+					scenario, logger);
+
+			try {
+
+				Instances originalData = this.getDataFromCSV(originalDatasetPath);
+
+				// TestDataSet
+				Instances testData = originalData.testCV(folds, fold);
+				CSVSaver saver = new CSVSaver();
+				saver.setInstances(testData);
+				saver.setFile(new File(outputDirWithRatio + File.separator + "test-dataset.csv"));
+				saver.writeBatch();
+
+				// BayesCentralDataset
+				Instances trainData = originalData.trainCV(folds, fold);
+				saver.resetOptions();
+				saver.setInstances(trainData);
+				saver.setFile(new File(outputDirWithRatio + File.separator
+						+ "bayes-central-dataset.csv"));
+				saver.writeBatch();
+
+				// Agent datasets
+				CsvReader csvreader = new CsvReader(new FileReader(new File(originalDatasetPath)));
+				csvreader.readHeaders();
+				String[] headers = csvreader.getHeaders();
+				csvreader.close();
+
 				HashMap<String, CsvWriter> writers = new HashMap<String, CsvWriter>();
 				String agentsDatasetsDir = outputDirWithRatio + File.separator + agents + "agents";
 				File f = new File(agentsDatasetsDir);
@@ -291,7 +418,7 @@ public class DatasetSplitter {
 					writers.put("AGENT" + i, writer);
 					logger.fine("AGENT" + i + " dataset created.");
 				}
-	
+
 				int agentCounter = 0;
 				for (int i = 0; i < trainData.numInstances(); i++) {
 					Instance instance = trainData.instance(i);
@@ -306,7 +433,7 @@ public class DatasetSplitter {
 						agentCounter = 0;
 					}
 				}
-	
+
 				// Append essentials to all
 				String fileName = outputDirWithRatio + File.separator + "bayes-central-dataset.csv";
 				CsvWriter w = new CsvWriter(new FileWriter(fileName, true), ',');
@@ -319,16 +446,16 @@ public class DatasetSplitter {
 				for (CsvWriter writer : writers.values()) {
 					writer.close();
 				}
-	
+
 			} catch (Exception e) {
 				logger.severe("Exception while splitting dataset. ->");
 				logger.severe(e.getMessage());
 				System.exit(1);
 			}
-	
+
 			logger.finest("Dataset for fold " + fold + " created.");
 		}
-	
+
 		logger.finer("<-- splitDataset()");
 	}
 
@@ -416,7 +543,7 @@ public class DatasetSplitter {
 	 */
 	private void createExperimentInfoFile(int folds, int agents, String originalDatasetPath,
 			String outputDir, String scenario, Logger logger) {
-	
+
 		try {
 			String fileName = outputDir + "/" + agents + "agents/experiment.info";
 			File file = new File(fileName);
@@ -431,7 +558,7 @@ public class DatasetSplitter {
 			fw.write("Original dataset: " + originalDatasetPath + "\n");
 			fw.write("Experiment dataset folder: " + outputDir + "\n");
 			fw.close();
-	
+
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
 			System.exit(1);
