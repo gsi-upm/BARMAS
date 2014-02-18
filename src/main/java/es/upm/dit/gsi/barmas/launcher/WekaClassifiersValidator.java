@@ -12,10 +12,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.csvreader.CsvWriter;
-
-import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
-
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.Logistic;
@@ -35,12 +31,15 @@ import weka.classifiers.trees.J48;
 import weka.classifiers.trees.J48graft;
 import weka.classifiers.trees.LADTree;
 import weka.classifiers.trees.LMT;
-import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.REPTree;
 import weka.classifiers.trees.RandomForest;
 import weka.classifiers.trees.SimpleCart;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
+
+import com.csvreader.CsvWriter;
+
+import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
 
 /**
  * Project: barmas File:
@@ -77,6 +76,7 @@ public class WekaClassifiersValidator {
 	public static void main(String[] args) {
 
 		String dataset = "zoo";
+		// String dataset = "solarflare";
 		String simName = dataset + "-simulation";
 		String inputFolder = "../experiments/" + simName + "/input";
 		String outputFolder = "../experiments/" + simName + "/weka";
@@ -149,7 +149,11 @@ public class WekaClassifiersValidator {
 	 * 
 	 */
 	public void validateAllWekaClassifiers() {
-		List<Classifier> classifiers = this.getNewClassifiers();
+		 List<Classifier> classifiers = this.getNewClassifiers();
+
+//		List<Classifier> classifiers = new ArrayList<Classifier>();
+//		classifiers.add(new NBTree());
+
 		logger.info("Validating all classifiers for dataset: " + this.dataset);
 
 		for (Classifier classifier : classifiers) {
@@ -341,9 +345,9 @@ public class WekaClassifiersValidator {
 		classifier = new REPTree();
 		classifiers.add(classifier);
 
-		// NBTree
-		classifier = new NBTree();
-		classifiers.add(classifier);
+		// NBTree - Error with zoo dataset
+		// classifier = new NBTree(); 
+		// classifiers.add(classifier);
 
 		// SimpleLogistic
 		classifier = new SimpleLogistic();
