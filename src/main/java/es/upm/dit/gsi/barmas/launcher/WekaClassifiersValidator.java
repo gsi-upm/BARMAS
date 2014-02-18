@@ -148,10 +148,10 @@ public class WekaClassifiersValidator {
 	 * 
 	 */
 	public void validateAllWekaClassifiers() {
-		 List<Classifier> classifiers = this.getNewClassifiers();
+		List<Classifier> classifiers = this.getNewClassifiers();
 
-//		List<Classifier> classifiers = new ArrayList<Classifier>();
-//		classifiers.add(new NBTree());
+		// List<Classifier> classifiers = new ArrayList<Classifier>();
+		// classifiers.add(new NBTree());
 
 		logger.info("Validating all classifiers for dataset: " + this.dataset);
 
@@ -345,7 +345,7 @@ public class WekaClassifiersValidator {
 		classifiers.add(classifier);
 
 		// NBTree - Error with zoo dataset
-		// classifier = new NBTree(); 
+		// classifier = new NBTree();
 		// classifiers.add(classifier);
 
 		// SimpleLogistic
@@ -365,12 +365,12 @@ public class WekaClassifiersValidator {
 		classifiers.add(classifier);
 
 		// PART - Error with zoo dataset
-//		classifier = new PART();
-//		classifiers.add(classifier);
+		// classifier = new PART();
+		// classifiers.add(classifier);
 
-		// RandomForest
-		classifier = new RandomForest();
-		classifiers.add(classifier);
+		// RandomForest - Error with zoo dataset
+		// classifier = new RandomForest();
+		// classifiers.add(classifier);
 
 		// LMT
 		classifier = new LMT();
