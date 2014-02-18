@@ -281,24 +281,26 @@ public class DBParser {
 				counter++;
 			}
 		} catch (SQLException se) {
-			// Handle errors for JDBC
-			se.printStackTrace();
+			logger.severe("Problem with an SQL Exception");
+			logger.severe(se.getMessage());
 		} catch (Exception e) {
-			// Handle errors for Class.forName
-			e.printStackTrace();
+			logger.severe("Problem with an Exception");
+			logger.severe(e.getMessage());
 		}
 		try {
 			if (stmt != null) {
 				conn.close();
 			}
 		} catch (SQLException se) {
-			// do nothing
+			logger.severe("Problem with an SQL Exception when closing connection");
+			logger.severe(se.getMessage());
 		}
 		try {
 			if (conn != null)
 				conn.close();
 		} catch (SQLException se) {
-			se.printStackTrace();
+			logger.severe("Problem with an SQL Exception when closing connection");
+			logger.severe(se.getMessage());
 		}// end finally try
 	}
 
@@ -344,24 +346,27 @@ public class DBParser {
 			String sql = "CREATE DATABASE barmas_experiments";
 			stmt.executeUpdate(sql);
 		} catch (SQLException se) {
-			// Handle errors for JDBC
+			logger.severe("Problem with an SQL Exception");
+			logger.severe(se.getMessage());
 			se.printStackTrace();
 		} catch (Exception e) {
-			// Handle errors for Class.forName
-			e.printStackTrace();
+			logger.severe("Problem with an Exception");
+			logger.severe(e.getMessage());
 		}
 		try {
 			if (stmt != null) {
 				conn.close();
 			}
 		} catch (SQLException se) {
-			// do nothing
+			logger.severe("Problem with an SQL Exception when closing connection");
+			logger.severe(se.getMessage());
 		}
 		try {
 			if (conn != null)
 				conn.close();
 		} catch (SQLException se) {
-			se.printStackTrace();
+			logger.severe("Problem with an SQL Exception when closing connection");
+			logger.severe(se.getMessage());
 		}// end finally try
 	}
 }// end JDBCExample
