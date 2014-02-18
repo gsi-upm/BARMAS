@@ -365,9 +365,9 @@ public class WekaClassifiersValidator {
 		classifier = new DecisionStump();
 		classifiers.add(classifier);
 
-		// PART
-		classifier = new PART();
-		classifiers.add(classifier);
+		// PART - Error with zoo dataset
+//		classifier = new PART();
+//		classifiers.add(classifier);
 
 		// RandomForest
 		classifier = new RandomForest();
