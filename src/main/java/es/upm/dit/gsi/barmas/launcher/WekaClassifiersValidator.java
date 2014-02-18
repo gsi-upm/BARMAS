@@ -23,6 +23,7 @@ import weka.classifiers.rules.ConjunctiveRule;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.JRip;
 import weka.classifiers.rules.OneR;
+import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.BFTree;
 import weka.classifiers.trees.DecisionStump;
@@ -30,6 +31,7 @@ import weka.classifiers.trees.J48;
 import weka.classifiers.trees.J48graft;
 import weka.classifiers.trees.LADTree;
 import weka.classifiers.trees.LMT;
+import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.REPTree;
 import weka.classifiers.trees.RandomForest;
 import weka.classifiers.trees.SimpleCart;
@@ -76,11 +78,16 @@ public class WekaClassifiersValidator {
 
 		String dataset = "zoo";
 		// String dataset = "solarflare";
+		// String dataset = "marketing";
+		// String dataset = "nursery";
+		// String dataset = "mushroom";
+		// String dataset = "chess";
+		// String dataset = "kowlancz02";
 		String simName = dataset + "-simulation";
 		String inputFolder = "../experiments/" + simName + "/input";
 		String outputFolder = "../experiments/" + simName + "/weka";
 		int folds = 10;
-		int maxAgents = 6;
+		int maxAgents = 5;
 		int minAgents = 2;
 		int maxLEBA = 10;
 		int minLEBA = 0;
@@ -150,23 +157,40 @@ public class WekaClassifiersValidator {
 	public void validateAllWekaClassifiers() {
 		List<Classifier> classifiers = this.getNewClassifiers();
 
-		// List<Classifier> classifiers = new ArrayList<Classifier>();
-		// classifiers.add(new NBTree());
-
 		logger.info("Validating all classifiers for dataset: " + this.dataset);
 
+		List<Classifier> eliminateds = new ArrayList<Classifier>();
+
 		for (Classifier classifier : classifiers) {
-			this.validateClassifier(classifier);
+			try {
+				this.validateClassifier(classifier);
+			} catch (Exception e) {
+				logger.info("Eliminating classifier: " + classifier.getClass().getSimpleName());
+				eliminateds.add(classifier);
+			}
+		}
+
+		classifiers.removeAll(eliminateds);
+
+		logger.info("Dataset: " + this.dataset + " These are the survivals:");
+		for (Classifier classifier : classifiers) {
+			logger.info("--> " + classifier.getClass().getSimpleName());
+		}
+		logger.info("<----------------------------------------------->");
+		logger.info("Dataset: " + this.dataset + " These are the eliminated algorithms:");
+		for (Classifier classifier : eliminateds) {
+			logger.info("--> " + classifier.getClass().getSimpleName());
 		}
 
 		logger.info("All classifiers validated.");
 	}
 
 	/**
+	 * @throws Exception
 	 * 
 	 * 
 	 */
-	public void validateClassifier(Classifier classifier) {
+	public void validateClassifier(Classifier classifier) throws Exception {
 
 		String classifierName = classifier.getClass().getSimpleName();
 
@@ -178,6 +202,10 @@ public class WekaClassifiersValidator {
 		try {
 			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
 				// Central Agent
+
+				logger.info("Starting validation for BayesCentralAgent dataset with "
+						+ classifierName + " done for dataset: " + this.dataset + " with LEBA="
+						+ leba);
 				double[] results = new double[2];
 				for (int iteration = 0; iteration < this.folds; iteration++) {
 					String inputPath = this.inputFolder + "/" + roundedratio
@@ -220,6 +248,8 @@ public class WekaClassifiersValidator {
 
 				// Agents combinations
 				for (int i = this.minAgents; i <= this.maxAgents; i++) {
+					logger.info("Validation for agents datasets with " + classifierName
+							+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
 					HashMap<Integer, Double> successRatio = new HashMap<Integer, Double>();
 					HashMap<Integer, Double> wrongRatio = new HashMap<Integer, Double>();
 					for (int j = 0; j < i; j++) {
@@ -278,9 +308,11 @@ public class WekaClassifiersValidator {
 				logger.info("<-- Validation for classfier " + classifierName
 						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.severe("Problem validating classifier " + classifierName);
 			logger.severe(e.getMessage());
+			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -290,9 +322,10 @@ public class WekaClassifiersValidator {
 	 * @param testData
 	 * @param leba
 	 * @return [0] = pctCorrect, [1] = pctIncorrect
+	 * @throws Exception
 	 */
 	public double[] getValidation(Classifier cls, Instances trainingData, Instances testData,
-			int leba) {
+			int leba) throws Exception {
 
 		Instances testDataWithLEBA = new Instances(testData);
 
@@ -309,7 +342,7 @@ public class WekaClassifiersValidator {
 		} catch (Exception e) {
 			logger.severe("Problems training model for " + cls.getClass().getSimpleName());
 			logger.severe(e.getMessage());
-			System.exit(1);
+			throw e;
 		}
 
 		Evaluation eval;
@@ -324,9 +357,9 @@ public class WekaClassifiersValidator {
 		} catch (Exception e) {
 			logger.severe("Problems evaluating model for " + cls.getClass().getSimpleName());
 			logger.severe(e.getMessage());
-			System.exit(1);
+			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 
 	/**
@@ -345,8 +378,8 @@ public class WekaClassifiersValidator {
 		classifiers.add(classifier);
 
 		// NBTree - Error with zoo dataset
-		// classifier = new NBTree();
-		// classifiers.add(classifier);
+		classifier = new NBTree();
+		classifiers.add(classifier);
 
 		// SimpleLogistic
 		classifier = new SimpleLogistic();
@@ -365,12 +398,12 @@ public class WekaClassifiersValidator {
 		classifiers.add(classifier);
 
 		// PART - Error with zoo dataset
-		// classifier = new PART();
-		// classifiers.add(classifier);
+		classifier = new PART();
+		classifiers.add(classifier);
 
 		// RandomForest - Error with zoo dataset
-		// classifier = new RandomForest();
-		// classifiers.add(classifier);
+		classifier = new RandomForest();
+		classifiers.add(classifier);
 
 		// LMT
 		classifier = new LMT();
