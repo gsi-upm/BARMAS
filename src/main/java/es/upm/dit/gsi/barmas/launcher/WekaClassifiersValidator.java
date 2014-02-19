@@ -3,7 +3,9 @@
  */
 package es.upm.dit.gsi.barmas.launcher;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jzy3d.io.FileReader;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -164,11 +168,11 @@ public class WekaClassifiersValidator {
 		} else {
 			logger.info("The following algorithms are going to be tested: ");
 			for (Classifier classifier : classifiers) {
-				logger.info("--> " + classifier.getClass().getSimpleName());
+				logger.info(">> " + classifier.getClass().getSimpleName());
 			}
 		}
 
-		logger.info("Validating all classifiers for dataset: " + this.dataset);
+		logger.info(">> Validating all classifiers for dataset: " + this.dataset);
 
 		List<Classifier> eliminateds = new ArrayList<Classifier>();
 
@@ -176,24 +180,24 @@ public class WekaClassifiersValidator {
 			try {
 				this.validateClassifier(classifier);
 			} catch (Exception e) {
-				logger.info("Eliminating classifier: " + classifier.getClass().getSimpleName());
+				logger.info(">> Eliminating classifier: " + classifier.getClass().getSimpleName());
 				eliminateds.add(classifier);
 			}
 		}
 
 		classifiers.removeAll(eliminateds);
 
-		logger.info("Dataset: " + this.dataset + " These are the survivals:");
+		logger.info(">> Dataset: " + this.dataset + " -> These are the survivals:");
 		for (Classifier classifier : classifiers) {
 			logger.info("--> " + classifier.getClass().getSimpleName());
 		}
 		logger.info("<----------------------------------------------->");
-		logger.info("Dataset: " + this.dataset + " These are the eliminated algorithms:");
+		logger.info(">> Dataset: " + this.dataset + " -> These are the eliminated algorithms:");
 		for (Classifier classifier : eliminateds) {
 			logger.info("--> " + classifier.getClass().getSimpleName());
 		}
 
-		logger.info("All classifiers validated.");
+		logger.info("<-- All classifiers validated.");
 		return classifiers;
 	}
 
