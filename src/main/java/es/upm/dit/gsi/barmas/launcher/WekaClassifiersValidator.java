@@ -94,7 +94,7 @@ public class WekaClassifiersValidator {
 
 			WekaClassifiersValidator validator = new WekaClassifiersValidator(dataset, inputFolder,
 					outputFolder, folds, minAgents, maxAgents, minLEBA, maxLEBA);
-			classifiers = validator.validateAllWekaClassifiers(classifiers);
+			classifiers = validator.validateWekaClassifiers(classifiers);
 		}
 	}
 
@@ -115,9 +115,9 @@ public class WekaClassifiersValidator {
 		this.dataset = simulationID;
 		this.inputFolder = inputPath;
 		this.outputFolder = outputPath;
-		this.logger = Logger.getLogger("WekaClassifierValidator");
-		LogConfigurator.log2File(logger, "WekaClassifierValidator", Level.ALL, Level.INFO,
-				this.outputFolder);
+		this.logger = Logger.getLogger("WekaClassifierValidator-" + this.dataset);
+		LogConfigurator.log2File(logger, "WekaClassifierValidator-" + this.dataset, Level.ALL,
+				Level.INFO, this.outputFolder);
 
 		logger.info("--> Configuring WekaClassifierValidator...");
 		this.resultsFilePath = outputPath + "/weka-results.csv";
@@ -154,12 +154,18 @@ public class WekaClassifiersValidator {
 	/**
 	 * 
 	 */
-	public List<Classifier> validateAllWekaClassifiers(List<Classifier> classifiers) {
+	public List<Classifier> validateWekaClassifiers(List<Classifier> classifiers) {
 
 		if (classifiers == null) {
 			classifiers = this.getNewClassifiers();
+			logger.info("All classifiers are going to be validated, because no list of classifiers has been provided.");
 		} else if (classifiers.isEmpty()) {
 			logger.warning("No algorithms available!! All of them were eliminated :( Jop");
+		} else {
+			logger.info("The following algorithms are going to be tested: ");
+			for (Classifier classifier : classifiers) {
+				logger.info("--> " + classifier.getClass().getSimpleName());
+			}
 		}
 
 		logger.info("Validating all classifiers for dataset: " + this.dataset);
