@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,12 +22,18 @@ import weka.classifiers.functions.SimpleLogistic;
 import weka.classifiers.rules.ConjunctiveRule;
 import weka.classifiers.rules.DTNB;
 import weka.classifiers.rules.JRip;
+import weka.classifiers.rules.OneR;
+import weka.classifiers.rules.PART;
 import weka.classifiers.rules.ZeroR;
 import weka.classifiers.trees.BFTree;
 import weka.classifiers.trees.DecisionStump;
+import weka.classifiers.trees.J48;
+import weka.classifiers.trees.J48graft;
 import weka.classifiers.trees.LADTree;
 import weka.classifiers.trees.LMT;
+import weka.classifiers.trees.NBTree;
 import weka.classifiers.trees.REPTree;
+import weka.classifiers.trees.RandomForest;
 import weka.classifiers.trees.SimpleCart;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -58,8 +65,8 @@ public class WekaClassifiersValidator {
 	private String resultsFilePath;
 	private CsvWriter writer;
 	private int folds;
-//	private int minAgents;
-//	private int maxAgents;
+	// private int minAgents;
+	// private int maxAgents;
 	private int minLEBA;
 	private int maxLEBA;
 	private int columns;
@@ -211,22 +218,36 @@ public class WekaClassifiersValidator {
 		String[] row;
 
 		try {
-			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
-				// Central Agent
+			// Central Agent
 
-				logger.info("Starting validation for BayesCentralAgent dataset with "
-						+ classifierName + " done for dataset: " + this.dataset + " with LEBA="
-						+ leba);
-				double[] results = new double[2];
-				for (int iteration = 0; iteration < this.folds; iteration++) {
-					String inputPath = this.inputFolder + "/" + roundedratio
-							+ "testRatio/iteration-" + iteration;
-					Instances testData = this.getDataFromCSV(inputPath + "/test-dataset.csv");
-					Instances trainData = this.getDataFromCSV(inputPath
-							+ "/bayes-central-dataset.csv");
+			HashMap<Integer, double[][]> resultsMap = new HashMap<Integer, double[][]>();
+			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+				resultsMap.put(leba, new double[this.folds][2]);
+			}
+			logger.info("Starting validation for BayesCentralAgent dataset with " + classifierName
+					+ " done for dataset: " + this.dataset);
+			for (int iteration = 0; iteration < this.folds; iteration++) {
+				String inputPath = this.inputFolder + "/" + roundedratio + "testRatio/iteration-"
+						+ iteration;
+				Instances testData = this.getDataFromCSV(inputPath + "/test-dataset.csv");
+				Instances trainData = this.getDataFromCSV(inputPath + "/bayes-central-dataset.csv");
+				try {
+					logger.info("Learning model...");
+					classifier.buildClassifier(trainData);
+					logger.info("Finishing learning process. Model built for classifier "
+							+ classifierName + " in iteration " + iteration);
+				} catch (Exception e) {
+					logger.severe("Problems training model for "
+							+ classifier.getClass().getSimpleName());
+					logger.severe(e.getMessage());
+					throw e;
+				}
+
+				for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+					double[][] results = resultsMap.get(leba);
 					double[] pcts = this.getValidation(classifier, trainData, testData, leba);
-					results[0] = results[0] + pcts[0];
-					results[1] = results[1] + pcts[1];
+					results[iteration][0] = results[iteration][0] + pcts[0];
+					results[iteration][1] = results[iteration][1] + pcts[1];
 
 					row = new String[this.columns];
 					row[0] = this.dataset;
@@ -241,84 +262,98 @@ public class WekaClassifiersValidator {
 					writer.writeRecord(row);
 				}
 
-				row = new String[this.columns];
-				row[0] = this.dataset;
-				row[1] = Integer.toString(this.folds);
-				row[2] = classifierName;
-				row[3] = "AVERAGE";
-				row[4] = Double.toString(results[0] / this.folds);
-				row[5] = Double.toString(results[1] / this.folds);
-				row[6] = "BayesCentralAgent";
-				row[7] = "1";
-				row[8] = Integer.toString(leba);
-				writer.writeRecord(row);
-
-				logger.info("Validation for BayesCentralAgent dataset with " + classifierName
-						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
-				writer.flush();
-
-//				// Agents combinations
-//				for (int i = this.minAgents; i <= this.maxAgents; i++) {
-//					logger.info("Validation for agents datasets with " + classifierName
-//							+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
-//					HashMap<Integer, Double> successRatio = new HashMap<Integer, Double>();
-//					HashMap<Integer, Double> wrongRatio = new HashMap<Integer, Double>();
-//					for (int j = 0; j < i; j++) {
-//						successRatio.put(j, 0.0);
-//						wrongRatio.put(j, 0.0);
-//					}
-//					for (int iteration = 0; iteration < this.folds; iteration++) {
-//						String inputPath = this.inputFolder + "/" + roundedratio
-//								+ "testRatio/iteration-" + iteration;
-//						Instances testData = this.getDataFromCSV(inputPath + "/test-dataset.csv");
-//						for (int j = 0; j < i; j++) {
-//							Instances trainData = this.getDataFromCSV(inputPath + "/" + i
-//									+ "agents/agent-" + j + "-dataset.csv");
-//							double[] pcts = this.getValidation(classifier, trainData, testData,
-//									leba);
-//							successRatio.put(j, successRatio.get(j) + pcts[0]);
-//							wrongRatio.put(j, wrongRatio.get(j) + pcts[1]);
-//
-//							row = new String[this.columns];
-//							row[0] = this.dataset;
-//							row[1] = Integer.toString(this.folds);
-//							row[2] = classifierName;
-//							row[3] = Integer.toString(iteration);
-//							row[4] = Double.toString(pcts[0]);
-//							row[5] = Double.toString(pcts[1]);
-//							row[6] = "Agent" + j;
-//							row[7] = Integer.toString(i);
-//							row[8] = Integer.toString(leba);
-//							writer.writeRecord(row);
-//						}
-//
-//						writer.flush();
-//					}
-//
-//					for (int j = 0; j < i; j++) {
-//						row = new String[this.columns];
-//						row[0] = this.dataset;
-//						row[1] = Integer.toString(this.folds);
-//						row[2] = classifierName;
-//						row[3] = "AVERAGE";
-//						row[4] = Double.toString(successRatio.get(j) / this.folds);
-//						row[5] = Double.toString(wrongRatio.get(j) / this.folds);
-//						row[6] = "Agent" + j;
-//						row[7] = Integer.toString(i);
-//						row[8] = Integer.toString(leba);
-//						writer.writeRecord(row);
-//
-//						logger.info("Validation for Agent" + j + " dataset (for " + i
-//								+ " agents configuration) with " + classifierName
-//								+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
-//					}
-//
-//					writer.flush();
-//				}
+				// // Agents combinations
+				// for (int i = this.minAgents; i <= this.maxAgents; i++) {
+				// logger.info("Validation for agents datasets with " +
+				// classifierName
+				// + " done for dataset: " + this.dataset + " with LEBA=" +
+				// leba);
+				// HashMap<Integer, Double> successRatio = new HashMap<Integer,
+				// Double>();
+				// HashMap<Integer, Double> wrongRatio = new HashMap<Integer,
+				// Double>();
+				// for (int j = 0; j < i; j++) {
+				// successRatio.put(j, 0.0);
+				// wrongRatio.put(j, 0.0);
+				// }
+				// for (int iteration = 0; iteration < this.folds; iteration++)
+				// {
+				// String inputPath = this.inputFolder + "/" + roundedratio
+				// + "testRatio/iteration-" + iteration;
+				// Instances testData = this.getDataFromCSV(inputPath +
+				// "/test-dataset.csv");
+				// for (int j = 0; j < i; j++) {
+				// Instances trainData = this.getDataFromCSV(inputPath + "/" + i
+				// + "agents/agent-" + j + "-dataset.csv");
+				// double[] pcts = this.getValidation(classifier, trainData,
+				// testData,
+				// leba);
+				// successRatio.put(j, successRatio.get(j) + pcts[0]);
+				// wrongRatio.put(j, wrongRatio.get(j) + pcts[1]);
+				//
+				// row = new String[this.columns];
+				// row[0] = this.dataset;
+				// row[1] = Integer.toString(this.folds);
+				// row[2] = classifierName;
+				// row[3] = Integer.toString(iteration);
+				// row[4] = Double.toString(pcts[0]);
+				// row[5] = Double.toString(pcts[1]);
+				// row[6] = "Agent" + j;
+				// row[7] = Integer.toString(i);
+				// row[8] = Integer.toString(leba);
+				// writer.writeRecord(row);
+				// }
+				//
+				// writer.flush();
+				// }
+				//
+				// for (int j = 0; j < i; j++) {
+				// row = new String[this.columns];
+				// row[0] = this.dataset;
+				// row[1] = Integer.toString(this.folds);
+				// row[2] = classifierName;
+				// row[3] = "AVERAGE";
+				// row[4] = Double.toString(successRatio.get(j) / this.folds);
+				// row[5] = Double.toString(wrongRatio.get(j) / this.folds);
+				// row[6] = "Agent" + j;
+				// row[7] = Integer.toString(i);
+				// row[8] = Integer.toString(leba);
+				// writer.writeRecord(row);
+				//
+				// logger.info("Validation for Agent" + j + " dataset (for " + i
+				// + " agents configuration) with " + classifierName
+				// + " done for dataset: " + this.dataset + " with LEBA=" +
+				// leba);
+				// }
+				//
+				// writer.flush();
+				// }
 
 				logger.info("<-- Validation for classfier " + classifierName
-						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
+						+ " done for dataset: " + this.dataset + " for iteration " + iteration);
 			}
+
+			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+				for (int iteration = 0; iteration < this.folds; iteration++) {
+					double[][] results = resultsMap.get(leba);
+					row = new String[this.columns];
+					row[0] = this.dataset;
+					row[1] = Integer.toString(this.folds);
+					row[2] = classifierName;
+					row[3] = "AVERAGE";
+					row[4] = Double.toString(results[iteration][0] / this.folds);
+					row[5] = Double.toString(results[iteration][1] / this.folds);
+					row[6] = "BayesCentralAgent";
+					row[7] = "1";
+					row[8] = Integer.toString(leba);
+					writer.writeRecord(row);
+
+					logger.info("Validation for BayesCentralAgent dataset with " + classifierName
+							+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
+					writer.flush();
+				}
+			}
+
 		} catch (Exception e) {
 			logger.severe("Problem validating classifier " + classifierName);
 			logger.severe(e.getMessage());
@@ -348,17 +383,10 @@ public class WekaClassifiersValidator {
 			}
 		}
 
-		try {
-			cls.buildClassifier(trainingData);
-		} catch (Exception e) {
-			logger.severe("Problems training model for " + cls.getClass().getSimpleName());
-			logger.severe(e.getMessage());
-			throw e;
-		}
-
 		Evaluation eval;
 		try {
 			eval = new Evaluation(trainingData);
+			logger.info("Evaluating model with leba: " + leba);
 			eval.evaluateModel(cls, testDataWithLEBA);
 
 			double[] results = new double[2];
@@ -440,33 +468,33 @@ public class WekaClassifiersValidator {
 		classifier = new SMO();
 		classifiers.add(classifier);
 
-		// // Error with zoo dataset
-		//
-		// // NBTree
-		// classifier = new NBTree();
-		// classifiers.add(classifier);
-		//
-		// // PART
-		// classifier = new PART();
-		// classifiers.add(classifier);
-		//
-		// // RandomForest
-		// classifier = new RandomForest();
-		// classifiers.add(classifier);
-		//
-		// // J48
-		// classifier = new J48();
-		// ((J48) classifier).setUnpruned(true);
-		// classifiers.add(classifier);
-		//
-		// // J48Graft
-		// classifier = new J48graft();
-		// ((J48graft) classifier).setUnpruned(true);
-		// classifiers.add(classifier);
-		//
-		// // OneR
-		// classifier = new OneR();
-		// classifiers.add(classifier);
+		 // CAUTION: Error with zoo dataset
+		
+		 // NBTree
+		 classifier = new NBTree();
+		 classifiers.add(classifier);
+		
+		 // PART
+		 classifier = new PART();
+		 classifiers.add(classifier);
+		
+		 // RandomForest
+		 classifier = new RandomForest();
+		 classifiers.add(classifier);
+		
+		 // J48
+		 classifier = new J48();
+		 ((J48) classifier).setUnpruned(true);
+		 classifiers.add(classifier);
+		
+		 // J48Graft
+		 classifier = new J48graft();
+		 ((J48graft) classifier).setUnpruned(true);
+		 classifiers.add(classifier);
+		
+		 // OneR
+		 classifier = new OneR();
+		 classifiers.add(classifier);
 
 		return classifiers;
 
