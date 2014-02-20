@@ -46,9 +46,9 @@ public class DBParser {
 
 		// String dataset = "zoo";
 		// String dataset = "kowlancz02";
-		// String dataset = "mushroom";
+		String dataset = "mushroom";
 		// String dataset = "chess";
-		String dataset = "solarflare";
+		// String dataset = "solarflare";
 		// String dataset = "nursery";
 		// String dataset = "marketing";
 
