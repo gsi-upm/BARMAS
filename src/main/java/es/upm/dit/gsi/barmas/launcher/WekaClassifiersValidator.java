@@ -3,18 +3,13 @@
  */
 package es.upm.dit.gsi.barmas.launcher;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.jzy3d.io.FileReader;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
@@ -63,8 +58,8 @@ public class WekaClassifiersValidator {
 	private String resultsFilePath;
 	private CsvWriter writer;
 	private int folds;
-	private int minAgents;
-	private int maxAgents;
+//	private int minAgents;
+//	private int maxAgents;
 	private int minLEBA;
 	private int maxLEBA;
 	private int columns;
@@ -127,8 +122,8 @@ public class WekaClassifiersValidator {
 		this.resultsFilePath = outputPath + "/weka-results.csv";
 		this.columns = 9;
 		this.folds = folds;
-		this.minAgents = minAgents;
-		this.maxAgents = maxAgents;
+		// this.minAgents = minAgents;
+		// this.maxAgents = maxAgents;
 		this.minLEBA = minLEBA;
 		this.maxLEBA = maxLEBA;
 		File dir = new File(this.outputFolder);
@@ -262,64 +257,64 @@ public class WekaClassifiersValidator {
 						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
 				writer.flush();
 
-				// Agents combinations
-				for (int i = this.minAgents; i <= this.maxAgents; i++) {
-					logger.info("Validation for agents datasets with " + classifierName
-							+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
-					HashMap<Integer, Double> successRatio = new HashMap<Integer, Double>();
-					HashMap<Integer, Double> wrongRatio = new HashMap<Integer, Double>();
-					for (int j = 0; j < i; j++) {
-						successRatio.put(j, 0.0);
-						wrongRatio.put(j, 0.0);
-					}
-					for (int iteration = 0; iteration < this.folds; iteration++) {
-						String inputPath = this.inputFolder + "/" + roundedratio
-								+ "testRatio/iteration-" + iteration;
-						Instances testData = this.getDataFromCSV(inputPath + "/test-dataset.csv");
-						for (int j = 0; j < i; j++) {
-							Instances trainData = this.getDataFromCSV(inputPath + "/" + i
-									+ "agents/agent-" + j + "-dataset.csv");
-							double[] pcts = this.getValidation(classifier, trainData, testData,
-									leba);
-							successRatio.put(j, successRatio.get(j) + pcts[0]);
-							wrongRatio.put(j, wrongRatio.get(j) + pcts[1]);
-
-							row = new String[this.columns];
-							row[0] = this.dataset;
-							row[1] = Integer.toString(this.folds);
-							row[2] = classifierName;
-							row[3] = Integer.toString(iteration);
-							row[4] = Double.toString(pcts[0]);
-							row[5] = Double.toString(pcts[1]);
-							row[6] = "Agent" + j;
-							row[7] = Integer.toString(i);
-							row[8] = Integer.toString(leba);
-							writer.writeRecord(row);
-						}
-
-						writer.flush();
-					}
-
-					for (int j = 0; j < i; j++) {
-						row = new String[this.columns];
-						row[0] = this.dataset;
-						row[1] = Integer.toString(this.folds);
-						row[2] = classifierName;
-						row[3] = "AVERAGE";
-						row[4] = Double.toString(successRatio.get(j) / this.folds);
-						row[5] = Double.toString(wrongRatio.get(j) / this.folds);
-						row[6] = "Agent" + j;
-						row[7] = Integer.toString(i);
-						row[8] = Integer.toString(leba);
-						writer.writeRecord(row);
-
-						logger.info("Validation for Agent" + j + " dataset (for " + i
-								+ " agents configuration) with " + classifierName
-								+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
-					}
-
-					writer.flush();
-				}
+//				// Agents combinations
+//				for (int i = this.minAgents; i <= this.maxAgents; i++) {
+//					logger.info("Validation for agents datasets with " + classifierName
+//							+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
+//					HashMap<Integer, Double> successRatio = new HashMap<Integer, Double>();
+//					HashMap<Integer, Double> wrongRatio = new HashMap<Integer, Double>();
+//					for (int j = 0; j < i; j++) {
+//						successRatio.put(j, 0.0);
+//						wrongRatio.put(j, 0.0);
+//					}
+//					for (int iteration = 0; iteration < this.folds; iteration++) {
+//						String inputPath = this.inputFolder + "/" + roundedratio
+//								+ "testRatio/iteration-" + iteration;
+//						Instances testData = this.getDataFromCSV(inputPath + "/test-dataset.csv");
+//						for (int j = 0; j < i; j++) {
+//							Instances trainData = this.getDataFromCSV(inputPath + "/" + i
+//									+ "agents/agent-" + j + "-dataset.csv");
+//							double[] pcts = this.getValidation(classifier, trainData, testData,
+//									leba);
+//							successRatio.put(j, successRatio.get(j) + pcts[0]);
+//							wrongRatio.put(j, wrongRatio.get(j) + pcts[1]);
+//
+//							row = new String[this.columns];
+//							row[0] = this.dataset;
+//							row[1] = Integer.toString(this.folds);
+//							row[2] = classifierName;
+//							row[3] = Integer.toString(iteration);
+//							row[4] = Double.toString(pcts[0]);
+//							row[5] = Double.toString(pcts[1]);
+//							row[6] = "Agent" + j;
+//							row[7] = Integer.toString(i);
+//							row[8] = Integer.toString(leba);
+//							writer.writeRecord(row);
+//						}
+//
+//						writer.flush();
+//					}
+//
+//					for (int j = 0; j < i; j++) {
+//						row = new String[this.columns];
+//						row[0] = this.dataset;
+//						row[1] = Integer.toString(this.folds);
+//						row[2] = classifierName;
+//						row[3] = "AVERAGE";
+//						row[4] = Double.toString(successRatio.get(j) / this.folds);
+//						row[5] = Double.toString(wrongRatio.get(j) / this.folds);
+//						row[6] = "Agent" + j;
+//						row[7] = Integer.toString(i);
+//						row[8] = Integer.toString(leba);
+//						writer.writeRecord(row);
+//
+//						logger.info("Validation for Agent" + j + " dataset (for " + i
+//								+ " agents configuration) with " + classifierName
+//								+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
+//					}
+//
+//					writer.flush();
+//				}
 
 				logger.info("<-- Validation for classfier " + classifierName
 						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
