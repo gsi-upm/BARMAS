@@ -588,9 +588,7 @@ public class WekaClassifiersValidator {
 		// SMO
 		classifier = new SMO();
 		classifiers.add(classifier);
-
-		// CAUTION: Error with zoo dataset
-
+		
 		// NBTree
 		classifier = new NBTree();
 		classifiers.add(classifier);
