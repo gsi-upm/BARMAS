@@ -511,115 +511,115 @@ public class WekaClassifiersValidator {
 		classifier = new NBTree();
 		classifiers.add(classifier);
 
-		// // PART
-		// classifier = new PART();
-		// classifiers.add(classifier);
-		//
-		// // J48
-		// classifier = new J48();
-		// ((J48) classifier).setUnpruned(true);
-		// classifiers.add(classifier);
-		//
-		// // J48Graft
-		// classifier = new J48graft();
-		// ((J48graft) classifier).setUnpruned(true);
-		// classifiers.add(classifier);
-		//
-		// // OneR
-		// classifier = new OneR();
-		// classifiers.add(classifier);
-		//
-		// // LADTree
-		// classifier = new LADTree();
-		// classifiers.add(classifier);
-		//
-		// // REPTree
-		// classifier = new REPTree();
-		// classifiers.add(classifier);
-		//
-		// // SimpleLogistic
-		// classifier = new SimpleLogistic();
-		// classifiers.add(classifier);
-		//
-		// // Logistic
-		// classifier = new Logistic();
-		// classifiers.add(classifier);
-		//
-		// // MultiLayerPerceptron
-		// classifier = new MultilayerPerceptron();
-		// classifiers.add(classifier);
-		//
-		// // DecisionStump
-		// classifier = new DecisionStump();
-		// classifiers.add(classifier);
-		//
-		// // LMT
-		// classifier = new LMT();
-		// classifiers.add(classifier);
-		//
-		// // SimpleCart
-		// classifier = new SimpleCart();
-		// classifiers.add(classifier);
-		//
-		// // BFTree
-		// classifier = new BFTree();
-		// classifiers.add(classifier);
-		//
-		// // RBFNetwork
-		// classifier = new RBFNetwork();
-		// classifiers.add(classifier);
-		//
-		// // DTNB
-		// classifier = new DTNB();
-		// classifiers.add(classifier);
-		//
-		// // Jrip
-		// classifier = new JRip();
-		// classifiers.add(classifier);
-		//
-		// // Conjunction Rule
-		// classifier = new ConjunctiveRule();
-		// classifiers.add(classifier);
-		//
-		// // ZeroR
-		// classifier = new ZeroR();
-		// classifiers.add(classifier);
-		//
-		// // SMO
-		// classifier = new SMO();
-		// classifiers.add(classifier);
-		//
-		// // CAUTION: Error with zoo dataset
-		//
-		// // NBTree
-		// classifier = new NBTree();
-		// classifiers.add(classifier);
-		//
-		// // PART
-		// classifier = new PART();
-		// classifiers.add(classifier);
-		//
-		// // RandomForest
-		// classifier = new RandomForest();
-		// classifiers.add(classifier);
-		//
-		// // J48
-		// classifier = new J48();
-		// ((J48) classifier).setUnpruned(true);
-		// classifiers.add(classifier);
-		//
-		// // J48Graft
-		// classifier = new J48graft();
-		// ((J48graft) classifier).setUnpruned(true);
-		// classifiers.add(classifier);
-		//
-		// // OneR
-		// classifier = new OneR();
-		// classifiers.add(classifier);
-		//
-		// // RandomForest
-		// classifier = new RandomForest();
-		// classifiers.add(classifier);
+		// PART
+		classifier = new PART();
+		classifiers.add(classifier);
+
+		// J48
+		classifier = new J48();
+		((J48) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// J48Graft
+		classifier = new J48graft();
+		((J48graft) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// OneR
+		classifier = new OneR();
+		classifiers.add(classifier);
+
+		// LADTree
+		classifier = new LADTree();
+		classifiers.add(classifier);
+
+		// REPTree
+		classifier = new REPTree();
+		classifiers.add(classifier);
+
+		// SimpleLogistic
+		classifier = new SimpleLogistic();
+		classifiers.add(classifier);
+
+		// Logistic
+		classifier = new Logistic();
+		classifiers.add(classifier);
+
+		// MultiLayerPerceptron
+		classifier = new MultilayerPerceptron();
+		classifiers.add(classifier);
+
+		// DecisionStump
+		classifier = new DecisionStump();
+		classifiers.add(classifier);
+
+		// LMT
+		classifier = new LMT();
+		classifiers.add(classifier);
+
+		// SimpleCart
+		classifier = new SimpleCart();
+		classifiers.add(classifier);
+
+		// BFTree
+		classifier = new BFTree();
+		classifiers.add(classifier);
+
+		// RBFNetwork
+		classifier = new RBFNetwork();
+		classifiers.add(classifier);
+
+		// DTNB
+		classifier = new DTNB();
+		classifiers.add(classifier);
+
+		// Jrip
+		classifier = new JRip();
+		classifiers.add(classifier);
+
+		// Conjunction Rule
+		classifier = new ConjunctiveRule();
+		classifiers.add(classifier);
+
+		// ZeroR
+		classifier = new ZeroR();
+		classifiers.add(classifier);
+
+		// SMO
+		classifier = new SMO();
+		classifiers.add(classifier);
+
+		// CAUTION: Error with zoo dataset
+
+		// NBTree
+		classifier = new NBTree();
+		classifiers.add(classifier);
+
+		// PART
+		classifier = new PART();
+		classifiers.add(classifier);
+
+		// RandomForest
+		classifier = new RandomForest();
+		classifiers.add(classifier);
+
+		// J48
+		classifier = new J48();
+		((J48) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// J48Graft
+		classifier = new J48graft();
+		((J48graft) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// OneR
+		classifier = new OneR();
+		classifiers.add(classifier);
+
+		// RandomForest
+		classifier = new RandomForest();
+		classifiers.add(classifier);
 
 		return classifiers;
 
