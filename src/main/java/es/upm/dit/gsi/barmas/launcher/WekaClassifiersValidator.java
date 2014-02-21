@@ -59,13 +59,13 @@ public class WekaClassifiersValidator {
 	public static void main(String[] args) {
 
 		List<String> datasets = new ArrayList<String>();
-		// datasets.add("zoo");
+		datasets.add("zoo");
 		datasets.add("solarflare");
-		// datasets.add("marketing");
-		// datasets.add("nursery");
-		// datasets.add("mushroom");
-		// datasets.add("chess");
-		// datasets.add("kowlancz02");
+		datasets.add("marketing");
+		datasets.add("nursery");
+		datasets.add("mushroom");
+		datasets.add("chess");
+		datasets.add("kowlancz02");
 		// datasets.add("poker");
 
 		List<Classifier> classifiers = null;
