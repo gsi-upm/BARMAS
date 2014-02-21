@@ -201,7 +201,7 @@ public class WekaClassifiersValidator {
 			logger.info("--> " + classifier.getClass().getSimpleName());
 		}
 
-		logger.info("<-- All classifiers validated.");
+		logger.info("<-- All classifiers validated for dataset: " + this.dataset);
 		this.writer.close();
 		return classifiers;
 	}
