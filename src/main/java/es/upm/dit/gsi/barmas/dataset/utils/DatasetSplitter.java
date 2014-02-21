@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.ArffSaver;
 import weka.core.converters.CSVSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -60,24 +61,27 @@ public class DatasetSplitter {
 		DatasetSplitter splitter = new DatasetSplitter();
 
 		String originalDatasetPath = "src/main/resources/dataset/kowlancz/CZ02/CZ02-dataset.csv";
-		String outputParentDir = "src/main/resources/output-data-splitter/kowlancz-CZ02";
+		String outputParentDir = "../experiments/output-data-splitter/kowlancz-CZ02";
 		Logger logger = Logger.getLogger(DatasetSplitter.class.getSimpleName());
 
-		// Experiment 1
+		// // Experiment 1
+		// String outputDir = outputParentDir;
+		// splitter.splitDataset(0.3, 4, originalDatasetPath, outputDir, true,
+		// "CZ02", logger, 2);
+		//
+		// // Experiment 2
+		// outputDir = outputParentDir;
+		// splitter.splitDataset(0.3, 8, originalDatasetPath, outputDir, true,
+		// "CZ02", logger, 2);
+		//
+		// // Experiment 3
+		// outputDir = outputParentDir;
+		// splitter.splitDataset(3, 2, 4, originalDatasetPath, outputDir,
+		// "CZ02", logger);
+
+		// Experiment 3
 		String outputDir = outputParentDir;
-		splitter.splitDataset(0.3, 4, originalDatasetPath, outputDir, true, "CZ02", logger, 2);
-
-		// Experiment 2
-		outputDir = outputParentDir;
-		splitter.splitDataset(0.3, 8, originalDatasetPath, outputDir, true, "CZ02", logger, 2);
-
-		// Experiment 3
-		outputDir = outputParentDir;
-		splitter.splitDataset(3, 4, originalDatasetPath, outputDir, "CZ02", logger);
-
-		// Experiment 3
-		outputDir = outputParentDir;
-		splitter.splitDataset(10, 8, originalDatasetPath, outputDir, "CZ02", logger);
+		splitter.splitDataset(10, 2, 8, originalDatasetPath, outputDir, "CZ02", logger);
 
 	}
 
@@ -262,6 +266,12 @@ public class DatasetSplitter {
 				saver.setFile(new File(outputDirWithRatio + File.separator + "test-dataset.csv"));
 				saver.writeBatch();
 
+				ArffSaver arffsaver = new ArffSaver();
+				arffsaver.setInstances(testData);
+				arffsaver.setFile(new File(outputDirWithRatio + File.separator
+						+ "test-dataset.arff"));
+				arffsaver.writeBatch();
+
 				// BayesCentralDataset
 				Instances trainData = originalData.trainCV(folds, fold);
 				saver.resetOptions();
@@ -269,11 +279,23 @@ public class DatasetSplitter {
 				saver.setFile(new File(outputDirWithRatio + File.separator
 						+ "bayes-central-dataset.csv"));
 				saver.writeBatch();
-				String fileName = outputDirWithRatio + File.separator
-						+ "bayes-central-dataset.csv";
+
+				arffsaver.resetOptions();
+				arffsaver.setInstances(trainData);
+				arffsaver.setFile(new File(outputDirWithRatio + File.separator
+						+ "bayes-central-dataset.arff"));
+				arffsaver.writeBatch();
+
+				String fileName = outputDirWithRatio + File.separator + "bayes-central-dataset.csv";
 				CsvWriter w = new CsvWriter(new FileWriter(fileName, true), ',');
 				for (String[] essential : essentials) {
-						w.writeRecord(essential);
+					w.writeRecord(essential);
+				}
+				w.close();
+				fileName = outputDirWithRatio + File.separator + "bayes-central-dataset.arff";
+				w = new CsvWriter(new FileWriter(fileName, true), ',');
+				for (String[] essential : essentials) {
+					w.writeRecord(essential);
 				}
 				w.close();
 
@@ -284,21 +306,36 @@ public class DatasetSplitter {
 				csvreader.close();
 
 				for (int agents = minAgents; agents <= maxAgents; agents++) {
-					this.createExperimentInfoFile(folds, agents, originalDatasetPath, outputDirWithRatio,
-							scenario, logger);
+					this.createExperimentInfoFile(folds, agents, originalDatasetPath,
+							outputDirWithRatio, scenario, logger);
 					HashMap<String, CsvWriter> writers = new HashMap<String, CsvWriter>();
 					String agentsDatasetsDir = outputDirWithRatio + File.separator + agents
 							+ "agents";
+					HashMap<String, CsvWriter> arffWriters = new HashMap<String, CsvWriter>();
 					File f = new File(agentsDatasetsDir);
 					if (!f.isDirectory()) {
 						f.mkdirs();
 					}
+					Instances copy = new Instances(trainData);
+					copy.delete();
 					for (int i = 0; i < agents; i++) {
 						fileName = agentsDatasetsDir + File.separator + "agent-" + i
 								+ "-dataset.csv";
 						CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
 						writer.writeRecord(headers);
+						fileName = agentsDatasetsDir + File.separator + "agent-" + i
+								+ "-dataset.arff";
+
+						arffsaver.resetOptions();
+						arffsaver.setInstances(copy);
+						arffsaver.setFile(new File(fileName));
+						arffsaver.writeBatch();
+						fileName = agentsDatasetsDir + File.separator + "agent-" + i
+								+ "-dataset.arff";
+						CsvWriter arffwriter = new CsvWriter(new FileWriter(fileName, true), ',');
+
 						writers.put("AGENT" + i, writer);
+						arffWriters.put("AGENT" + i, arffwriter);
 						logger.fine("AGENT" + i + " dataset created.");
 					}
 
@@ -306,11 +343,13 @@ public class DatasetSplitter {
 					for (int i = 0; i < trainData.numInstances(); i++) {
 						Instance instance = trainData.instance(i);
 						CsvWriter writer = writers.get("AGENT" + agentCounter);
+						CsvWriter arffwriter = arffWriters.get("AGENT" + agentCounter);
 						String[] row = new String[instance.numAttributes()];
 						for (int a = 0; a < instance.numAttributes(); a++) {
 							row[a] = instance.stringValue(a);
 						}
 						writer.writeRecord(row);
+						arffwriter.writeRecord(row);
 						agentCounter++;
 						if (agentCounter == agents) {
 							agentCounter = 0;
@@ -322,10 +361,16 @@ public class DatasetSplitter {
 						for (CsvWriter writer : writers.values()) {
 							writer.writeRecord(essential);
 						}
+						for (CsvWriter arffwriter : arffWriters.values()) {
+							arffwriter.writeRecord(essential);
+						}
 					}
 					for (CsvWriter writer : writers.values()) {
 						writer.close();
 					}
+					for (CsvWriter arffwriter : arffWriters.values()) {
+						arffwriter.close();
+					}
 				}
 
 			} catch (Exception e) {
@@ -339,124 +384,6 @@ public class DatasetSplitter {
 
 		logger.finer("<-- splitDataset()");
 
-	}
-
-	/**
-	 * This method splits the original dataset in many small datasets for a
-	 * given number of agents.
-	 * 
-	 * This method uses folds generated by WEKA and appends the language at the
-	 * end of the datasets (i.e. the essentials).
-	 * 
-	 * @param folds
-	 *            KFold number
-	 * @param agents
-	 *            number of agents to split the original dataset
-	 * @param originalDatasetPath
-	 * @param outputDir
-	 * @param scenario
-	 * @param logger
-	 */
-	public void splitDataset(int folds, int agents, String originalDatasetPath, String outputDir,
-			String scenario, Logger logger) {
-
-		int ratioint = (int) ((1 / (double) folds) * 100);
-		double roundedratio = ((double) ratioint) / 100;
-
-		// Look for essentials
-		List<String[]> essentials = this.getEssentials(originalDatasetPath, logger);
-
-		for (int fold = 0; fold < folds; fold++) {
-			String outputDirWithRatio = outputDir + "/" + roundedratio + "testRatio/iteration-"
-					+ fold;
-			File dir = new File(outputDirWithRatio);
-			if (!dir.exists() || !dir.isDirectory()) {
-				dir.mkdirs();
-			}
-
-			logger.finer("--> splitDataset()");
-			logger.fine("Creating experiment.info...");
-			this.createExperimentInfoFile(folds, agents, originalDatasetPath, outputDirWithRatio,
-					scenario, logger);
-
-			try {
-
-				Instances originalData = this.getDataFromCSV(originalDatasetPath);
-
-				// TestDataSet
-				Instances testData = originalData.testCV(folds, fold);
-				CSVSaver saver = new CSVSaver();
-				saver.setInstances(testData);
-				saver.setFile(new File(outputDirWithRatio + File.separator + "test-dataset.csv"));
-				saver.writeBatch();
-
-				// BayesCentralDataset
-				Instances trainData = originalData.trainCV(folds, fold);
-				saver.resetOptions();
-				saver.setInstances(trainData);
-				saver.setFile(new File(outputDirWithRatio + File.separator
-						+ "bayes-central-dataset.csv"));
-				saver.writeBatch();
-
-				// Agent datasets
-				CsvReader csvreader = new CsvReader(new FileReader(new File(originalDatasetPath)));
-				csvreader.readHeaders();
-				String[] headers = csvreader.getHeaders();
-				csvreader.close();
-
-				HashMap<String, CsvWriter> writers = new HashMap<String, CsvWriter>();
-				String agentsDatasetsDir = outputDirWithRatio + File.separator + agents + "agents";
-				File f = new File(agentsDatasetsDir);
-				if (!f.isDirectory()) {
-					f.mkdirs();
-				}
-				for (int i = 0; i < agents; i++) {
-					String fileName = agentsDatasetsDir + File.separator + "agent-" + i
-							+ "-dataset.csv";
-					CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
-					writer.writeRecord(headers);
-					writers.put("AGENT" + i, writer);
-					logger.fine("AGENT" + i + " dataset created.");
-				}
-
-				int agentCounter = 0;
-				for (int i = 0; i < trainData.numInstances(); i++) {
-					Instance instance = trainData.instance(i);
-					CsvWriter writer = writers.get("AGENT" + agentCounter);
-					String[] row = new String[instance.numAttributes()];
-					for (int a = 0; a < instance.numAttributes(); a++) {
-						row[a] = instance.stringValue(a);
-					}
-					writer.writeRecord(row);
-					agentCounter++;
-					if (agentCounter == agents) {
-						agentCounter = 0;
-					}
-				}
-
-				// Append essentials to all
-				String fileName = outputDirWithRatio + File.separator + "bayes-central-dataset.csv";
-				CsvWriter w = new CsvWriter(new FileWriter(fileName, true), ',');
-				writers.put("CENTRAL", w);
-				for (String[] essential : essentials) {
-					for (CsvWriter writer : writers.values()) {
-						writer.writeRecord(essential);
-					}
-				}
-				for (CsvWriter writer : writers.values()) {
-					writer.close();
-				}
-
-			} catch (Exception e) {
-				logger.severe("Exception while splitting dataset. ->");
-				logger.severe(e.getMessage());
-				System.exit(1);
-			}
-
-			logger.finest("Dataset for fold " + fold + " created.");
-		}
-
-		logger.finer("<-- splitDataset()");
 	}
 
 	/**

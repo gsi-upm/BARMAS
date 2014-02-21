@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -102,6 +103,7 @@ public class WekaClassifiersValidator {
 					outputFolder, folds, minAgents, maxAgents, minLEBA, maxLEBA);
 			classifiers = validator.validateWekaClassifiers(classifiers);
 		}
+
 	}
 
 	/**
@@ -200,6 +202,7 @@ public class WekaClassifiersValidator {
 		}
 
 		logger.info("<-- All classifiers validated.");
+		this.writer.close();
 		return classifiers;
 	}
 
@@ -216,6 +219,7 @@ public class WekaClassifiersValidator {
 		int ratioint = (int) ((1 / (double) folds) * 100);
 		double roundedratio = ((double) ratioint) / 100;
 		String[] row;
+		Classifier copiedClassifier;
 
 		try {
 			// Central Agent
@@ -229,11 +233,15 @@ public class WekaClassifiersValidator {
 			for (int iteration = 0; iteration < this.folds; iteration++) {
 				String inputPath = this.inputFolder + "/" + roundedratio + "testRatio/iteration-"
 						+ iteration;
-				Instances testData = this.getDataFromCSV(inputPath + "/test-dataset.csv");
-				Instances trainData = this.getDataFromCSV(inputPath + "/bayes-central-dataset.csv");
+				Instances testData = WekaClassifiersValidator.getDataFromCSV(inputPath
+						+ "/test-dataset.arff");
+				Instances trainData = WekaClassifiersValidator.getDataFromCSV(inputPath
+						+ "/bayes-central-dataset.arff");
 				try {
 					logger.info("Learning model...");
-					classifier.buildClassifier(trainData);
+					copiedClassifier = Classifier.makeCopy(classifier);
+					copiedClassifier.buildClassifier(trainData);
+
 					logger.info("Finishing learning process. Model built for classifier "
 							+ classifierName + " in iteration " + iteration);
 				} catch (Exception e) {
@@ -245,9 +253,11 @@ public class WekaClassifiersValidator {
 
 				for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
 					double[][] results = resultsMap.get(leba);
-					double[] pcts = this.getValidation(classifier, trainData, testData, leba);
+					double[] pcts = this.getValidation(copiedClassifier, trainData, testData, leba);
 					results[iteration][0] = results[iteration][0] + pcts[0];
 					results[iteration][1] = results[iteration][1] + pcts[1];
+
+					resultsMap.put(leba, results);
 
 					row = new String[this.columns];
 					row[0] = this.dataset;
@@ -334,25 +344,94 @@ public class WekaClassifiersValidator {
 			}
 
 			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+				double[] sum = new double[2];
+				double[][] results = resultsMap.get(leba);
 				for (int iteration = 0; iteration < this.folds; iteration++) {
-					double[][] results = resultsMap.get(leba);
-					row = new String[this.columns];
-					row[0] = this.dataset;
-					row[1] = Integer.toString(this.folds);
-					row[2] = classifierName;
-					row[3] = "AVERAGE";
-					row[4] = Double.toString(results[iteration][0] / this.folds);
-					row[5] = Double.toString(results[iteration][1] / this.folds);
-					row[6] = "BayesCentralAgent";
-					row[7] = "1";
-					row[8] = Integer.toString(leba);
-					writer.writeRecord(row);
-
-					logger.info("Validation for BayesCentralAgent dataset with " + classifierName
-							+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
-					writer.flush();
+					sum[0] = sum[0] + results[iteration][0];
+					sum[1] = sum[1] + results[iteration][1];
 				}
+
+				row = new String[this.columns];
+				row[0] = this.dataset;
+				row[1] = Integer.toString(this.folds);
+				row[2] = classifierName;
+				row[3] = "AVERAGE";
+				row[4] = Double.toString(sum[0] / this.folds);
+				row[5] = Double.toString(sum[1] / this.folds);
+				row[6] = "BayesCentralAgent";
+				row[7] = "1";
+				row[8] = Integer.toString(leba);
+				writer.writeRecord(row);
+
+				logger.info("Validation for BayesCentralAgent dataset with " + classifierName
+						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
+				writer.flush();
 			}
+
+			logger.info("Starting cross-validation from weka 100%");
+			Instances alldata = WekaClassifiersValidator
+					.getDataFromCSV("src/main/resources/dataset/zoo.csv");
+			copiedClassifier = Classifier.makeCopy(classifier);
+			copiedClassifier.buildClassifier(alldata);
+
+			Evaluation eval;
+			try {
+				eval = new Evaluation(alldata);
+				eval.crossValidateModel(copiedClassifier, alldata, this.folds, new Random());
+
+				double[] results = new double[2];
+				results[0] = eval.pctCorrect() / 100;
+				results[1] = eval.pctIncorrect() / 100;
+				row = new String[this.columns];
+				row[0] = this.dataset;
+				row[1] = Integer.toString(this.folds);
+				row[2] = classifierName;
+				row[3] = "KFOLD-WEKA";
+				row[4] = Double.toString(results[0]);
+				row[5] = Double.toString(results[1]);
+				row[6] = "BayesCentralAgent";
+				row[7] = "1";
+				row[8] = Integer.toString(0);
+				writer.writeRecord(row);
+
+				alldata = WekaClassifiersValidator
+						.getDataFromCSV("src/main/resources/dataset/zoo.csv");
+				alldata.stratify(10);
+				results = new double[2];
+				Random random = new Random();
+				for (int i = 0; i < this.folds; i++) {
+					Instances train = alldata.trainCV(10, i, random);
+					Instances test = alldata.testCV(10, i);
+					copiedClassifier = Classifier.makeCopy(classifier);
+					copiedClassifier.buildClassifier(train);
+					eval = new Evaluation(train);
+					eval.evaluateModel(copiedClassifier, test);
+
+					results[0] = results[0] + (eval.pctCorrect() / 100);
+					results[1] = results[1] + (eval.pctIncorrect() / 100);
+				}
+				row = new String[this.columns];
+				row[0] = this.dataset;
+				row[1] = Integer.toString(this.folds);
+				row[2] = classifierName;
+				row[3] = "KFOLD-WEKA-MANUAL";
+				row[4] = Double.toString(results[0] / this.folds);
+				row[5] = Double.toString(results[1] / this.folds);
+				row[6] = "BayesCentralAgent";
+				row[7] = "1";
+				row[8] = Integer.toString(0);
+				writer.writeRecord(row);
+			} catch (Exception e) {
+				logger.severe("Problems evaluating model for "
+						+ classifier.getClass().getSimpleName());
+				logger.severe(e.getMessage());
+				e.printStackTrace();
+				throw e;
+			}
+
+			logger.info("Validation for BayesCentralAgent dataset with " + classifierName
+					+ " done for dataset: " + this.dataset);
+			writer.flush();
 
 		} catch (Exception e) {
 			logger.severe("Problem validating classifier " + classifierName);
@@ -375,9 +454,9 @@ public class WekaClassifiersValidator {
 
 		Instances testDataWithLEBA = new Instances(testData);
 
-		for (int i = 0; i < testDataWithLEBA.numInstances(); i++) {
-			for (int j = 0; j < leba; j++) {
-				if (j < testDataWithLEBA.numAttributes() - 1) {
+		for (int j = 0; j < leba; j++) {
+			if (j < testDataWithLEBA.numAttributes() - 1) {
+				for (int i = 0; i < testDataWithLEBA.numInstances(); i++) {
 					testDataWithLEBA.instance(i).setMissing(j);
 				}
 			}
@@ -407,6 +486,28 @@ public class WekaClassifiersValidator {
 	public List<Classifier> getNewClassifiers() {
 		Classifier classifier;
 		List<Classifier> classifiers = new ArrayList<Classifier>();
+
+		// NBTree
+		classifier = new NBTree();
+		classifiers.add(classifier);
+
+		// PART
+		classifier = new PART();
+		classifiers.add(classifier);
+
+		// J48
+		classifier = new J48();
+		((J48) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// J48Graft
+		classifier = new J48graft();
+		((J48graft) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// OneR
+		classifier = new OneR();
+		classifiers.add(classifier);
 
 		// LADTree
 		classifier = new LADTree();
@@ -468,33 +569,37 @@ public class WekaClassifiersValidator {
 		classifier = new SMO();
 		classifiers.add(classifier);
 
-		 // CAUTION: Error with zoo dataset
-		
-		 // NBTree
-		 classifier = new NBTree();
-		 classifiers.add(classifier);
-		
-		 // PART
-		 classifier = new PART();
-		 classifiers.add(classifier);
-		
-		 // RandomForest
-		 classifier = new RandomForest();
-		 classifiers.add(classifier);
-		
-		 // J48
-		 classifier = new J48();
-		 ((J48) classifier).setUnpruned(true);
-		 classifiers.add(classifier);
-		
-		 // J48Graft
-		 classifier = new J48graft();
-		 ((J48graft) classifier).setUnpruned(true);
-		 classifiers.add(classifier);
-		
-		 // OneR
-		 classifier = new OneR();
-		 classifiers.add(classifier);
+		// CAUTION: Error with zoo dataset
+
+		// NBTree
+		classifier = new NBTree();
+		classifiers.add(classifier);
+
+		// PART
+		classifier = new PART();
+		classifiers.add(classifier);
+
+		// RandomForest
+		classifier = new RandomForest();
+		classifiers.add(classifier);
+
+		// J48
+		classifier = new J48();
+		((J48) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// J48Graft
+		classifier = new J48graft();
+		((J48graft) classifier).setUnpruned(true);
+		classifiers.add(classifier);
+
+		// OneR
+		classifier = new OneR();
+		classifiers.add(classifier);
+
+		// RandomForest
+		classifier = new RandomForest();
+		classifiers.add(classifier);
 
 		return classifiers;
 
@@ -503,18 +608,12 @@ public class WekaClassifiersValidator {
 	/**
 	 * @param csvFilePath
 	 * @return
+	 * @throws Exception
 	 */
-	public Instances getDataFromCSV(String csvFilePath) {
-		try {
-			DataSource source = new DataSource(csvFilePath);
-			Instances data = source.getDataSet();
-			data.setClassIndex(data.numAttributes() - 1);
-			return data;
-		} catch (Exception e) {
-			logger.severe("Problems with file: " + csvFilePath);
-			logger.severe(e.getMessage());
-			System.exit(1);
-		}
-		return null;
+	public static Instances getDataFromCSV(String csvFilePath) throws Exception {
+		DataSource source = new DataSource(csvFilePath);
+		Instances data = source.getDataSet();
+		data.setClassIndex(data.numAttributes() - 1);
+		return data;
 	}
 }
