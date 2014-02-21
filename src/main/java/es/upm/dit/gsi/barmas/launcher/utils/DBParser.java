@@ -52,12 +52,12 @@ public class DBParser {
 		// String dataset = "nursery";
 		// String dataset = "marketing";
 
-		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
-		dbparser.putDataInDB(filePath);
+		// String filePath = folder + dataset + "-simulation/" + dataset +
+		// "-simulation-summary.csv";
+		// dbparser.putDataInDB(filePath);
 
-		// String wekaFilePath = folder + dataset +
-		// "-simulation/weka/weka-results.csv";
-		// dbparser.putWekaDataInDB(wekaFilePath);
+		String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
+		dbparser.putWekaDataInDB(wekaFilePath);
 
 	}// end main
 
@@ -94,7 +94,7 @@ public class DBParser {
 			if (result.next()) {
 				counter = result.getInt(1);
 			}
-			logger.info("Current count(*)=" + counter);
+			logger.info("Current count(*)=" + counter + " for table: " + tableName);
 			while (reader.readRecord()) {
 
 				if (counter % 500 == 0) {
@@ -277,7 +277,7 @@ public class DBParser {
 			if (result.next()) {
 				counter = result.getInt(1);
 			}
-			logger.info("Current count(*)=" + counter);
+			logger.info("Current count(*)=" + counter + " for table: " + tableName);
 
 			while (reader.readRecord()) {
 
