@@ -21,11 +21,14 @@ package es.upm.dit.gsi.barmas.dataset.utils;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
 
 import weka.core.Instance;
 import weka.core.Instances;
@@ -305,6 +308,8 @@ public class DatasetSplitter {
 					saver.setInstances(trainData);
 					saver.setFile(file);
 					saver.writeBatch();
+					this.copyFileUsingApacheCommonsIO(file, new File(outputDirWithRatio
+							+ File.separator + "bayes-central-dataset-noEssentials.csv"), logger);
 					CsvWriter w = new CsvWriter(new FileWriter(file, true), ',');
 					for (String[] essential : essentials) {
 						w.writeRecord(essential);
@@ -317,6 +322,8 @@ public class DatasetSplitter {
 					arffsaver.setInstances(trainData);
 					arffsaver.setFile(file);
 					arffsaver.writeBatch();
+					this.copyFileUsingApacheCommonsIO(file, new File(outputDirWithRatio
+							+ File.separator + "bayes-central-dataset-noEssentials.arff"), logger);
 					CsvWriter w = new CsvWriter(new FileWriter(file, true), ',');
 					for (String[] essential : essentials) {
 						w.writeRecord(essential);
@@ -537,5 +544,15 @@ public class DatasetSplitter {
 		Instances data = source.getDataSet();
 		data.setClassIndex(data.numAttributes() - 1);
 		return data;
+	}
+
+	private void copyFileUsingApacheCommonsIO(File source, File dest, Logger logger) {
+		try {
+			FileUtils.copyFile(source, dest);
+		} catch (IOException e) {
+			logger.severe("Problems copying file noEssentials");
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 }
