@@ -9,33 +9,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.functions.Logistic;
-import weka.classifiers.functions.MultilayerPerceptron;
-import weka.classifiers.functions.RBFNetwork;
-import weka.classifiers.functions.SMO;
-import weka.classifiers.functions.SimpleLogistic;
-import weka.classifiers.rules.ConjunctiveRule;
-import weka.classifiers.rules.DTNB;
-import weka.classifiers.rules.JRip;
-import weka.classifiers.rules.OneR;
 import weka.classifiers.rules.PART;
-import weka.classifiers.rules.ZeroR;
-import weka.classifiers.trees.BFTree;
-import weka.classifiers.trees.DecisionStump;
 import weka.classifiers.trees.J48;
-import weka.classifiers.trees.J48graft;
-import weka.classifiers.trees.LADTree;
-import weka.classifiers.trees.LMT;
 import weka.classifiers.trees.NBTree;
-import weka.classifiers.trees.REPTree;
-import weka.classifiers.trees.RandomForest;
-import weka.classifiers.trees.SimpleCart;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -78,14 +59,14 @@ public class WekaClassifiersValidator {
 	public static void main(String[] args) {
 
 		List<String> datasets = new ArrayList<String>();
-		datasets.add("zoo");
+		// datasets.add("zoo");
 		datasets.add("solarflare");
-		datasets.add("marketing");
-		datasets.add("nursery");
-		datasets.add("mushroom");
-		datasets.add("chess");
-		datasets.add("kowlancz02");
-		datasets.add("poker");
+		// datasets.add("marketing");
+		// datasets.add("nursery");
+		// datasets.add("mushroom");
+		// datasets.add("chess");
+		// datasets.add("kowlancz02");
+		// datasets.add("poker");
 
 		List<Classifier> classifiers = null;
 
@@ -225,8 +206,11 @@ public class WekaClassifiersValidator {
 			// Central Agent
 
 			HashMap<Integer, double[][]> resultsMap = new HashMap<Integer, double[][]>();
+			HashMap<Integer, double[][]> resultsNoEssMap = new HashMap<Integer, double[][]>();
+
 			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
 				resultsMap.put(leba, new double[this.folds][2]);
+				resultsNoEssMap.put(leba, new double[this.folds][2]);
 			}
 			logger.info("Starting validation for BayesCentralAgent dataset with " + classifierName
 					+ " done for dataset: " + this.dataset);
@@ -271,6 +255,51 @@ public class WekaClassifiersValidator {
 					row[8] = Integer.toString(leba);
 					writer.writeRecord(row);
 				}
+
+				Instances testDataNoEssentials = WekaClassifiersValidator.getDataFromCSV(inputPath
+						+ "/test-dataset.arff");
+				Instances trainDataNoEssentials = WekaClassifiersValidator.getDataFromCSV(inputPath
+						+ "/bayes-central-dataset-noEssentials.arff");
+				try {
+					logger.info("Learning model...");
+					copiedClassifier = Classifier.makeCopy(classifier);
+					copiedClassifier.buildClassifier(trainDataNoEssentials);
+
+					logger.info("Finishing learning process. Model built for classifier "
+							+ classifierName + " in iteration " + iteration);
+				} catch (Exception e) {
+					logger.severe("Problems training model for "
+							+ classifier.getClass().getSimpleName());
+					logger.severe(e.getMessage());
+					throw e;
+				}
+
+				for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+					double[][] resultsNoEss = resultsNoEssMap.get(leba);
+					double[] pcts = this.getValidation(copiedClassifier, trainDataNoEssentials,
+							testDataNoEssentials, leba);
+					resultsNoEss[iteration][0] = resultsNoEss[iteration][0] + pcts[0];
+					resultsNoEss[iteration][1] = resultsNoEss[iteration][1] + pcts[1];
+
+					resultsNoEssMap.put(leba, resultsNoEss);
+
+					row = new String[this.columns];
+					row[0] = this.dataset;
+					row[1] = Integer.toString(this.folds);
+					row[2] = classifierName;
+					row[3] = Integer.toString(iteration);
+					row[4] = Double.toString(pcts[0]);
+					row[5] = Double.toString(pcts[1]);
+					row[6] = "BayesCentralAgent-NoEssentials";
+					row[7] = "1";
+					row[8] = Integer.toString(leba);
+					writer.writeRecord(row);
+				}
+
+				// -------------------------------------------------------------
+				// --------------------------- FOR AGENTS DATASETS ISOLATED - NO
+				// SENSE BECAUSE WEKA CLASSIFIER WERE DESIGNED TO BE CENTRALISED
+				// -------------------------------------------------------------
 
 				// // Agents combinations
 				// for (int i = this.minAgents; i <= this.maxAgents; i++) {
@@ -339,6 +368,10 @@ public class WekaClassifiersValidator {
 				// writer.flush();
 				// }
 
+				// -------------------------------------------------------------
+				// ---------- END FOR AGENTS DATASETS ISOLATED -----------------
+				// -------------------------------------------------------------
+
 				logger.info("<-- Validation for classfier " + classifierName
 						+ " done for dataset: " + this.dataset + " for iteration " + iteration);
 			}
@@ -368,65 +401,29 @@ public class WekaClassifiersValidator {
 				writer.flush();
 			}
 
-			logger.info("Starting cross-validation from weka 100%");
-			Instances alldata = WekaClassifiersValidator
-					.getDataFromCSV("src/main/resources/dataset/zoo.csv");
-			copiedClassifier = Classifier.makeCopy(classifier);
-			copiedClassifier.buildClassifier(alldata);
-
-			Evaluation eval;
-			try {
-				eval = new Evaluation(alldata);
-				eval.crossValidateModel(copiedClassifier, alldata, this.folds, new Random());
-
-				double[] results = new double[2];
-				results[0] = eval.pctCorrect() / 100;
-				results[1] = eval.pctIncorrect() / 100;
-				row = new String[this.columns];
-				row[0] = this.dataset;
-				row[1] = Integer.toString(this.folds);
-				row[2] = classifierName;
-				row[3] = "KFOLD-WEKA";
-				row[4] = Double.toString(results[0]);
-				row[5] = Double.toString(results[1]);
-				row[6] = "BayesCentralAgent";
-				row[7] = "1";
-				row[8] = Integer.toString(0);
-				writer.writeRecord(row);
-
-				alldata = WekaClassifiersValidator
-						.getDataFromCSV("src/main/resources/dataset/zoo.csv");
-				alldata.stratify(10);
-				results = new double[2];
-				Random random = new Random();
-				for (int i = 0; i < this.folds; i++) {
-					Instances train = alldata.trainCV(10, i, random);
-					Instances test = alldata.testCV(10, i);
-					copiedClassifier = Classifier.makeCopy(classifier);
-					copiedClassifier.buildClassifier(train);
-					eval = new Evaluation(train);
-					eval.evaluateModel(copiedClassifier, test);
-
-					results[0] = results[0] + (eval.pctCorrect() / 100);
-					results[1] = results[1] + (eval.pctIncorrect() / 100);
+			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+				double[] sum = new double[2];
+				double[][] results = resultsNoEssMap.get(leba);
+				for (int iteration = 0; iteration < this.folds; iteration++) {
+					sum[0] = sum[0] + results[iteration][0];
+					sum[1] = sum[1] + results[iteration][1];
 				}
+
 				row = new String[this.columns];
 				row[0] = this.dataset;
 				row[1] = Integer.toString(this.folds);
 				row[2] = classifierName;
-				row[3] = "KFOLD-WEKA-MANUAL";
-				row[4] = Double.toString(results[0] / this.folds);
-				row[5] = Double.toString(results[1] / this.folds);
-				row[6] = "BayesCentralAgent";
+				row[3] = "AVERAGE";
+				row[4] = Double.toString(sum[0] / this.folds);
+				row[5] = Double.toString(sum[1] / this.folds);
+				row[6] = "BayesCentralAgent-NoEssentials";
 				row[7] = "1";
-				row[8] = Integer.toString(0);
+				row[8] = Integer.toString(leba);
 				writer.writeRecord(row);
-			} catch (Exception e) {
-				logger.severe("Problems evaluating model for "
-						+ classifier.getClass().getSimpleName());
-				logger.severe(e.getMessage());
-				e.printStackTrace();
-				throw e;
+
+				logger.info("Validation for BayesCentralAgent dataset with " + classifierName
+						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
+				writer.flush();
 			}
 
 			logger.info("Validation for BayesCentralAgent dataset with " + classifierName
@@ -465,7 +462,7 @@ public class WekaClassifiersValidator {
 		Evaluation eval;
 		try {
 			eval = new Evaluation(trainingData);
-			logger.info("Evaluating model with leba: " + leba);
+			logger.fine("Evaluating model with leba: " + leba);
 			eval.evaluateModel(cls, testDataWithLEBA);
 
 			double[] results = new double[2];
@@ -500,106 +497,106 @@ public class WekaClassifiersValidator {
 		((J48) classifier).setUnpruned(true);
 		classifiers.add(classifier);
 
-		// J48Graft
-		classifier = new J48graft();
-		((J48graft) classifier).setUnpruned(true);
-		classifiers.add(classifier);
-
-		// OneR
-		classifier = new OneR();
-		classifiers.add(classifier);
-
-		// LADTree
-		classifier = new LADTree();
-		classifiers.add(classifier);
-
-		// REPTree
-		classifier = new REPTree();
-		classifiers.add(classifier);
-
-		// SimpleLogistic
-		classifier = new SimpleLogistic();
-		classifiers.add(classifier);
-
-		// Logistic
-		classifier = new Logistic();
-		classifiers.add(classifier);
-
-		// MultiLayerPerceptron
-		classifier = new MultilayerPerceptron();
-		classifiers.add(classifier);
-
-		// DecisionStump
-		classifier = new DecisionStump();
-		classifiers.add(classifier);
-
-		// LMT
-		classifier = new LMT();
-		classifiers.add(classifier);
-
-		// SimpleCart
-		classifier = new SimpleCart();
-		classifiers.add(classifier);
-
-		// BFTree
-		classifier = new BFTree();
-		classifiers.add(classifier);
-
-		// RBFNetwork
-		classifier = new RBFNetwork();
-		classifiers.add(classifier);
-
-		// DTNB
-		classifier = new DTNB();
-		classifiers.add(classifier);
-
-		// Jrip
-		classifier = new JRip();
-		classifiers.add(classifier);
-
-		// Conjunction Rule
-		classifier = new ConjunctiveRule();
-		classifiers.add(classifier);
-
-		// ZeroR
-		classifier = new ZeroR();
-		classifiers.add(classifier);
-
-		// SMO
-		classifier = new SMO();
-		classifiers.add(classifier);
-
-		// CAUTION: Error with zoo dataset
-
-		// NBTree
-		classifier = new NBTree();
-		classifiers.add(classifier);
-
-		// PART
-		classifier = new PART();
-		classifiers.add(classifier);
-
-		// RandomForest
-		classifier = new RandomForest();
-		classifiers.add(classifier);
-
-		// J48
-		classifier = new J48();
-		((J48) classifier).setUnpruned(true);
-		classifiers.add(classifier);
-
-		// J48Graft
-		classifier = new J48graft();
-		((J48graft) classifier).setUnpruned(true);
-		classifiers.add(classifier);
-
-		// OneR
-		classifier = new OneR();
-		classifiers.add(classifier);
-
-		// RandomForest
-		classifier = new RandomForest();
-		classifiers.add(classifier);
+		// // J48Graft
+		// classifier = new J48graft();
+		// ((J48graft) classifier).setUnpruned(true);
+		// classifiers.add(classifier);
+		//
+		// // OneR
+		// classifier = new OneR();
+		// classifiers.add(classifier);
+		//
+		// // LADTree
+		// classifier = new LADTree();
+		// classifiers.add(classifier);
+		//
+		// // REPTree
+		// classifier = new REPTree();
+		// classifiers.add(classifier);
+		//
+		// // SimpleLogistic
+		// classifier = new SimpleLogistic();
+		// classifiers.add(classifier);
+		//
+		// // Logistic
+		// classifier = new Logistic();
+		// classifiers.add(classifier);
+		//
+		// // MultiLayerPerceptron
+		// classifier = new MultilayerPerceptron();
+		// classifiers.add(classifier);
+		//
+		// // DecisionStump
+		// classifier = new DecisionStump();
+		// classifiers.add(classifier);
+		//
+		// // LMT
+		// classifier = new LMT();
+		// classifiers.add(classifier);
+		//
+		// // SimpleCart
+		// classifier = new SimpleCart();
+		// classifiers.add(classifier);
+		//
+		// // BFTree
+		// classifier = new BFTree();
+		// classifiers.add(classifier);
+		//
+		// // RBFNetwork
+		// classifier = new RBFNetwork();
+		// classifiers.add(classifier);
+		//
+		// // DTNB
+		// classifier = new DTNB();
+		// classifiers.add(classifier);
+		//
+		// // Jrip
+		// classifier = new JRip();
+		// classifiers.add(classifier);
+		//
+		// // Conjunction Rule
+		// classifier = new ConjunctiveRule();
+		// classifiers.add(classifier);
+		//
+		// // ZeroR
+		// classifier = new ZeroR();
+		// classifiers.add(classifier);
+		//
+		// // SMO
+		// classifier = new SMO();
+		// classifiers.add(classifier);
+		//
+		// // CAUTION: Error with zoo dataset
+		//
+		// // NBTree
+		// classifier = new NBTree();
+		// classifiers.add(classifier);
+		//
+		// // PART
+		// classifier = new PART();
+		// classifiers.add(classifier);
+		//
+		// // RandomForest
+		// classifier = new RandomForest();
+		// classifiers.add(classifier);
+		//
+		// // J48
+		// classifier = new J48();
+		// ((J48) classifier).setUnpruned(true);
+		// classifiers.add(classifier);
+		//
+		// // J48Graft
+		// classifier = new J48graft();
+		// ((J48graft) classifier).setUnpruned(true);
+		// classifiers.add(classifier);
+		//
+		// // OneR
+		// classifier = new OneR();
+		// classifiers.add(classifier);
+		//
+		// // RandomForest
+		// classifier = new RandomForest();
+		// classifiers.add(classifier);
 
 		return classifiers;
 
