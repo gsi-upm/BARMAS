@@ -112,23 +112,24 @@ public class DBParser {
 			}
 			logger.info("All data inserted in DB. Closing connection...");
 		} catch (SQLException se) {
-			// Handle errors for JDBC
-			se.printStackTrace();
+			logger.severe("Problem with an SQL Exception");
+			logger.severe(se.getMessage());
 		} catch (Exception e) {
-			// Handle errors for Class.forName
-			e.printStackTrace();
+			logger.severe("Problem with an Exception");
+			logger.severe(e.getMessage());
 		}
 		try {
 			if (stmt != null) {
 				conn.close();
 			}
 		} catch (SQLException se) {
-			// do nothing
+			logger.severe("Problem with an SQL Exception");
 		}
 		try {
 			if (conn != null)
 				conn.close();
 		} catch (SQLException se) {
+			logger.severe("Problem with an SQL Exception");
 			se.printStackTrace();
 		}// end finally try
 
