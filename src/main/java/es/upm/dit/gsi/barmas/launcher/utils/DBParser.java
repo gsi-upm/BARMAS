@@ -40,7 +40,7 @@ public class DBParser {
 		DBParser dbparser = new DBParser();
 
 		// dbparser.createTable();
-		// dbparser.createWekaTable();
+		dbparser.createWekaTable();
 
 		String folder = "../experiments/";
 
@@ -222,7 +222,8 @@ public class DBParser {
 			String sql = "CREATE TABLE " + tableName + " " + "(id INTEGER not NULL, "
 					+ " dataset VARCHAR(100), " + " kfold INTEGER, " + " classifier VARCHAR(100), "
 					+ " iteration VARCHAR(50), " + " ratioOk DOUBLE, " + " ratioWrong DOUBLE, "
-					+ " agentID VARCHAR(50), " + " agents INTEGER, " + " PRIMARY KEY ( id ))";
+					+ " agentID VARCHAR(50), " + " agents INTEGER, " + " leba INTEGER, "
+					+ " PRIMARY KEY ( id ))";
 			stmt.executeUpdate(sql);
 			logger.info("Created table in given database...");
 
