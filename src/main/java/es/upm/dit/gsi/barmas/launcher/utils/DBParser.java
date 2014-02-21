@@ -167,10 +167,10 @@ public class DBParser {
 			stmt.executeUpdate(sql);
 			logger.info("Created table in given database...");
 		} catch (SQLException se) {
-			// Handle errors for JDBC
+			logger.severe("SQLException: " + se.getMessage());
 			se.printStackTrace();
 		} catch (Exception e) {
-			// Handle errors for Class.forName
+			logger.severe("Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
 		try {
@@ -178,12 +178,13 @@ public class DBParser {
 				conn.close();
 			}
 		} catch (SQLException se) {
-			// do nothing
+			logger.severe("SQLException: " + se.getMessage());
 		}
 		try {
 			if (conn != null)
 				conn.close();
 		} catch (SQLException se) {
+			logger.severe("SQLException: " + se.getMessage());
 			se.printStackTrace();
 		}// end finally try
 	}
@@ -225,10 +226,10 @@ public class DBParser {
 			logger.info("Created table in given database...");
 
 		} catch (SQLException se) {
-			// Handle errors for JDBC
+			logger.severe("SQLException: " + se.getMessage());
 			se.printStackTrace();
 		} catch (Exception e) {
-			// Handle errors for Class.forName
+			logger.severe("Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
 		try {
@@ -236,12 +237,13 @@ public class DBParser {
 				conn.close();
 			}
 		} catch (SQLException se) {
-			// do nothing
+			logger.severe("SQLException: " + se.getMessage());
 		}
 		try {
 			if (conn != null)
 				conn.close();
 		} catch (SQLException se) {
+			logger.severe("SQLException: " + se.getMessage());
 			se.printStackTrace();
 		}// end finally try
 	}
