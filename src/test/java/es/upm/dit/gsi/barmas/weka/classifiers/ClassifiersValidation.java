@@ -125,18 +125,10 @@ public class ClassifiersValidation {
 		return results;
 	}
 
-	public void saveToCSV() {
-		// TODO save all data into csv (getting info from DB)
-	}
-
-	// TODO hacer metodo que recorra todas las iteraciones y las valide con un
-	// número dado de agentes
-
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		ClassifiersValidation cv = new ClassifiersValidation();
 
@@ -246,7 +238,6 @@ public class ClassifiersValidation {
 						+ clss.get(j).getClass().getSimpleName() + " -> " + results[0] + " / "
 						+ results[1]);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -278,7 +269,6 @@ public class ClassifiersValidation {
 					success[j] = successRates + results[0];
 					logger.finer("ER for iteration " + i + ": " + results[1]);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
