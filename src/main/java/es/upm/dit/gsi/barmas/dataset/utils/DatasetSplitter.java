@@ -81,7 +81,7 @@ public class DatasetSplitter {
 
 		// Experiment 3
 		String outputDir = outputParentDir;
-		splitter.splitDataset(10, 2, 8, originalDatasetPath, outputDir, "CZ02", logger);
+		splitter.splitDataset(10, 2, 10, originalDatasetPath, outputDir, "CZ02", logger);
 
 	}
 
@@ -235,6 +235,24 @@ public class DatasetSplitter {
 	 *            data
 	 * @param scenario
 	 */
+	/**
+	 * @param folds
+	 * @param minAgents
+	 * @param maxAgents
+	 * @param originalDatasetPath
+	 * @param outputDir
+	 * @param scenario
+	 * @param logger
+	 */
+	/**
+	 * @param folds
+	 * @param minAgents
+	 * @param maxAgents
+	 * @param originalDatasetPath
+	 * @param outputDir
+	 * @param scenario
+	 * @param logger
+	 */
 	public void splitDataset(int folds, int minAgents, int maxAgents, String originalDatasetPath,
 			String outputDir, String scenario, Logger logger) {
 
@@ -262,42 +280,49 @@ public class DatasetSplitter {
 				// TestDataSet
 				Instances testData = originalData.testCV(folds, fold);
 				CSVSaver saver = new CSVSaver();
-				saver.setInstances(testData);
-				saver.setFile(new File(outputDirWithRatio + File.separator + "test-dataset.csv"));
-				saver.writeBatch();
-
 				ArffSaver arffsaver = new ArffSaver();
-				arffsaver.setInstances(testData);
-				arffsaver.setFile(new File(outputDirWithRatio + File.separator
-						+ "test-dataset.arff"));
-				arffsaver.writeBatch();
+				File file = new File(outputDirWithRatio + File.separator + "test-dataset.csv");
+				if (!file.exists()) {
+					saver.resetOptions();
+					saver.setInstances(testData);
+					saver.setFile(file);
+					saver.writeBatch();
+				}
+
+				file = new File(outputDirWithRatio + File.separator + "test-dataset.arff");
+				if (!file.exists()) {
+					arffsaver.resetOptions();
+					arffsaver.setInstances(testData);
+					arffsaver.setFile(file);
+					arffsaver.writeBatch();
+				}
 
 				// BayesCentralDataset
 				Instances trainData = originalData.trainCV(folds, fold);
-				saver.resetOptions();
-				saver.setInstances(trainData);
-				saver.setFile(new File(outputDirWithRatio + File.separator
-						+ "bayes-central-dataset.csv"));
-				saver.writeBatch();
-
-				arffsaver.resetOptions();
-				arffsaver.setInstances(trainData);
-				arffsaver.setFile(new File(outputDirWithRatio + File.separator
-						+ "bayes-central-dataset.arff"));
-				arffsaver.writeBatch();
-
-				String fileName = outputDirWithRatio + File.separator + "bayes-central-dataset.csv";
-				CsvWriter w = new CsvWriter(new FileWriter(fileName, true), ',');
-				for (String[] essential : essentials) {
-					w.writeRecord(essential);
+				file = new File(outputDirWithRatio + File.separator + "bayes-central-dataset.csv");
+				if (!file.exists()) {
+					saver.resetOptions();
+					saver.setInstances(trainData);
+					saver.setFile(file);
+					saver.writeBatch();
+					CsvWriter w = new CsvWriter(new FileWriter(file, true), ',');
+					for (String[] essential : essentials) {
+						w.writeRecord(essential);
+					}
+					w.close();
 				}
-				w.close();
-				fileName = outputDirWithRatio + File.separator + "bayes-central-dataset.arff";
-				w = new CsvWriter(new FileWriter(fileName, true), ',');
-				for (String[] essential : essentials) {
-					w.writeRecord(essential);
+				file = new File(outputDirWithRatio + File.separator + "bayes-central-dataset.arff");
+				if (!file.exists()) {
+					arffsaver.resetOptions();
+					arffsaver.setInstances(trainData);
+					arffsaver.setFile(file);
+					arffsaver.writeBatch();
+					CsvWriter w = new CsvWriter(new FileWriter(file, true), ',');
+					for (String[] essential : essentials) {
+						w.writeRecord(essential);
+					}
+					w.close();
 				}
-				w.close();
 
 				// Agent datasets
 				CsvReader csvreader = new CsvReader(new FileReader(new File(originalDatasetPath)));
@@ -319,57 +344,65 @@ public class DatasetSplitter {
 					Instances copy = new Instances(trainData);
 					copy.delete();
 					for (int i = 0; i < agents; i++) {
-						fileName = agentsDatasetsDir + File.separator + "agent-" + i
+						String fileName = agentsDatasetsDir + File.separator + "agent-" + i
 								+ "-dataset.csv";
-						CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
-						writer.writeRecord(headers);
+						file = new File(fileName);
+						if (!file.exists()) {
+							CsvWriter writer = new CsvWriter(new FileWriter(fileName), ',');
+							writer.writeRecord(headers);
+							writers.put("AGENT" + i, writer);
+						}
 						fileName = agentsDatasetsDir + File.separator + "agent-" + i
 								+ "-dataset.arff";
+						file = new File(fileName);
+						if (!file.exists()) {
+							arffsaver.resetOptions();
+							arffsaver.setInstances(copy);
+							arffsaver.setFile(new File(fileName));
+							arffsaver.writeBatch();
+							CsvWriter arffwriter = new CsvWriter(new FileWriter(fileName, true),
+									',');
+							arffWriters.put("AGENT" + i, arffwriter);
+						}
 
-						arffsaver.resetOptions();
-						arffsaver.setInstances(copy);
-						arffsaver.setFile(new File(fileName));
-						arffsaver.writeBatch();
-						fileName = agentsDatasetsDir + File.separator + "agent-" + i
-								+ "-dataset.arff";
-						CsvWriter arffwriter = new CsvWriter(new FileWriter(fileName, true), ',');
-
-						writers.put("AGENT" + i, writer);
-						arffWriters.put("AGENT" + i, arffwriter);
-						logger.fine("AGENT" + i + " dataset created.");
+						logger.fine("AGENT" + i + " dataset created in csv and arff formats.");
+					}
+					// Append essentials to all
+					for (String[] essential : essentials) {
+						for (CsvWriter wr : writers.values()) {
+							wr.writeRecord(essential);
+						}
+						for (CsvWriter arffwr : arffWriters.values()) {
+							arffwr.writeRecord(essential);
+						}
 					}
 
 					int agentCounter = 0;
-					for (int i = 0; i < trainData.numInstances(); i++) {
-						Instance instance = trainData.instance(i);
+					for (int j = 0; j < trainData.numInstances(); j++) {
+						Instance instance = trainData.instance(j);
 						CsvWriter writer = writers.get("AGENT" + agentCounter);
 						CsvWriter arffwriter = arffWriters.get("AGENT" + agentCounter);
 						String[] row = new String[instance.numAttributes()];
 						for (int a = 0; a < instance.numAttributes(); a++) {
 							row[a] = instance.stringValue(a);
 						}
-						writer.writeRecord(row);
-						arffwriter.writeRecord(row);
+						if (writer != null) {
+							writer.writeRecord(row);
+						}
+						if (arffwriter != null) {
+							arffwriter.writeRecord(row);
+						}
 						agentCounter++;
 						if (agentCounter == agents) {
 							agentCounter = 0;
 						}
 					}
 
-					// Append essentials to all
-					for (String[] essential : essentials) {
-						for (CsvWriter writer : writers.values()) {
-							writer.writeRecord(essential);
-						}
-						for (CsvWriter arffwriter : arffWriters.values()) {
-							arffwriter.writeRecord(essential);
-						}
+					for (CsvWriter wr : writers.values()) {
+						wr.close();
 					}
-					for (CsvWriter writer : writers.values()) {
-						writer.close();
-					}
-					for (CsvWriter arffwriter : arffWriters.values()) {
-						arffwriter.close();
+					for (CsvWriter arffwr : arffWriters.values()) {
+						arffwr.close();
 					}
 				}
 
@@ -478,13 +511,15 @@ public class DatasetSplitter {
 			if (!parent.exists()) {
 				parent.mkdirs();
 			}
-			FileWriter fw = new FileWriter(file);
-			fw.write("Scenario: " + scenario + "\n");
-			fw.write("Number of folds: " + Integer.toString(folds) + "\n");
-			fw.write("Number of Agents: " + Integer.toString(agents) + "\n");
-			fw.write("Original dataset: " + originalDatasetPath + "\n");
-			fw.write("Experiment dataset folder: " + outputDir + "\n");
-			fw.close();
+			if (!file.exists()) {
+				FileWriter fw = new FileWriter(file);
+				fw.write("Scenario: " + scenario + "\n");
+				fw.write("Number of folds: " + Integer.toString(folds) + "\n");
+				fw.write("Number of Agents: " + Integer.toString(agents) + "\n");
+				fw.write("Original dataset: " + originalDatasetPath + "\n");
+				fw.write("Experiment dataset folder: " + outputDir + "\n");
+				fw.close();
+			}
 
 		} catch (Exception e) {
 			logger.severe(e.getMessage());
