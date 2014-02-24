@@ -54,6 +54,7 @@ public class ResultsComparator {
 	private int minAgents;
 	private int maxAgents;
 	private List<Double> lebas;
+	private char separator;
 
 	/**
 	 * Constructor
@@ -63,13 +64,14 @@ public class ResultsComparator {
 	 * @param datasets
 	 * @param classifiers
 	 * @param lebas
+	 * @param separator
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * 
 	 */
 	public ResultsComparator(List<String> classifiers, HashMap<String, Integer> datasets,
-			int minAgents, int maxAgents, List<Double> lebas) throws ClassNotFoundException,
-			SQLException {
+			int minAgents, int maxAgents, List<Double> lebas, char separator)
+			throws ClassNotFoundException, SQLException {
 		logger = Logger.getLogger(ResultsComparator.class.getSimpleName());
 		LogConfigurator.log2File(logger, this.getClass().getSimpleName(), Level.ALL, Level.ALL,
 				"../analysis");
@@ -78,6 +80,7 @@ public class ResultsComparator {
 		this.minAgents = minAgents;
 		this.maxAgents = maxAgents;
 		this.lebas = lebas;
+		this.separator = separator;
 
 		Class.forName(JDBC_DRIVER);
 		// Open a connection
@@ -143,7 +146,7 @@ public class ResultsComparator {
 
 		for (double lebaPct : lebas) {
 			CsvWriter writer = new CsvWriter(new FileWriter("../analysis/results-leba-" + lebaPct
-					+ ".csv"), ',');
+					+ ".csv"), separator);
 			int headersLength = 1 + (maxAgents - minAgents + 1) + 1
 					+ this.getClassifiersList().size();
 			String[] headers = new String[headersLength];
@@ -274,28 +277,33 @@ public class ResultsComparator {
 			classifiers.add("SMO");
 
 			HashMap<String, Integer> datasets = new HashMap<String, Integer>();
-			datasets.put("zoo", 16);
-			datasets.put("solarflare", 11);
-			datasets.put("marketing", 13);
-			datasets.put("nursery", 9);
-			// datasets.put("mushroom",22);
-			// datasets.put("chess",6);
-			// datasets.put("poker",10);
-			// datasets.put("kowlancz02",27);
+			datasets.put("Zoo", 16);
+			datasets.put("Solarflare", 11);
+			datasets.put("Marketing", 13);
+			datasets.put("Nursery", 9);
+			// datasets.put("Mushroom",22);
+			// datasets.put("Chess",6);
+			// datasets.put("Poker",10);
+			// datasets.put("KOWLANCZ02",27);
 
 			List<Double> lebas = new ArrayList<Double>();
 			lebas.add(0.0);
 			lebas.add(0.25);
 			lebas.add(0.50);
-			lebas.add(0.75);
-			lebas.add(1.0);
-			lebas.add(0.3);
+			// lebas.add(0.75);
+			// lebas.add(1.0);
+			// lebas.add(0.1);
+			// lebas.add(0.3);
+			// lebas.add(0.4);
+			// lebas.add(0.6);
 
 			int minAgents = 2;
 			int maxAgents = 5;
 
+			char separator = '&';
+
 			ResultsComparator rc = new ResultsComparator(classifiers, datasets, minAgents,
-					maxAgents, lebas);
+					maxAgents, lebas, separator);
 			rc.buildResultsFile();
 		} catch (ClassNotFoundException e) {
 			logger.severe("Exception: " + e.getMessage());
