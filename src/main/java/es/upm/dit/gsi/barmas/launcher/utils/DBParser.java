@@ -49,8 +49,8 @@ public class DBParser {
 		// String dataset = "mushroom";
 		// String dataset = "chess";
 		// String dataset = "solarflare";
-		// String dataset = "nursery";
-		String dataset = "marketing";
+		String dataset = "nursery";
+		// String dataset = "marketing";
 
 		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
 		dbparser.putDataInDB(filePath);
