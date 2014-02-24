@@ -71,8 +71,8 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		// this.launchZooBatch();
-		this.launchMarketingBatch();
-		// this.launchNurseryBatch();
+		// this.launchMarketingBatch();
+		this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
@@ -353,13 +353,13 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "Classification";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.5;
-		double minDistanceThreshold = 0.1;
-		double maxBeliefThreshold = 0.5;
-		double minBeliefThreshold = 0.1;
-		double maxTrustThreshold = 0.5;
-		double minTrustThreshold = 0.1;
-		int maxLEBA = 8;
+		double maxDistanceThreshold = 0.2;
+		double minDistanceThreshold = 0.2;
+		double maxBeliefThreshold = 0.2;
+		double minBeliefThreshold = 0.2;
+		double maxTrustThreshold = 0.2;
+		double minTrustThreshold = 0.2;
+		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
 		int maxNumberOfAgents = 5;
