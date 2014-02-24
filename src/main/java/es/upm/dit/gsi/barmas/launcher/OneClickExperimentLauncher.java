@@ -202,7 +202,7 @@ public class OneClickExperimentLauncher {
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
 				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
 				maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				SimulationConfiguration.DEBUGGING_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 		logger.info("Total number of experiments executed in all iterations and with all parameters for "
