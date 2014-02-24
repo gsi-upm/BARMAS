@@ -72,10 +72,10 @@ public class OneClickExperimentLauncher {
 
 		// this.launchZooBatch();
 		// this.launchMarketingBatch();
-//		this.launchNurseryBatch();
+		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		 this.launchKowlanCZBatch();
-		// this.launchMushroomBatch();
+		// this.launchKowlanCZBatch();
+		this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
 
@@ -153,8 +153,8 @@ public class OneClickExperimentLauncher {
 		double minBeliefThreshold = 0.2;
 		double maxTrustThreshold = 0.2;
 		double minTrustThreshold = 0.2;
-		int maxLEBA = 3;
-		int minLEBA = 3;
+		int maxLEBA = 10;
+		int minLEBA = 0;
 		int maxArgumentationRounds = 1000;
 		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
@@ -187,11 +187,11 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "mushroomPoisonous";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.3;
+		double maxDistanceThreshold = 0.2;
 		double minDistanceThreshold = 0.2;
-		double maxBeliefThreshold = 0.3;
+		double maxBeliefThreshold = 0.2;
 		double minBeliefThreshold = 0.2;
-		double maxTrustThreshold = 0.3;
+		double maxTrustThreshold = 0.2;
 		double minTrustThreshold = 0.2;
 		int maxLEBA = 10;
 		int minLEBA = 0;
