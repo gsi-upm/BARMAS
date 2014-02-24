@@ -72,9 +72,9 @@ public class OneClickExperimentLauncher {
 
 		// this.launchZooBatch();
 		// this.launchMarketingBatch();
-		this.launchNurseryBatch();
+//		this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		// this.launchKowlanCZBatch();
+		 this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
 		// this.launchPokerBatch();
@@ -228,12 +228,12 @@ public class OneClickExperimentLauncher {
 		String classificationTarget = "Diagnosis";
 		double delta = 0.1;
 
-		double maxDistanceThreshold = 0.4;
+		double maxDistanceThreshold = 0.2;
 		double minDistanceThreshold = 0.2;
-		double maxBeliefThreshold = 0.4;
+		double maxBeliefThreshold = 0.2;
 		double minBeliefThreshold = 0.2;
-		double maxTrustThreshold = 0.6;
-		double minTrustThreshold = 0.1;
+		double maxTrustThreshold = 0.2;
+		double minTrustThreshold = 0.2;
 		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 200;
