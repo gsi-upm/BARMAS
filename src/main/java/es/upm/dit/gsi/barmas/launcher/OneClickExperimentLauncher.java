@@ -195,14 +195,14 @@ public class OneClickExperimentLauncher {
 		double minTrustThreshold = 0.2;
 		int maxLEBA = 10;
 		int minLEBA = 0;
-		int maxArgumentationRounds = 200;
+		int maxArgumentationRounds = 50;
 		int maxNumberOfAgents = 5;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
 				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
 				maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.DEBUGGING_MODE, maxDistanceThreshold,
+				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
 				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
 				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 		logger.info("Total number of experiments executed in all iterations and with all parameters for "
