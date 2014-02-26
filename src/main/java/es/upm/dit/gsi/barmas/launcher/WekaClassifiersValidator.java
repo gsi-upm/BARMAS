@@ -66,8 +66,8 @@ public class WekaClassifiersValidator {
 		// datasets.add("marketing");
 		// datasets.add("nursery");
 		// datasets.add("mushroom");
-		datasets.add("kowlancz02");
-		datasets.add("chess");
+		// datasets.add("kowlancz02");
+		// datasets.add("chess");
 		datasets.add("poker");
 
 		List<Classifier> classifiers = null;
@@ -263,6 +263,8 @@ public class WekaClassifiersValidator {
 					writer.writeRecord(row);
 				}
 
+				
+				/*
 				Instances testDataNoEssentials = WekaClassifiersValidator.getDataFromCSV(inputPath
 						+ "/test-dataset.arff");
 				Instances trainDataNoEssentials = WekaClassifiersValidator.getDataFromCSV(inputPath
@@ -273,7 +275,7 @@ public class WekaClassifiersValidator {
 					copiedClassifier.buildClassifier(trainDataNoEssentials);
 
 					logger.info("Finishing learning process. Model built for classifier "
-							+ classifierName + " in iteration " + iteration);
+							+ classifierName + " in iteration " + iteration + " without essentials");
 				} catch (Exception e) {
 					logger.severe("Problems training model for "
 							+ classifier.getClass().getSimpleName());
@@ -301,7 +303,7 @@ public class WekaClassifiersValidator {
 					row[7] = "1";
 					row[8] = Integer.toString(leba);
 					writer.writeRecord(row);
-				}
+				}*/
 
 				// -------------------------------------------------------------
 				// --------------------------- FOR AGENTS DATASETS ISOLATED - NO
