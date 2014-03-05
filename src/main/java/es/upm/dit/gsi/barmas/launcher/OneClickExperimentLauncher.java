@@ -75,8 +75,8 @@ public class OneClickExperimentLauncher {
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
-		this.launchMushroomBatch();
-		// this.launchChessBatch();
+		// this.launchMushroomBatch();
+		this.launchChessBatch();
 		// this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
@@ -156,7 +156,7 @@ public class OneClickExperimentLauncher {
 		int maxLEBA = 10;
 		int minLEBA = 0;
 		int maxArgumentationRounds = 1000;
-		int maxNumberOfAgents = 5;
+		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
@@ -197,7 +197,7 @@ public class OneClickExperimentLauncher {
 		int minLEBA = 0;
 		int maxArgumentationRounds = 50;
 		int maxNumberOfAgents = 5;
-		int minNumberOfAgents = 5;
+		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
 				dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed,
