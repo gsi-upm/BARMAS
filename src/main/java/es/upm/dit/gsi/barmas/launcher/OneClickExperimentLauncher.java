@@ -114,9 +114,9 @@ public class OneClickExperimentLauncher {
 		double maxTrustThreshold = 0.2;
 		double minTrustThreshold = 0.2;
 		int maxLEBA = 5;
-		int minLEBA = 5;
-		int maxArgumentationRounds = 1000;
-		int maxNumberOfAgents = 5;
+		int minLEBA = 0;
+		int maxArgumentationRounds = 50;
+		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
@@ -153,9 +153,9 @@ public class OneClickExperimentLauncher {
 		double minBeliefThreshold = 0.2;
 		double maxTrustThreshold = 0.2;
 		double minTrustThreshold = 0.2;
-		int maxLEBA = 10;
+		int maxLEBA = 3;
 		int minLEBA = 0;
-		int maxArgumentationRounds = 1000;
+		int maxArgumentationRounds = 50;
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
