@@ -121,7 +121,7 @@ public class ResultsComparator {
 				+ leba
 				+ " AND argumentativeAgents="
 				+ agents
-				+ " GROUP BY dth, bth, tth, leba, argumentativeAgents";
+				+ " AND simulationid LIKE 'BarmasExperiment%' GROUP BY dth, bth, tth, leba, argumentativeAgents";
 		ResultSet result = stmt.executeQuery(sql);
 		return result;
 	}
@@ -164,6 +164,12 @@ public class ResultsComparator {
 
 			for (String dataset : datasets.keySet()) {
 				int leba = (int) Math.rint(lebaPct * this.datasets.get(dataset));
+				logger.info("LEBA for lebaPct " + lebaPct + " = " + leba + " for dataset "
+						+ dataset);
+				if (leba > 10) {
+					logger.warning("High leba -> not calculated for that option -> Changing leba to 10.");
+					leba = 10;
+				}
 				String[] row = new String[headersLength];
 				index = 0;
 				double er;
@@ -281,10 +287,10 @@ public class ResultsComparator {
 			datasets.put("Solarflare", 11);
 			datasets.put("Marketing", 13);
 			datasets.put("Nursery", 9);
-			// datasets.put("Mushroom",22);
-			// datasets.put("Chess",6);
+			datasets.put("Mushroom", 22);
+			datasets.put("Chess", 6);
 			// datasets.put("Poker",10);
-			// datasets.put("KOWLANCZ02",27);
+			datasets.put("KOWLANCZ02", 27);
 
 			List<Double> lebas = new ArrayList<Double>();
 			lebas.add(0.0);
@@ -298,7 +304,7 @@ public class ResultsComparator {
 			// lebas.add(0.6);
 
 			int minAgents = 2;
-			int maxAgents = 5;
+			int maxAgents = 4;
 
 			char separator = '&';
 
