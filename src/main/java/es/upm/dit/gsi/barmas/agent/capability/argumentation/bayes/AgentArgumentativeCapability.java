@@ -611,7 +611,7 @@ public class AgentArgumentativeCapability {
 		}
 		// Pick possible arguments
 		String hyp = "";
-		double max = -2;
+		double max = Double.MIN_VALUE;
 		Argument argumentConclusion = null;
 		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
@@ -668,9 +668,9 @@ public class AgentArgumentativeCapability {
 		}
 		// Pick possible arguments
 		String hyp = "";
-		double maxBelief = -2;
-		double maxTrustScore = -2;
-		double maxWeightedTrust = -2;
+		double maxBelief = Double.MIN_VALUE;
+		double maxTrustScore = Double.MIN_VALUE;
+		double maxWeightedTrust = Double.MIN_VALUE;
 		Argument argumentConclusion = null;
 		// Find higher trust score
 		for (Argument arg : possibleConclusions) {
