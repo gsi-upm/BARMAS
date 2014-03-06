@@ -76,8 +76,8 @@ public class OneClickExperimentLauncher {
 		// this.launchSolarFlareBatch();
 		// this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
-		this.launchChessBatch();
-		// this.launchPokerBatch();
+		// this.launchChessBatch();
+		this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -115,7 +115,7 @@ public class OneClickExperimentLauncher {
 		double minTrustThreshold = 0.2;
 		int maxLEBA = 5;
 		int minLEBA = 0;
-		int maxArgumentationRounds = 1000;
+		int maxArgumentationRounds = 100;
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
