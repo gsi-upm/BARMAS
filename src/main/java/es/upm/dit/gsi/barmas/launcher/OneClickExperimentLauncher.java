@@ -155,7 +155,7 @@ public class OneClickExperimentLauncher {
 		double minTrustThreshold = 0.2;
 		int maxLEBA = 3;
 		int minLEBA = 0;
-		int maxArgumentationRounds = 1000;
+		int maxArgumentationRounds = 100;
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
