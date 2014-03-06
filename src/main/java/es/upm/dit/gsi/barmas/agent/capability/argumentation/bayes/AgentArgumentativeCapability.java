@@ -790,57 +790,22 @@ public class AgentArgumentativeCapability {
 				}
 			}
 			// Pick possible arguments
+			// Pick possible arguments
 			hyp = "";
-			maxBelief = Double.MIN_VALUE;
-			maxTrustScore = Double.MIN_VALUE;
-			maxWeightedTrust = Double.MIN_VALUE;
+			double max = Double.MIN_VALUE;
 			argumentConclusion = null;
-			// Find higher trust score
 			for (Argument arg : possibleConclusions) {
 				if (arg.getGivens().size() == maxEvidences) {
 					for (Proposal p : arg.getProposals()) {
-						if (p.getNode().equals(classificationTarget)) {
-							double score = p.getTrustScoreValue();
-							if (score == 0) {
-								score = 0.01;
-							}
-							double pTrust = score * p.getMaxValue() * 10;
-							if (pTrust > maxWeightedTrust) {
-								maxTrustScore = score;
-								maxBelief = p.getMaxValue();
-								maxWeightedTrust = pTrust;
-								argumentConclusion = arg;
-								hyp = p.getMaxState();
-							}
+						if (p.getNode().equals(classificationTarget) && p.getMaxValue() > max) {
+							max = p.getMaxValue();
+							hyp = p.getMaxState();
+							argumentConclusion = arg;
 						}
 					}
 				}
 			}
-			logger.warning("After the first for, possible conclusiones is: " + hyp);
-			// Find conclusions in the range of trust score threshold
-			for (Argument arg : possibleConclusions) {
-				if (arg.getGivens().size() == maxEvidences) {
-					for (Proposal p : arg.getProposals()) {
-						if (p.getNode().equals(classificationTarget)) {
-							double score = p.getTrustScoreValue();
-							// double distance = Math.abs(maxTrustScore -
-							// score);
-							double distance = Math.abs(maxWeightedTrust
-									- (score * p.getMaxValue() * 10));
-							if (distance <= trustThreshold) {
-								if (p.getMaxValue() > maxBelief) {
-									maxTrustScore = score;
-									maxBelief = p.getMaxValue();
-									hyp = p.getMaxState();
-									argumentConclusion = arg;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			logger.warning("After the second for, possible conclusiones is: " + hyp);
+			logger.warning("Possible conclusions with higher hypothesis is: " + hyp);
 			if (argumentConclusion != null) {
 				logger.warning("Conclusion found. All works!");
 				logger.fine("Argumentation Manager --> Conclusion found: " + hyp + " - "
