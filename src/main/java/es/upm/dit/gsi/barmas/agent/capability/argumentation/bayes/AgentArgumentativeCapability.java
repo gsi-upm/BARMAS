@@ -634,9 +634,50 @@ public class AgentArgumentativeCapability {
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
-			logger.severe("No conclusion found with higher hypothesis technique for argumentation: "
-					+ argumentation.getId() + " MaxBelief: " + max);
-			System.exit(1);
+			// *************************************
+			// This piece of code is for exceptional cases where the
+			// argumentation has been stopped
+			// by the MAX ROUNDS conditions, i.e. when it is too long in rounds
+			// and maybe, there is not a final conclusion
+			possibleConclusions = AgentArgumentativeCapability.getLastValidConclusionsArguments(
+					argumentation.getSortedArguments(), classificationTarget);
+			maxEvidences = 0;
+			for (Argument arg : argumentation.getArguments()) {
+				int evCardinal = arg.getGivens().size();
+				if (evCardinal > maxEvidences) {
+					maxEvidences = evCardinal;
+				}
+			}
+			// Pick possible arguments
+			hyp = "";
+			max = Double.MIN_VALUE;
+			argumentConclusion = null;
+			for (Argument arg : possibleConclusions) {
+				if (arg.getGivens().size() == maxEvidences) {
+					for (Proposal p : arg.getProposals()) {
+						if (p.getNode().equals(classificationTarget) && p.getMaxValue() > max) {
+							max = p.getMaxValue();
+							hyp = p.getMaxState();
+							argumentConclusion = arg;
+						}
+					}
+				}
+			}
+
+			if (argumentConclusion != null) {
+
+				logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp + " - "
+						+ max + " from " + argumentConclusion.getProponent().getProponentName()
+						+ " - ArgumentID: " + argumentConclusion.getId());
+
+				argumentation.getConclusions().add(argumentConclusion);
+
+				// *********************************
+			} else {
+				logger.severe("No conclusion found with higher hypothesis technique for argumentation: "
+						+ argumentation.getId() + " MaxBelief: " + max);
+				System.exit(1);
+			}
 		}
 	}
 
@@ -725,10 +766,89 @@ public class AgentArgumentativeCapability {
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
-			logger.severe("No conclusion found with reputation and higher hyp for argumentation: "
-					+ argumentation.getId() + " MaxTrustScore: " + maxTrustScore + " MaxBelief: "
-					+ maxBelief);
-			System.exit(1);
+
+			// *************************************
+			// This piece of code is for exceptional cases where the
+			// argumentation has been stopped
+			// by the MAX ROUNDS conditions, i.e. when it is too long in rounds
+			// and maybe, there is not a final conclusion
+			possibleConclusions = AgentArgumentativeCapability.getLastValidConclusionsArguments(
+					argumentation.getSortedArguments(), classificationTarget);
+
+			maxEvidences = 0;
+			for (Argument arg : argumentation.getArguments()) {
+				int evCardinal = arg.getGivens().size();
+				if (evCardinal > maxEvidences) {
+					maxEvidences = evCardinal;
+				}
+			}
+			// Pick possible arguments
+			hyp = "";
+			maxBelief = Double.MIN_VALUE;
+			maxTrustScore = Double.MIN_VALUE;
+			maxWeightedTrust = Double.MIN_VALUE;
+			argumentConclusion = null;
+			// Find higher trust score
+			for (Argument arg : possibleConclusions) {
+				if (arg.getGivens().size() == maxEvidences) {
+					for (Proposal p : arg.getProposals()) {
+						if (p.getNode().equals(classificationTarget)) {
+							double score = p.getTrustScoreValue();
+							if (score == 0) {
+								score = 0.01;
+							}
+							double pTrust = score * p.getMaxValue() * 10;
+							if (pTrust > maxWeightedTrust) {
+								maxTrustScore = score;
+								maxBelief = p.getMaxValue();
+								maxWeightedTrust = pTrust;
+								argumentConclusion = arg;
+								hyp = p.getMaxState();
+							}
+						}
+					}
+				}
+			}
+			// Find conclusions in the range of trust score threshold
+			for (Argument arg : possibleConclusions) {
+				if (arg.getGivens().size() == maxEvidences) {
+					for (Proposal p : arg.getProposals()) {
+						if (p.getNode().equals(classificationTarget)) {
+							double score = p.getTrustScoreValue();
+							// double distance = Math.abs(maxTrustScore -
+							// score);
+							double distance = Math.abs(maxWeightedTrust
+									- (score * p.getMaxValue() * 10));
+							if (distance <= trustThreshold) {
+								if (p.getMaxValue() > maxBelief) {
+									maxTrustScore = score;
+									maxBelief = p.getMaxValue();
+									hyp = p.getMaxState();
+									argumentConclusion = arg;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (argumentConclusion != null) {
+
+				logger.fine("Argumentation Manager --> Conclusion found: " + hyp + " - "
+						+ maxBelief + " with TrustScore: " + maxTrustScore + " from "
+						+ argumentConclusion.getProponent().getProponentName() + " - ArgumentID: "
+						+ argumentConclusion.getId());
+
+				argumentation.getConclusions().add(argumentConclusion);
+			} else {
+				// **************************
+				logger.severe("No conclusion found with reputation and higher hyp for argumentation: "
+						+ argumentation.getId()
+						+ " MaxTrustScore: "
+						+ maxTrustScore
+						+ " MaxBelief: " + maxBelief);
+				System.exit(1);
+			}
 		}
 	}
 
