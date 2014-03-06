@@ -772,6 +772,7 @@ public class AgentArgumentativeCapability {
 
 		} else {
 			logger.warning("Entering in the exceptional case when argumentation has been finished by the MAX ROUNDS conditions.");
+			logger.warning("Change to higher hypothesis strategy to ensure a conclusion.");
 			// *************************************
 			// This piece of code is for exceptional cases where the
 			// argumentation has been stopped
