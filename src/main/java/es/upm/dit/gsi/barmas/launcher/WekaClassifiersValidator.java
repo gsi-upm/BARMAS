@@ -77,9 +77,9 @@ public class WekaClassifiersValidator {
 			String inputFolder = "../experiments/" + simName + "/input";
 			String outputFolder = "../experiments/" + simName + "/weka";
 			int folds = 10;
-			int maxAgents = 5;
+			int maxAgents = 4;
 			int minAgents = 2;
-			int maxLEBA = 10;
+			int maxLEBA = 5;
 			int minLEBA = 0;
 
 			WekaClassifiersValidator validator = new WekaClassifiersValidator(dataset, inputFolder,
