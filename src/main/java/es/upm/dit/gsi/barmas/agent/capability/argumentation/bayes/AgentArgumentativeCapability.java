@@ -739,7 +739,6 @@ public class AgentArgumentativeCapability {
 				}
 			}
 		}
-		logger.warning("After the first for, possible conclusiones is: " + hyp);
 		// Find conclusions in the range of trust score threshold
 		for (Argument arg : possibleConclusions) {
 			if (arg.getGivens().size() == maxEvidences) {
@@ -761,7 +760,6 @@ public class AgentArgumentativeCapability {
 				}
 			}
 		}
-		logger.warning("After the second for, possible conclusiones is: " + hyp);
 
 		if (argumentConclusion != null) {
 
