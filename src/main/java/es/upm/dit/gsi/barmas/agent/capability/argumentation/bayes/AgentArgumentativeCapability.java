@@ -634,7 +634,7 @@ public class AgentArgumentativeCapability {
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
-			logger.warning("Entering in the exceptional case when argumentation has been finished by the MAX ROUNDS conditions.");
+			logger.info("Entering in the exceptional case when argumentation has been finished by the MAX ROUNDS conditions.");
 			// *************************************
 			// This piece of code is for exceptional cases where the
 			// argumentation has been stopped
@@ -642,8 +642,8 @@ public class AgentArgumentativeCapability {
 			// and maybe, there is not a final conclusion
 			possibleConclusions = AgentArgumentativeCapability.getLastValidConclusionsArguments(
 					argumentation.getSortedArguments(), classificationTarget);
-			logger.warning("Number of possible conclusions: " + possibleConclusions.size());
-			logger.warning("Number of total arguments in the argumenation: "
+			logger.fine("Number of possible conclusions: " + possibleConclusions.size());
+			logger.fine("Number of total arguments in the argumenation: "
 					+ argumentation.getArguments().size());
 			maxEvidences = 0;
 			for (Argument arg : argumentation.getArguments()) {
@@ -670,7 +670,7 @@ public class AgentArgumentativeCapability {
 
 			if (argumentConclusion != null) {
 
-				logger.warning("Conclusion found. All works!");
+				logger.finest("Conclusion found. All works!");
 				logger.fine("Argumentation Manager --> Higher hypothesis found: " + hyp + " - "
 						+ max + " from " + argumentConclusion.getProponent().getProponentName()
 						+ " - ArgumentID: " + argumentConclusion.getId());
@@ -771,8 +771,8 @@ public class AgentArgumentativeCapability {
 			argumentation.getConclusions().add(argumentConclusion);
 
 		} else {
-			logger.warning("Entering in the exceptional case when argumentation has been finished by the MAX ROUNDS conditions.");
-			logger.warning("Change to higher hypothesis strategy to ensure a conclusion.");
+			logger.info("Entering in the exceptional case when argumentation has been finished by the MAX ROUNDS conditions.");
+			logger.info("Change to higher hypothesis strategy to ensure a conclusion.");
 			// *************************************
 			// This piece of code is for exceptional cases where the
 			// argumentation has been stopped
@@ -780,8 +780,8 @@ public class AgentArgumentativeCapability {
 			// and maybe, there is not a final conclusion
 			possibleConclusions = AgentArgumentativeCapability.getLastValidConclusionsArguments(
 					argumentation.getSortedArguments(), classificationTarget);
-			logger.warning("Number of possible conclusions: " + possibleConclusions.size());
-			logger.warning("Number of total arguments in the argumenation: "
+			logger.fine("Number of possible conclusions: " + possibleConclusions.size());
+			logger.fine("Number of total arguments in the argumenation: "
 					+ argumentation.getArguments().size());
 			maxEvidences = 0;
 			for (Argument arg : argumentation.getArguments()) {
@@ -806,9 +806,9 @@ public class AgentArgumentativeCapability {
 					}
 				}
 			}
-			logger.warning("Possible conclusions with higher hypothesis is: " + hyp);
+			logger.fine("Possible conclusions with higher hypothesis is: " + hyp);
 			if (argumentConclusion != null) {
-				logger.warning("Conclusion found. All works!");
+				logger.finest("Conclusion found. All works!");
 				logger.fine("Argumentation Manager --> Conclusion found: " + hyp + " - "
 						+ maxBelief + " with TrustScore: " + maxTrustScore + " from "
 						+ argumentConclusion.getProponent().getProponentName() + " - ArgumentID: "
