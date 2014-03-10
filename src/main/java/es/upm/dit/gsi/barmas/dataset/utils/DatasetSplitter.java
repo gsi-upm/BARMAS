@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
@@ -63,8 +64,8 @@ public class DatasetSplitter {
 
 		DatasetSplitter splitter = new DatasetSplitter();
 
-		String originalDatasetPath = "src/main/resources/dataset/kowlancz/CZ02/CZ02-dataset.csv";
-		String outputParentDir = "../experiments/output-data-splitter/kowlancz-CZ02";
+		String originalDatasetPath = "src/main/resources/dataset/kr-vs-k.csv";
+		String outputParentDir = "../experiments/output-data-splitter/chess";
 		Logger logger = Logger.getLogger(DatasetSplitter.class.getSimpleName());
 
 		// // Experiment 1
@@ -84,7 +85,7 @@ public class DatasetSplitter {
 
 		// Experiment 3
 		String outputDir = outputParentDir;
-		splitter.splitDataset(10, 2, 10, originalDatasetPath, outputDir, "CZ02", logger);
+		splitter.splitDataset(10, 2, 10, originalDatasetPath, outputDir, "chess", logger);
 
 	}
 
@@ -279,6 +280,9 @@ public class DatasetSplitter {
 			try {
 
 				Instances originalData = this.getDataFromCSV(originalDatasetPath);
+
+				originalData.randomize(new Random());
+				originalData.stratify(folds);
 
 				// TestDataSet
 				Instances testData = originalData.testCV(folds, fold);
