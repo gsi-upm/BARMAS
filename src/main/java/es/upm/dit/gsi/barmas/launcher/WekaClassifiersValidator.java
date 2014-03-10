@@ -51,8 +51,8 @@ public class WekaClassifiersValidator {
 	private int folds;
 	// private int minAgents;
 	// private int maxAgents;
-	private int minLEBA;
-	private int maxLEBA;
+	// private int minLEBA;
+	// private int maxLEBA;
 	private int columns;
 	private Integer[] lebas;
 
@@ -222,7 +222,7 @@ public class WekaClassifiersValidator {
 			HashMap<Integer, double[][]> resultsMap = new HashMap<Integer, double[][]>();
 			HashMap<Integer, double[][]> resultsNoEssMap = new HashMap<Integer, double[][]>();
 
-			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+			for (int leba : lebas) {
 				resultsMap.put(leba, new double[this.folds][2]);
 				resultsNoEssMap.put(leba, new double[this.folds][2]);
 			}
@@ -386,7 +386,7 @@ public class WekaClassifiersValidator {
 						+ " done for dataset: " + this.dataset + " for iteration " + iteration);
 			}
 
-			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+			for (int leba : lebas) {
 				double[] sum = new double[2];
 				double[][] results = resultsMap.get(leba);
 				for (int iteration = 0; iteration < this.folds; iteration++) {
@@ -411,7 +411,7 @@ public class WekaClassifiersValidator {
 				writer.flush();
 			}
 
-			for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+			for (int leba : lebas) {
 				double[] sum = new double[2];
 				double[][] results = resultsNoEssMap.get(leba);
 				for (int iteration = 0; iteration < this.folds; iteration++) {

@@ -44,18 +44,17 @@ public class DBParser {
 
 		String folder = "../experiments/";
 
-		// String dataset = "zoo";
+		String dataset = "zoo";
 		// String dataset = "kowlancz02";
 		// String dataset = "mushroom";
 		// String dataset = "chess";
 		// String dataset = "solarflare";
 		// String dataset = "nursery";
 		// String dataset = "marketing";
-		String dataset = "poker";
+		// String dataset = "poker";
 
-		// String filePath = folder + dataset + "-simulation/" + dataset +
-		// "-simulation-summary.csv";
-		// dbparser.putDataInDB(filePath);
+		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
+		dbparser.putDataInDB(filePath);
 
 		String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
 		dbparser.putWekaDataInDB(wekaFilePath);
