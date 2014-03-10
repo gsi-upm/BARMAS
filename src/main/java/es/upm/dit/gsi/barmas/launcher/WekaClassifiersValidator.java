@@ -58,30 +58,30 @@ public class WekaClassifiersValidator {
 	public static void main(String[] args) {
 
 		HashMap<String, Integer[]> datasets = new HashMap<String, Integer[]>();
-		
+
 		Integer[] zoolebas = { 0, 4, 8 };
 		datasets.put("zoo", zoolebas);
-		
-		// Integer[] solarflarelebas = { 0, 3, 6 };
-		// datasets.put("solarflare", solarflarelebas);
-		//
-		// Integer[] marketinglebas = { 0, 3, 7 };
-		// datasets.put("marketing", marketinglebas);
-		//
-		// Integer[] nurserylebas = { 0, 2, 5 };
-		// datasets.put("nursery", nurserylebas);
-		//
-		// Integer[] mushroomlebas = { 0, 6, 11 };
-		// datasets.put("mushroom", mushroomlebas);
-		//
-		// Integer[] kowlanlebas = { 0, 7, 14 };
-		// datasets.put("kowlancz02", kowlanlebas);
-		//
-		// Integer[] chesslebas = { 0, 2, 3 };
-		// datasets.put("chess", chesslebas);
-		//
-		// Integer[] pokerlebas = { 0, 3, 5 };
-		// datasets.put("poker", pokerlebas);
+
+		Integer[] solarflarelebas = { 0, 3, 6 };
+		datasets.put("solarflare", solarflarelebas);
+
+		Integer[] marketinglebas = { 0, 3, 7 };
+		datasets.put("marketing", marketinglebas);
+
+		Integer[] nurserylebas = { 0, 2, 5 };
+		datasets.put("nursery", nurserylebas);
+
+		Integer[] mushroomlebas = { 0, 6, 11 };
+		datasets.put("mushroom", mushroomlebas);
+
+		Integer[] kowlanlebas = { 0, 7, 14 };
+		datasets.put("kowlancz02", kowlanlebas);
+
+		Integer[] chesslebas = { 0, 2, 3 };
+		datasets.put("chess", chesslebas);
+
+		Integer[] pokerlebas = { 0, 3, 5 };
+		datasets.put("poker", pokerlebas);
 
 		List<Classifier> classifiers = null;
 
