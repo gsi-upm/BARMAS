@@ -50,10 +50,10 @@ public class ResultsComparator {
 	private Connection conn;
 
 	private List<String> classifiers;
-	private HashMap<String, Integer> datasets;
+	private HashMap<String, Integer[]> datasets;
 	private int minAgents;
 	private int maxAgents;
-	private List<Double> lebas;
+	private double[] lebas;
 	private char separator;
 
 	/**
@@ -69,8 +69,8 @@ public class ResultsComparator {
 	 * @throws SQLException
 	 * 
 	 */
-	public ResultsComparator(List<String> classifiers, HashMap<String, Integer> datasets,
-			int minAgents, int maxAgents, List<Double> lebas, char separator)
+	public ResultsComparator(List<String> classifiers, HashMap<String, Integer[]> datasets,
+			int minAgents, int maxAgents, double[] lebas, char separator)
 			throws ClassNotFoundException, SQLException {
 		logger = Logger.getLogger(ResultsComparator.class.getSimpleName());
 		LogConfigurator.log2File(logger, this.getClass().getSimpleName(), Level.ALL, Level.ALL,
@@ -79,8 +79,8 @@ public class ResultsComparator {
 		this.datasets = datasets;
 		this.minAgents = minAgents;
 		this.maxAgents = maxAgents;
-		this.lebas = lebas;
 		this.separator = separator;
+		this.lebas = lebas;
 
 		Class.forName(JDBC_DRIVER);
 		// Open a connection
@@ -144,9 +144,9 @@ public class ResultsComparator {
 	public void buildResultsFile() throws IOException, SQLException {
 		logger.info("Writing results file...");
 
-		for (double lebaPct : lebas) {
-			CsvWriter writer = new CsvWriter(new FileWriter("../analysis/results-leba-" + lebaPct
-					+ ".csv"), separator);
+		for (int lebaPos = 0; lebaPos < lebas.length; lebaPos++) {
+			CsvWriter writer = new CsvWriter(new FileWriter("../analysis/results-leba-"
+					+ lebas[lebaPos] + ".csv"), separator);
 			int headersLength = 1 + (maxAgents - minAgents + 1) + 1
 					+ this.getClassifiersList().size();
 			String[] headers = new String[headersLength];
@@ -163,13 +163,14 @@ public class ResultsComparator {
 			writer.writeRecord(headers);
 
 			for (String dataset : datasets.keySet()) {
-				int leba = (int) Math.rint(lebaPct * this.datasets.get(dataset));
-				logger.info("LEBA for lebaPct " + lebaPct + " = " + leba + " for dataset "
+				Integer[] set = datasets.get(dataset);
+				int leba = (int) set[lebaPos];
+				logger.info("LEBA for lebaPct " + lebas[lebaPos] + " = " + leba + " for dataset "
 						+ dataset);
-				if (leba > 10) {
-					logger.warning("High leba -> not calculated for that option -> Changing leba to 10.");
-					leba = 10;
-				}
+				// if (leba > 10) {
+				// logger.warning("High leba -> not calculated for that option -> Changing leba to 10.");
+				// leba = 10;
+				// }
 				String[] row = new String[headersLength];
 				index = 0;
 				double er;
@@ -282,20 +283,29 @@ public class ResultsComparator {
 			classifiers.add("PART");
 			classifiers.add("SMO");
 
-			HashMap<String, Integer> datasets = new HashMap<String, Integer>();
-			datasets.put("Zoo", 16);
-			datasets.put("Solarflare", 11);
-			datasets.put("Marketing", 13);
-			datasets.put("Nursery", 9);
-			datasets.put("Mushroom", 22);
-			datasets.put("Chess", 6);
-			// datasets.put("Poker",10);
-			datasets.put("KOWLANCZ02", 27);
+			HashMap<String, Integer[]> datasets = new HashMap<String, Integer[]>();
+			Integer[] zoolebas = { 0, 4, 8 };
+			datasets.put("zoo", zoolebas);
+			Integer[] solarflarelebas = { 0, 3, 6 };
+			datasets.put("solarflare", solarflarelebas);
+			Integer[] marketinglebas = { 0, 3, 7 };
+			datasets.put("marketing", marketinglebas);
+			Integer[] nurserylebas = { 0, 2, 5 };
+			datasets.put("nursery", nurserylebas);
+			Integer[] mushroomlebas = { 0, 6, 11 };
+			datasets.put("mushroom", mushroomlebas);
+			Integer[] kowlanlebas = { 0, 7, 14 };
+			datasets.put("kowlancz02", kowlanlebas);
+			Integer[] chesslebas = { 0, 2, 3 };
+			datasets.put("chess", chesslebas);
+			Integer[] pokerlebas = { 0, 3, 5 };
+			datasets.put("poker", pokerlebas);
 
-			List<Double> lebas = new ArrayList<Double>();
-			lebas.add(0.0);
-			lebas.add(0.25);
-			lebas.add(0.50);
+			double[] lebas = { 0.0, 0.25, 0.5 };
+			// List<Double> lebas = new ArrayList<Double>();
+			// lebas.add(0.0);
+			// lebas.add(0.25);
+			// lebas.add(0.50);
 			// lebas.add(0.75);
 			// lebas.add(1.0);
 			// lebas.add(0.1);

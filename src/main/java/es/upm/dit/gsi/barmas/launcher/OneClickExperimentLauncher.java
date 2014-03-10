@@ -71,13 +71,13 @@ public class OneClickExperimentLauncher {
 	private void click() {
 
 		this.launchZooBatch();
-		this.launchMarketingBatch();
-		this.launchNurseryBatch();
-		this.launchSolarFlareBatch();
-		this.launchKowlanCZBatch();
-		this.launchMushroomBatch();
-		this.launchChessBatch();
-		this.launchPokerBatch();
+		// this.launchMarketingBatch();
+		// this.launchNurseryBatch();
+		// this.launchSolarFlareBatch();
+		// this.launchKowlanCZBatch();
+		// this.launchMushroomBatch();
+		// this.launchChessBatch();
+		// this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -792,7 +792,7 @@ public class OneClickExperimentLauncher {
 						logger.info(validators.size()
 								+ " validations are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
-//						executor.executeValidators(validators, maxLearningThreads, logger);
+						executor.executeValidators(validators, maxLearningThreads, logger);
 
 						// EXPERIMENTS
 						List<RunnableExperiment> experiments = executor
@@ -812,7 +812,7 @@ public class OneClickExperimentLauncher {
 								+ " experiments are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
 						logger.info("---> Starting experiments executions...");
-//						executor.executeExperiments(experiments, maxThreads, logger);
+						executor.executeExperiments(experiments, maxThreads, logger);
 						logger.info("<--- Finishing experiments executions...");
 						long finishTime = System.currentTimeMillis();
 						experimentsCount = experimentsCount + validators.size()

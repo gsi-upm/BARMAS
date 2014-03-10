@@ -54,36 +54,43 @@ public class WekaClassifiersValidator {
 	private int minLEBA;
 	private int maxLEBA;
 	private int columns;
+	private Integer[] lebas;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 
-		List<String> datasets = new ArrayList<String>();
-		// datasets.add("zoo");
-		// datasets.add("solarflare");
-		// datasets.add("marketing");
-		// datasets.add("nursery");
-		// datasets.add("mushroom");
-		// datasets.add("kowlancz02");
-		// datasets.add("chess");
-		datasets.add("poker");
+		HashMap<String, Integer[]> datasets = new HashMap<String, Integer[]>();
+		Integer[] zoolebas = { 0, 4, 8 };
+		datasets.put("zoo", zoolebas);
+		// Integer[] solarflarelebas = { 0, 3, 6 };
+		// datasets.put("solarflare", solarflarelebas);
+		// Integer[] marketinglebas = { 0, 3, 7 };
+		// datasets.put("marketing", marketinglebas);
+		// Integer[] nurserylebas = { 0, 2, 5 };
+		// datasets.put("nursery", nurserylebas);
+		// Integer[] mushroomlebas = { 0, 6, 11 };
+		// datasets.put("mushroom", mushroomlebas);
+		// Integer[] kowlanlebas = { 0, 7, 14 };
+		// datasets.put("kowlancz02", kowlanlebas);
+		// Integer[] chesslebas = { 0, 2, 3 };
+		// datasets.put("chess", chesslebas);
+		// Integer[] pokerlebas = { 0, 3, 5 };
+		// datasets.put("poker", pokerlebas);
 
 		List<Classifier> classifiers = null;
 
-		for (String dataset : datasets) {
+		for (String dataset : datasets.keySet()) {
 			String simName = dataset + "-simulation";
 			String inputFolder = "../experiments/" + simName + "/input";
 			String outputFolder = "../experiments/" + simName + "/weka";
 			int folds = 10;
 			int maxAgents = 4;
 			int minAgents = 2;
-			int maxLEBA = 5;
-			int minLEBA = 0;
 
 			WekaClassifiersValidator validator = new WekaClassifiersValidator(dataset, inputFolder,
-					outputFolder, folds, minAgents, maxAgents, minLEBA, maxLEBA);
+					outputFolder, folds, minAgents, maxAgents, datasets.get(dataset));
 			classifiers = validator.validateWekaClassifiers(classifiers);
 		}
 
@@ -98,11 +105,10 @@ public class WekaClassifiersValidator {
 	 * @param folds
 	 * @param minAgents
 	 * @param maxAgents
-	 * @param minLEBA
-	 * @param maxLEBA
+	 * @param lebas
 	 */
 	public WekaClassifiersValidator(String simulationID, String inputPath, String outputPath,
-			int folds, int minAgents, int maxAgents, int minLEBA, int maxLEBA) {
+			int folds, int minAgents, int maxAgents, Integer[] lebas) {
 		this.dataset = simulationID;
 		this.inputFolder = inputPath;
 		this.outputFolder = outputPath;
@@ -114,10 +120,11 @@ public class WekaClassifiersValidator {
 		this.resultsFilePath = outputPath + "/weka-results.csv";
 		this.columns = 9;
 		this.folds = folds;
+		this.lebas = lebas;
 		// this.minAgents = minAgents;
 		// this.maxAgents = maxAgents;
-		this.minLEBA = minLEBA;
-		this.maxLEBA = maxLEBA;
+		// this.minLEBA = minLEBA;
+		// this.maxLEBA = maxLEBA;
 		File dir = new File(this.outputFolder);
 		if (!dir.exists() || !dir.isDirectory()) {
 			dir.mkdirs();
@@ -242,7 +249,7 @@ public class WekaClassifiersValidator {
 					throw e;
 				}
 
-				for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+				for (int leba : lebas) {
 					double[][] results = resultsMap.get(leba);
 					double[] pcts = this.getValidation(copiedClassifier, trainData, testData, leba);
 					results[iteration][0] = results[iteration][0] + pcts[0];
@@ -263,47 +270,41 @@ public class WekaClassifiersValidator {
 					writer.writeRecord(row);
 				}
 
-				
 				/*
-				Instances testDataNoEssentials = WekaClassifiersValidator.getDataFromCSV(inputPath
-						+ "/test-dataset.arff");
-				Instances trainDataNoEssentials = WekaClassifiersValidator.getDataFromCSV(inputPath
-						+ "/bayes-central-dataset-noEssentials.arff");
-				try {
-					logger.info("Learning model...");
-					copiedClassifier = Classifier.makeCopy(classifier);
-					copiedClassifier.buildClassifier(trainDataNoEssentials);
-
-					logger.info("Finishing learning process. Model built for classifier "
-							+ classifierName + " in iteration " + iteration + " without essentials");
-				} catch (Exception e) {
-					logger.severe("Problems training model for "
-							+ classifier.getClass().getSimpleName());
-					logger.severe(e.getMessage());
-					throw e;
-				}
-
-				for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
-					double[][] resultsNoEss = resultsNoEssMap.get(leba);
-					double[] pcts = this.getValidation(copiedClassifier, trainDataNoEssentials,
-							testDataNoEssentials, leba);
-					resultsNoEss[iteration][0] = resultsNoEss[iteration][0] + pcts[0];
-					resultsNoEss[iteration][1] = resultsNoEss[iteration][1] + pcts[1];
-
-					resultsNoEssMap.put(leba, resultsNoEss);
-
-					row = new String[this.columns];
-					row[0] = this.dataset;
-					row[1] = Integer.toString(this.folds);
-					row[2] = classifierName;
-					row[3] = Integer.toString(iteration);
-					row[4] = Double.toString(pcts[0]);
-					row[5] = Double.toString(pcts[1]);
-					row[6] = "BayesCentralAgent-NoEssentials";
-					row[7] = "1";
-					row[8] = Integer.toString(leba);
-					writer.writeRecord(row);
-				}*/
+				 * Instances testDataNoEssentials =
+				 * WekaClassifiersValidator.getDataFromCSV(inputPath +
+				 * "/test-dataset.arff"); Instances trainDataNoEssentials =
+				 * WekaClassifiersValidator.getDataFromCSV(inputPath +
+				 * "/bayes-central-dataset-noEssentials.arff"); try {
+				 * logger.info("Learning model..."); copiedClassifier =
+				 * Classifier.makeCopy(classifier);
+				 * copiedClassifier.buildClassifier(trainDataNoEssentials);
+				 * 
+				 * logger.info(
+				 * "Finishing learning process. Model built for classifier " +
+				 * classifierName + " in iteration " + iteration +
+				 * " without essentials"); } catch (Exception e) {
+				 * logger.severe("Problems training model for " +
+				 * classifier.getClass().getSimpleName());
+				 * logger.severe(e.getMessage()); throw e; }
+				 * 
+				 * for (int leba = this.minLEBA; leba <= this.maxLEBA; leba++) {
+				 * double[][] resultsNoEss = resultsNoEssMap.get(leba); double[]
+				 * pcts = this.getValidation(copiedClassifier,
+				 * trainDataNoEssentials, testDataNoEssentials, leba);
+				 * resultsNoEss[iteration][0] = resultsNoEss[iteration][0] +
+				 * pcts[0]; resultsNoEss[iteration][1] =
+				 * resultsNoEss[iteration][1] + pcts[1];
+				 * 
+				 * resultsNoEssMap.put(leba, resultsNoEss);
+				 * 
+				 * row = new String[this.columns]; row[0] = this.dataset; row[1]
+				 * = Integer.toString(this.folds); row[2] = classifierName;
+				 * row[3] = Integer.toString(iteration); row[4] =
+				 * Double.toString(pcts[0]); row[5] = Double.toString(pcts[1]);
+				 * row[6] = "BayesCentralAgent-NoEssentials"; row[7] = "1";
+				 * row[8] = Integer.toString(leba); writer.writeRecord(row); }
+				 */
 
 				// -------------------------------------------------------------
 				// --------------------------- FOR AGENTS DATASETS ISOLATED - NO
