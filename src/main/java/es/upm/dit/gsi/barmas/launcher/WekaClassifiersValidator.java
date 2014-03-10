@@ -59,8 +59,8 @@ public class WekaClassifiersValidator {
 
 		HashMap<String, Integer[]> datasets = new HashMap<String, Integer[]>();
 
-		Integer[] zoolebas = { 0, 4, 8 };
-		datasets.put("zoo", zoolebas);
+//		Integer[] zoolebas = { 0, 4, 8 };
+//		datasets.put("zoo", zoolebas);
 
 		Integer[] solarflarelebas = { 0, 3, 6 };
 		datasets.put("solarflare", solarflarelebas);
