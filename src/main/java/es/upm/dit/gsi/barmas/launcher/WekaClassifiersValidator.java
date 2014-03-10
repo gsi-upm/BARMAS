@@ -49,10 +49,6 @@ public class WekaClassifiersValidator {
 	private String resultsFilePath;
 	private CsvWriter writer;
 	private int folds;
-	// private int minAgents;
-	// private int maxAgents;
-	// private int minLEBA;
-	// private int maxLEBA;
 	private int columns;
 	private Integer[] lebas;
 
