@@ -60,20 +60,20 @@ public class WekaClassifiersValidator {
 		HashMap<String, Integer[]> datasets = new HashMap<String, Integer[]>();
 		Integer[] zoolebas = { 0, 4, 8 };
 		datasets.put("zoo", zoolebas);
-		// Integer[] solarflarelebas = { 0, 3, 6 };
-		// datasets.put("solarflare", solarflarelebas);
-		// Integer[] marketinglebas = { 0, 3, 7 };
-		// datasets.put("marketing", marketinglebas);
-		// Integer[] nurserylebas = { 0, 2, 5 };
-		// datasets.put("nursery", nurserylebas);
-		// Integer[] mushroomlebas = { 0, 6, 11 };
-		// datasets.put("mushroom", mushroomlebas);
-		// Integer[] kowlanlebas = { 0, 7, 14 };
-		// datasets.put("kowlancz02", kowlanlebas);
-		// Integer[] chesslebas = { 0, 2, 3 };
-		// datasets.put("chess", chesslebas);
-		// Integer[] pokerlebas = { 0, 3, 5 };
-		// datasets.put("poker", pokerlebas);
+		Integer[] solarflarelebas = { 0, 3, 6 };
+		datasets.put("solarflare", solarflarelebas);
+		Integer[] marketinglebas = { 0, 3, 7 };
+		datasets.put("marketing", marketinglebas);
+		Integer[] nurserylebas = { 0, 2, 5 };
+		datasets.put("nursery", nurserylebas);
+		Integer[] mushroomlebas = { 0, 6, 11 };
+		datasets.put("mushroom", mushroomlebas);
+		Integer[] kowlanlebas = { 0, 7, 14 };
+		datasets.put("kowlancz02", kowlanlebas);
+		Integer[] chesslebas = { 0, 2, 3 };
+		datasets.put("chess", chesslebas);
+		Integer[] pokerlebas = { 0, 3, 5 };
+		datasets.put("poker", pokerlebas);
 
 		List<Classifier> classifiers = null;
 
@@ -407,30 +407,31 @@ public class WekaClassifiersValidator {
 				writer.flush();
 			}
 
-			for (int leba : lebas) {
-				double[] sum = new double[2];
-				double[][] results = resultsNoEssMap.get(leba);
-				for (int iteration = 0; iteration < this.folds; iteration++) {
-					sum[0] = sum[0] + results[iteration][0];
-					sum[1] = sum[1] + results[iteration][1];
-				}
-
-				row = new String[this.columns];
-				row[0] = this.dataset;
-				row[1] = Integer.toString(this.folds);
-				row[2] = classifierName;
-				row[3] = "AVERAGE";
-				row[4] = Double.toString(sum[0] / this.folds);
-				row[5] = Double.toString(sum[1] / this.folds);
-				row[6] = "BayesCentralAgent-NoEssentials";
-				row[7] = "1";
-				row[8] = Integer.toString(leba);
-				writer.writeRecord(row);
-
-				logger.info("Validation for BayesCentralAgent dataset with " + classifierName
-						+ " done for dataset: " + this.dataset + " with LEBA=" + leba);
-				writer.flush();
-			}
+			// for (int leba : lebas) {
+			// double[] sum = new double[2];
+			// double[][] results = resultsNoEssMap.get(leba);
+			// for (int iteration = 0; iteration < this.folds; iteration++) {
+			// sum[0] = sum[0] + results[iteration][0];
+			// sum[1] = sum[1] + results[iteration][1];
+			// }
+			//
+			// row = new String[this.columns];
+			// row[0] = this.dataset;
+			// row[1] = Integer.toString(this.folds);
+			// row[2] = classifierName;
+			// row[3] = "AVERAGE";
+			// row[4] = Double.toString(sum[0] / this.folds);
+			// row[5] = Double.toString(sum[1] / this.folds);
+			// row[6] = "BayesCentralAgent-NoEssentials";
+			// row[7] = "1";
+			// row[8] = Integer.toString(leba);
+			// writer.writeRecord(row);
+			//
+			// logger.info("Validation for BayesCentralAgent dataset with " +
+			// classifierName
+			// + " done for dataset: " + this.dataset + " with LEBA=" + leba);
+			// writer.flush();
+			// }
 
 			logger.info("Validation for BayesCentralAgent dataset with " + classifierName
 					+ " done for dataset: " + this.dataset);
