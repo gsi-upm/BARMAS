@@ -74,10 +74,10 @@ public class OneClickExperimentLauncher {
 		// this.launchMarketingBatch();
 		// this.launchNurseryBatch();
 		// this.launchSolarFlareBatch();
-		// this.launchKowlanCZBatch();
+		this.launchKowlanCZBatch();
 		// this.launchMushroomBatch();
 		// this.launchChessBatch();
-		this.launchPokerBatch();
+		// this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
@@ -234,10 +234,10 @@ public class OneClickExperimentLauncher {
 		double minBeliefThreshold = 0.2;
 		double maxTrustThreshold = 0.2;
 		double minTrustThreshold = 0.2;
-		int maxLEBA = 10;
-		int minLEBA = 0;
+		int maxLEBA = 14;
+		int minLEBA = 13;
 		int maxArgumentationRounds = 200;
-		int maxNumberOfAgents = 5;
+		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
 		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFold(simulationID,
