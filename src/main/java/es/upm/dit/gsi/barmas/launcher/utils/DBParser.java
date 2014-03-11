@@ -9,6 +9,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,20 +46,24 @@ public class DBParser {
 
 		String folder = "../experiments/";
 
-		String dataset = "zoo";
-		// String dataset = "kowlancz02";
-		// String dataset = "mushroom";
-		// String dataset = "chess";
-		// String dataset = "solarflare";
-		// String dataset = "nursery";
-		// String dataset = "marketing";
-		// String dataset = "poker";
+		List<String> datasets = new ArrayList<String>();
+		datasets.add("zoo");
+		datasets.add("solarflare");
+		datasets.add("marketing");
+		datasets.add("nursery");
+		datasets.add("kowlancz02");
+		// datasets.add("mushroom");
+		// datasets.add("chess");
+		// datasets.add("poker");
 
-		String filePath = folder + dataset + "-simulation/" + dataset + "-simulation-summary.csv";
-		dbparser.putDataInDB(filePath);
+		for (String dataset : datasets) {
+			String filePath = folder + dataset + "-simulation/" + dataset
+					+ "-simulation-summary.csv";
+			dbparser.putDataInDB(filePath);
 
-		String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
-		dbparser.putWekaDataInDB(wekaFilePath);
+			String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
+			dbparser.putWekaDataInDB(wekaFilePath);
+		}
 
 	}// end main
 
