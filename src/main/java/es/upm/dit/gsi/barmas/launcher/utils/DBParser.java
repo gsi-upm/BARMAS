@@ -47,19 +47,19 @@ public class DBParser {
 		String folder = "../experiments/";
 
 		List<String> datasets = new ArrayList<String>();
-//		datasets.add("zoo");
-//		datasets.add("solarflare");
-//		datasets.add("marketing");
-//		datasets.add("nursery");
-//		datasets.add("kowlancz02");
-		 datasets.add("mushroom");
-		 datasets.add("chess");
+		// datasets.add("zoo");
+		// datasets.add("solarflare");
+		// datasets.add("marketing");
+		// datasets.add("nursery");
+		datasets.add("kowlancz02");
+		datasets.add("mushroom");
+//		datasets.add("chess");
 		// datasets.add("poker");
 
 		for (String dataset : datasets) {
-//			String filePath = folder + dataset + "-simulation/" + dataset
-//					+ "-simulation-summary.csv";
-//			dbparser.putDataInDB(filePath);
+			// String filePath = folder + dataset + "-simulation/" + dataset
+			// + "-simulation-summary.csv";
+			// dbparser.putDataInDB(filePath);
 
 			String wekaFilePath = folder + dataset + "-simulation/weka/weka-results.csv";
 			dbparser.putWekaDataInDB(wekaFilePath);
