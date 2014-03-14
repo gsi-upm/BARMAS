@@ -51,7 +51,7 @@ public class DBParser {
 		// datasets.add("solarflare");
 		// datasets.add("marketing");
 		// datasets.add("nursery");
-		datasets.add("kowlancz02");
+//		datasets.add("kowlancz02");
 		datasets.add("mushroom");
 //		datasets.add("chess");
 		// datasets.add("poker");
