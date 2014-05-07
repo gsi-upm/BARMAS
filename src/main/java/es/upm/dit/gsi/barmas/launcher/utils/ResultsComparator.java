@@ -73,7 +73,7 @@ public class ResultsComparator {
 			int minAgents, int maxAgents, double[] lebas, char separator)
 			throws ClassNotFoundException, SQLException {
 		logger = Logger.getLogger(ResultsComparator.class.getSimpleName());
-		LogConfigurator.log2File(logger, this.getClass().getSimpleName(), Level.ALL, Level.ALL,
+		LogConfigurator.log2File(logger, this.getClass().getSimpleName(), Level.ALL, Level.INFO,
 				"../analysis");
 		this.classifiers = classifiers;
 		this.datasets = datasets;
@@ -213,6 +213,7 @@ public class ResultsComparator {
 		double roundedER = this.round(min, 2);
 		logger.info("Error rate for classifier " + classifier + " with leba=" + leba
 				+ " and dataset " + dataset + " -->> ER=" + roundedER);
+		logger.fine("ErrorRate without round: " + min);
 		return roundedER;
 	}
 
@@ -234,6 +235,7 @@ public class ResultsComparator {
 		double roundedER = this.round(1 - max, 2);
 		logger.info("Error rate for BayesSearch with leba=" + leba + " and dataset " + dataset
 				+ " -->> ER=" + roundedER);
+		logger.fine("ErrorRate without round: " + (1 - max));
 		return roundedER;
 	}
 
@@ -257,6 +259,7 @@ public class ResultsComparator {
 		double roundedER = this.round(1 - max, 2);
 		logger.info("Error rate for BARMAS-Agents-" + agents + " with leba=" + leba
 				+ " and dataset " + dataset + " -->> ER=" + roundedER);
+		logger.fine("ErrorRate without round: " + (1 - max));
 		return roundedER;
 	}
 
@@ -302,16 +305,6 @@ public class ResultsComparator {
 			datasets.put("poker", pokerlebas);
 
 			double[] lebas = { 0.0, 0.25, 0.5 };
-			// List<Double> lebas = new ArrayList<Double>();
-			// lebas.add(0.0);
-			// lebas.add(0.25);
-			// lebas.add(0.50);
-			// lebas.add(0.75);
-			// lebas.add(1.0);
-			// lebas.add(0.1);
-			// lebas.add(0.3);
-			// lebas.add(0.4);
-			// lebas.add(0.6);
 
 			int minAgents = 2;
 			int maxAgents = 4;
