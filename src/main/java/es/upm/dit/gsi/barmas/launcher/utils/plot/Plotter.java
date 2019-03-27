@@ -54,7 +54,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
  * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
- * @email a.carrera@gsi.dit.upm.es
+ * @email a.carrera@upm.es
  * @twitter @alvarocarrera
  * @date 04/11/2013
  * @version 0.1

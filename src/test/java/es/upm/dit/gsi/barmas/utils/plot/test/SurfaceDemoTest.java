@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package es.upm.dit.gsi.barmas.utils.plot.test;
 
 import java.util.ArrayList;

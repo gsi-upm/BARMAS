@@ -37,7 +37,7 @@ import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
  * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
- * @email a.carrera@gsi.dit.upm.es
+ * @email a.carrera@upm.es
  * @twitter @alvarocarrera
  * @date 01/11/2013
  * @version 0.2

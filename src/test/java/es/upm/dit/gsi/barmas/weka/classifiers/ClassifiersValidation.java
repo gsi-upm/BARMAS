@@ -57,7 +57,7 @@ import weka.core.converters.ConverterUtils.DataSource;
  * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
- * @email a.carrera@gsi.dit.upm.es
+ * @email a.carrera@upm.es
  * @twitter @alvarocarrera
  * @date 14/02/2014
  * @version 0.1

@@ -31,7 +31,7 @@ import java.util.Map.Entry;
  * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
- * @email a.carrera@gsi.dit.upm.es
+ * @email a.carrera@upm.es
  * @twitter @alvarocarrera
  * @date 06/11/2013
  * @version 0.1

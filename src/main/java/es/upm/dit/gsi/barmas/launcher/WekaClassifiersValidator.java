@@ -51,7 +51,7 @@ import es.upm.dit.gsi.barmas.launcher.logging.LogConfigurator;
  * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
- * @email a.carrera@gsi.dit.upm.es
+ * @email a.carrera@upm.es
  * @twitter @alvarocarrera
  * @date 17/02/2014
  * @version 0.1

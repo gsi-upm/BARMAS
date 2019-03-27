@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package es.upm.dit.gsi.barmas.utils.plot.test;
 
 import org.jzy3d.chart.Chart;
@@ -22,7 +25,7 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
  * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
- * @email a.carrera@gsi.dit.upm.es
+ * @email a.carrera@upm.es
  * @twitter @alvarocarrera
  * @date 04/11/2013
  * @version 0.1

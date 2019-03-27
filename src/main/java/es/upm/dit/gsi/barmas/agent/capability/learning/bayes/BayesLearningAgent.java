@@ -30,7 +30,7 @@ import es.upm.dit.gsi.shanks.agent.ShanksAgent;
  * Telemáticos Universidad Politécnica de Madrid (UPM)
  * 
  * @author alvarocarrera
- * @email a.carrera@gsi.dit.upm.es
+ * @email a.carrera@upm.es
  * @twitter @alvarocarrera
  * @date 29/10/2013
  * @version 0.1
