@@ -128,7 +128,7 @@ public class ResultsComparator {
 		return result;
 	}
 
-	public ResultSet queryBarmasResults(String dataset, int leba, int agents) throws SQLException {
+	public ResultSet queryBarmasResultsWithTrust(String dataset, int leba, int agents) throws SQLException {
 		Statement stmt = conn.createStatement();
 		String sql;
 		String upperDataset = dataset.toUpperCase();
@@ -136,6 +136,23 @@ public class ResultsComparator {
 				+ upperDataset
 				+ "' AND leba="
 				+ leba
+				+ " AND tth<2.0"
+				+ " AND argumentativeAgents="
+				+ agents
+				+ " AND simulationid LIKE 'BarmasExperiment%' GROUP BY dth, bth, tth, leba, argumentativeAgents";
+		ResultSet result = stmt.executeQuery(sql);
+		return result;
+	}
+
+	public ResultSet queryBarmasResultsWithoutTrust(String dataset, int leba, int agents) throws SQLException {
+		Statement stmt = conn.createStatement();
+		String sql;
+		String upperDataset = dataset.toUpperCase();
+		sql = "SELECT dataset, AVG(argumentationOk), dth, bth, tth, leba, argumentativeAgents as agents from results WHERE dataset='"
+				+ upperDataset
+				+ "' AND leba="
+				+ leba
+				+ " AND tth=2.0"
 				+ " AND argumentativeAgents="
 				+ agents
 				+ " AND simulationid LIKE 'BarmasExperiment%' GROUP BY dth, bth, tth, leba, argumentativeAgents";
@@ -265,7 +282,7 @@ public class ResultsComparator {
 	 */
 	private double getBARMASErrorRate(String dataset, int agents, int leba) throws SQLException {
 
-		ResultSet result = this.queryBarmasResults(dataset, leba, agents);
+		ResultSet result = this.queryBarmasResultsWithoutTrust(dataset, leba, agents);
 		double max = 0;
 		while (result.next()) {
 			double succesRatio = result.getDouble(2);
