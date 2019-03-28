@@ -28,7 +28,7 @@ import com.csvreader.CsvReader;
 import es.upm.dit.gsi.barmas.launcher.utils.SimulationConfiguration;
 import es.upm.dit.gsi.barmas.model.DiagnosisCase;
 import es.upm.dit.gsi.shanks.exception.ShanksException;
-import es.upm.dit.gsi.shanks.model.event.failiure.Failure;
+import es.upm.dit.gsi.shanks.model.event.failure.Failure;
 import es.upm.dit.gsi.shanks.model.scenario.Scenario;
 import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario2DPortrayal;
 import es.upm.dit.gsi.shanks.model.scenario.portrayal.Scenario3DPortrayal;
