@@ -87,23 +87,23 @@ public class OneClickExperimentLauncher {
 	 */
 	private void click() {
 
-		// this.launchZooBatch();
+		this.launchZooBatch();
 		// this.launchSolarFlareBatch();
 		// this.launchNurseryBatch();
 		// this.launchMarketingBatch();
 		// this.launchKowlanCZBatch();
-		this.launchMushroomBatch();
-		this.launchChessBatch();
-		this.launchPokerBatch();
+		// this.launchMushroomBatch();
+		// this.launchChessBatch();
+		// this.launchPokerBatch();
 
 		long finishTime = System.currentTimeMillis();
 		long interval = finishTime - initTime;
 		long intervalSecs = interval / 1000;
 		long intervalMins = intervalSecs / 60;
 		long intervalHours = intervalMins / 60;
-		logger.info("All experiments have been executed in " + intervalHours + " hours, "
-				+ (intervalMins % 60) + " minutes, " + (intervalSecs % 60) + " seconds and "
-				+ (interval % 1000) + " miliseconds. Finishing execution of simulations.");
+		logger.info("All experiments have been executed in " + intervalHours + " hours, " + (intervalMins % 60)
+				+ " minutes, " + (intervalSecs % 60) + " seconds and " + (interval % 1000)
+				+ " miliseconds. Finishing execution of simulations.");
 	}
 
 	/**
@@ -135,14 +135,13 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 		// ***********************
 	}
 
@@ -174,14 +173,13 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 	}
 
 	/**
@@ -213,14 +211,13 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 		// ***********************
 	}
 
@@ -253,14 +250,13 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 		// ***********************
 	}
 
@@ -293,14 +289,13 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 		// ***********************
 
 	}
@@ -334,14 +329,13 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 		// ***********************
 
 	}
@@ -375,14 +369,13 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 		// ***********************
 	}
 
@@ -415,24 +408,22 @@ public class OneClickExperimentLauncher {
 		int maxNumberOfAgents = 4;
 		int minNumberOfAgents = 2;
 
-		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-				simulationID, dataset, experimentFolder, maxNumberOfAgents, minNumberOfAgents,
-				summaryFile, seed, maxThreads, kfold, classificationTarget, delta,
-				SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, lebas, maxArgumentationRounds);
-		logger.info("Total number of experiments executed in all iterations and with all parameters for "
-				+ simulationID + " simulation = " + totalExps);
+		long totalExps = this.launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(simulationID, dataset,
+				experimentFolder, maxNumberOfAgents, minNumberOfAgents, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, SimulationConfiguration.SIMULATION_MODE, maxDistanceThreshold,
+				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold,
+				lebas, maxArgumentationRounds);
+		logger.info("Total number of experiments executed in all iterations and with all parameters for " + simulationID
+				+ " simulation = " + totalExps);
 		// ***********************
 	}
 
-	private long launchValidationBatchFor(String simulationID, String dataset,
-			String experimentFolder, int agentsNumber, double ratio, boolean central,
-			String summaryFile, long seed, int maxThreads, int iterations,
-			String classificationTarget, double delta, int mode) {
+	private long launchValidationBatchFor(String simulationID, String dataset, String experimentFolder,
+			int agentsNumber, double ratio, boolean central, String summaryFile, long seed, int maxThreads,
+			int iterations, String classificationTarget, double delta, int mode) {
 		logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
-		LogConfigurator.log2File(logger, simulationID + "-OneClickExperimentLauncher", Level.ALL,
-				Level.INFO, experimentFolder);
+		LogConfigurator.log2File(logger, simulationID + "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
+				experimentFolder);
 
 		logger.info("Executing experiments in " + cores + " cores.");
 		long initTime = System.currentTimeMillis();
@@ -441,22 +432,21 @@ public class OneClickExperimentLauncher {
 		try {
 			for (int i = 0; i < iterations; i++) {
 				DatasetSplitter splitter = new DatasetSplitter();
-				splitter.splitDataset(ratio, agentsNumber, dataset, experimentFolder
-						+ "/input/iteration-" + i + "/dataset", central, simulationID, logger, i);
+				splitter.splitDataset(ratio, agentsNumber, dataset,
+						experimentFolder + "/input/iteration-" + i + "/dataset", central, simulationID, logger, i);
 				ExperimentExecutor executor = new ExperimentExecutor();
 				simulationID = simulationID + "-TESTRATIO-" + ratio;
 
 				// VALIDATORS
 				int ratioint = (int) (ratio * 100);
 				double roundedratio = ((double) ratioint) / 100;
-				List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID,
-						agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/"
-								+ roundedratio + "testRatio/iteration-" + i, experimentFolder
-								+ "/output/" + roundedratio + "testRatio/iteration-" + i,
-						experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + i
-								+ "/test-dataset.csv", classificationTarget, i);
-				logger.info(validators.size()
-						+ " validations are ready to execute for simulation: " + simulationID);
+				List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID, agentsNumber,
+						summaryFile, seed, mode,
+						experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + i,
+						experimentFolder + "/output/" + roundedratio + "testRatio/iteration-" + i,
+						experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + i + "/test-dataset.csv",
+						classificationTarget, i);
+				logger.info(validators.size() + " validations are ready to execute for simulation: " + simulationID);
 				logger.info("---> Starting validations executions...");
 				executor.executeValidators(validators, maxLearningThreads, logger);
 				logger.info("<--- Finishing validations executions...");
@@ -472,60 +462,54 @@ public class OneClickExperimentLauncher {
 		return counter;
 	}
 
-	private long launchSmartBathAndValidatorsForAgentRangeKFold(String simulationID,
-			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
-			boolean central, String summaryFile, long seed, int maxThreads, int kfold,
-			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
-			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold,
-			double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
+	private long launchSmartBathAndValidatorsForAgentRangeKFold(String simulationID, String dataset,
+			String experimentFolder, int maxAgentsNumber, int minAgentsNumber, boolean central, String summaryFile,
+			long seed, int maxThreads, int kfold, String classificationTarget, double delta, int mode,
+			double maxDistanceThreshold, double minDistanceThreshold, double maxBeliefThreshold,
+			double minBeliefThreshold, double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
 			int maxArgumentationRounds) {
 
 		double ratio = 1 / (double) kfold;
-		long counter = this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset,
-				experimentFolder, maxAgentsNumber, minAgentsNumber, ratio, central, summaryFile,
-				seed, maxThreads, kfold, classificationTarget, delta, mode, maxDistanceThreshold,
-				minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-				minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
+		long counter = this.launchSmartBathAndValidatorsForAgentRange(simulationID, dataset, experimentFolder,
+				maxAgentsNumber, minAgentsNumber, ratio, central, summaryFile, seed, maxThreads, kfold,
+				classificationTarget, delta, mode, maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold,
+				minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 
 		return counter;
 	}
 
-	private long launchSmartBathAndValidatorsForAgentRangeForConcreteIteration(String simulationID,
-			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
-			double ratio, boolean central, String summaryFile, long seed, int maxThreads,
-			int iteration, String classificationTarget, double delta, int mode,
-			double maxDistanceThreshold, double minDistanceThreshold, double maxBeliefThreshold,
-			double minBeliefThreshold, double maxTrustThreshold, double minTrustThreshold,
-			int maxLEBA, int minLEBA, int maxArgumentationRounds) {
-		int agentsNumber = minAgentsNumber;
-		long counter = 0;
-		while (agentsNumber <= maxAgentsNumber) {
-			long aux = this.launchSmartBathAndValidatorsForConcreteIteration(simulationID, dataset,
-					experimentFolder, agentsNumber, ratio, central, summaryFile, seed, maxThreads,
-					iteration, classificationTarget, delta, mode, maxDistanceThreshold,
-					minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-					maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
-			agentsNumber++;
-			counter = counter + aux;
-		}
-		return counter;
-
-	}
-
-	private long launchSmartBathAndValidatorsForAgentRange(String simulationID, String dataset,
-			String experimentFolder, int maxAgentsNumber, int minAgentsNumber, double ratio,
-			boolean central, String summaryFile, long seed, int maxThreads, int iterations,
-			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
-			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold,
-			double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
+	private long launchSmartBathAndValidatorsForAgentRangeForConcreteIteration(String simulationID, String dataset,
+			String experimentFolder, int maxAgentsNumber, int minAgentsNumber, double ratio, boolean central,
+			String summaryFile, long seed, int maxThreads, int iteration, String classificationTarget, double delta,
+			int mode, double maxDistanceThreshold, double minDistanceThreshold, double maxBeliefThreshold,
+			double minBeliefThreshold, double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
 			int maxArgumentationRounds) {
 		int agentsNumber = minAgentsNumber;
 		long counter = 0;
 		while (agentsNumber <= maxAgentsNumber) {
-			long aux = this.launchSmartBathAndValidatorsFor(simulationID, dataset,
-					experimentFolder, agentsNumber, ratio, central, summaryFile, seed, maxThreads,
-					iterations, classificationTarget, delta, mode, maxDistanceThreshold,
-					minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+			long aux = this.launchSmartBathAndValidatorsForConcreteIteration(simulationID, dataset, experimentFolder,
+					agentsNumber, ratio, central, summaryFile, seed, maxThreads, iteration, classificationTarget, delta,
+					mode, maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
+					maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
+			agentsNumber++;
+			counter = counter + aux;
+		}
+		return counter;
+
+	}
+
+	private long launchSmartBathAndValidatorsForAgentRange(String simulationID, String dataset, String experimentFolder,
+			int maxAgentsNumber, int minAgentsNumber, double ratio, boolean central, String summaryFile, long seed,
+			int maxThreads, int iterations, String classificationTarget, double delta, int mode,
+			double maxDistanceThreshold, double minDistanceThreshold, double maxBeliefThreshold,
+			double minBeliefThreshold, double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
+			int maxArgumentationRounds) {
+		int agentsNumber = minAgentsNumber;
+		long counter = 0;
+		while (agentsNumber <= maxAgentsNumber) {
+			long aux = this.launchSmartBathAndValidatorsFor(simulationID, dataset, experimentFolder, agentsNumber,
+					ratio, central, summaryFile, seed, maxThreads, iterations, classificationTarget, delta, mode,
+					maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
 					maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA, maxArgumentationRounds);
 			agentsNumber++;
 			counter = counter + aux;
@@ -533,44 +517,42 @@ public class OneClickExperimentLauncher {
 		return counter;
 	}
 
-	private long launchSmartBathAndValidatorsForConcreteIteration(String simulationID,
-			String dataset, String experimentFolder, int agentsNumber, double ratio,
-			boolean central, String summaryFile, long seed, int maxThreads, int iteration,
-			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
-			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold,
-			double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
+	private long launchSmartBathAndValidatorsForConcreteIteration(String simulationID, String dataset,
+			String experimentFolder, int agentsNumber, double ratio, boolean central, String summaryFile, long seed,
+			int maxThreads, int iteration, String classificationTarget, double delta, int mode,
+			double maxDistanceThreshold, double minDistanceThreshold, double maxBeliefThreshold,
+			double minBeliefThreshold, double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
 			int maxArgumentationRounds) {
 		try {
 			DatasetSplitter splitter = new DatasetSplitter();
-			splitter.splitDataset(ratio, agentsNumber, dataset, experimentFolder + "/input",
-					central, simulationID, logger, iteration);
+			splitter.splitDataset(ratio, agentsNumber, dataset, experimentFolder + "/input", central, simulationID,
+					logger, iteration);
 			ExperimentExecutor executor = new ExperimentExecutor();
 
 			// VALIDATORS
 			int ratioint = (int) (ratio * 100);
 			double roundedratio = ((double) ratioint) / 100;
-			List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID,
-					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/"
-							+ roundedratio + "testRatio/iteration-" + iteration, experimentFolder
-							+ "/output/" + roundedratio + "testRatio/iteration-" + iteration,
-					experimentFolder + "/input/" + roundedratio + "testRatio/iteration-"
-							+ iteration + "/test-dataset.csv", classificationTarget, iteration);
-			logger.info(validators.size() + " validations are ready to execute for simulation: "
-					+ simulationID + " for iteration " + iteration);
+			List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID, agentsNumber, summaryFile,
+					seed, mode, experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration,
+					experimentFolder + "/output/" + roundedratio + "testRatio/iteration-" + iteration, experimentFolder
+							+ "/input/" + roundedratio + "testRatio/iteration-" + iteration + "/test-dataset.csv",
+					classificationTarget, iteration);
+			logger.info(validators.size() + " validations are ready to execute for simulation: " + simulationID
+					+ " for iteration " + iteration);
 			executor.executeValidators(validators, maxLearningThreads, logger);
 
 			// EXPERIMENTS
-			List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(simulationID,
-					agentsNumber, summaryFile, seed, mode, experimentFolder + "/input/"
-							+ roundedratio + "testRatio/iteration-" + iteration, experimentFolder
-							+ "/output/" + roundedratio + "testRatio/iteration-" + iteration,
-					experimentFolder + "/input/" + roundedratio + "testRatio/iteration-"
-							+ iteration + "/test-dataset.csv", classificationTarget, delta,
-					iteration, maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold,
-					minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+			List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(simulationID, agentsNumber,
+					summaryFile, seed, mode,
+					experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration,
+					experimentFolder + "/output/" + roundedratio + "testRatio/iteration-" + iteration,
+					experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration
+							+ "/test-dataset.csv",
+					classificationTarget, delta, iteration, maxDistanceThreshold, minDistanceThreshold,
+					maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
 					maxArgumentationRounds, logger);
-			logger.info(experiments.size() + " experiments are ready to execute for simulation: "
-					+ simulationID + " for iteration " + iteration);
+			logger.info(experiments.size() + " experiments are ready to execute for simulation: " + simulationID
+					+ " for iteration " + iteration);
 			logger.info("---> Starting experiments executions...");
 			executor.executeExperiments(experiments, maxThreads, logger);
 			logger.info("<--- Finishing experiments executions...");
@@ -586,31 +568,27 @@ public class OneClickExperimentLauncher {
 		return Long.MIN_VALUE;
 	}
 
-	private long launchSmartBathAndValidatorsFor(String simulationID, String dataset,
-			String experimentFolder, int agentsNumber, double ratio, boolean central,
-			String summaryFile, long seed, int maxThreads, int iterations,
-			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
-			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold,
-			double maxTrustThreshold, double minTrustThreshold, int maxLEBA, int minLEBA,
-			int maxArgumentationRounds) {
+	private long launchSmartBathAndValidatorsFor(String simulationID, String dataset, String experimentFolder,
+			int agentsNumber, double ratio, boolean central, String summaryFile, long seed, int maxThreads,
+			int iterations, String classificationTarget, double delta, int mode, double maxDistanceThreshold,
+			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold, double maxTrustThreshold,
+			double minTrustThreshold, int maxLEBA, int minLEBA, int maxArgumentationRounds) {
 		logger = Logger.getLogger(simulationID + "-OneClickExperimentLauncher");
-		LogConfigurator.log2File(logger, simulationID + "-OneClickExperimentLauncher", Level.ALL,
-				Level.INFO, experimentFolder);
+		LogConfigurator.log2File(logger, simulationID + "-OneClickExperimentLauncher", Level.ALL, Level.INFO,
+				experimentFolder);
 
 		logger.info("Executing experiments in " + cores + " cores.");
 		long experimentsCount = 0;
 
 		int ratioint = (int) (ratio * 100);
 		double roundedratio = ((double) ratioint) / 100;
-		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-"
-				+ maxArgumentationRounds;
+		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-" + maxArgumentationRounds;
 		try {
 			for (int i = 0; i < iterations; i++) {
-				long count = this.launchSmartBathAndValidatorsForConcreteIteration(simulationID,
-						dataset, experimentFolder, agentsNumber, roundedratio, central,
-						summaryFile, seed, maxThreads, i, classificationTarget, delta, mode,
-						maxDistanceThreshold, minDistanceThreshold, maxBeliefThreshold,
-						minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
+				long count = this.launchSmartBathAndValidatorsForConcreteIteration(simulationID, dataset,
+						experimentFolder, agentsNumber, roundedratio, central, summaryFile, seed, maxThreads, i,
+						classificationTarget, delta, mode, maxDistanceThreshold, minDistanceThreshold,
+						maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
 						maxArgumentationRounds);
 				experimentsCount = experimentsCount + count;
 			}
@@ -622,16 +600,15 @@ public class OneClickExperimentLauncher {
 
 	}
 
-	private void logTime(String simulationID, long numberOfExperiments, long initTime,
-			long finishTime) {
+	private void logTime(String simulationID, long numberOfExperiments, long initTime, long finishTime) {
 		long interval = finishTime - initTime;
 		long intervalSecs = interval / 1000;
 		long intervalMins = intervalSecs / 60;
 		long intervalHours = intervalMins / 60;
-		logger.info("Simulation ID: " + simulationID + " -> " + numberOfExperiments
-				+ " experiments have been executed in " + intervalHours + " hours, "
-				+ (intervalMins % 60) + " minutes, " + (intervalSecs % 60) + " seconds and "
-				+ (interval % 1000) + " miliseconds. Finishing execution of simulations.");
+		logger.info(
+				"Simulation ID: " + simulationID + " -> " + numberOfExperiments + " experiments have been executed in "
+						+ intervalHours + " hours, " + (intervalMins % 60) + " minutes, " + (intervalSecs % 60)
+						+ " seconds and " + (interval % 1000) + " miliseconds. Finishing execution of simulations.");
 	}
 
 	/**
@@ -662,11 +639,10 @@ public class OneClickExperimentLauncher {
 	 * @param maxArgumentationRounds
 	 * @return
 	 */
-	private long launchSmartBathAndValidatorsForAgentRangeWEKAKFold(String simulationID,
-			String dataset, String experimentFolder, int maxAgentsNumber, int minAgentsNumber,
-			String summaryFile, long seed, int maxThreads, int kfold, String classificationTarget,
-			double delta, int mode, double maxDistanceThreshold, double minDistanceThreshold,
-			double maxBeliefThreshold, double minBeliefThreshold, double maxTrustThreshold,
+	private long launchSmartBathAndValidatorsForAgentRangeWEKAKFold(String simulationID, String dataset,
+			String experimentFolder, int maxAgentsNumber, int minAgentsNumber, String summaryFile, long seed,
+			int maxThreads, int kfold, String classificationTarget, double delta, int mode, double maxDistanceThreshold,
+			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold, double maxTrustThreshold,
 			double minTrustThreshold, int maxLEBA, int minLEBA, int maxArgumentationRounds) {
 
 		long experimentsCount = 0;
@@ -675,12 +651,11 @@ public class OneClickExperimentLauncher {
 		LogConfigurator.log2File(logger, loggerName, Level.ALL, Level.INFO, experimentFolder);
 		int ratioint = (int) ((1 / (double) kfold) * 100);
 		double roundedratio = ((double) ratioint) / 100;
-		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-"
-				+ maxArgumentationRounds;
+		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-" + maxArgumentationRounds;
 
 		DatasetSplitter splitter = new DatasetSplitter();
-		splitter.splitDataset(kfold, minAgentsNumber, maxAgentsNumber, dataset, experimentFolder
-				+ "/input", simulationID, logger);
+		splitter.splitDataset(kfold, minAgentsNumber, maxAgentsNumber, dataset, experimentFolder + "/input",
+				simulationID, logger);
 		for (int agentsNumber = minAgentsNumber; agentsNumber <= maxAgentsNumber; agentsNumber++) {
 
 			logger.info("Executing experiments in " + cores + " cores.");
@@ -691,40 +666,34 @@ public class OneClickExperimentLauncher {
 						ExperimentExecutor executor = new ExperimentExecutor();
 
 						// VALIDATORS
-						List<RunnableExperiment> validators = executor.getValidatorsBatch(
-								simulationID, agentsNumber, summaryFile, seed, mode,
-								experimentFolder + "/input/" + roundedratio
-										+ "testRatio/iteration-" + iteration, experimentFolder
-										+ "/output/" + roundedratio + "testRatio/iteration-"
-										+ iteration, experimentFolder + "/input/" + roundedratio
-										+ "testRatio/iteration-" + iteration + "/test-dataset.csv",
+						List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID, agentsNumber,
+								summaryFile, seed, mode,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/output/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration
+										+ "/test-dataset.csv",
 								classificationTarget, iteration);
-						logger.info(validators.size()
-								+ " validations are ready to execute for simulation: "
+						logger.info(validators.size() + " validations are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
 						executor.executeValidators(validators, maxLearningThreads, logger);
 
 						// EXPERIMENTS
-						List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(
-								simulationID, agentsNumber, summaryFile, seed, mode,
-								experimentFolder + "/input/" + roundedratio
-										+ "testRatio/iteration-" + iteration, experimentFolder
-										+ "/output/" + roundedratio + "testRatio/iteration-"
-										+ iteration, experimentFolder + "/input/" + roundedratio
-										+ "testRatio/iteration-" + iteration + "/test-dataset.csv",
-								classificationTarget, delta, iteration, maxDistanceThreshold,
-								minDistanceThreshold, maxBeliefThreshold, minBeliefThreshold,
-								maxTrustThreshold, minTrustThreshold, maxLEBA, minLEBA,
-								maxArgumentationRounds, logger);
-						logger.info(experiments.size()
-								+ " experiments are ready to execute for simulation: "
+						List<RunnableExperiment> experiments = executor.getExperimentSmartBatch(simulationID,
+								agentsNumber, summaryFile, seed, mode,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/output/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration
+										+ "/test-dataset.csv",
+								classificationTarget, delta, iteration, maxDistanceThreshold, minDistanceThreshold,
+								maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold, maxLEBA,
+								minLEBA, maxArgumentationRounds, logger);
+						logger.info(experiments.size() + " experiments are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
 						logger.info("---> Starting experiments executions...");
 						executor.executeExperiments(experiments, maxThreads, logger);
 						logger.info("<--- Finishing experiments executions...");
 						long finishTime = System.currentTimeMillis();
-						experimentsCount = experimentsCount + validators.size()
-								+ experiments.size();
+						experimentsCount = experimentsCount + validators.size() + experiments.size();
 						this.logTime(simulationID, experimentsCount, initTime, finishTime);
 
 					} catch (Exception e) {
@@ -768,13 +737,11 @@ public class OneClickExperimentLauncher {
 	 * @param maxArgumentationRounds
 	 * @return
 	 */
-	private long launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(
-			String simulationID, String dataset, String experimentFolder, int maxAgentsNumber,
-			int minAgentsNumber, String summaryFile, long seed, int maxThreads, int kfold,
-			String classificationTarget, double delta, int mode, double maxDistanceThreshold,
-			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold,
-			double maxTrustThreshold, double minTrustThreshold, int[] LEBAS,
-			int maxArgumentationRounds) {
+	private long launchSmartBathAndValidatorsForAgentRangeWEKAKFoldForExactLEBAS(String simulationID, String dataset,
+			String experimentFolder, int maxAgentsNumber, int minAgentsNumber, String summaryFile, long seed,
+			int maxThreads, int kfold, String classificationTarget, double delta, int mode, double maxDistanceThreshold,
+			double minDistanceThreshold, double maxBeliefThreshold, double minBeliefThreshold, double maxTrustThreshold,
+			double minTrustThreshold, int[] LEBAS, int maxArgumentationRounds) {
 
 		long experimentsCount = 0;
 		String loggerName = simulationID + "-OneClickExperimentLauncher";
@@ -782,12 +749,11 @@ public class OneClickExperimentLauncher {
 		LogConfigurator.log2File(logger, loggerName, Level.ALL, Level.INFO, experimentFolder);
 		int ratioint = (int) ((1 / (double) kfold) * 100);
 		double roundedratio = ((double) ratioint) / 100;
-		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-"
-				+ maxArgumentationRounds;
+		simulationID = simulationID + "-TESTRATIO-" + roundedratio + "-MAXARGSROUNDS-" + maxArgumentationRounds;
 
 		DatasetSplitter splitter = new DatasetSplitter();
-		splitter.splitDataset(kfold, minAgentsNumber, maxAgentsNumber, dataset, experimentFolder
-				+ "/input", simulationID, logger);
+		splitter.splitDataset(kfold, minAgentsNumber, maxAgentsNumber, dataset, experimentFolder + "/input",
+				simulationID, logger);
 		for (int agentsNumber = minAgentsNumber; agentsNumber <= maxAgentsNumber; agentsNumber++) {
 
 			logger.info("Executing experiments in " + cores + " cores.");
@@ -798,42 +764,34 @@ public class OneClickExperimentLauncher {
 						ExperimentExecutor executor = new ExperimentExecutor();
 
 						// VALIDATORS
-						List<RunnableExperiment> validators = executor.getValidatorsBatch(
-								simulationID, agentsNumber, summaryFile, seed, mode,
-								experimentFolder + "/input/" + roundedratio
-										+ "testRatio/iteration-" + iteration, experimentFolder
-										+ "/output/" + roundedratio + "testRatio/iteration-"
-										+ iteration, experimentFolder + "/input/" + roundedratio
-										+ "testRatio/iteration-" + iteration + "/test-dataset.csv",
+						List<RunnableExperiment> validators = executor.getValidatorsBatch(simulationID, agentsNumber,
+								summaryFile, seed, mode,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/output/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration
+										+ "/test-dataset.csv",
 								classificationTarget, iteration);
-						logger.info(validators.size()
-								+ " validations are ready to execute for simulation: "
+						logger.info(validators.size() + " validations are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
 						executor.executeValidators(validators, maxLearningThreads, logger);
 
 						// EXPERIMENTS
-						List<RunnableExperiment> experiments = executor
-								.getExperimentSmartBatchForLEBAS(simulationID, agentsNumber,
-										summaryFile, seed, mode,
-										experimentFolder + "/input/" + roundedratio
-												+ "testRatio/iteration-" + iteration,
-										experimentFolder + "/output/" + roundedratio
-												+ "testRatio/iteration-" + iteration,
-										experimentFolder + "/input/" + roundedratio
-												+ "testRatio/iteration-" + iteration
-												+ "/test-dataset.csv", classificationTarget, delta,
-										iteration, maxDistanceThreshold, minDistanceThreshold,
-										maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold,
-										minTrustThreshold, LEBAS, maxArgumentationRounds, logger);
-						logger.info(experiments.size()
-								+ " experiments are ready to execute for simulation: "
+						List<RunnableExperiment> experiments = executor.getExperimentSmartBatchForLEBAS(simulationID,
+								agentsNumber, summaryFile, seed, mode,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/output/" + roundedratio + "testRatio/iteration-" + iteration,
+								experimentFolder + "/input/" + roundedratio + "testRatio/iteration-" + iteration
+										+ "/test-dataset.csv",
+								classificationTarget, delta, iteration, maxDistanceThreshold, minDistanceThreshold,
+								maxBeliefThreshold, minBeliefThreshold, maxTrustThreshold, minTrustThreshold, LEBAS,
+								maxArgumentationRounds, logger);
+						logger.info(experiments.size() + " experiments are ready to execute for simulation: "
 								+ simulationID + " for iteration " + iteration);
 						logger.info("---> Starting experiments executions...");
 						executor.executeExperiments(experiments, maxThreads, logger);
 						logger.info("<--- Finishing experiments executions...");
 						long finishTime = System.currentTimeMillis();
-						experimentsCount = experimentsCount + validators.size()
-								+ experiments.size();
+						experimentsCount = experimentsCount + validators.size() + experiments.size();
 						this.logTime(simulationID, experimentsCount, initTime, finishTime);
 
 					} catch (Exception e) {
